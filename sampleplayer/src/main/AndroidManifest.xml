@@ -11,7 +11,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AnalyticActivity" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,12 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ErrorActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="ErrorActivity" />
+        <activity
+            android:name=".AnalyticActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="AnalyticActivity" />
 
         <meta-data
             android:name="uz_live_views_url"

@@ -28,12 +28,12 @@ public class AnalyticActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analytic);
-        txtLog = findViewById(R.id.txt_log);
+        txtLog = findViewById(R.id.txtLog);
         disposables = new CompositeDisposable();
         sessionId = UUID.randomUUID().toString();
-        findViewById(R.id.one_event).setOnClickListener(v -> trackEvent());
-        findViewById(R.id.some_events).setOnClickListener(v -> trackEvents());
-        findViewById(R.id.live_viewers).setOnClickListener(v -> getLiveViewers());
+        findViewById(R.id.btOneEvent).setOnClickListener(v -> trackEvent());
+        findViewById(R.id.btSomeEvents).setOnClickListener(v -> trackEvents());
+        findViewById(R.id.btLiveViewers).setOnClickListener(v -> getLiveViewers());
         info = new UZPlaybackInfo("b963b465c34e4ffb9a71922442ee0dca", "b938c0a6-e9bc-4b25-9e66-dbf81d755c25", "live");
     }
 
