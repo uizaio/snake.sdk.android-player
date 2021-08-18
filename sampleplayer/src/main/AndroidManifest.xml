@@ -41,10 +41,11 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ErrorActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:parentActivityName=".MainActivity" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
-        <meta-data android:name="uz_live_views_url" android:value="@string/uz_live_views_url" />
+        <meta-data
+            android:name="uz_live_views_url"
+            android:value="@string/uz_live_views_url" />
     </application>
 
 </manifest>

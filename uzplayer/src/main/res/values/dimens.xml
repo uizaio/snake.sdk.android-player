@@ -3,6 +3,11 @@
     <dimen name="previewseekbar_indicator_width">16dp</dimen>
     <dimen name="previewseekbar_thumb_offset">10dp</dimen>
 
+    <dimen name="txt_tiny">8sp</dimen>
+    <dimen name="txt_small">11sp</dimen>
+    <dimen name="txt_medium">16sp</dimen>
+    <dimen name="txt_large">22sp</dimen>
+
     <dimen name="txt_8">8sp</dimen>
     <dimen name="txt_10">10sp</dimen>
     <dimen name="txt_12">12sp</dimen>
