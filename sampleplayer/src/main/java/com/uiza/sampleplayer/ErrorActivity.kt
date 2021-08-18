@@ -1,6 +1,7 @@
 package com.uiza.sampleplayer
 
 import android.os.Bundle
+import android.view.MenuItem
 import com.uiza.sampleplayer.R
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,8 +12,15 @@ class ErrorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_error)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupViews()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupViews() {

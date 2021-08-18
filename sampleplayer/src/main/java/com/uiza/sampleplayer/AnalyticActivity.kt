@@ -2,6 +2,7 @@ package com.uiza.sampleplayer
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.api.UZApi.getLiveViewers
 import com.uiza.sdk.analytics.UZAnalytic
@@ -31,8 +32,15 @@ class AnalyticActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analytic)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupViews()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupViews() {
