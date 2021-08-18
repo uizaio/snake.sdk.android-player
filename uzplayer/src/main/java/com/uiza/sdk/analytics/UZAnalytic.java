@@ -3,6 +3,7 @@ package com.uiza.sdk.analytics;
 import com.uiza.sdk.BuildConfig;
 import com.uiza.sdk.models.UZTrackingBody;
 import com.uiza.sdk.models.UZTrackingData;
+import com.uiza.sdk.utils.Constants;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public final class UZAnalytic {
 
     public static void init(String deviceId, boolean prodEnv) {
         UZAnalytic.deviceId = deviceId;
-        UZAnalytic.sdkVersionName = String.format("UZData/AndroidSDK/%s", BuildConfig.VERSION_NAME);
+        UZAnalytic.sdkVersionName = String.format("UZData/AndroidSDK/%s", Constants.PLAYER_SDK_VERSION);
         UZAnalytic.prodEnv = prodEnv;
     }
 

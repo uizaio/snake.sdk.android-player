@@ -5,7 +5,7 @@ import com.uiza.sdk.BuildConfig;
 public class Constants {
 
     public static final String PLAYER_NAME = "UZPlayer";
-    public static final String PLAYER_SDK_VERSION = BuildConfig.VERSION_NAME;
+    public static final String PLAYER_SDK_VERSION = "1.0.1";
 
     public static final float RATIO_9_16 = 9f / 16f;
     public static final float RATIO_10_16 = 10f / 16f;
