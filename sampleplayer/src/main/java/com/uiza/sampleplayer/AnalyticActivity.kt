@@ -1,85 +1,107 @@
-package com.uiza.sampleplayer;
+package com.uiza.sampleplayer
 
-import android.os.Bundle;
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.uiza.api.UZApi.getLiveViewers
+import com.uiza.sdk.analytics.UZAnalytic
+import com.uiza.sdk.models.UZEventType
+import com.uiza.sdk.models.UZPlaybackInfo
+import com.uiza.sdk.models.UZTrackingData
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.activity_analytic.*
+import okhttp3.ResponseBody
+import java.util.*
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
+class AnalyticActivity : AppCompatActivity() {
 
-import com.uiza.api.UZApi;
-import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.models.UZPlaybackInfo;
-import com.uiza.sdk.models.UZEventType;
-import com.uiza.sdk.models.UZTrackingData;
-
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.UUID;
-
-import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
-
-public class AnalyticActivity extends AppCompatActivity {
-    private AppCompatTextView txtLog;
-    CompositeDisposable disposables;
-    String sessionId;
-    UZPlaybackInfo info;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_analytic);
-        txtLog = findViewById(R.id.txtLog);
-        disposables = new CompositeDisposable();
-        sessionId = UUID.randomUUID().toString();
-        findViewById(R.id.btOneEvent).setOnClickListener(v -> trackEvent());
-        findViewById(R.id.btSomeEvents).setOnClickListener(v -> trackEvents());
-        findViewById(R.id.btLiveViewers).setOnClickListener(v -> getLiveViewers());
-        info = new UZPlaybackInfo("b963b465c34e4ffb9a71922442ee0dca", "b938c0a6-e9bc-4b25-9e66-dbf81d755c25", "live");
+    private fun log(msg: String) {
+        Log.d("loitpp" + javaClass.simpleName, msg)
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (disposables != null)
-            disposables.dispose();
+    var disposables: CompositeDisposable = CompositeDisposable()
+    var sessionId: String = UUID.randomUUID().toString()
+    var info = UZPlaybackInfo(
+        "b963b465c34e4ffb9a71922442ee0dca",
+        "b938c0a6-e9bc-4b25-9e66-dbf81d755c25",
+        "live"
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_analytic)
+
+        setupViews()
     }
 
-    private void getLiveViewers() {
-        disposables.add(UZApi.getLiveViewers(info.getAppId(), info.getEntityId(), liveCounter -> {
-            Timber.e("onNext: %d", liveCounter.getViews());
-            txtLog.setText(String.format(Locale.getDefault(), "Views: %d", liveCounter.getViews()));
-        }, error -> {
-            Timber.e("onError: %s", error.getMessage());
-            txtLog.setText(String.format("getLiveViewers::onError: %s", error.getMessage()));
-        }));
+    private fun setupViews() {
+        btOneEvent.setOnClickListener {
+            trackEvent()
+        }
+        btSomeEvents.setOnClickListener {
+            trackEvents()
+        }
+        btLiveViewers.setOnClickListener {
+            liveViewers
+        }
     }
 
-    private void trackEvent() {
-        UZTrackingData data = new UZTrackingData(info, sessionId, UZEventType.WATCHING);
-        data.setEventType(UZEventType.WATCHING);
-        disposables.add(UZAnalytic.pushEvent(data, responseBody -> {
-                    Timber.e("onNext: %s", responseBody.contentLength());
-                    txtLog.setText(String.format("trackEvent::onNext: %s", responseBody.contentLength()));
+    override fun onStop() {
+        super.onStop()
+        disposables.dispose()
+    }
+
+    private fun trackEvent() {
+        val data = UZTrackingData(info, sessionId, UZEventType.WATCHING)
+        data.eventType = UZEventType.WATCHING
+        disposables.add(
+            UZAnalytic.pushEvent(data,
+                { responseBody: ResponseBody ->
+                    log("onNext " + responseBody.contentLength())
+                    txtLog.text = "trackEvent onNext " + responseBody.contentLength()
                 },
-                error -> {
-                    Timber.e("onError: %s", error.getMessage());
-                    txtLog.setText(String.format("trackEvent::onError: %s", error.getMessage()));
-                }, () -> {
-                    Timber.e("completed");
-                }));
+                { error: Throwable ->
+                    log("onError $error")
+                    txtLog.text = "trackEvent::onError $error"
+                }
+            ) {
+                log("completed")
+            })
     }
 
-    private void trackEvents() {
-        UZTrackingData data1 = new UZTrackingData(info, sessionId, UZEventType.WATCHING);
-        UZTrackingData data2 = new UZTrackingData(info, sessionId, UZEventType.WATCHING);
-        disposables.add(UZAnalytic.pushEvents(Arrays.asList(data1, data2), responseBody -> {
-                    Timber.e("onNext: %s", responseBody.contentLength());
-                    txtLog.setText(String.format("trackEvents::onNext: %s", responseBody.contentLength()));
-                },
-                error -> {
-                    Timber.e("onError: %s", error.getMessage());
-                    txtLog.setText(String.format("trackEvents::onError: %s", error.getMessage()));
-                }, () -> Timber.e("completed"))
-        );
+    private fun trackEvents() {
+        val data1 = UZTrackingData(info, sessionId, UZEventType.WATCHING)
+        val data2 = UZTrackingData(info, sessionId, UZEventType.WATCHING)
+        disposables.add(UZAnalytic.pushEvents(
+            listOf(data1, data2), { responseBody: ResponseBody ->
+                log("onNext " + responseBody.contentLength())
+                txtLog.text = "trackEvents::onNext " + responseBody.contentLength()
+            },
+            { error: Throwable ->
+                log("onError $error")
+                txtLog.text = "trackEvents::onError $error"
+            }
+        ) {
+            log("completed")
+        }
+        )
     }
+
+    private val liveViewers: Unit
+        get() {
+            disposables.add(
+                getLiveViewers(
+                    appId = info.appId,
+                    entityId = info.entityId,
+                    onNext = Consumer { (views) ->
+                        log("onNext: $views")
+                        txtLog.text = "Views: $views"
+                    },
+                    onError = Consumer { error: Throwable ->
+                        log("onError $error")
+                        txtLog.text = "getLiveViewers::onError $error"
+                    })
+            )
+        }
 }
