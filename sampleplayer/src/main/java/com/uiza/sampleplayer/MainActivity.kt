@@ -29,6 +29,9 @@ class MainActivity : AppCompatActivity() {
         btnAnalytic.setOnClickListener {
             gotoActivity(AnalyticActivity::class.java)
         }
+        btnError.setOnClickListener {
+            gotoActivity(ErrorActivity::class.java)
+        }
         txtVersion.text = String.format(
             Locale.getDefault(),
             "%s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE

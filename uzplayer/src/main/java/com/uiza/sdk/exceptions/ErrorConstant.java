@@ -74,7 +74,7 @@ public interface ErrorConstant {
     String ERR_404 = "Not Found: The requested resource does not exist.";
 
     int ERR_CODE_422 = 422;
-    String ERR_422 = "Unprocessable: The syntax of the request entity is incorrect (often is wrong parameter).";
+    String ERR_422 = "Un-processable: The syntax of the request entity is incorrect (often is wrong parameter).";
 
     int ERR_CODE_500 = 500;
     String ERR_500 = "Internal Server Error: We had a problem with our server. Try again later.";
