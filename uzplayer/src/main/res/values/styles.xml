@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--START CHROMECAST-->
+    <style name="TextAppearance.CustomCastIntroOverlay.Button" parent="android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextAppearance.CustomCastIntroOverlay.Title" parent="android:style/TextAppearance.Large">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <!--STOP CHROMECAST-->
+
+    <style name="AVLoadingIndicatorView">
+        <item name="minWidth">48dip</item>
+        <item name="maxWidth">48dip</item>
+        <item name="minHeight">48dip</item>
+        <item name="maxHeight">48dip</item>
+        <item name="indicatorName">BallPulseIndicator</item>
+    </style>
+
+    <style name="pdlg_default_animation">
+        <item name="android:windowEnterAnimation">@anim/pdlg_anim_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/pdlg_anim_fade_out</item>
+    </style>
+
+    <style name="pdlg_no_animation">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+
+    <style name="uiza_dialog_animation">
+        <item name="android:windowEnterAnimation">@anim/slide_up_enter</item>
+        <item name="android:windowExitAnimation">@anim/slide_down_exit</item>
+    </style>
+
+    <style name="Theme.CastVideosDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>
+        <item name="castIntroOverlayStyle">@style/CustomCastIntroOverlay</item>
+        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>
+        <item name="castExpandedControllerToolbarStyle">
+            @style/ThemeOverlay.AppCompat.Dark.ActionBar
+        </item>
+    </style>
+
+    <style name="CustomCastIntroOverlay" parent="CastIntroOverlay">
+        <item name="castButtonTextAppearance">@style/TextAppearance.CustomCastIntroOverlay.Button
+        </item>
+        <item name="castTitleTextAppearance">@style/TextAppearance.CustomCastIntroOverlay.Title
+        </item>
+    </style>
+
+    <style name="UZPreviewTimeBar">
+        <item name="ad_marker_color">@color/light_yellow</item>
+        <item name="buffered_color">@color/light_grey</item>
+        <item name="played_ad_marker_color">@color/light_yellow</item>
+        <item name="played_color">@color/red</item>
+        <item name="bar_height">2dp</item>
+        <item name="previewFrameLayout">@id/preview_frame_layout</item>
+        <item name="scrubber_color">@color/red</item>
+        <item name="unplayed_color">@color/grey</item>
+    </style>
+
+    <style name="CustomCastMiniController" parent="CastMiniController">
+        <item name="castShowImageThumbnail">true</item>
+        <item name="castTitleTextAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="castSubtitleTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+    </style>
+
+    <style name="CustomCastExpandedController" parent="CastExpandedController" />
+</resources>
