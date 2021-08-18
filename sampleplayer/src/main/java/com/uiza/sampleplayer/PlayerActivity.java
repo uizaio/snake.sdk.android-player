@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.uiza.api.UZApi;
+import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.exceptions.UZException;
 import com.uiza.sdk.interfaces.UZPlayerCallback;
@@ -115,14 +116,14 @@ public class PlayerActivity extends AppCompatActivity implements UZPlayerCallbac
     private void updateView(int index) {
         etLinkPlay.setVisibility(View.VISIBLE);
         btPlay.setVisibility(View.VISIBLE);
-        etLinkPlay.setText(LSApplication.urls[index]);
+        etLinkPlay.setText(UZApplication.urls[index]);
         setLastCursorEditText(etLinkPlay);
     }
 
     private void initPlaylist() {
         playlist = new ArrayList<>();
         int i = 0;
-        for (String url : LSApplication.urls) {
+        for (String url : UZApplication.urls) {
             UZPlayback playback = new UZPlayback();
             playback.addLinkPlay(url);
             playlist.add(playback);
@@ -132,7 +133,7 @@ public class PlayerActivity extends AppCompatActivity implements UZPlayerCallbac
 
     private void onPlay() {
         final UZPlayback playback = new UZPlayback();
-        playback.setPoster(LSApplication.thumbnailUrl);
+        playback.setPoster(UZApplication.thumbnailUrl);
         playback.addLinkPlay(etLinkPlay.getText().toString());
         uzVideo.play(playback);
 

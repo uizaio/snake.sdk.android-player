@@ -3,9 +3,9 @@ package com.uiza.sampleplayer;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.EditText;
 
+import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.exceptions.UZException;
 import com.uiza.sdk.interfaces.UZPlayerCallback;
@@ -32,13 +32,13 @@ public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCal
         uzVideo.getPlayerView().setOnSingleTap(this);
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
-        etLinkPlay.setText(LSApplication.urls[0]);
+        etLinkPlay.setText(UZApplication.urls[0]);
         findViewById(R.id.btn_play).setOnClickListener(view -> onPlay());
     }
 
     private void onPlay() {
         final UZPlayback playback = new UZPlayback();
-        playback.setPoster(LSApplication.thumbnailUrl);
+        playback.setPoster(UZApplication.thumbnailUrl);
         playback.addLinkPlay(etLinkPlay.getText().toString());
         uzVideo.play(playback);
     }
