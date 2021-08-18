@@ -16,12 +16,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_player).setOnClickListener(v -> gotoActivity(PlayerActivity.class));
-        findViewById(R.id.btn_pip_player).setOnClickListener(v -> gotoActivity(PipPlayerActivity.class));
-        findViewById(R.id.btn_cast_player).setVisibility(View.GONE);
-        findViewById(R.id.btn_analytic).setOnClickListener(v -> gotoActivity(AnalyticActivity.class));
+        findViewById(R.id.btnPlayer).setOnClickListener(v -> gotoActivity(PlayerActivity.class));
+        findViewById(R.id.btnPipPlayer).setOnClickListener(v -> gotoActivity(PipPlayerActivity.class));
+        findViewById(R.id.btnCastPlayer).setVisibility(View.GONE);
+        findViewById(R.id.btnAnalytic).setOnClickListener(v -> gotoActivity(AnalyticActivity.class));
         //.setOnClickListener(v -> gotoActivity(CastPlayerActivity.class));
-        ((AppCompatTextView) findViewById(R.id.txt_version)).setText(String.format(Locale.getDefault(),
+        ((AppCompatTextView) findViewById(R.id.txtVersion)).setText(String.format(Locale.getDefault(),
                 "%s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
     }
 
