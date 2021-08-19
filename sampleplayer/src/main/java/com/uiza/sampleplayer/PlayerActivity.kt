@@ -1,235 +1,232 @@
-package com.uiza.sampleplayer;
+package com.uiza.sampleplayer
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.uiza.api.UZApi.getLiveViewers
+import com.uiza.sampleplayer.app.Constant
+import com.uiza.sampleplayer.app.UZApplication
+import com.uiza.sdk.UZPlayer
+import com.uiza.sdk.exceptions.UZException
+import com.uiza.sdk.interfaces.UZPlayerCallback
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.UZViewUtils
+import com.uiza.sdk.view.UZDragView
+import com.uiza.sdk.view.UZPlayerView
+import com.uiza.sdk.view.UZPlayerView.ControllerStateCallback
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.activity_player.*
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callback,
+    ControllerStateCallback {
 
-import com.uiza.api.UZApi;
-import com.uiza.sampleplayer.app.UZApplication;
-import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
-import com.uiza.sdk.models.UZPlayback;
-import com.uiza.sdk.utils.UZViewUtils;
-import com.uiza.sdk.view.UZDragView;
-import com.uiza.sdk.view.UZPlayerView;
-import com.uiza.sdk.view.UZVideoView;
-import com.uiza.sdk.widget.UZToast;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import timber.log.Timber;
-
-public class PlayerActivity extends AppCompatActivity implements UZPlayerCallback, UZDragView.Callback,
-        UZPlayerView.ControllerStateCallback {
-
-    HorizontalScrollView llBottom;
-    private UZVideoView uzVideo;
-    private UZDragView uzDragView;
-    private EditText etLinkPlay;
-    private List<UZPlayback> playlist;
-    Button btPlay;
-    private Handler handler = new Handler(Looper.getMainLooper());
-    private CompositeDisposable disposables;
-
-    public static void setLastCursorEditText(@NonNull EditText editText) {
-        if (!editText.getText().toString().isEmpty()) {
-            editText.setSelection(editText.getText().length());
-        }
+    private fun showToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        UZPlayer.setUseWithUZDragView(true);
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
-        uzVideo = findViewById(R.id.uzVideoView);
-        uzDragView = findViewById(R.id.uzDragView);
-        llBottom = findViewById(R.id.hsvBottom);
-        etLinkPlay = findViewById(R.id.etLinkPlay);
-        btPlay = findViewById(R.id.btPlay);
-        uzDragView.setCallback(this);
-        uzDragView.setScreenRotate(false);
-        uzVideo.setPlayerCallback(this);
-//        uzVideo.getPlayerView().setControllerStateCallback(this);
-        disposables = new CompositeDisposable();
-        // If linkplay is livestream, it will auto move to live edge when onResume is called
-        uzVideo.setAutoMoveToLiveEdge(true);
-        UZPlayback playbackInfo = null;
-        if (getIntent() != null) {
-            playbackInfo = getIntent().getParcelableExtra("extra_playback_info");
-            if (playbackInfo != null) {
-                llBottom.setVisibility(View.GONE);
-                etLinkPlay.setVisibility(View.GONE);
-            } else {
-                llBottom.setVisibility(View.VISIBLE);
-                etLinkPlay.setVisibility(View.VISIBLE);
-                initPlaylist();
-            }
+    private fun log(msg: String) {
+        Log.d(javaClass.simpleName, msg)
+    }
+
+    private var playlist = ArrayList<UZPlayback>()
+    private var handler: Handler? = null
+    private var compositeDisposable = CompositeDisposable()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        UZPlayer.setUseWithUZDragView(true)
+        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_player)
+        handler = Handler(Looper.getMainLooper())
+        setupViews()
+    }
+
+    private fun setupViews() {
+        uzDragView.setCallback(this)
+        uzDragView.setScreenRotate(false)
+        uzVideoView.setPlayerCallback(this)
+        // If link play is livestream, it will auto move to live edge when onResume is called
+        uzVideoView.setAutoMoveToLiveEdge(true)
+        var playbackInfo: UZPlayback? = null
+        if (intent == null) {
+            hsvBottom.visibility = View.VISIBLE
+            etLinkPlay.visibility = View.VISIBLE
+            initPlaylist()
         } else {
-            llBottom.setVisibility(View.VISIBLE);
-            etLinkPlay.setVisibility(View.VISIBLE);
-            initPlaylist();
+            playbackInfo = intent.getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO)
+            if (playbackInfo == null) {
+                hsvBottom.visibility = View.VISIBLE
+                etLinkPlay.visibility = View.VISIBLE
+                initPlaylist()
+            } else {
+                hsvBottom.visibility = View.GONE
+                etLinkPlay.visibility = View.GONE
+            }
         }
-        findViewById(R.id.bt0).setOnClickListener(view -> updateView(0));
-        findViewById(R.id.bt1).setOnClickListener(view -> updateView(1));
-        findViewById(R.id.bt2).setOnClickListener(view -> updateView(2));
-        findViewById(R.id.bt_).setOnClickListener(view -> updateView(3));
-        findViewById(R.id.bt4).setOnClickListener(view -> {
-            etLinkPlay.setVisibility(View.GONE);
-            btPlay.setVisibility(View.GONE);
-            uzVideo.play(playlist);
-        });
-        btPlay.setOnClickListener(view -> onPlay());
+        bt0.setOnClickListener {
+            updateView(0)
+        }
+        bt1.setOnClickListener {
+            updateView(1)
+        }
+        bt2.setOnClickListener {
+            updateView(2)
+        }
+        bt4.setOnClickListener {
+            updateView(3)
+        }
+        bt5.setOnClickListener {
+            etLinkPlay.visibility = View.GONE
+            btPlay.visibility = View.GONE
+            uzVideoView.play(playlist)
+        }
+        btPlay.setOnClickListener {
+            onPlay()
+        }
         if (playbackInfo != null) {
-            boolean isInitSuccess = uzVideo.play(playbackInfo);
-            if (!isInitSuccess)
-                UZToast.show(this, "Init failed");
+            val isInitSuccess = uzVideoView.play(playbackInfo)
+            if (!isInitSuccess) {
+                showToast("Init failed")
+            }
         }
-        (new Handler()).postDelayed(() -> {
-            updateView(0);
-            onPlay();
-        }, 1000);
+        Handler(Looper.getMainLooper()).postDelayed({
+            updateView(0)
+            onPlay()
+        }, 1000)
     }
 
-    @Override
-    public void playerViewCreated(UZPlayerView playerView) {
-        uzVideo.getPlayerView().setControllerStateCallback(this);
+    override fun playerViewCreated(playerView: UZPlayerView) {
+        uzVideoView.playerView.setControllerStateCallback(this)
     }
 
-    private void updateView(int index) {
-        etLinkPlay.setVisibility(View.VISIBLE);
-        btPlay.setVisibility(View.VISIBLE);
-        etLinkPlay.setText(UZApplication.urls[index]);
-        setLastCursorEditText(etLinkPlay);
+    private fun updateView(index: Int) {
+        etLinkPlay.visibility = View.VISIBLE
+        btPlay.visibility = View.VISIBLE
+        etLinkPlay.setText(UZApplication.urls[index])
+        setLastCursorEditText(etLinkPlay)
     }
 
-    private void initPlaylist() {
-        playlist = new ArrayList<>();
-        int i = 0;
-        for (String url : UZApplication.urls) {
-            UZPlayback playback = new UZPlayback();
-            playback.addLinkPlay(url);
-            playlist.add(playback);
-            i++;
+    private fun initPlaylist() {
+        for (url in UZApplication.urls) {
+            val playback = UZPlayback()
+            playback.addLinkPlay(url)
+            playlist.add(playback)
         }
     }
 
-    private void onPlay() {
-        final UZPlayback playback = new UZPlayback();
-        playback.setPoster(UZApplication.thumbnailUrl);
-        playback.addLinkPlay(etLinkPlay.getText().toString());
-        uzVideo.play(playback);
-
+    private fun onPlay() {
+        val playback = UZPlayback()
+        playback.poster = UZApplication.thumbnailUrl
+        playback.addLinkPlay(etLinkPlay.text.toString().trim())
+        uzVideoView.play(playback)
     }
 
-    @Override
-    public void isInitResult(String linkPlay) {
-        Timber.e("LinkPlay: %s", linkPlay);
-        uzDragView.setInitResult(true);
-        getLiveViewsTimer(true);
+    override fun isInitResult(linkPlay: String) {
+        log("LinkPlay $linkPlay")
+        uzDragView.setInitResult(true)
+        getLiveViewsTimer(true)
     }
 
-    @Override
-    public void onTimeShiftChange(boolean timeShiftOn) {
-        runOnUiThread(() -> UZToast.show(this, "TimeShiftOn: "+timeShiftOn));
+    override fun onTimeShiftChange(timeShiftOn: Boolean) {
+        runOnUiThread {
+            showToast("TimeShiftOn: $timeShiftOn")
+        }
     }
 
-    @Override
-    public void onScreenRotate(boolean isLandscape) {
+    override fun onScreenRotate(isLandscape: Boolean) {
         if (!isLandscape) {
-            int w = UZViewUtils.getScreenWidth();
-            int h = w * 9 / 16;
-            uzVideo.setFreeSize(false);
-            uzVideo.setSize(w, h);
+            val w = UZViewUtils.getScreenWidth()
+            val h = w * 9 / 16
+            uzVideoView.setFreeSize(false)
+            uzVideoView.setSize(w, h)
         }
-        uzDragView.setScreenRotate(isLandscape);
+        uzDragView.setScreenRotate(isLandscape)
     }
 
-    @Override
-    public void onError(UZException e) {
-        runOnUiThread(() -> UZToast.show(this, e.getLocalizedMessage()));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        uzVideo.onDestroyView();
-        UZPlayer.setUseWithUZDragView(false);
-        if (disposables != null)
-            disposables.dispose();
-        handler = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (uzDragView.isAppear())
-            uzVideo.onResumeView();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        uzVideo.onPauseView();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!uzVideo.onBackPressed()) {
-            super.onBackPressed();
+    override fun onError(e: UZException) {
+        runOnUiThread {
+            showToast("$e")
         }
     }
 
-    private void updateUIRevertMaxChange(boolean isEnableRevertMaxSize) {
-        if (isEnableRevertMaxSize && uzDragView.isAppear()) {
+    public override fun onDestroy() {
+        super.onDestroy()
+        uzVideoView.onDestroyView()
+        UZPlayer.setUseWithUZDragView(false)
+        compositeDisposable.dispose()
+        handler = null
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (uzDragView.isAppear) {
+            uzVideoView.onResumeView()
         }
     }
 
-    @Override
-    public void onOverScroll(UZDragView.State state, UZDragView.Part part) {
-        uzVideo.pause();
-        uzDragView.disappear();
+    public override fun onPause() {
+        super.onPause()
+        uzVideoView.onPauseView()
     }
 
-    @Override
-    public void onEnableRevertMaxSize(boolean isEnableRevertMaxSize) {
-        updateUIRevertMaxChange(!isEnableRevertMaxSize);
+    override fun onBackPressed() {
+        if (!uzVideoView.onBackPressed()) {
+            super.onBackPressed()
+        }
     }
 
-    @Override
-    public void onAppear(boolean isAppear) {
-        updateUIRevertMaxChange(uzDragView.isEnableRevertMaxSize());
+    private fun updateUIRevertMaxChange(isEnableRevertMaxSize: Boolean) {
+        if (isEnableRevertMaxSize && uzDragView.isAppear) {
+            //do sth
+        }
     }
 
-    @Override
-    public void onVisibilityChange(boolean isShow) {
-        uzDragView.setVisibilityChange(isShow);
+    override fun onOverScroll(state: UZDragView.State, part: UZDragView.Part) {
+        uzVideoView.pause()
+        uzDragView.disappear()
     }
 
-    private void getLiveViewsTimer(boolean firstRun) {
-        final UZPlayback playback = UZPlayer.getCurrentPlayback();
-        if (handler != null && playback != null)
-            handler.postDelayed(() -> {
-                Disposable d = UZApi.getLiveViewers(playback.getFirstLinkPlay(), res -> {
-                    uzVideo.setLiveViewers(res.getViews());
-                }, Timber::e);
-                if (d != null) {
-                    disposables.add(d);
+    override fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {
+        updateUIRevertMaxChange(!isEnableRevertMaxSize)
+    }
+
+    override fun onAppear(isAppear: Boolean) {
+        updateUIRevertMaxChange(uzDragView.isEnableRevertMaxSize)
+    }
+
+    override fun onVisibilityChange(isShow: Boolean) {
+        uzDragView.setVisibilityChange(isShow)
+    }
+
+    private fun getLiveViewsTimer(firstRun: Boolean) {
+        val playback = UZPlayer.getCurrentPlayback()
+        if (handler != null && playback != null) {
+            handler?.postDelayed({
+                val d =
+                    getLiveViewers(linkPlay = playback.firstLinkPlay,
+                        onNext = Consumer { (views) ->
+                            uzVideoView.setLiveViewers(views)
+                        }, onError = Consumer { t: Throwable? ->
+                            log("$t")
+                        })
+                d?.let {
+                    compositeDisposable.add(it)
                 }
-                getLiveViewsTimer(false);
-            }, firstRun ? 0 : 5000);
+                getLiveViewsTimer(false)
+            }, if (firstRun) 0 else 5000L)
+        }
+    }
+
+    private fun setLastCursorEditText(editText: EditText) {
+        if (editText.text.toString().isNotEmpty()) {
+            editText.setSelection(editText.text.length)
+        }
     }
 }

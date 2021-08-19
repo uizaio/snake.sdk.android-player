@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.uiza.api.UZApi;
+import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.exceptions.UZException;
@@ -47,7 +48,7 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
         uzVideo.setAutoMoveToLiveEdge(true);
         UZPlayback playbackInfo = null;
         if (getIntent() != null) {
-            playbackInfo = getIntent().getParcelableExtra("extra_playback_info");
+            playbackInfo = getIntent().getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO);
         }
         if (playbackInfo != null)
             etLinkPlay.setText(playbackInfo.getFirstLinkPlay());
