@@ -187,7 +187,7 @@ public class UZDragView extends LinearLayout {
         screenW = UZViewUtils.getScreenWidth();
         screenH = UZViewUtils.getScreenHeight();
         headerView = findViewById(R.id.header_view);
-        bodyView = findViewById(R.id.body_view);
+        bodyView = findViewById(R.id.svBodyView);
         headerView.post(() -> {
             sizeWHeaderViewOriginal = headerView.getMeasuredWidth();
             sizeHHeaderViewOriginal = headerView.getMeasuredHeight();

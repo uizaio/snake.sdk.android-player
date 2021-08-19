@@ -25,8 +25,8 @@ public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCal
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cast_player);
-        uzVideo = findViewById(R.id.uz_video_view);
-        etLinkPlay = findViewById(R.id.et_link_play);
+        uzVideo = findViewById(R.id.uzVideoView);
+        etLinkPlay = findViewById(R.id.etLinkPlay);
         UZPlayer.getCasty().setUpMediaRouteButton(findViewById(R.id.media_route_button));
         uzVideo.setPlayerCallback(this);
         uzVideo.getPlayerView().setOnSingleTap(this);

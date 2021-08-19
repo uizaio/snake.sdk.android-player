@@ -31,10 +31,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-/**
- * Demo UZPlayer with UZDragView
- */
-
 public class PlayerActivity extends AppCompatActivity implements UZPlayerCallback, UZDragView.Callback,
         UZPlayerView.ControllerStateCallback {
 
@@ -59,11 +55,11 @@ public class PlayerActivity extends AppCompatActivity implements UZPlayerCallbac
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
-        uzVideo = findViewById(R.id.uz_video_view);
-        uzDragView = findViewById(R.id.vdhv);
-        llBottom = findViewById(R.id.hsv_bottom);
-        etLinkPlay = findViewById(R.id.et_link_play);
-        btPlay = findViewById(R.id.bt_play);
+        uzVideo = findViewById(R.id.uzVideoView);
+        uzDragView = findViewById(R.id.uzDragView);
+        llBottom = findViewById(R.id.hsvBottom);
+        etLinkPlay = findViewById(R.id.etLinkPlay);
+        btPlay = findViewById(R.id.btPlay);
         uzDragView.setCallback(this);
         uzDragView.setScreenRotate(false);
         uzVideo.setPlayerCallback(this);
@@ -87,11 +83,11 @@ public class PlayerActivity extends AppCompatActivity implements UZPlayerCallbac
             etLinkPlay.setVisibility(View.VISIBLE);
             initPlaylist();
         }
-        findViewById(R.id.bt_0).setOnClickListener(view -> updateView(0));
-        findViewById(R.id.bt_1).setOnClickListener(view -> updateView(1));
-        findViewById(R.id.bt_2).setOnClickListener(view -> updateView(2));
-        findViewById(R.id.bt_3).setOnClickListener(view -> updateView(3));
-        findViewById(R.id.bt_4).setOnClickListener(view -> {
+        findViewById(R.id.bt0).setOnClickListener(view -> updateView(0));
+        findViewById(R.id.bt1).setOnClickListener(view -> updateView(1));
+        findViewById(R.id.bt2).setOnClickListener(view -> updateView(2));
+        findViewById(R.id.bt_).setOnClickListener(view -> updateView(3));
+        findViewById(R.id.bt4).setOnClickListener(view -> {
             etLinkPlay.setVisibility(View.GONE);
             btPlay.setVisibility(View.GONE);
             uzVideo.play(playlist);

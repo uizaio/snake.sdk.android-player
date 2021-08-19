@@ -40,8 +40,8 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedState);
         setContentView(R.layout.activity_pip_player);
-        uzVideo = findViewById(R.id.uz_video_view);
-        etLinkPlay = findViewById(R.id.et_link_play);
+        uzVideo = findViewById(R.id.uzVideoView);
+        etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPlayerCallback(this);
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
@@ -54,7 +54,7 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
         else
             etLinkPlay.setText(UZApplication.urls[0]);
 
-        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
+//        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
 
         findViewById(R.id.btn_play).setOnClickListener(view -> onPlay());
         disposables = new CompositeDisposable();
