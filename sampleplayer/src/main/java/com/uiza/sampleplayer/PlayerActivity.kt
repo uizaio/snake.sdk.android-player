@@ -51,6 +51,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun onOverScroll(state: UZDragView.State, part: UZDragView.Part) {
                 uzVideoView.pause()
                 uzDragView.disappear()
+                showToast("Disappear successfully")
             }
 
             override fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {
@@ -65,9 +66,7 @@ class PlayerActivity : AppCompatActivity() {
         uzVideoView.setPlayerCallback(object : UZPlayerCallback {
             override fun playerViewCreated(playerView: UZPlayerView) {
                 uzVideoView.playerView.setControllerStateCallback { visible ->
-                    uzDragView.setVisibilityChange(
-                        visible
-                    )
+                    uzDragView.setVisibilityChange(visible)
                 }
             }
 
