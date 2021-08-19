@@ -1124,6 +1124,16 @@ public class UZVideoView extends RelativeLayout
                 UZData.getInstance().getCurrentPositionOfPlayList(),
                 new CallbackPlaylistFolder() {
                     @Override
+                    public void onDismiss() {
+
+                    }
+
+                    @Override
+                    public void onFocusChange(@NonNull UZPlayback playback, int position) {
+
+                    }
+
+                    @Override
                     public void onClickItem(UZPlayback playback, int position) {
                         playPlaylistPosition(position);
                     }

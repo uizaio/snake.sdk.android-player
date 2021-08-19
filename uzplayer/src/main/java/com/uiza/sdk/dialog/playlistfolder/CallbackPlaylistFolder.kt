@@ -1,19 +1,9 @@
-package com.uiza.sdk.dialog.playlistfolder;
+package com.uiza.sdk.dialog.playlistfolder
 
+import com.uiza.sdk.models.UZPlayback
 
-import com.uiza.sdk.models.UZPlayback;
-
-/**
- * Created by loitp on 3/30/2018.
- */
-
-public interface CallbackPlaylistFolder {
-    default void onClickItem(UZPlayback playback, int position) {
-    }
-
-    default void onFocusChange(UZPlayback playback, int position) {
-    }
-
-    default void onDismiss() {
-    }
+interface CallbackPlaylistFolder {
+    fun onClickItem(playback: UZPlayback, position: Int) {}
+    fun onFocusChange(playback: UZPlayback, position: Int) {}
+    fun onDismiss() {}
 }
