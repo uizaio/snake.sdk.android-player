@@ -1,29 +1,20 @@
-package com.uiza.sdk.exceptions;
+package com.uiza.sdk.exceptions
 
-public class UZException extends Exception {
+class UZException : Exception {
+    var code = 0
+        private set
 
-    private int code;
+    constructor() : super() {}
 
-    public UZException() {
-        super();
+    constructor(code: Int, message: String?) : super(message) {
+        this.code = code
     }
 
-    public UZException(int code, String message) {
-        super(message);
-        this.code = code;
+    constructor(code: Int, message: String?, cause: Throwable?) : super(message, cause) {
+        this.code = code
     }
 
-    public UZException(int code, String message, Throwable cause) {
-        super(message, cause);
-        this.code = code;
-    }
-
-    public UZException(int code, Throwable cause) {
-        super(cause);
-        this.code = code;
-    }
-
-    public int getCode() {
-        return code;
+    constructor(code: Int, cause: Throwable?) : super(cause) {
+        this.code = code
     }
 }
