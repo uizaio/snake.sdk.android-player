@@ -1,6 +1,5 @@
 package com.uiza.sdk.analytics;
 
-import com.uiza.sdk.BuildConfig;
 import com.uiza.sdk.models.UZTrackingBody;
 import com.uiza.sdk.models.UZTrackingData;
 import com.uiza.sdk.utils.Constants;
@@ -14,7 +13,7 @@ import okhttp3.ResponseBody;
 
 public final class UZAnalytic {
 
-    private static String sdkVersionName; //UZData/AndroidSDK/1.1.0
+    private static String sdkVersionName;
     private static String deviceId;
     private static boolean prodEnv = false;
 
@@ -47,7 +46,7 @@ public final class UZAnalytic {
 
     public static Disposable pushEvent(UZTrackingData data, Consumer<ResponseBody> onNext,
                                        Consumer<Throwable> onError) throws IllegalStateException {
-        return RxBinder.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
+        return RxBinder.INSTANCE.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
     }
 
     public static Disposable pushEvent(UZTrackingData data, Consumer<ResponseBody> onNext,
@@ -57,7 +56,7 @@ public final class UZAnalytic {
 
     public static Disposable pushEvents(List<UZTrackingData> data, Consumer<ResponseBody> onNext,
                                         Consumer<Throwable> onError) throws IllegalStateException {
-        return RxBinder.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
+        return RxBinder.INSTANCE.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
     }
 
     public static Disposable pushEvents(List<UZTrackingData> data, Consumer<ResponseBody> onNext,

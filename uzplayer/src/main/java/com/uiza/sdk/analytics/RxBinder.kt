@@ -1,36 +1,32 @@
-package com.uiza.sdk.analytics;
+package com.uiza.sdk.analytics
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 
-public final class RxBinder {
-
-    private RxBinder() {
+object RxBinder {
+    fun <T> bind(
+        observable: Observable<T>,
+        onNext: Consumer<T>?,
+        onError: Consumer<Throwable?>?
+    ): Disposable {
+        return observable.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNext, onError)
     }
 
-    public static <T> Disposable bind(Observable<T> observable, Consumer<T> onNext, Consumer<Throwable> onError) {
-        //TODO maybe in some cases we don't need to check internet connection
-        /*if (!NetworkUtils.hasConnection(this)) {
-            subscriber.onError(new NoConnectionException());
-            return;
-        }*/
+    @JvmStatic
+    fun <T> bind(
+        observable: Observable<T>,
+        onNext: Consumer<T>?,
+        onError: Consumer<Throwable?>?,
+        onComplete: Action?
+    ): Disposable {
         return observable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError);
-    }
-
-    public static <T> Disposable bind(Observable<T> observable, Consumer<T> onNext, Consumer<Throwable> onError, Action onComplete) {
-        //TODO maybe in some cases we don't need to check internet connection
-        /*if (!NetworkUtils.hasConnection(this)) {
-            subscriber.onError(new NoConnectionException());
-            return;
-        }*/
-        return observable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext, onError, onComplete);
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onNext, onError, onComplete)
     }
 }
