@@ -466,10 +466,11 @@ public class UZDragView extends LinearLayout {
 
     public void setVisibilityChange(boolean isShow) {
         this.isControllerShowing = isShow;
-        if (isLandscape)
+        if (isLandscape) {
             setEnableSlide(false);
-        else
+        } else {
             setEnableSlide(!isShow);
+        }
     }
 
     public void setOnTouchEvent(UZPlayerView.OnTouchEvent onTouchEvent) {

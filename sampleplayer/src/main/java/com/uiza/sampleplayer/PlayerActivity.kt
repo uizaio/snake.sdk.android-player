@@ -55,11 +55,9 @@ class PlayerActivity : AppCompatActivity() {
             }
 
             override fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {
-                updateUIRevertMaxChange(!isEnableRevertMaxSize)
             }
 
             override fun onAppear(isAppear: Boolean) {
-                updateUIRevertMaxChange(uzDragView.isEnableRevertMaxSize)
             }
         })
         uzDragView.setScreenRotate(false)
@@ -73,7 +71,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun isInitResult(linkPlay: String) {
                 log("LinkPlay $linkPlay")
                 uzDragView.setInitResult(true)
-                getLiveViewsTimer(true)
+                getLiveViewsTimer(firstRun = true)
             }
 
             override fun onTimeShiftChange(timeShiftOn: Boolean) {
@@ -117,24 +115,20 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         bt0.setOnClickListener {
-            updateView(0)
+            updateView(index = 0)
         }
         bt1.setOnClickListener {
-            updateView(1)
+            updateView(index = 1)
         }
         bt2.setOnClickListener {
-            updateView(2)
+            updateView(index = 2)
         }
         bt4.setOnClickListener {
-            updateView(3)
+            updateView(index = 3)
         }
         bt5.setOnClickListener {
             etLinkPlay.visibility = View.GONE
-            btPlay.visibility = View.GONE
             uzVideoView.play(playlist)
-        }
-        btPlay.setOnClickListener {
-            onPlay()
         }
         if (playbackInfo != null) {
             val isInitSuccess = uzVideoView.play(playbackInfo)
@@ -142,17 +136,13 @@ class PlayerActivity : AppCompatActivity() {
                 showToast("Init failed")
             }
         }
-        Handler(Looper.getMainLooper()).postDelayed({
-            updateView(0)
-            onPlay()
-        }, 1000)
     }
 
     private fun updateView(index: Int) {
         etLinkPlay.visibility = View.VISIBLE
-        btPlay.visibility = View.VISIBLE
         etLinkPlay.setText(UZApplication.urls[index])
         setLastCursorEditText(etLinkPlay)
+        onPlay()
     }
 
     private fun initPlaylist() {
@@ -164,18 +154,18 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun onPlay() {
-        val playback = UZPlayback()
-        playback.poster = UZApplication.thumbnailUrl
-        playback.addLinkPlay(etLinkPlay.text.toString().trim())
-        uzVideoView.play(playback)
+        val uzPlayback = UZPlayback()
+        uzPlayback.poster = UZApplication.thumbnailUrl
+        uzPlayback.addLinkPlay(etLinkPlay.text.toString().trim())
+        uzVideoView.play(uzPlayback)
     }
 
     public override fun onDestroy() {
-        super.onDestroy()
         uzVideoView.onDestroyView()
         UZPlayer.setUseWithUZDragView(false)
         compositeDisposable.dispose()
         handler = null
+        super.onDestroy()
     }
 
     public override fun onResume() {
@@ -196,23 +186,16 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUIRevertMaxChange(isEnableRevertMaxSize: Boolean) {
-        if (isEnableRevertMaxSize && uzDragView.isAppear) {
-            //do sth
-        }
-    }
-
     private fun getLiveViewsTimer(firstRun: Boolean) {
         val playback = UZPlayer.getCurrentPlayback()
-        if (handler != null && playback != null) {
+        if (playback != null) {
             handler?.postDelayed({
-                val d =
-                    getLiveViewers(linkPlay = playback.firstLinkPlay,
-                        onNext = Consumer { (views) ->
-                            uzVideoView.setLiveViewers(views)
-                        }, onError = Consumer { t: Throwable? ->
-                            log("$t")
-                        })
+                val d = getLiveViewers(linkPlay = playback.firstLinkPlay,
+                    onNext = Consumer { (views) ->
+                        uzVideoView.setLiveViewers(views)
+                    }, onError = Consumer { t: Throwable? ->
+                        log("$t")
+                    })
                 d?.let {
                     compositeDisposable.add(it)
                 }

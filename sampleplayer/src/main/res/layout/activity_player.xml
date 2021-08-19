@@ -110,13 +110,6 @@
                             android:text="@string/playlist" />
                     </LinearLayout>
                 </HorizontalScrollView>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btPlay"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_padding_medium"
-                    android:text="@string/play" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </com.uiza.sdk.view.UZDragView>
