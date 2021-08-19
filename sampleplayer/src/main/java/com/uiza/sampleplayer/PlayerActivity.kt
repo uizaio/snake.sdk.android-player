@@ -18,14 +18,12 @@ import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import com.uiza.sdk.view.UZDragView
 import com.uiza.sdk.view.UZPlayerView
-import com.uiza.sdk.view.UZPlayerView.ControllerStateCallback
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_player.*
 import java.util.*
 
-class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callback,
-    ControllerStateCallback {
+class PlayerActivity : AppCompatActivity() {
 
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -49,9 +47,58 @@ class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callbac
     }
 
     private fun setupViews() {
-        uzDragView.setCallback(this)
+        uzDragView.setCallback(object : UZDragView.Callback {
+            override fun onOverScroll(state: UZDragView.State, part: UZDragView.Part) {
+                uzVideoView.pause()
+                uzDragView.disappear()
+            }
+
+            override fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {
+                updateUIRevertMaxChange(!isEnableRevertMaxSize)
+            }
+
+            override fun onAppear(isAppear: Boolean) {
+                updateUIRevertMaxChange(uzDragView.isEnableRevertMaxSize)
+            }
+        })
         uzDragView.setScreenRotate(false)
-        uzVideoView.setPlayerCallback(this)
+        uzVideoView.setPlayerCallback(object : UZPlayerCallback {
+            override fun playerViewCreated(playerView: UZPlayerView) {
+                uzVideoView.playerView.setControllerStateCallback { visible ->
+                    uzDragView.setVisibilityChange(
+                        visible
+                    )
+                }
+            }
+
+            override fun isInitResult(linkPlay: String) {
+                log("LinkPlay $linkPlay")
+                uzDragView.setInitResult(true)
+                getLiveViewsTimer(true)
+            }
+
+            override fun onTimeShiftChange(timeShiftOn: Boolean) {
+                runOnUiThread {
+                    showToast("TimeShiftOn: $timeShiftOn")
+                }
+            }
+
+            override fun onScreenRotate(isLandscape: Boolean) {
+                if (!isLandscape) {
+                    val w = UZViewUtils.getScreenWidth()
+                    val h = w * 9 / 16
+                    uzVideoView.setFreeSize(false)
+                    uzVideoView.setSize(w, h)
+                }
+                uzDragView.setScreenRotate(isLandscape)
+            }
+
+            override fun onError(e: UZException) {
+                runOnUiThread {
+                    showToast("$e")
+                }
+            }
+        })
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
         var playbackInfo: UZPlayback? = null
@@ -102,10 +149,6 @@ class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callbac
         }, 1000)
     }
 
-    override fun playerViewCreated(playerView: UZPlayerView) {
-        uzVideoView.playerView.setControllerStateCallback(this)
-    }
-
     private fun updateView(index: Int) {
         etLinkPlay.visibility = View.VISIBLE
         btPlay.visibility = View.VISIBLE
@@ -126,34 +169,6 @@ class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callbac
         playback.poster = UZApplication.thumbnailUrl
         playback.addLinkPlay(etLinkPlay.text.toString().trim())
         uzVideoView.play(playback)
-    }
-
-    override fun isInitResult(linkPlay: String) {
-        log("LinkPlay $linkPlay")
-        uzDragView.setInitResult(true)
-        getLiveViewsTimer(true)
-    }
-
-    override fun onTimeShiftChange(timeShiftOn: Boolean) {
-        runOnUiThread {
-            showToast("TimeShiftOn: $timeShiftOn")
-        }
-    }
-
-    override fun onScreenRotate(isLandscape: Boolean) {
-        if (!isLandscape) {
-            val w = UZViewUtils.getScreenWidth()
-            val h = w * 9 / 16
-            uzVideoView.setFreeSize(false)
-            uzVideoView.setSize(w, h)
-        }
-        uzDragView.setScreenRotate(isLandscape)
-    }
-
-    override fun onError(e: UZException) {
-        runOnUiThread {
-            showToast("$e")
-        }
     }
 
     public override fun onDestroy() {
@@ -186,23 +201,6 @@ class PlayerActivity : AppCompatActivity(), UZPlayerCallback, UZDragView.Callbac
         if (isEnableRevertMaxSize && uzDragView.isAppear) {
             //do sth
         }
-    }
-
-    override fun onOverScroll(state: UZDragView.State, part: UZDragView.Part) {
-        uzVideoView.pause()
-        uzDragView.disappear()
-    }
-
-    override fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {
-        updateUIRevertMaxChange(!isEnableRevertMaxSize)
-    }
-
-    override fun onAppear(isAppear: Boolean) {
-        updateUIRevertMaxChange(uzDragView.isEnableRevertMaxSize)
-    }
-
-    override fun onVisibilityChange(isShow: Boolean) {
-        uzDragView.setVisibilityChange(isShow)
     }
 
     private fun getLiveViewsTimer(firstRun: Boolean) {
