@@ -28,7 +28,7 @@ public class UZTrackingBody<T> {
 
     public UZTrackingBody() {
         this.specVersion = "1.0";
-        this.source = UZAnalytic.getSourceName();
+        this.source = UZAnalytic.Companion.getSourceName();
         this.time = new Date();
         this.type = "io.uiza.watchingevent";
     }

@@ -1,67 +1,94 @@
-package com.uiza.sdk.analytics;
+package com.uiza.sdk.analytics
 
-import com.uiza.sdk.models.UZTrackingBody;
-import com.uiza.sdk.models.UZTrackingData;
-import com.uiza.sdk.utils.Constants;
+import com.uiza.sdk.analytics.RxBinder.bind
+import com.uiza.sdk.models.UZTrackingBody
+import com.uiza.sdk.models.UZTrackingData
+import com.uiza.sdk.utils.Constants
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
+import okhttp3.ResponseBody
 
-import java.util.List;
+class UZAnalytic private constructor() {
+    companion object {
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import okhttp3.ResponseBody;
+        var isProdEnv = false
 
-public final class UZAnalytic {
+        var sourceName: String? = null
 
-    private static String sdkVersionName;
-    private static String deviceId;
-    private static boolean prodEnv = false;
+        @JvmStatic
+        var deviceId: String? = null
 
-    private UZAnalytic() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
+        /**
+         * @param deviceId: DeviceId or AndroidId
+         */
+        @JvmStatic
+        fun init(deviceId: String?, prodEnv: Boolean) {
+            Companion.deviceId = deviceId
+            sourceName = String.format("UZData/AndroidSDK/%s", Constants.PLAYER_SDK_VERSION)
+            isProdEnv = prodEnv
+        }
+
+        @Throws(IllegalStateException::class)
+        fun pushEvent(
+            data: UZTrackingData, onNext: Consumer<ResponseBody?>?,
+            onError: Consumer<Throwable?>?
+        ): Disposable {
+            //TODO remove !!
+            return bind(
+                observable = UZAnalyticClient.getInstance().createAnalyticAPI()
+                    .pushEvents(UZTrackingBody.create(data))!!,
+                onNext = onNext,
+                onError = onError
+            )
+        }
+
+        @Throws(IllegalStateException::class)
+        fun pushEvent(
+            data: UZTrackingData, onNext: Consumer<ResponseBody?>?,
+            onError: Consumer<Throwable?>?, onComplete: Action?
+        ): Disposable {
+            //TODO remove !!
+            return bind(
+                observable = UZAnalyticClient.getInstance().createAnalyticAPI()
+                    .pushEvents(UZTrackingBody.create(data))!!,
+                onNext = onNext,
+                onError = onError,
+                onComplete = onComplete
+            )
+        }
+
+        @Throws(IllegalStateException::class)
+        fun pushEvents(
+            data: List<UZTrackingData>, onNext: Consumer<ResponseBody?>?,
+            onError: Consumer<Throwable?>?
+        ): Disposable {
+            //TODO remove !!
+            return bind(
+                observable = UZAnalyticClient.getInstance().createAnalyticAPI()
+                    .pushEvents(UZTrackingBody.create(data))!!,
+                onNext = onNext,
+                onError = onError
+            )
+        }
+
+        @Throws(IllegalStateException::class)
+        fun pushEvents(
+            data: List<UZTrackingData>, onNext: Consumer<ResponseBody?>?,
+            onError: Consumer<Throwable?>?, onComplete: Action?
+        ): Disposable {
+            //TODO remove !!
+            return bind(
+                observable = UZAnalyticClient.getInstance().createAnalyticAPI()
+                    .pushEvents(UZTrackingBody.create(data))!!,
+                onNext = onNext,
+                onError = onError,
+                onComplete = onComplete
+            )
+        }
     }
 
-    /**
-     * @param deviceId: DeviceId or AndroidId
-     */
-
-    public static void init(String deviceId, boolean prodEnv) {
-        UZAnalytic.deviceId = deviceId;
-        UZAnalytic.sdkVersionName = String.format("UZData/AndroidSDK/%s", Constants.PLAYER_SDK_VERSION);
-        UZAnalytic.prodEnv = prodEnv;
+    init {
+        throw UnsupportedOperationException("u can't instantiate me...")
     }
-
-    public static String getDeviceId() {
-        return deviceId;
-    }
-
-    public static boolean isProdEnv() {
-        return prodEnv;
-    }
-
-    public static String getSourceName() {
-        return sdkVersionName;
-    }
-
-
-    public static Disposable pushEvent(UZTrackingData data, Consumer<ResponseBody> onNext,
-                                       Consumer<Throwable> onError) throws IllegalStateException {
-        return RxBinder.INSTANCE.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
-    }
-
-    public static Disposable pushEvent(UZTrackingData data, Consumer<ResponseBody> onNext,
-                                       Consumer<Throwable> onError, Action onComplete) throws IllegalStateException {
-        return RxBinder.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError, onComplete);
-    }
-
-    public static Disposable pushEvents(List<UZTrackingData> data, Consumer<ResponseBody> onNext,
-                                        Consumer<Throwable> onError) throws IllegalStateException {
-        return RxBinder.INSTANCE.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError);
-    }
-
-    public static Disposable pushEvents(List<UZTrackingData> data, Consumer<ResponseBody> onNext,
-                                        Consumer<Throwable> onError, Action onComplete) throws IllegalStateException {
-        return RxBinder.bind(UZAnalyticClient.getInstance().createAnalyticAPI().pushEvents(UZTrackingBody.create(data)), onNext, onError, onComplete);
-    }
-
 }

@@ -245,9 +245,11 @@ public class UZVideoView extends RelativeLayout
             onCreateView();
         }
     }
-    public boolean isViewCreated(){
+
+    public boolean isViewCreated() {
         return viewCreated;
     }
+
     /**
      * Call one time from {@link #onAttachedToWindow}
      * Note: you must call inflate in this method
@@ -278,7 +280,7 @@ public class UZVideoView extends RelativeLayout
         setMarginRlLiveInfo();
         updateUISizeThumbnail();
         viewCreated = true;
-        if(playerCallback != null){
+        if (playerCallback != null) {
             playerCallback.playerViewCreated(playerView);
         }
     }
@@ -302,7 +304,7 @@ public class UZVideoView extends RelativeLayout
     /**
      * register connection internet listener
      */
-    private void unregisterConnectifyReceiver(){
+    private void unregisterConnectifyReceiver() {
         getContext().unregisterReceiver(connectivityReceiver);
         EventBus.getDefault().unregister(this);
     }
@@ -817,12 +819,12 @@ public class UZVideoView extends RelativeLayout
         boolean isDeviceAutoRotation = UZViewUtils.isRotationPossible(getContext());
         if (orientation == 90 || orientation == 270) {
             if (isDeviceAutoRotation && !isLandscape)
-                if(!isAlwaysPortraitScreen){
+                if (!isAlwaysPortraitScreen) {
                     UZViewUtils.changeScreenLandscape((Activity) getContext(), orientation);
                 }
         } else {
             if (isDeviceAutoRotation && isLandscape)
-                if(!isAlwaysPortraitScreen){
+                if (!isAlwaysPortraitScreen) {
                     UZViewUtils.changeScreenPortrait((Activity) getContext());
                 }
         }
@@ -1342,7 +1344,7 @@ public class UZVideoView extends RelativeLayout
         ivVideoCover = findViewById(R.id.iv_cover);
         llTop = findViewById(R.id.ll_top);
         progressBar = findViewById(R.id.pb);
-        if(progressBar != null)
+        if (progressBar != null)
             UZViewUtils.setColorProgressBar(progressBar, Color.WHITE);
         updateUIPositionOfProgressBar();
         playerView.setOnDoubleTap(new UZPlayerView.OnDoubleTap() {
@@ -1706,7 +1708,7 @@ public class UZVideoView extends RelativeLayout
             tvTitle.setText(UZData.getInstance().getEntityName());
     }
 
-    public void setAlwaysHideLiveViewers(boolean hide){
+    public void setAlwaysHideLiveViewers(boolean hide) {
         this.alwaysHideLiveViewers = hide;
     }
 
@@ -1720,7 +1722,7 @@ public class UZVideoView extends RelativeLayout
         else if (UZAppUtils.isTablet(getContext()) && UZAppUtils.isTV(getContext()))//only hide ibPictureInPictureIcon if device is TV
             UZViewUtils.goneViews(pipIcon);
         if (isLIVE()) {
-            if(alwaysHideLiveViewers){
+            if (alwaysHideLiveViewers) {
                 UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime);
                 UZViewUtils.goneViews(ivLiveTime, ivLiveView);
             } else {
@@ -1912,12 +1914,12 @@ public class UZVideoView extends RelativeLayout
     }
 
     public void hideProgress() {
-        if(progressBar != null)
+        if (progressBar != null)
             progressBar.setVisibility(View.GONE);
     }
 
     public void showProgress() {
-        if(progressBar != null)
+        if (progressBar != null)
             progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -2213,7 +2215,7 @@ public class UZVideoView extends RelativeLayout
             UZTrackingData data = new UZTrackingData(pi, viewerSessionId, UZEventType.WATCHING);
             handler.postDelayed(() -> {
                         if (isPlaying()) {
-                            disposables.add(UZAnalytic.pushEvent(data, res -> Timber.d("send track watching: %s, response: %s", viewerSessionId, res.string()),
+                            disposables.add(UZAnalytic.Companion.pushEvent(data, res -> Timber.d("send track watching: %s, response: %s", viewerSessionId, res.string()),
                                     error -> Timber.e("send track watching error: %s", error.getMessage())
                             ));
                         }

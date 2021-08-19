@@ -39,7 +39,7 @@ public class UZTrackingData {
         this.entitySource = entitySource;
         this.viewerSessionId = viewerSessionId;
         this.timestamp = new Date();
-        this.viewerUserId = UZAnalytic.getDeviceId();
+        this.viewerUserId = UZAnalytic.Companion.getDeviceId();
         this.eventType = type;
     }
 

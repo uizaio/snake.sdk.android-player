@@ -65,11 +65,11 @@ class AnalyticActivity : AppCompatActivity() {
         data.eventType = UZEventType.WATCHING
         disposables.add(
             UZAnalytic.pushEvent(data,
-                { responseBody: ResponseBody ->
-                    log("onNext " + responseBody.contentLength())
-                    txtLog.text = "trackEvent onNext " + responseBody.contentLength()
+                { responseBody: ResponseBody? ->
+                    log("onNext " + responseBody?.contentLength())
+                    txtLog.text = "trackEvent onNext " + responseBody?.contentLength()
                 },
-                { error: Throwable ->
+                { error: Throwable? ->
                     log("onError $error")
                     txtLog.text = "trackEvent::onError $error"
                 }
@@ -82,11 +82,11 @@ class AnalyticActivity : AppCompatActivity() {
         val data1 = UZTrackingData(info, sessionId, UZEventType.WATCHING)
         val data2 = UZTrackingData(info, sessionId, UZEventType.WATCHING)
         disposables.add(UZAnalytic.pushEvents(
-            listOf(data1, data2), { responseBody: ResponseBody ->
-                log("onNext " + responseBody.contentLength())
-                txtLog.text = "trackEvents::onNext " + responseBody.contentLength()
+            listOf(data1, data2), { responseBody: ResponseBody? ->
+                log("onNext " + responseBody?.contentLength())
+                txtLog.text = "trackEvents::onNext " + responseBody?.contentLength()
             },
-            { error: Throwable ->
+            { error: Throwable? ->
                 log("onError $error")
                 txtLog.text = "trackEvents::onError $error"
             }
