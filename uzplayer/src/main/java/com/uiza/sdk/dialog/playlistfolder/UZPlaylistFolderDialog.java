@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.uiza.sdk.R;
-import com.uiza.sdk.animations.AnimationUtils;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZData;
 import com.uiza.sdk.widget.recyclerview.SnapType;
@@ -56,7 +55,6 @@ public class UZPlaylistFolderDialog extends Dialog {
         btExit.setOnClickListener(v -> dismiss());
         btExit.setOnFocusChangeListener((view, isFocus) -> {
             if (isFocus) {
-                AnimationUtils.play(view, Techniques.Pulse);
                 btExit.setColorFilter(Color.WHITE);
                 btExit.setBackgroundColor(Color.BLACK);
             } else {

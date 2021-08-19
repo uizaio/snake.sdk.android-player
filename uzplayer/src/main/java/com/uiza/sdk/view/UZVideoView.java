@@ -56,7 +56,6 @@ import com.uiza.sdk.BuildConfig;
 import com.uiza.sdk.R;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.animations.AnimationUtils;
 import com.uiza.sdk.chromecast.Casty;
 import com.uiza.sdk.dialog.hq.UZItem;
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView;
@@ -862,8 +861,9 @@ public class UZVideoView extends RelativeLayout
 
     @Override
     public void onClick(View v) {
-        if (v == rlMsg)
-            AnimationUtils.play(v, Techniques.Pulse);
+        if (v == rlMsg) {
+
+        }
         else if (v == ibFullscreenIcon) {
             toggleFullscreen();
         } else if (v == ibBackScreenIcon) {
@@ -918,7 +918,9 @@ public class UZVideoView extends RelativeLayout
         else if (v == ibSpeedIcon)
             showSpeed();
         else if (v == tvEndScreenMsg)
-            AnimationUtils.play(v, Techniques.Pulse);
+        {
+
+        }
         /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức, trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
         default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
         if (useController

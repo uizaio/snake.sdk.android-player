@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.uiza.sdk.R;
-import com.uiza.sdk.animations.AnimationUtils;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.ImageUtils;
 import com.uiza.sdk.utils.UZViewUtils;
@@ -71,29 +70,11 @@ public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistF
 
         ImageUtils.load(playListHolder.ivCover, data.getPoster());
 
-        playListHolder.rootView.setOnClickListener(v -> AnimationUtils.play(v, Techniques.Pulse, new AnimationUtils.Callback() {
-            @Override
-            public void onCancel() {
-                //do nothing
+        playListHolder.rootView.setOnClickListener(v -> {
+            if (callbackPlaylistFolder != null) {
+                callbackPlaylistFolder.onClickItem(data, position);
             }
-
-            @Override
-            public void onEnd() {
-                if (callbackPlaylistFolder != null) {
-                    callbackPlaylistFolder.onClickItem(data, position);
-                }
-            }
-
-            @Override
-            public void onRepeat() {
-                //do nothing
-            }
-
-            @Override
-            public void onStart() {
-                //do nothing
-            }
-        }));
+        });
 
         playListHolder.rootView.setOnFocusChangeListener((view, isFocus) -> {
             Timber.d("onFocusChange isFocus: %b", isFocus);
