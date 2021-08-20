@@ -1,61 +1,55 @@
-package com.uiza.sdk.observers;
+package com.uiza.sdk.observers
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.os.Handler;
+import android.content.Context
+import android.media.AudioManager
+import android.os.Handler
+import android.provider.Settings
+import com.uiza.sdk.observers.AudioVolumeContentObserver
+import com.uiza.sdk.observers.OnAudioVolumeChangedListener
 
-import androidx.annotation.NonNull;
+class AudioVolumeObserver(private val mContext: Context, handler: Handler) {
+    val handler: Handler
+    private val mAudioManager: AudioManager?
+    private val audioStreamType = AudioManager.STREAM_MUSIC
+    private var mAudioVolumeContentObserver: AudioVolumeContentObserver? = null
 
-public class AudioVolumeObserver {
-
-    private final Handler mHandler;
-    private final Context mContext;
-    private final AudioManager mAudioManager;
-    private int audioStreamType = AudioManager.STREAM_MUSIC;
-    private AudioVolumeContentObserver mAudioVolumeContentObserver;
-
-    public AudioVolumeObserver(@NonNull Context context, @NonNull Handler handler) {
-        mContext = context;
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        mHandler = handler;
+    init {
+        mAudioManager = mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        this.handler = handler
     }
 
-    public void register(int audioStreamType,
-                         @NonNull OnAudioVolumeChangedListener listener) {
-        // with this handler AudioVolumeContentObserver#onChange()
-        //   will be executed in the main thread
-        // To execute in another thread you can use a Looper
-        // +info: https://stackoverflow.com/a/35261443/904907
+    fun register(
+        audioStreamType: Int,
+        listener: OnAudioVolumeChangedListener
+    ) {
         if (mAudioManager != null) {
-            mAudioVolumeContentObserver = new AudioVolumeContentObserver(
-                    mHandler,
-                    mAudioManager,
-                    audioStreamType,
-                    listener);
-
-            mContext.getContentResolver().registerContentObserver(
-                    android.provider.Settings.System.CONTENT_URI,
+            mAudioVolumeContentObserver = AudioVolumeContentObserver(
+                handler = handler,
+                audioManager = mAudioManager,
+                audioStreamType = audioStreamType,
+                listener = listener
+            )
+            mAudioVolumeContentObserver?.let {
+                mContext.contentResolver.registerContentObserver(
+                    Settings.System.CONTENT_URI,
                     true,
-                    mAudioVolumeContentObserver);
+                    it
+                )
+            }
         }
     }
 
-    public Handler getHandler() {
-        return mHandler;
-    }
-
-    public void unregister() {
-        if (mAudioVolumeContentObserver != null) {
-            mContext.getContentResolver().unregisterContentObserver(mAudioVolumeContentObserver);
-            mAudioVolumeContentObserver = null;
+    fun unregister() {
+        mAudioVolumeContentObserver?.let {
+            mContext.contentResolver.unregisterContentObserver(it)
+            mAudioVolumeContentObserver = null
         }
     }
 
-    public int getCurrentVolume() {
-        return mAudioManager.getStreamVolume(audioStreamType);
-    }
+    val currentVolume: Int?
+        get() = mAudioManager?.getStreamVolume(audioStreamType)
 
-    public int getMaxVolume() {
-        return mAudioManager.getStreamMaxVolume(audioStreamType);
-    }
+    val maxVolume: Int?
+        get() = mAudioManager?.getStreamMaxVolume(audioStreamType)
+
 }
