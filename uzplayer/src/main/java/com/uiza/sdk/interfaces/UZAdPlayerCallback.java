@@ -2,10 +2,6 @@ package com.uiza.sdk.interfaces;
 
 import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate;
 
-/**
- * Created by MinhNguyen on 14/06/2019.
- * nguyen.thanh.minhb@framgia.com
- */
 public interface UZAdPlayerCallback {
     default void onPlay() {
     }

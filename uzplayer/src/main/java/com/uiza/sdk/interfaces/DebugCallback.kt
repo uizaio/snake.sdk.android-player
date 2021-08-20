@@ -1,5 +1,5 @@
-package com.uiza.sdk.interfaces;
+package com.uiza.sdk.interfaces
 
-public interface DebugCallback {
-    void onUpdateButtonVisibilities();
+interface DebugCallback {
+    fun onUpdateButtonVisibilities()
 }
