@@ -1,6 +1,5 @@
 package com.uiza.sdk.utils;
 
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -11,32 +10,16 @@ import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 
-/**
- * before API 29
- * <p>
- * Callers should instead use the {@link ConnectivityManager.NetworkCallback} API to
- * *             learn about connectivity changes, or switch to use
- * *             {@link ConnectivityManager#getNetworkCapabilities} or
- * *             {@link ConnectivityManager#getLinkProperties} to get information synchronously
- */
 public final class ConnectivityUtils {
 
     private ConnectivityUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
-    /**
-     * Get the network info
-     */
-
     private static ConnectivityManager getConnectivityManager(@NonNull Context context) {
         return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
-    /**
-     * Check if there is any connectivity
-     */
-//    @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
     public static boolean isConnected(@NonNull Context context) {
         ConnectivityManager cm = getConnectivityManager(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -52,9 +35,6 @@ public final class ConnectivityUtils {
         }
     }
 
-    /**
-     * Check if there is any connectivity to a Wifi network
-     */
     public static boolean isConnectedWifi(@NonNull Context context) {
         ConnectivityManager cm = getConnectivityManager(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -70,11 +50,7 @@ public final class ConnectivityUtils {
         }
     }
 
-    /**
-     * Check if there is any connectivity to a mobile network
-     */
     public static boolean isConnectedMobile(@NonNull Context context) {
-
         ConnectivityManager cm = getConnectivityManager(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Network network = cm.getActiveNetwork();
@@ -93,7 +69,6 @@ public final class ConnectivityUtils {
      * Check if there is fast connectivity
      */
     public static boolean isConnectedFast(@NonNull Context context) {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
         NetworkInfo info = getConnectivityManager(context).getActiveNetworkInfo();
         return (info != null && info.isConnected() && isConnectionFast(info.getType(), info.getSubtype()));
     }
