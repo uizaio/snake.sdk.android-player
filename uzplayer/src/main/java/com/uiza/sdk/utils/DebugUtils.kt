@@ -1,60 +1,41 @@
-package com.uiza.sdk.utils;
+package com.uiza.sdk.utils
 
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
+import com.uiza.sdk.R
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.uiza.sdk.R;
-
-public class DebugUtils {
-    private DebugUtils() {
-    }
-
-    //return button video in debug layout
-    @Nullable
-    public static View getVideoButton(@Nullable LinearLayout debugRootView) {
-        if (debugRootView == null) {
-            return null;
-        }
-        for (int i = 0; i < debugRootView.getChildCount(); i++) {
-            View childView = debugRootView.getChildAt(i);
-            if (childView instanceof Button) {
-                if (((Button) childView).getText().toString().equalsIgnoreCase(debugRootView.getContext().getString(R.string.video))) {
-                    return childView;
-                }
-            }
-        }
-        return null;
-    }
+object DebugUtils {
 
     //return button audio in debug layout
-    @Nullable
-    public static View getAudioButton(@NonNull LinearLayout debugRootView) {
-        for (int i = 0; i < debugRootView.getChildCount(); i++) {
-            View childView = debugRootView.getChildAt(i);
-            if (childView instanceof Button) {
-                if (((Button) childView).getText().toString().equalsIgnoreCase(debugRootView.getContext().getString(R.string.audio))) {
-                    return childView;
+    @JvmStatic
+    fun getAudioButton(debugRootView: LinearLayout): View? {
+        for (i in 0 until debugRootView.childCount) {
+            val childView = debugRootView.getChildAt(i)
+            if (childView is Button) {
+                if (childView.text.toString()
+                        .equals(debugRootView.context.getString(R.string.audio), ignoreCase = true)
+                ) {
+                    return childView
                 }
             }
         }
-        return null;
+        return null
     }
 
     //return button text in debug layout
-    @Nullable
-    public static View getTextButton(@NonNull LinearLayout debugRootView) {
-        for (int i = 0; i < debugRootView.getChildCount(); i++) {
-            View childView = debugRootView.getChildAt(i);
-            if (childView instanceof Button) {
-                if (((Button) childView).getText().toString().equalsIgnoreCase(debugRootView.getContext().getString(R.string.text))) {
-                    return childView;
+    @JvmStatic
+    fun getTextButton(debugRootView: LinearLayout): View? {
+        for (i in 0 until debugRootView.childCount) {
+            val childView = debugRootView.getChildAt(i)
+            if (childView is Button) {
+                if (childView.text.toString()
+                        .equals(debugRootView.context.getString(R.string.text), ignoreCase = true)
+                ) {
+                    return childView
                 }
             }
         }
-        return null;
+        return null
     }
 }
