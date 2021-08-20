@@ -12,6 +12,7 @@ import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.models.UZPlaybackInfo;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -24,7 +25,7 @@ public class UZData {
     private UZPlayback playback;
     private String urlIMAAd = "";
     //start singleton data if play playlist folder
-    private List<UZPlayback> playList;
+    private ArrayList<UZPlayback> playList;
     private UZPlaybackInfo playbackInfo;
     private int currentPositionOfPlayList = 0;
     private boolean useUZDragView;
@@ -116,11 +117,11 @@ public class UZData {
         return playList != null;
     }
 
-    public List<UZPlayback> getPlayList() {
+    public ArrayList<UZPlayback> getPlayList() {
         return playList;
     }
 
-    public void setPlayList(List<UZPlayback> playlist) {
+    public void setPlayList(ArrayList<UZPlayback> playlist) {
         this.playList = playlist;
     }
 

@@ -2,7 +2,6 @@ package com.uiza.sdk.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.uiza.sdk.utils.ListUtils
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
@@ -81,7 +80,7 @@ open class UZPlayback : Parcelable {
         get() = linkPlays.size
 
     fun getLinkPlay(pos: Int): String? {
-        return if (ListUtils.isEmpty(linkPlays) || pos >= linkPlays.size) {
+        return if (linkPlays.isEmpty() || pos >= linkPlays.size) {
             null
         } else {
             linkPlays[pos]
@@ -94,7 +93,7 @@ open class UZPlayback : Parcelable {
      * @return string of url
      */
     val firstLinkPlay: String?
-        get() = if (ListUtils.isEmpty(linkPlays)) {
+        get() = if (linkPlays.isEmpty()) {
             null
         } else {
             linkPlays[0]

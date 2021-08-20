@@ -34,7 +34,7 @@ object ConvertUtils {
 
     @JvmStatic
     fun getTimeShiftUrl(playlist: HlsMasterPlaylist?): String? {
-        if (playlist == null || ListUtils.isEmpty(playlist.tags)) return null
+        if (playlist == null || playlist.tags.isEmpty()) return null
         for (tag in playlist.tags) {
             if (tag.contains(EXT_X_UZ_TIMESHIFT)) {
                 return tag.replace(EXT_X_UZ_TIMESHIFT, "")
@@ -45,7 +45,7 @@ object ConvertUtils {
 
     @JvmStatic
     fun getProgramDateTime(playlist: HlsMediaPlaylist?, timeToEndChunk: Long): Long {
-        if (playlist == null || ListUtils.isEmpty(playlist.tags)) return C.INDEX_UNSET.toLong()
+        if (playlist == null || playlist.tags.isEmpty()) return C.INDEX_UNSET.toLong()
         val emptyStr = ""
         val tagSize = playlist.tags.size
         var totalTime: Long = 0

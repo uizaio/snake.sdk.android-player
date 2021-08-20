@@ -6,10 +6,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PictureInPictureParams;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -83,7 +81,6 @@ import com.uiza.sdk.utils.Constants;
 import com.uiza.sdk.utils.ConvertUtils;
 import com.uiza.sdk.utils.DebugUtils;
 import com.uiza.sdk.utils.ImageUtils;
-import com.uiza.sdk.utils.ListUtils;
 import com.uiza.sdk.utils.StringUtils;
 import com.uiza.sdk.utils.UZAppUtils;
 import com.uiza.sdk.utils.UZData;
@@ -94,10 +91,6 @@ import com.uiza.sdk.widget.UZTextView;
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader;
 import com.uiza.sdk.widget.previewseekbar.PreviewView;
 import com.uiza.sdk.widget.seekbar.UZVerticalSeekBar;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -451,13 +444,13 @@ public class UZVideoView extends RelativeLayout
      * @param playlist List of PlaybackInfo
      * @return true if not error
      */
-    public boolean play(List<UZPlayback> playlist) {
+    public boolean play(ArrayList<UZPlayback> playlist) {
         // TODO: Check how to get subtitle of a custom link play, because we have no idea about entityId or appId
         if (!ConnectivityUtils.isConnected(getContext())) {
             handleError(ErrorUtils.exceptionNoConnection());
             return false;
         }
-        if (ListUtils.isEmpty(playlist)) {
+        if (playlist.isEmpty()) {
             handleError(ErrorUtils.exceptionPlaylistFolderItemFirst());
             return false;
         } else {
@@ -974,7 +967,10 @@ public class UZVideoView extends RelativeLayout
     }
 
     protected boolean isPlayPlaylistFolder() {
-        return !ListUtils.isEmpty(UZData.getInstance().getPlayList());
+        if (UZData.getInstance().getPlayList() == null || UZData.getInstance().getPlayList().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     private void playPlaylistPosition(int position) {
@@ -1172,7 +1168,7 @@ public class UZVideoView extends RelativeLayout
     }
 
     private void handleClickCC() {
-        if (ListUtils.isEmpty(playerManager.getSubtitleList())) {
+        if (playerManager.getSubtitleList().isEmpty()) {
             UZDlgInfoV1 uzDlgInfoV1 = new UZDlgInfoV1(getContext(), getContext().getString(R.string.text), getContext().getString(R.string.no_caption));
             UZViewUtils.showDialog(uzDlgInfoV1);
         } else {
