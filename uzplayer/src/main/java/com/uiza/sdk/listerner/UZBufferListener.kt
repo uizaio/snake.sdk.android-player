@@ -1,5 +1,5 @@
-package com.uiza.sdk.listerner;
+package com.uiza.sdk.listerner
 
-public interface UZBufferListener {
-    void onBufferChanged(long bufferedDurationUs, float playbackSpeed);
+interface UZBufferListener {
+    fun onBufferChanged(bufferedDurationUs: Long, playbackSpeed: Float)
 }
