@@ -19,8 +19,6 @@ import com.uiza.sdk.utils.UZViewUtils;
 
 import java.util.List;
 
-import timber.log.Timber;
-
 public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistFolder.PlayListHolder> {
     private final String logTag = getClass().getSimpleName();
     private final List<UZPlayback> playList;
@@ -70,7 +68,6 @@ public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistF
         });
 
         playListHolder.rootView.setOnFocusChangeListener((view, isFocus) -> {
-            Timber.d("onFocusChange isFocus: %b", isFocus);
             if (isFocus) {
                 playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder);
             } else {
@@ -87,15 +84,15 @@ public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistF
         return playList == null ? 0 : playList.size();
     }
 
-    public class PlayListHolder extends RecyclerView.ViewHolder {
-        private TextView tvDuration;
-        private TextView tvDuration2;
-        private ImageView ivCover;
-        private TextView tvName;
-        private TextView tvYear;
-        private TextView tvRate;
-        private TextView tvDescription;
-        private CardView rootView;
+    public static class PlayListHolder extends RecyclerView.ViewHolder {
+        private final TextView tvDuration;
+        private final TextView tvDuration2;
+        private final ImageView ivCover;
+        private final TextView tvName;
+        private final TextView tvYear;
+        private final TextView tvRate;
+        private final TextView tvDescription;
+        private final CardView rootView;
 
         public PlayListHolder(View view) {
             super(view);
