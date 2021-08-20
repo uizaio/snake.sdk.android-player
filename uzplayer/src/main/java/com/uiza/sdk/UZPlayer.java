@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.uiza.sdk.analytics.UZAnalytic;
 import com.uiza.sdk.chromecast.Casty;
 import com.uiza.sdk.models.UZPlayback;
+import com.uiza.sdk.utils.Constants;
 import com.uiza.sdk.utils.UZAppUtils;
 import com.uiza.sdk.utils.UZData;
 
@@ -54,7 +55,7 @@ public class UZPlayer {
     }
 
     public static String getVersionName() {
-        return  BuildConfig.VERSION_NAME;
+        return  Constants.PLAYER_SDK_VERSION;
     }
 
     /**

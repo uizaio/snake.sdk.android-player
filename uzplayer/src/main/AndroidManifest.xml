@@ -12,14 +12,6 @@
         android:allowBackup="true"
         android:usesCleartextTraffic="true">
 
-        <receiver android:name=".observers.ConnectivityReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <!--START CHROMECAST-->
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"

@@ -4,14 +4,14 @@
     package="com.uiza.sampleplayer">
 
     <application
-        android:name=".LSApplication"
+        android:name=".app.UZApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AnalyticActivity" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,8 +22,8 @@
         <activity
             android:name=".PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity"
+            android:label="PlayerActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PipPlayerActivity"
@@ -42,9 +42,15 @@
         <activity
             android:name=".ErrorActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:parentActivityName=".MainActivity" />
+            android:label="ErrorActivity" />
+        <activity
+            android:name=".AnalyticActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="AnalyticActivity" />
 
-        <meta-data android:name="uz_live_views_url" android:value="@string/uz_live_views_url" />
+        <meta-data
+            android:name="uz_live_views_url"
+            android:value="@string/uz_live_views_url" />
     </application>
 
 </manifest>

@@ -1,9 +1,5 @@
 package com.uiza.sdk.dialog.playlistfolder;
 
-/**
- * Created by www.muathu@gmail.com on 11/7/2017.
- */
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,25 +12,19 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.uiza.sdk.R;
-import com.uiza.sdk.animations.AnimationUtils;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.ImageUtils;
 import com.uiza.sdk.utils.UZViewUtils;
 
 import java.util.List;
 
-import timber.log.Timber;
-
 public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistFolder.PlayListHolder> {
-    private final String TAG = getClass().getSimpleName();
-    private List<UZPlayback> playList;
+    private final String logTag = getClass().getSimpleName();
+    private final List<UZPlayback> playList;
     private int currentPositionOfDataList;
     private Context context;
-    private CallbackPlaylistFolder callbackPlaylistFolder;
-    //private int sizeW;
-    //private int sizeH;
+    private final CallbackPlaylistFolder callbackPlaylistFolder;
 
     public AdapterPlaylistFolder(@NonNull Context context, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
         this.context = context;
@@ -69,34 +59,15 @@ public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistF
             playListHolder.tvDescription.setVisibility(View.VISIBLE);
         }
 
-        ImageUtils.load(playListHolder.ivCover, data.getPoster());
+        ImageUtils.Companion.loadThumbnail(playListHolder.ivCover, data.getPoster());
 
-        playListHolder.rootView.setOnClickListener(v -> AnimationUtils.play(v, Techniques.Pulse, new AnimationUtils.Callback() {
-            @Override
-            public void onCancel() {
-                //do nothing
+        playListHolder.rootView.setOnClickListener(v -> {
+            if (callbackPlaylistFolder != null) {
+                callbackPlaylistFolder.onClickItem(data, position);
             }
-
-            @Override
-            public void onEnd() {
-                if (callbackPlaylistFolder != null) {
-                    callbackPlaylistFolder.onClickItem(data, position);
-                }
-            }
-
-            @Override
-            public void onRepeat() {
-                //do nothing
-            }
-
-            @Override
-            public void onStart() {
-                //do nothing
-            }
-        }));
+        });
 
         playListHolder.rootView.setOnFocusChangeListener((view, isFocus) -> {
-            Timber.d("onFocusChange isFocus: %b", isFocus);
             if (isFocus) {
                 playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder);
             } else {
@@ -113,15 +84,15 @@ public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistF
         return playList == null ? 0 : playList.size();
     }
 
-    public class PlayListHolder extends RecyclerView.ViewHolder {
-        private TextView tvDuration;
-        private TextView tvDuration2;
-        private ImageView ivCover;
-        private TextView tvName;
-        private TextView tvYear;
-        private TextView tvRate;
-        private TextView tvDescription;
-        private CardView rootView;
+    public static class PlayListHolder extends RecyclerView.ViewHolder {
+        private final TextView tvDuration;
+        private final TextView tvDuration2;
+        private final ImageView ivCover;
+        private final TextView tvName;
+        private final TextView tvYear;
+        private final TextView tvRate;
+        private final TextView tvDescription;
+        private final CardView rootView;
 
         public PlayListHolder(View view) {
             super(view);

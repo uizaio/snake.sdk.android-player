@@ -37,7 +37,7 @@ import java.util.Locale;
  * A view for making track selections.
  */
 public class UZTrackSelectionView extends LinearLayout {
-    private final String TAG = getClass().getSimpleName();
+    private final String logTag = getClass().getSimpleName();
     private final int selectableItemBackgroundResourceId;
     private final LayoutInflater inflater;
     private final CheckedTextView disableView;
@@ -55,7 +55,7 @@ public class UZTrackSelectionView extends LinearLayout {
     private boolean isDisabled;
     private @Nullable
     SelectionOverride override;
-    private List<UZItem> uzItemList = new ArrayList<>();
+    private final List<UZItem> uzItemList = new ArrayList<>();
     private Callback callback;
 
     public UZTrackSelectionView(@NonNull Context context) {
@@ -255,7 +255,7 @@ public class UZTrackSelectionView extends LinearLayout {
                 trackView.setSoundEffectsEnabled(false);
                 trackView.setBackgroundResource(selectableItemBackgroundResourceId);
                 Format f = group.getFormat(trackIndex);
-                UZItem uzItem = UZItem.create(f, parserNameProvider(f));
+                UZItem uzItem = UZItem.Companion.create(f, parserNameProvider(f));
                 trackView.setText(uzItem.getDescription());
                 if (trackInfo.getTrackSupport(rendererIndex, groupIndex, trackIndex) == RendererCapabilities.FORMAT_HANDLED) {
                     trackView.setFocusable(true);
@@ -387,10 +387,6 @@ public class UZTrackSelectionView extends LinearLayout {
 
     public void setCallback(Callback callback) {
         this.callback = callback;
-    }
-
-    public interface Callback {
-        void onClick();
     }
 
     // Internal classes.

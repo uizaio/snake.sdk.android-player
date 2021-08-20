@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
-import android.util.Log;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.exoplayer2.ui.PlayerControlView;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.uiza.api.UZApi;
+import com.uiza.sampleplayer.app.Constant;
+import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.exceptions.UZException;
 import com.uiza.sdk.interfaces.UZPlayerCallback;
@@ -42,21 +41,21 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedState);
         setContentView(R.layout.activity_pip_player);
-        uzVideo = findViewById(R.id.uz_video_view);
-        etLinkPlay = findViewById(R.id.et_link_play);
+        uzVideo = findViewById(R.id.uzVideoView);
+        etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPlayerCallback(this);
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
         UZPlayback playbackInfo = null;
         if (getIntent() != null) {
-            playbackInfo = getIntent().getParcelableExtra("extra_playback_info");
+            playbackInfo = getIntent().getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO);
         }
         if (playbackInfo != null)
             etLinkPlay.setText(playbackInfo.getFirstLinkPlay());
         else
-            etLinkPlay.setText(LSApplication.urls[0]);
+            etLinkPlay.setText(UZApplication.urls[0]);
 
-        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
+//        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
 
         findViewById(R.id.btn_play).setOnClickListener(view -> onPlay());
         disposables = new CompositeDisposable();
@@ -160,5 +159,20 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
                 }
                 getLiveViewsTimer(false);
             }, firstRun ? 0 : 5000);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onSkinChange() {
+
+    }
+
+    @Override
+    public void onTimeShiftChange(boolean timeShiftOn) {
+
     }
 }

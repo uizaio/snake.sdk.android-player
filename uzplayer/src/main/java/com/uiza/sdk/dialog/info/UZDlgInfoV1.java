@@ -15,16 +15,12 @@ import androidx.core.content.ContextCompat;
 import com.uiza.sdk.R;
 import com.uiza.sdk.utils.UZViewUtils;
 
-/**
- * Created by loitp on 5/2/2018.
- */
-
 public class UZDlgInfoV1 extends Dialog {
-    private final String TAG = getClass().getSimpleName();
+    private final String logTag = getClass().getSimpleName();
     private ProgressBar progressBar;
-    private String title;
-    private String msg;
-    private Handler handler = new Handler();
+    private final String title;
+    private final String msg;
+    private final Handler handler = new Handler();
 
     public UZDlgInfoV1(@NonNull Context context, String title, String msg) {
         super(context);

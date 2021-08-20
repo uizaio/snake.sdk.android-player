@@ -3,10 +3,10 @@ package com.uiza.sdk.dialog.setting;
 import java.util.Objects;
 
 public class SettingItem {
-    private String title;
-    private boolean toggle;
-    private boolean checked;
-    private SettingAdapter.OnToggleChangeListener listener;
+    private final String title;
+    private final boolean toggle;
+    private final boolean checked;
+    private final SettingAdapter.OnToggleChangeListener listener;
 
     public SettingItem(String title) {
         this(title, false, null);

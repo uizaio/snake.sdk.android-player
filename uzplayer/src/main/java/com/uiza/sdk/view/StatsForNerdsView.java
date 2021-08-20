@@ -20,6 +20,7 @@ import com.uiza.sdk.BuildConfig;
 import com.uiza.sdk.R;
 import com.uiza.sdk.observers.AudioVolumeObserver;
 import com.uiza.sdk.observers.OnAudioVolumeChangedListener;
+import com.uiza.sdk.utils.Constants;
 import com.uiza.sdk.utils.StringUtils;
 import com.uiza.sdk.utils.UZData;
 import com.uiza.sdk.utils.UZViewUtils;
@@ -235,7 +236,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
 
     private void depictVersionInfo() {
         setTextVersion(getResources().getString(R.string.format_version,
-                BuildConfig.VERSION_NAME, BuildConfig.EXO_VERSION));
+                Constants.PLAYER_SDK_VERSION, BuildConfig.EXO_VERSION));
     }
 
     private void depictDeviceInfo() {

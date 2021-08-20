@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <com.uiza.sdk.view.UZVideoView
-        android:id="@+id/uz_video_view"
+        android:id="@+id/uzVideoView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -18,7 +18,7 @@
         android:layout_gravity="end" />
 
     <ScrollView
-        android:id="@id/body_view"
+        android:id="@id/svBodyView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
@@ -35,7 +35,7 @@
                 android:layout_weight="1" />
 
             <EditText
-                android:id="@+id/et_link_play"
+                android:id="@+id/etLinkPlay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:enabled="false"

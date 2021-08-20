@@ -45,7 +45,7 @@
     <item name="uz_position" type="id" />
     <item name="uz_duration" type="id" />
     <item name="header_view" type="id" />
-    <item name="body_view" type="id" />
+    <item name="svBodyView" type="id" />
     <item name="stats_for_nerds" type="id" />
     <item name="uz_mini_full_screen" type="id" />
     <item name="uz_mini_pause_resume" type="id" />

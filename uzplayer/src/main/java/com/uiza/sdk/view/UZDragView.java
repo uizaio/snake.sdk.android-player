@@ -187,7 +187,7 @@ public class UZDragView extends LinearLayout {
         screenW = UZViewUtils.getScreenWidth();
         screenH = UZViewUtils.getScreenHeight();
         headerView = findViewById(R.id.header_view);
-        bodyView = findViewById(R.id.body_view);
+        bodyView = findViewById(R.id.svBodyView);
         headerView.post(() -> {
             sizeWHeaderViewOriginal = headerView.getMeasuredWidth();
             sizeHHeaderViewOriginal = headerView.getMeasuredHeight();
@@ -466,10 +466,11 @@ public class UZDragView extends LinearLayout {
 
     public void setVisibilityChange(boolean isShow) {
         this.isControllerShowing = isShow;
-        if (isLandscape)
+        if (isLandscape) {
             setEnableSlide(false);
-        else
+        } else {
             setEnableSlide(!isShow);
+        }
     }
 
     public void setOnTouchEvent(UZPlayerView.OnTouchEvent onTouchEvent) {
