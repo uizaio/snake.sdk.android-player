@@ -1,31 +1,18 @@
 package com.uiza.sdk.utils;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.KeyguardManager;
-import android.app.UiModeManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Vibrator;
-
-import androidx.annotation.NonNull;
-
-import com.uiza.sdk.R;
-import com.uiza.sdk.widget.UZToast;
-
-import timber.log.Timber;
-
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 import static android.content.Context.ACTIVITY_SERVICE;
+
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
+import android.app.UiModeManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Build;
+
+import androidx.annotation.NonNull;
 
 public class UZAppUtils {
     private UZAppUtils() {
@@ -35,15 +22,6 @@ public class UZAppUtils {
 
     public static String getUserAgent(@NonNull Context context) {
         return context.getApplicationInfo().loadLabel(context.getPackageManager()).toString();
-    }
-
-    public static String getMetaData(@NonNull Context context, String key) {
-        try {
-            ApplicationInfo info = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            return info.metaData.getString(key);
-        } catch (PackageManager.NameNotFoundException e) {
-            return null;
-        }
     }
 
     public static boolean checkChromeCastAvailable() {
@@ -63,16 +41,6 @@ public class UZAppUtils {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static void vibrate(@NonNull Context context, int length) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (v != null)
-            v.vibrate(length);
-    }
-
-    public static void vibrate(@NonNull Context context) {
-        vibrate(context, 300);
     }
 
     //return true if app is in foreground
@@ -108,51 +76,6 @@ public class UZAppUtils {
         return uiModeManager != null && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
     }
 
-    public static void openUrlInBrowser(@NonNull Context context, String url) {
-        Uri webPage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
-        if (intent.resolveActivity(context.getPackageManager()) != null)
-            context.startActivity(intent);
-    }
-
-    private static boolean checkAppInstall(@NonNull Context context, String uri) {
-        PackageManager pm = context.getPackageManager();
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            Timber.e(e);
-        }
-        return false;
-    }
-
-    public static void sharingToSocialMedia(@NonNull Context context, String application, String subject, String message) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType(Constants.TEXT_TYPE);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-        boolean installed = checkAppInstall(context, application);
-        if (installed) {
-            intent.setPackage(application);
-            context.startActivity(intent);
-        } else {
-            Timber.e(context.getString(R.string.can_not_find_share_app));
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static void moveTaskToFront(@NonNull Activity activity, boolean mIsRestoredToTop) {
-        if (!activity.isTaskRoot() && mIsRestoredToTop) {
-            // 4.4.2 platform issues for FLAG_ACTIVITY_REORDER_TO_FRONT,
-            // reordered activity back press will go to home unexpectedly,
-            // Workaround: move reordered activity current task to front when it's finished.
-            ActivityManager tasksManager = (ActivityManager) activity.getSystemService(ACTIVITY_SERVICE);
-            if (tasksManager != null)
-                tasksManager.moveTaskToFront(activity.getTaskId(), ActivityManager.MOVE_TASK_NO_USER_ACTION);
-        }
-    }
-
     /**
      * Feature for {@link PackageManager#getSystemAvailableFeatures} and {@link PackageManager#hasSystemFeature}:
      * The device supports picture-in-picture multi-window mode.
@@ -162,12 +85,4 @@ public class UZAppUtils {
                 && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
 
-    public static void setClipboard(@NonNull Context context, String text) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("COPY", text);
-        if (clipboard != null) {
-            clipboard.setPrimaryClip(clip);
-            UZToast.show(context, "Copied!");
-        }
-    }
 }
