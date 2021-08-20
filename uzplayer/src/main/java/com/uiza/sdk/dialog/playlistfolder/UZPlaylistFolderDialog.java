@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.uiza.sdk.R;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZData;
@@ -22,25 +21,18 @@ import com.uiza.sdk.widget.recyclerview.SnappyLinearLayoutManager;
 
 import java.util.List;
 
-/**
- * Created by loitp on 16/10/2018.
- */
-
 public class UZPlaylistFolderDialog extends Dialog {
-    private Context context;
+    private final Context context;
     private AlertDialog dialog;
-    private boolean isLandscape;
     private RecyclerView recyclerView;
-    private AdapterPlaylistFolder adapterPlaylistFolder;
-    private List<UZPlayback> playList;
-    private int currentPositionOfDataList;
-    private CallbackPlaylistFolder callbackPlaylistFolder;
+    private final List<UZPlayback> playList;
+    private final int currentPositionOfDataList;
+    private final CallbackPlaylistFolder callbackPlaylistFolder;
 
     public UZPlaylistFolderDialog(@NonNull Context context, boolean isLandscape, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.context = context;
-        this.isLandscape = isLandscape;
         this.playList = playList;
         this.currentPositionOfDataList = currentPositionOfDataList;
         this.callbackPlaylistFolder = callbackPlaylistFolder;
@@ -52,7 +44,9 @@ public class UZPlaylistFolderDialog extends Dialog {
         setContentView(R.layout.dialog_list_playlist_folder);
         recyclerView = findViewById(R.id.recycler_view);
         final ImageButton btExit = findViewById(R.id.bt_exit);
-        btExit.setOnClickListener(v -> dismiss());
+        btExit.setOnClickListener(v ->
+                dismiss()
+        );
         btExit.setOnFocusChangeListener((view, isFocus) -> {
             if (isFocus) {
                 btExit.setColorFilter(Color.WHITE);
@@ -70,9 +64,9 @@ public class UZPlaylistFolderDialog extends Dialog {
         layoutManager.setSnapType(SnapType.CENTER);
         layoutManager.setSnapInterpolator(new DecelerateInterpolator());
         recyclerView.setLayoutManager(layoutManager);
-        adapterPlaylistFolder = new AdapterPlaylistFolder(context, playList, currentPositionOfDataList, new CallbackPlaylistFolder() {
+        AdapterPlaylistFolder adapterPlaylistFolder = new AdapterPlaylistFolder(context, playList, currentPositionOfDataList, new CallbackPlaylistFolder() {
             @Override
-            public void onClickItem(UZPlayback data, int position) {
+            public void onClickItem(@NonNull UZPlayback data, int position) {
                 if (UZData.getInstance().isSettingPlayer()) {
                     return;
                 }
@@ -83,7 +77,7 @@ public class UZPlaylistFolderDialog extends Dialog {
             }
 
             @Override
-            public void onFocusChange(UZPlayback data, int position) {
+            public void onFocusChange(@NonNull UZPlayback data, int position) {
                 if (recyclerView != null) {
                     recyclerView.smoothScrollToPosition(position);
                 }
