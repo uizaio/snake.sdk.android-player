@@ -83,7 +83,7 @@ class PlayerActivity : AppCompatActivity() {
 
             override fun onScreenRotate(isLandscape: Boolean) {
                 if (!isLandscape) {
-                    val w = UZViewUtils.getScreenWidth()
+                    val w = UZViewUtils.screenWidth
                     val h = w * 9 / 16
                     uzVideoView.setFreeSize(false)
                     uzVideoView.setSize(w, h)

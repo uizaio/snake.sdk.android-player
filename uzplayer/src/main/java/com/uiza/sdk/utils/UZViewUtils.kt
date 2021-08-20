@@ -1,330 +1,364 @@
-package com.uiza.sdk.utils;
+package com.uiza.sdk.utils
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.os.Build;
-import android.provider.Settings;
-import android.text.TextUtils;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.Surface;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Dialog
+import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Point
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.os.Build
+import android.provider.Settings
+import android.text.TextUtils
+import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.*
+import androidx.annotation.ColorInt
+import com.google.android.exoplayer2.ui.PlayerView
+import com.uiza.sdk.R
+import com.uiza.sdk.utils.ConvertUtils.dp2px
+import com.uiza.sdk.widget.UZImageButton
+import timber.log.Timber
+import java.util.*
+import kotlin.math.max
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.uiza.sdk.R;
-import com.uiza.sdk.widget.UZImageButton;
-
-import java.util.Locale;
-
-import timber.log.Timber;
-
-public class UZViewUtils {
-
-    public static boolean isFullScreen(@NonNull Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+object UZViewUtils {
+    @JvmStatic
+    fun isFullScreen(context: Context): Boolean {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
         if (windowManager != null) {
-            final int rotation = windowManager.getDefaultDisplay().getRotation();
-            switch (rotation) {
-                case Surface.ROTATION_0:
-                case Surface.ROTATION_180:
-                    return false;
-                case Surface.ROTATION_90:
-                case Surface.ROTATION_270:
-                default:
-                    return true;
+            return when (windowManager.defaultDisplay.rotation) {
+                Surface.ROTATION_0, Surface.ROTATION_180 -> false
+                Surface.ROTATION_90, Surface.ROTATION_270 -> true
+                else -> true
             }
         }
-        return false;
+        return false
     }
 
     //return true if device is set auto switch rotation on
     //return false if device is set auto switch rotation off
-    public static boolean isRotationPossible(@NonNull Context context) {
-        boolean hasAccelerometer = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-        return (hasAccelerometer && android.provider.Settings.System.getInt(context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1);
+    @JvmStatic
+    fun isRotationPossible(context: Context): Boolean {
+        val hasAccelerometer =
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER)
+        return hasAccelerometer && Settings.System.getInt(
+            context.contentResolver,
+            Settings.System.ACCELEROMETER_ROTATION,
+            0
+        ) == 1
     }
 
-    public static int getScreenHeightIncludeNavigationBar(@NonNull Context context) {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    @JvmStatic
+    fun getScreenHeightIncludeNavigationBar(context: Context): Int {
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
         if (windowManager != null) {
-            final Display display = windowManager.getDefaultDisplay();
-            Point outPoint = new Point();
+            val display = windowManager.defaultDisplay
+            val outPoint = Point()
             // include navigation bar
-            display.getRealSize(outPoint);
-            return Math.max(outPoint.y, outPoint.x);
+            display.getRealSize(outPoint)
+            return max(a = outPoint.y, outPoint.x)
         }
-        return 0;
+        return 0
     }
 
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
+    @JvmStatic
+    val screenHeight: Int
+        get() = Resources.getSystem().displayMetrics.heightPixels
 
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
+    @JvmStatic
+    val screenWidth: Int
+        get() = Resources.getSystem().displayMetrics.widthPixels
 
-    public static void visibleViews(View... views) {
-        for (View v : views) {
-            if (v != null && v.getVisibility() != View.VISIBLE)
-                v.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public static void goneViews(View... views) {
-        for (View v : views) {
-            if (v != null && v.getVisibility() != View.GONE)
-                v.setVisibility(View.GONE);
+    @JvmStatic
+    fun visibleViews(vararg views: View?) {
+        for (v in views) {
+            if (v != null && v.visibility != View.VISIBLE) {
+                v.visibility = View.VISIBLE
+            }
         }
     }
 
+    @JvmStatic
+    fun goneViews(vararg views: View?) {
+        for (v in views) {
+            if (v != null && v.visibility != View.GONE) {
+                v.visibility = View.GONE
+            }
+        }
+    }
 
-    public static void setVisibilityViews(int visibility, View... views) {
-        for (View v : views) {
-            if (v != null && v.getVisibility() != visibility)
-                v.setVisibility(visibility);
+    @JvmStatic
+    fun setVisibilityViews(visibility: Int, vararg views: View?) {
+        for (v in views) {
+            if (v != null && v.visibility != visibility) {
+                v.visibility = visibility
+            }
         }
     }
 
     //return pixel
-    public static int heightOfView(@NonNull View view) {
-        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        return view.getMeasuredHeight();
+    @JvmStatic
+    fun heightOfView(view: View): Int {
+        view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        return view.measuredHeight
+    }
+
+    @JvmStatic
+    @SuppressLint("SourceLockedOrientationActivity")
+    fun changeScreenPortrait(activity: Activity) {
+        if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        }
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
-    public static void changeScreenPortrait(@NonNull Activity activity) {
-        if (getScreenOrientation() == Configuration.ORIENTATION_LANDSCAPE)
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+    fun changeScreenLandscape(activity: Activity) {
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
     }
 
+    @JvmStatic
     @SuppressLint("SourceLockedOrientationActivity")
-    public static void changeScreenLandscape(@NonNull Activity activity) {
-        if (getScreenOrientation() == Configuration.ORIENTATION_PORTRAIT)
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-    }
-
-    @SuppressLint("SourceLockedOrientationActivity")
-    public static void changeScreenLandscape(@NonNull Activity activity, int orientation) {
-        if (getScreenOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+    fun changeScreenLandscape(activity: Activity, orientation: Int) {
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
             if (orientation == 90) {
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
             } else if (orientation == 270) {
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             }
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         }
     }
 
-    public static int getScreenOrientation() {
-        return Resources.getSystem().getConfiguration().orientation;
-    }
+    private val screenOrientation: Int
+        get() = Resources.getSystem().configuration.orientation
 
+    @JvmStatic
     @SuppressLint("SourceLockedOrientationActivity")
-    public static void toggleScreenOrientation(@NonNull Activity activity) {
-        int s = getScreenOrientation();
-        if (s == Configuration.ORIENTATION_LANDSCAPE)
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        else if (s == Configuration.ORIENTATION_PORTRAIT) {
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+    fun toggleScreenOrientation(activity: Activity) {
+        val s = screenOrientation
+        if (s == Configuration.ORIENTATION_LANDSCAPE) activity.requestedOrientation =
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT else if (s == Configuration.ORIENTATION_PORTRAIT) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         }
     }
 
-    public static void hideSystemUiFullScreen(@NonNull PlayerView playerView) {
-        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        );
+    @JvmStatic
+    fun hideSystemUiFullScreen(playerView: PlayerView) {
+        playerView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
     }
 
-    public static void hideSystemUi(@NonNull PlayerView playerView) {
-        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                & ~View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                & ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                & ~View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                & ~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        );
+    @JvmStatic
+    fun hideSystemUi(playerView: PlayerView) {
+        playerView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+                and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
+                and View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
+                and View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION.inv()
+                and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv())
     }
 
-    public static void setColorProgressBar(@NonNull ProgressBar progressBar, @ColorInt int color) {
-        progressBar.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+    @JvmStatic
+    fun setColorProgressBar(progressBar: ProgressBar, @ColorInt color: Int) {
+        progressBar.indeterminateDrawable.colorFilter =
+            PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
     }
 
-    public static void setTextShadow(@NonNull TextView textView, @ColorInt int color) {
+    @JvmStatic
+    fun setTextShadow(textView: TextView, @ColorInt color: Int) {
         textView.setShadowLayer(
-                1f, // radius
-                1f, // dx
-                1f, // dy
-                color // shadow color
-        );
+            1f,  // radius
+            1f,  // dx
+            1f,  // dy
+            color // shadow color
+        )
     }
 
-    public static void setMarginPx(@NonNull View view, int l, int t, int r, int b) {
-        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        mlp.setMargins(l, t, r, b);
-        view.requestLayout();
+    @JvmStatic
+    fun setMarginPx(view: View, l: Int, t: Int, r: Int, b: Int) {
+        val mlp = view.layoutParams as MarginLayoutParams?
+        mlp?.setMargins(l, t, r, b)
+        view.requestLayout()
     }
 
-    public static void setMarginDimen(@NonNull View view, int dpL, int dpT, int dpR, int dpB) {
-        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        mlp.setMargins(ConvertUtils.dp2px(dpL), ConvertUtils.dp2px(dpT), ConvertUtils.dp2px(dpR), ConvertUtils.dp2px(dpB));
-        view.requestLayout();
+    @JvmStatic
+    fun setMarginDimen(view: View, dpL: Int, dpT: Int, dpR: Int, dpB: Int) {
+        val mlp = view.layoutParams as MarginLayoutParams?
+        mlp?.setMargins(
+            dp2px(dpL.toFloat()),
+            dp2px(dpT.toFloat()),
+            dp2px(dpR.toFloat()),
+            dp2px(dpB.toFloat())
+        )
+        view.requestLayout()
     }
 
-    public static void setFocusableViews(boolean focusable, View... views) {
-        for (View v : views) {
-            if (v != null && !v.isFocusable())
-                v.setFocusable(focusable);
-        }
-    }
-
-
-    public static void setSrcDrawableEnabledForViews(UZImageButton... views) {
-        for (UZImageButton v : views) {
-            if (v != null && !v.isFocused()) {
-                v.setSrcDrawableEnabled();
+    @JvmStatic
+    fun setFocusableViews(focusable: Boolean, vararg views: View?) {
+        for (v in views) {
+            if (v != null && !v.isFocusable) {
+                v.isFocusable = focusable
             }
         }
     }
 
-    public static void setClickableForViews(boolean able, View... views) {
-        for (View v : views) {
+    @JvmStatic
+    fun setSrcDrawableEnabledForViews(vararg views: UZImageButton?) {
+        for (v in views) {
+            if (v != null && !v.isFocused) {
+                v.setSrcDrawableEnabled()
+            }
+        }
+    }
+
+    @JvmStatic
+    fun setClickableForViews(able: Boolean, vararg views: View?) {
+        for (v in views) {
             if (v != null) {
-                v.setClickable(able);
-                v.setFocusable(able);
+                v.isClickable = able
+                v.isFocusable = able
             }
         }
     }
 
-
-    public static void setUIFullScreenIcon(@NonNull ImageButton imageButton, boolean isFullScreen) {
-        imageButton.setImageResource(isFullScreen ?
+    @JvmStatic
+    fun setUIFullScreenIcon(imageButton: ImageButton, isFullScreen: Boolean) {
+        imageButton.setImageResource(
+            if (isFullScreen) {
                 R.drawable.ic_fullscreen_exit_white_48
-                : R.drawable.ic_fullscreen_white_48);
+            } else {
+                R.drawable.ic_fullscreen_white_48
+            }
+        )
     }
 
-    public static void resizeLayout(@NonNull ViewGroup viewGroup, ImageView ivVideoCover, int pixelAdded, int videoW, int videoH, boolean isFreeSize) {
-        int widthSurfaceView;
-        int heightSurfaceView;
-        boolean isFullScreen = UZViewUtils.isFullScreen(viewGroup.getContext());
-        if (isFullScreen) {//landscape
-            widthSurfaceView = UZViewUtils.getScreenHeightIncludeNavigationBar(viewGroup.getContext());
-            heightSurfaceView = UZViewUtils.getScreenHeight();
-        } else {//portrait
-            widthSurfaceView = UZViewUtils.getScreenWidth();
-            if (videoW == 0 || videoH == 0) {
-                heightSurfaceView = (int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded;
+    @JvmStatic
+    fun resizeLayout(
+        viewGroup: ViewGroup,
+        ivVideoCover: ImageView?,
+        pixelAdded: Int,
+        videoW: Int,
+        videoH: Int,
+        isFreeSize: Boolean
+    ) {
+        val widthSurfaceView: Int
+        val heightSurfaceView: Int
+        val isFullScreen = isFullScreen(viewGroup.context)
+        if (isFullScreen) { //landscape
+            widthSurfaceView = getScreenHeightIncludeNavigationBar(viewGroup.context)
+            heightSurfaceView = screenHeight
+        } else { //portrait
+            widthSurfaceView = screenWidth
+            heightSurfaceView = if (videoW == 0 || videoH == 0) {
+                (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
             } else {
-                heightSurfaceView = isFreeSize ? (widthSurfaceView * videoH / videoW + pixelAdded)
-                        : ((int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded);
+                if (isFreeSize) {
+                    widthSurfaceView * videoH / videoW + pixelAdded
+                } else {
+                    (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
+                }
             }
         }
-        //LLog.d(TAG, "resizeLayout isFullScreen " + isFullScreen + ", widthSurfaceView x heightSurfaceView: " + widthSurfaceView + "x" + heightSurfaceView + ", pixelAdded: " + pixelAdded + ", videoW: " + videoW + ", videoH: " + videoH);
-        viewGroup.getLayoutParams().width = widthSurfaceView;
-        viewGroup.getLayoutParams().height = heightSurfaceView;
-        viewGroup.requestLayout();
+        viewGroup.layoutParams.width = widthSurfaceView
+        viewGroup.layoutParams.height = heightSurfaceView
+        viewGroup.requestLayout()
         //set size of parent view group of viewGroup
-        RelativeLayout parentViewGroup = (RelativeLayout) viewGroup.getParent();
-        if (parentViewGroup != null) {
-            parentViewGroup.getLayoutParams().width = widthSurfaceView;
-            parentViewGroup.getLayoutParams().height = heightSurfaceView;
-            parentViewGroup.requestLayout();
+        val parentViewGroup = viewGroup.parent as RelativeLayout?
+        parentViewGroup?.let {
+            it.layoutParams.width = widthSurfaceView
+            it.layoutParams.height = heightSurfaceView
+            it.requestLayout()
         }
-        if (ivVideoCover != null) {
-            ivVideoCover.getLayoutParams().width = widthSurfaceView;
-            ivVideoCover.getLayoutParams().height = heightSurfaceView - pixelAdded;
-            ivVideoCover.requestLayout();
+        ivVideoCover?.let {
+            it.layoutParams.width = widthSurfaceView
+            it.layoutParams.height = heightSurfaceView - pixelAdded
+            it.requestLayout()
         }
         //edit size of imageview thumnail
-        FrameLayout flImgThumnailPreviewSeekbar = viewGroup.findViewById(R.id.preview_frame_layout);
-        if (flImgThumnailPreviewSeekbar != null) {
+        val flImgThumnailPreviewSeekbar =
+            viewGroup.findViewById<FrameLayout>(R.id.preview_frame_layout)
+        flImgThumnailPreviewSeekbar?.let {
             if (isFullScreen) {
-                flImgThumnailPreviewSeekbar.getLayoutParams().width = widthSurfaceView / 4;
-                flImgThumnailPreviewSeekbar.getLayoutParams().height = (int) (widthSurfaceView / 4 * Constants.RATIO_9_16);
+                it.layoutParams.width = widthSurfaceView / 4
+                it.layoutParams.height =
+                    (widthSurfaceView / 4 * Constants.RATIO_9_16).toInt()
             } else {
-                flImgThumnailPreviewSeekbar.getLayoutParams().width = widthSurfaceView / 5;
-                flImgThumnailPreviewSeekbar.getLayoutParams().height = (int) (widthSurfaceView / 5 * Constants.RATIO_9_16);
+                it.layoutParams.width = widthSurfaceView / 5
+                it.layoutParams.height =
+                    (widthSurfaceView / 5 * Constants.RATIO_9_16).toInt()
             }
-            flImgThumnailPreviewSeekbar.requestLayout();
+            it.requestLayout()
         }
     }
 
-    public static void showDialog(@NonNull Dialog dialog) {
-        boolean isFullScreen = isFullScreen(dialog.getContext());
-        Window window = dialog.getWindow();
-        if (window == null) return;
+    @JvmStatic
+    fun showDialog(dialog: Dialog) {
+        val isFullScreen = isFullScreen(dialog.context)
+        val window = dialog.window ?: return
         if (isFullScreen) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-                window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                window.getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-            } else
-                Timber.w("cần làm ở sdk thấp, thanh navigation ko chịu ẩn");
+                window.setFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                )
+                window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+            } else {
+                Timber.w("cần làm ở sdk thấp, thanh navigation ko chịu ẩn")
+            }
         }
-        dialog.show();
+        dialog.show()
         try {
-            window.getAttributes().windowAnimations = R.style.uiza_dialog_animation;
-            window.setBackgroundDrawableResource(R.drawable.background_dialog_uiza);
+            window.attributes.windowAnimations = R.style.uiza_dialog_animation
+            window.setBackgroundDrawableResource(R.drawable.background_dialog_uiza)
             //set dialog position
-            WindowManager.LayoutParams wlp = window.getAttributes();
-            wlp.gravity = Gravity.BOTTOM;
+            val wlp = window.attributes
+            wlp.gravity = Gravity.BOTTOM
             //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-            wlp.dimAmount = 0.65f;
-            wlp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            wlp.height = ViewGroup.LayoutParams.WRAP_CONTENT;  // (int) (getScreenHeight() * (isFullScreen ? 0.6 : 0.4));
-            window.setAttributes(wlp);
-        } catch (Exception e) {
-            //do nothing
-            Timber.e(e);
+            wlp.dimAmount = 0.65f
+            wlp.width = ViewGroup.LayoutParams.MATCH_PARENT
+            wlp.height =
+                ViewGroup.LayoutParams.WRAP_CONTENT // (int) (getScreenHeight() * (isFullScreen ? 0.6 : 0.4));
+            window.attributes = wlp
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        if (isFullScreen)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        if (isFullScreen) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        }
     }
 
-    public static void setTextDuration(@NonNull TextView textView, String duration) {
-        if (TextUtils.isEmpty(duration)) return;
+    @JvmStatic
+    fun setTextDuration(textView: TextView, duration: String) {
+        if (TextUtils.isEmpty(duration)) return
         try {
-            int min = (int) Double.parseDouble(duration) + 1;
-            String minutes = Integer.toString(min % 60);
-            minutes = minutes.length() == 1 ? "0" + minutes : minutes;
-            textView.setText(String.format(Locale.getDefault(), "%d:%s", (min / 60), minutes));
-        } catch (Exception e) {
-            Timber.e(e, "Error setTextDuration");
-            textView.setText(" - ");
+            val min = duration.toDouble().toInt() + 1
+            var minutes = (min % 60).toString()
+            minutes = if (minutes.length == 1) "0$minutes" else minutes
+            textView.text = String.format(Locale.getDefault(), "%d:%s", min / 60, minutes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            textView.text = " - "
         }
     }
 
-    public static void updateUIFocusChange(@NonNull View view, boolean isFocus, int resHasFocus, int resNoFocus) {
-        view.setBackgroundResource(isFocus ? resHasFocus : resNoFocus);
+    @JvmStatic
+    fun updateUIFocusChange(view: View, isFocus: Boolean, resHasFocus: Int, resNoFocus: Int) {
+        view.setBackgroundResource(if (isFocus) resHasFocus else resNoFocus)
     }
 }
