@@ -35,7 +35,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.uiza.sdk.R;
 import com.uiza.sdk.widget.UZImageButton;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -229,8 +228,8 @@ public class UZViewUtils {
     }
 
     public static void resizeLayout(@NonNull ViewGroup viewGroup, ImageView ivVideoCover, int pixelAdded, int videoW, int videoH, boolean isFreeSize) {
-        int widthSurfaceView = 0;
-        int heightSurfaceView = 0;
+        int widthSurfaceView;
+        int heightSurfaceView;
         boolean isFullScreen = UZViewUtils.isFullScreen(viewGroup.getContext());
         if (isFullScreen) {//landscape
             widthSurfaceView = UZViewUtils.getScreenHeightIncludeNavigationBar(viewGroup.getContext());
@@ -240,13 +239,8 @@ public class UZViewUtils {
             if (videoW == 0 || videoH == 0) {
                 heightSurfaceView = (int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded;
             } else {
-                if (videoW >= videoH) {
-                    heightSurfaceView = isFreeSize ? (widthSurfaceView * videoH / videoW + pixelAdded)
-                            : ((int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded);
-                } else {
-                    heightSurfaceView = isFreeSize ? (widthSurfaceView * videoH / videoW + pixelAdded)
-                            : ((int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded);
-                }
+                heightSurfaceView = isFreeSize ? (widthSurfaceView * videoH / videoW + pixelAdded)
+                        : ((int) (widthSurfaceView * Constants.RATIO_9_16) + pixelAdded);
             }
         }
         //LLog.d(TAG, "resizeLayout isFullScreen " + isFullScreen + ", widthSurfaceView x heightSurfaceView: " + widthSurfaceView + "x" + heightSurfaceView + ", pixelAdded: " + pixelAdded + ", videoW: " + videoW + ", videoH: " + videoH);
