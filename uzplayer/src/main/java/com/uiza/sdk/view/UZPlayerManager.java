@@ -141,7 +141,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
     @Override
     void createMediaSourceVideo() {
         super.createMediaSourceVideo();
-        if (!TextUtils.isEmpty(urlIMAAd) && UZAppUtils.isAdsDependencyAvailable() && mediaSourceVideo != null) {
+        if (!TextUtils.isEmpty(urlIMAAd) && UZAppUtils.INSTANCE.isAdsDependencyAvailable() && mediaSourceVideo != null) {
             mediaSourceVideo = createAdsMediaSource(mediaSourceVideo, Uri.parse(urlIMAAd));
         }
     }
@@ -149,7 +149,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
     @Override
     void createMediaSourceVideoExt(String linkPlayExt) {
         super.createMediaSourceVideoExt(linkPlayExt);
-        if (!TextUtils.isEmpty(urlIMAAd) && UZAppUtils.isAdsDependencyAvailable() && mediaSourceVideoExt != null) {
+        if (!TextUtils.isEmpty(urlIMAAd) && UZAppUtils.INSTANCE.isAdsDependencyAvailable() && mediaSourceVideoExt != null) {
             mediaSourceVideoExt = createAdsMediaSource(mediaSourceVideoExt, Uri.parse(urlIMAAd));
         }
     }

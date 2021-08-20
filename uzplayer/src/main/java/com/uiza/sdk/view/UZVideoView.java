@@ -764,7 +764,7 @@ public class UZVideoView extends RelativeLayout
 
     public void setAdPlayerCallback(UZAdPlayerCallback callback) {
         this.adPlayerCallback = callback;
-        if (UZAppUtils.isAdsDependencyAvailable()) {
+        if (UZAppUtils.INSTANCE.isAdsDependencyAvailable()) {
             if (playerManager != null)
                 playerManager.setAdPlayerCallback(callback);
         } else
