@@ -1,138 +1,129 @@
-package com.uiza.sdk.observers;
+package com.uiza.sdk.observers
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import java.lang.ref.WeakReference
+import java.util.*
 
 //https://stackoverflow.com/questions/8248274/android-detect-orientation-changed
-public class SensorOrientationChangeNotifier {
-    private static SensorOrientationChangeNotifier mInstance;
-    public final String TAG = getClass().getSimpleName();
-    private final ArrayList<WeakReference<Listener>> mListeners = new ArrayList<WeakReference<SensorOrientationChangeNotifier.Listener>>(3);
-    private int mOrientation = 0;
-    private final SensorEventListener mSensorEventListener;
-    private final SensorManager mSensorManager;
+class SensorOrientationChangeNotifier private constructor(context: Context) {
 
-    private SensorOrientationChangeNotifier(Context context) {
-        mSensorEventListener = new NotifierSensorEventListener();
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-    }
+    companion object {
+        private var mInstance: SensorOrientationChangeNotifier? = null
 
-    public static SensorOrientationChangeNotifier getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new SensorOrientationChangeNotifier(context);
-        }
-        return mInstance;
-    }
-
-    /**
-     * Call on activity reset()
-     */
-    private void onResume() {
-        mSensorManager.registerListener(mSensorEventListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    /**
-     * Call on activity onPause()
-     */
-    private void onPause() {
-        mSensorManager.unregisterListener(mSensorEventListener);
-    }
-
-    public int getOrientation() {
-        return mOrientation;
-    }
-
-    public void addListener(SensorOrientationChangeNotifier.Listener listener) {
-        if (get(listener) == null) // prevent duplications
-            mListeners.add(new WeakReference<>(listener));
-
-        if (mListeners.size() == 1) {
-            onResume(); // this is the first client
-        }
-    }
-
-    public void remove(SensorOrientationChangeNotifier.Listener listener) {
-        WeakReference<SensorOrientationChangeNotifier.Listener> listenerWR = get(listener);
-        remove(listenerWR);
-    }
-
-    private void remove(WeakReference<SensorOrientationChangeNotifier.Listener> listenerWR) {
-        if (listenerWR != null)
-            mListeners.remove(listenerWR);
-
-        if (mListeners.size() == 0) {
-            onPause();
-        }
-
-    }
-
-    private WeakReference<SensorOrientationChangeNotifier.Listener> get(SensorOrientationChangeNotifier.Listener listener) {
-        for (WeakReference<SensorOrientationChangeNotifier.Listener> existingListener : mListeners)
-            if (existingListener.get() == listener) {
-                return existingListener;
+        @JvmStatic
+        fun getInstance(context: Context): SensorOrientationChangeNotifier? {
+            if (mInstance == null) {
+                mInstance = SensorOrientationChangeNotifier(context)
             }
-        return null;
+            return mInstance
+        }
     }
 
-    private void notifyListeners() {
-        ArrayList<WeakReference<Listener>> deadLiksArr = new ArrayList<>();
-        for (WeakReference<SensorOrientationChangeNotifier.Listener> wr : mListeners) {
+    val logTag = javaClass.simpleName
+    private val mListeners = ArrayList<WeakReference<Listener?>>(3)
+    var orientation = 0
+        private set
+    private val mSensorEventListener: SensorEventListener
+    private val mSensorManager: SensorManager
+
+    init {
+        mSensorEventListener = NotifierSensorEventListener()
+        mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
+
+    private fun onResume() {
+        mSensorManager.registerListener(
+            mSensorEventListener,
+            mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+            SensorManager.SENSOR_DELAY_NORMAL
+        )
+    }
+
+    private fun onPause() {
+        mSensorManager.unregisterListener(mSensorEventListener)
+    }
+
+    fun addListener(listener: Listener) {
+        if (get(listener) == null) // prevent duplications
+            mListeners.add(WeakReference(listener))
+        if (mListeners.size == 1) {
+            onResume() // this is the first client
+        }
+    }
+
+    fun remove(listener: Listener) {
+        val listenerWR = get(listener)
+        remove(listenerWR)
+    }
+
+    private fun remove(listenerWR: WeakReference<Listener?>?) {
+        if (listenerWR != null) {
+            mListeners.remove(listenerWR)
+        }
+        if (mListeners.size == 0) {
+            onPause()
+        }
+    }
+
+    private operator fun get(listener: Listener): WeakReference<Listener?>? {
+        for (existingListener in mListeners) {
+            if (existingListener.get() === listener) {
+                return existingListener
+            }
+        }
+        return null
+    }
+
+    private fun notifyListeners() {
+        val deadLiksArr = ArrayList<WeakReference<Listener?>>()
+        for (wr in mListeners) {
             if (wr.get() == null) {
-                deadLiksArr.add(wr);
+                deadLiksArr.add(wr)
             } else {
-                wr.get().onOrientationChange(mOrientation);
+                wr.get()?.onOrientationChange(orientation)
             }
         }
 
         // remove dead references
-        for (WeakReference<SensorOrientationChangeNotifier.Listener> wr : deadLiksArr) {
-            mListeners.remove(wr);
+        for (wr in deadLiksArr) {
+            mListeners.remove(wr)
         }
     }
 
-    public boolean isPortrait() {
-        return mOrientation == 0 || mOrientation == 180;
+    private val isPortrait: Boolean
+        get() = orientation == 0 || orientation == 180
+
+    val isLandscape: Boolean
+        get() = !isPortrait
+
+    interface Listener {
+        fun onOrientationChange(orientation: Int)
     }
 
-    public boolean isLandscape() {
-        return !isPortrait();
-    }
-
-    public interface Listener {
-        void onOrientationChange(int orientation);
-    }
-
-    private class NotifierSensorEventListener implements SensorEventListener {
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            float x = event.values[0];
-            float y = event.values[1];
-            int newOrientation = mOrientation;
+    private inner class NotifierSensorEventListener : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            val x = event.values[0]
+            val y = event.values[1]
+            var newOrientation: Int = orientation
             if (x < 5 && x > -5 && y > 5) {
-                newOrientation = 0;
+                newOrientation = 0
             } else if (x < -5 && y < 5 && y > -5) {
-                newOrientation = 90;
+                newOrientation = 90
             } else if (x < 5 && x > -5 && y < -5) {
-                newOrientation = 180;
+                newOrientation = 180
             } else if (x > 5 && y < 5 && y > -5) {
-                newOrientation = 270;
+                newOrientation = 270
             }
-            if (mOrientation != newOrientation) {
-                mOrientation = newOrientation;
-                notifyListeners();
+            if (orientation != newOrientation) {
+                orientation = newOrientation
+                notifyListeners()
             }
         }
 
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     }
 }
