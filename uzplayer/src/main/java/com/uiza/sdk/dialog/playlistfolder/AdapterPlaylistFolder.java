@@ -1,9 +1,5 @@
 package com.uiza.sdk.dialog.playlistfolder;
 
-/**
- * Created by www.muathu@gmail.com on 11/7/2017.
- */
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.uiza.sdk.R;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.ImageUtils;
@@ -27,13 +22,11 @@ import java.util.List;
 import timber.log.Timber;
 
 public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistFolder.PlayListHolder> {
-    private final String TAG = getClass().getSimpleName();
-    private List<UZPlayback> playList;
+    private final String logTag = getClass().getSimpleName();
+    private final List<UZPlayback> playList;
     private int currentPositionOfDataList;
     private Context context;
-    private CallbackPlaylistFolder callbackPlaylistFolder;
-    //private int sizeW;
-    //private int sizeH;
+    private final CallbackPlaylistFolder callbackPlaylistFolder;
 
     public AdapterPlaylistFolder(@NonNull Context context, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
         this.context = context;
