@@ -1,18 +1,9 @@
-package com.uiza.sdk.listerner;
+package com.uiza.sdk.listerner
 
-public interface UZProgressListener {
-    default void onAdProgress(int s, int duration, int percent) {
-    }
-
-    default void onAdEnded() {
-    }
-
-    default void onVideoProgress(long currentMls, int s, long duration, int percent) {
-    }
-
-    default void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-    }
-
-    default void onBufferProgress(long bufferedPosition, int bufferedPercentage, long duration) {
-    }
+interface UZProgressListener {
+    fun onAdProgress(s: Int, duration: Int, percent: Int) {}
+    fun onAdEnded() {}
+    fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {}
+    fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
+    fun onBufferProgress(bufferedPosition: Long, bufferedPercentage: Int, duration: Long) {}
 }

@@ -1972,6 +1972,26 @@ public class UZVideoView extends RelativeLayout
         }
         playerManager.setProgressListener(new UZProgressListener() {
             @Override
+            public void onBufferProgress(long bufferedPosition, int bufferedPercentage, long duration) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+            }
+
+            @Override
+            public void onAdEnded() {
+
+            }
+
+            @Override
+            public void onAdProgress(int s, int duration, int percent) {
+
+            }
+
+            @Override
             public void onVideoProgress(long currentMls, int s, long duration, int percent) {
                 post(() -> updateUIIbRewIconDependOnProgress(currentMls, false));
                 if (isLIVE())
