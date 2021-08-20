@@ -1,5 +1,8 @@
 package com.uiza.sdk.models
 
+import androidx.annotation.Keep
+
+@Keep
 enum class UZEventType {
     PLAYER_READY,  // playerready
     LOAD_START,  // loadstart

@@ -1,5 +1,6 @@
 package com.uiza.sdk.models;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,18 +12,18 @@ import com.uiza.sdk.utils.JacksonUtils;
 
 import java.util.Date;
 
-
+@Keep
 @JsonIgnoreProperties(ignoreUnknown = true, allowGetters = true, allowSetters = true)
 public class UZTrackingBody<T> {
     @JsonProperty("specversion")
-    private String specVersion;
+    private final String specVersion;
     @JsonProperty("source")
-    private String source;
+    private final String source;
     @JsonProperty("type")
     private String type;
     @JsonProperty("time")
     @JsonSerialize(using = JsonDateSerializer.class)
-    private Date time;
+    private final Date time;
     @JsonProperty("data")
     private T data;
 
