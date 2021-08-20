@@ -24,13 +24,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.uiza.sdk.utils.glide.BlurTransformation;
-import com.uiza.sdk.utils.glide.GlideThumbnailTransformationPB;
-
-
-/**
- * Created by namnd.bka@gmail.com on 11/12/2019.
- */
 
 public final class ImageUtils {
     private ImageUtils() {
@@ -73,16 +66,6 @@ public final class ImageUtils {
         load(imageView, url, Color.TRANSPARENT, progressBar);
     }
 
-    /**
-     * Load image into imageView with Glide and centerCrop
-     *
-     * @param imageView           : target view
-     * @param imageUrl            : image url
-     * @param placeholder         : place holder, = 0 No place Holder
-     * @param transformationType: One of {@link TransformationType#NONE},
-     *                            {@link TransformationType#CIRCLE}, {@link TransformationType#ROUND}
-     *                            and {@link TransformationType#BLUR}
-     */
     public static void load(@NonNull ImageView imageView, @NonNull String imageUrl, int placeholder, TransformationType transformationType) {
         RequestBuilder<Drawable> builder = Glide.with(imageView.getContext())
                 .load(imageUrl)
@@ -119,26 +102,6 @@ public final class ImageUtils {
     }
 
     /**
-     * Load image into imageView with Glide and centerCrop with {@link TransformationType#ROUND }
-     *
-     * @param imageView: target view
-     * @param imageUrl   : image url
-     */
-    public static void loadRound(@NonNull ImageView imageView, @NonNull String imageUrl, @DrawableRes int placeholder) {
-        load(imageView, imageUrl, placeholder, TransformationType.ROUND);
-    }
-
-    /**
-     * Load image into imageView with Glide and centerCrop with {@link TransformationType#BLUR }
-     *
-     * @param imageView: target view
-     * @param imageUrl   : image url
-     */
-    public static void loadBlur(@NonNull ImageView imageView, @NonNull String imageUrl, @DrawableRes int placeholder) {
-        load(imageView, imageUrl, placeholder, TransformationType.BLUR);
-    }
-
-    /**
      * Load image into imageView with Glide and centerCrop, no placeholder with {@link TransformationType#NONE }
      *
      * @param imageView : target view
@@ -152,7 +115,6 @@ public final class ImageUtils {
         Glide.with(imageView)
                 .load(imageUrl)
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .transform(new GlideThumbnailTransformationPB(position))
                 .into(imageView);
     }
 
@@ -160,8 +122,6 @@ public final class ImageUtils {
     enum TransformationType {
         CIRCLE,
         ROUND,
-        BLUR,
-        THUMB,
         NONE;
 
         @NonNull
@@ -169,12 +129,8 @@ public final class ImageUtils {
             switch (this) {
                 case CIRCLE:
                     return new CircleCrop();
-                case BLUR:
-                    return new BlurTransformation(context);
                 case ROUND:
                     return new RoundedCorners(20);
-                case THUMB:
-                    return new GlideThumbnailTransformationPB(1000);
                 default:
                     return new RoundedCorners(0);
             }
