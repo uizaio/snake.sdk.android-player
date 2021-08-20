@@ -16,7 +16,7 @@ public class UZItem {
     }
 
     private UZItem() {
-        this.description = "Unknow";
+        this.description = "Unknown";
     }
 
     public static UZItem create(Format format, String description) {
