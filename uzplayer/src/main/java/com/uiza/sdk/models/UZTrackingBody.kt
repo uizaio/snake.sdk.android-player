@@ -1,82 +1,51 @@
-package com.uiza.sdk.models;
+package com.uiza.sdk.models
 
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.analytics.helps.JsonDateSerializer;
-import com.uiza.sdk.utils.JacksonUtils;
-
-import java.util.Date;
+import androidx.annotation.Keep
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.uiza.sdk.analytics.UZAnalytic.Companion.sourceName
+import com.uiza.sdk.analytics.helps.JsonDateSerializer
+import com.uiza.sdk.utils.JacksonUtils
+import java.util.*
 
 @Keep
 @JsonIgnoreProperties(ignoreUnknown = true, allowGetters = true, allowSetters = true)
-public class UZTrackingBody<T> {
+class UZTrackingBody<T>() {
+
+    companion object {
+        fun <T> create(data: T): UZTrackingBody<*> {
+            return UZTrackingBody(data)
+        }
+    }
+
     @JsonProperty("specversion")
-    private final String specVersion;
+    val specVersion = "1.0"
+
     @JsonProperty("source")
-    private final String source;
+    val source: String? = sourceName
+
     @JsonProperty("type")
-    private String type;
+    var type: String = "io.uiza.watchingevent"
+
     @JsonProperty("time")
-    @JsonSerialize(using = JsonDateSerializer.class)
-    private final Date time;
+    @JsonSerialize(using = JsonDateSerializer::class)
+    val time: Date = Date()
+
     @JsonProperty("data")
-    private T data;
+    var data: T? = null
+        private set
 
-    public UZTrackingBody() {
-        this.specVersion = "1.0";
-        this.source = UZAnalytic.Companion.getSourceName();
-        this.time = new Date();
-        this.type = "io.uiza.watchingevent";
+    constructor(data: T) : this() {
+        this.data = data
     }
 
-    public UZTrackingBody(T data) {
-        this();
-        this.data = data;
+    fun setData(data: T) {
+        this.data = data
     }
 
-    public static <T> UZTrackingBody create(T data) {
-        return new UZTrackingBody<T>(data);
+    override fun toString(): String {
+        return JacksonUtils.toJson(this)
     }
 
-    /**
-     * @param type ex: io.uiza.watchingevent
-     */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public String getSpecVersion() {
-        return specVersion;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return JacksonUtils.toJson(this);
-    }
 }
