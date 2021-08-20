@@ -1,49 +1,36 @@
-package com.uiza.sdk.utils;
+package com.uiza.sdk.utils
 
+import android.os.Build
+import android.text.Html
+import android.text.Spanned
+import android.text.TextUtils
+import android.util.Base64
+import com.uiza.sdk.models.UZPlaybackInfo
+import com.uiza.sdk.utils.JacksonUtils.fromJson
+import timber.log.Timber
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.regex.Pattern
+import kotlin.math.pow
 
-import android.text.Html;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.util.Base64;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.uiza.sdk.models.UZPlaybackInfo;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
-
-import timber.log.Timber;
-
-
-public final class StringUtils {
-
+object StringUtils {
     /**
      * Email validation pattern.
      */
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$");
-
-    // default constructor
-    private StringUtils() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
+    private val EMAIL_PATTERN =
+        Pattern.compile("^[_A-Za-z0-9-]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$")
 
     /**
      * Validates if the given input is a valid email address.
      *
      * @param email The email to validate.
-     * @return {@code true} if the input is a valid email. {@code false} otherwise.
+     * @return `true` if the input is a valid email. `false` otherwise.
      */
-    public static boolean isEmailValid(@Nullable CharSequence email) {
-        return email != null && EMAIL_PATTERN.matcher(email).matches();
+    fun isEmailValid(email: CharSequence?): Boolean {
+        return email != null && EMAIL_PATTERN.matcher(email).matches()
     }
 
     /**
@@ -52,107 +39,109 @@ public final class StringUtils {
      * @param htmlText : html String
      * @return plain text
      */
-    public static String htmlToPlainText(String htmlText) {
-        Spanned spanned;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            spanned = Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY);
+    fun htmlToPlainText(htmlText: String?): String {
+        val spanned: Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            spanned = Html.fromHtml(htmlText);
+            Html.fromHtml(htmlText)
         }
-        char[] chars = new char[spanned.length()];
-        TextUtils.getChars(spanned, 0, spanned.length(), chars, 0);
-        return new String(chars);
+        val chars = CharArray(spanned.length)
+        TextUtils.getChars(spanned, 0, spanned.length, chars, 0)
+        return String(chars)
     }
 
     /**
      * Convert UTC time string to long value
      *
-     * @param timeStr the time with format <code>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</code>
+     * @param timeStr the time with format `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
      * @return UTC time as long value
      */
-    public static long convertUTCMs(String timeStr) {
-        if (TextUtils.isEmpty(timeStr)) return -1;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try {
-            Date date = dateFormat.parse(timeStr);
-            return date == null ? -1 : date.getTime();
-        } catch (ParseException e) {
-            return -1;
+    fun convertUTCMs(timeStr: String): Long {
+        if (TextUtils.isEmpty(timeStr)) return -1
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return try {
+            val date = dateFormat.parse(timeStr)
+            date?.time ?: -1
+        } catch (e: ParseException) {
+            -1
         }
     }
 
-    public static String convertSecondsToHMmSs(long seconds) {
+    fun convertSecondsToHMmSs(seconds: Long): String {
         if (seconds <= 0) {
-            return "0:00";
+            return "0:00"
         }
-        long s = seconds % 60;
-        long m = (seconds / 60) % 60;
-        long h = (seconds / (60 * 60)) % 24;
-        if (h == 0) {
-            return String.format(Locale.getDefault(), "%d:%02d", m, s);
+        val s = seconds % 60
+        val m = seconds / 60 % 60
+        val h = seconds / (60 * 60) % 24
+        return if (h == 0L) {
+            String.format(Locale.getDefault(), "%d:%02d", m, s)
         } else {
-            return String.format(Locale.getDefault(), "%d:%02d:%02d", h, m, s);
+            String.format(Locale.getDefault(), "%d:%02d:%02d", h, m, s)
         }
     }
 
-    public static String convertMlsecondsToHMmSs(long mls) {
-        return convertSecondsToHMmSs(mls / 1000);
+    @JvmStatic
+    fun convertMlsecondsToHMmSs(mls: Long): String {
+        return convertSecondsToHMmSs(mls / 1000)
     }
 
-    public static String groupingSeparatorLong(long value) {
-        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-        decimalFormatSymbols.setGroupingSeparator(',');
-        DecimalFormat decimalFormat = new DecimalFormat("###,###", decimalFormatSymbols);
-        return decimalFormat.format(value);
+    @JvmStatic
+    fun groupingSeparatorLong(value: Long): String {
+        val decimalFormatSymbols = DecimalFormatSymbols()
+        decimalFormatSymbols.groupingSeparator = ','
+        val decimalFormat = DecimalFormat("###,###", decimalFormatSymbols)
+        return decimalFormat.format(value)
     }
 
-    public static String doubleFormatted(double value, int precision) {
-        return new DecimalFormat(
-                "#0." + (precision <= 1 ? "0" : precision == 2 ? "00" : "000")).format(value);
+    @JvmStatic
+    fun doubleFormatted(value: Double, precision: Int): String {
+        return DecimalFormat(
+            "#0." + if (precision <= 1) "0" else if (precision == 2) "00" else "000"
+        ).format(value)
     }
 
-    public static String humanReadableByteCount(long bytes, boolean si, boolean isBits) {
-        int unit = !si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " KB";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return isBits ? String.format(Locale.getDefault(), "%.1f %sb", bytes / Math.pow(unit, exp), pre)
-                : String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    @JvmStatic
+    fun humanReadableByteCount(bytes: Long, si: Boolean, isBits: Boolean): String {
+        val unit = if (!si) 1000 else 1024
+        if (bytes < unit) return "$bytes KB"
+        val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
+        val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1].toString() + if (si) "" else "i"
+        return if (isBits) String.format(
+            Locale.getDefault(),
+            "%.1f %sb",
+            bytes / unit.toDouble().pow(exp.toDouble()),
+            pre
+        ) else String.format(
+            Locale.getDefault(),
+            "%.1f %sB",
+            bytes / unit.toDouble().pow(exp.toDouble()),
+            pre
+        )
     }
 
-    @Nullable
-    public static String parserJsonInfo(@NonNull String url) throws Exception {
-        int fromIndex = url.indexOf("?cm=");
+    @Throws(Exception::class)
+    fun parserJsonInfo(url: String): String? {
+        val fromIndex = url.indexOf("?cm=")
         if (fromIndex > 0) {
-            int toIndex = url.indexOf("&", fromIndex);
-            String cm = (toIndex > 0) ? url.substring(fromIndex + 4, toIndex) : url.substring(fromIndex + 4);
-            return new String(Base64.decode(cm, Base64.DEFAULT));
+            val toIndex = url.indexOf("&", fromIndex)
+            val cm = if (toIndex > 0) url.substring(fromIndex + 4, toIndex) else url.substring(
+                fromIndex + 4
+            )
+            return String(Base64.decode(cm, Base64.DEFAULT))
         }
-        return null;
+        return null
     }
 
-    public static UZPlaybackInfo parserInfo(String linkPlay) {
+    @JvmStatic
+    fun parserInfo(linkPlay: String): UZPlaybackInfo? {
         try {
-            String json = parserJsonInfo(linkPlay);
-            if (json != null)
-                return JacksonUtils.INSTANCE.fromJson(json, UZPlaybackInfo.class);
-        } catch (Exception e) {
-            Timber.e(e);
+            val json = parserJsonInfo(linkPlay)
+            if (json != null) return fromJson(json = json, classOfT = UZPlaybackInfo::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return null;
-    }
-
-    /**
-     * get TimeShift Link from linkPlay
-     *
-     * @param linkPlay
-     * @return timeshift Link Play
-     */
-    public static String timeShiftLink(String linkPlay) {
-        if (linkPlay.contains("/extras/")) {
-            return linkPlay.replace("/extras/", "/");
-        }
-        return linkPlay;
+        return null
     }
 }
