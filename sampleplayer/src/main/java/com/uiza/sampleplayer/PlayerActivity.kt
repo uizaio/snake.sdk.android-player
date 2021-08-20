@@ -64,7 +64,7 @@ class PlayerActivity : AppCompatActivity() {
         uzDragView.setScreenRotate(false)
         uzVideoView.setPlayerCallback(object : UZPlayerCallback {
             override fun playerViewCreated(playerView: UZPlayerView) {
-                uzVideoView.playerView.setControllerStateCallback { visible ->
+                uzVideoView.playerView?.setControllerStateCallback { visible ->
                     uzDragView.setVisibilityChange(visible)
                 }
             }

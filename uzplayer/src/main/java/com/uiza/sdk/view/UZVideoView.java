@@ -2223,4 +2223,10 @@ public class UZVideoView extends RelativeLayout
     public boolean isAlwaysPortraitScreen() {
         return isAlwaysPortraitScreen;
     }
+
+    @Nullable
+    @Override
+    public String getTitle() {
+        return null;
+    }
 }

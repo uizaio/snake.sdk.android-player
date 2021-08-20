@@ -1,33 +1,24 @@
-package com.uiza.sdk.interfaces;
+package com.uiza.sdk.interfaces
 
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.Timeline;
-import com.uiza.sdk.utils.UZData;
-import com.uiza.sdk.view.UZPlayerView;
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Timeline
+import com.uiza.sdk.utils.UZData
+import com.uiza.sdk.view.UZPlayerView
 
-public interface UZManagerObserver {
-
-    default String getTitle() {
-        return UZData.getInstance().getEntityName();
-    }
-
-    boolean isPIPEnable();
-
-    UZPlayerView getPlayerView();
+interface UZManagerObserver {
+    val title: String?
+        get() = UZData.getInstance().entityName
+    val isPIPEnable: Boolean
+    val playerView: UZPlayerView?
 
     // options
-    boolean isCastingChromecast();
-
-    boolean isAutoStart();
-
-    UZAdPlayerCallback getAdPlayerCallback();
+    val isCastingChromecast: Boolean
+    val isAutoStart: Boolean
+    val adPlayerCallback: UZAdPlayerCallback?
 
     // progress
-    void onTimelineChanged(Timeline timeline, Object manifest, int reason);
-
-    void onPlayerStateChanged(boolean playWhenReady, int playbackState);
-
-    void onPlayerEnded();
-
-    void onPlayerError(ExoPlaybackException error);
+    fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int)
+    fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)
+    fun onPlayerEnded()
+    fun onPlayerError(error: ExoPlaybackException?)
 }
