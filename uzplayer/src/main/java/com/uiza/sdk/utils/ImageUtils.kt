@@ -1,139 +1,87 @@
-package com.uiza.sdk.utils;
+package com.uiza.sdk.utils
 
+import android.widget.ImageView
+import com.bumptech.glide.Glide
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
+class ImageUtils private constructor() {
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+//    enum class TransformationType {
+//        CIRCLE,
+//        ROUND,
+//        NONE;
+//
+//        fun getTransformation(): Transformation<Bitmap> {
+//            return when (this) {
+//                CIRCLE -> CircleCrop()
+//                ROUND -> RoundedCorners(20)
+//                else -> RoundedCorners(0)
+//            }
+//        }
+//    }
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
+    companion object {
+//        fun load(
+//            imageView: ImageView,
+//            url: String,
+//            resPlaceHolder: Int,
+//            progressBar: ProgressBar?
+//        ) {
+//            Glide.with(imageView.context).load(url)
+//                .apply(RequestOptions().placeholder(resPlaceHolder))
+//                .listener(object : RequestListener<Drawable?> {
+//                    override fun onLoadFailed(
+//                        e: GlideException?,
+//                        model: Any,
+//                        target: Target<Drawable?>,
+//                        isFirstResource: Boolean
+//                    ): Boolean {
+//                        if (progressBar != null && progressBar.visibility != View.GONE) progressBar.visibility =
+//                            View.GONE
+//                        return false
+//                    }
+//
+//                    override fun onResourceReady(
+//                        resource: Drawable?,
+//                        model: Any,
+//                        target: Target<Drawable?>,
+//                        dataSource: DataSource,
+//                        isFirstResource: Boolean
+//                    ): Boolean {
+//                        if (progressBar != null && progressBar.visibility != View.GONE) progressBar.visibility =
+//                            View.GONE
+//                        return false
+//                    }
+//                })
+//                .into(imageView)
+//        }
 
-public final class ImageUtils {
-    private ImageUtils() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
-    }
+//        @JvmOverloads
+//        fun load(
+//            imageView: ImageView,
+//            imageUrl: String,
+//            placeholder: Int = 0,
+//            transformationType: TransformationType = TransformationType.NONE
+//        ) {
+//            var builder = Glide.with(imageView.context)
+//                .load(imageUrl)
+//                .centerCrop()
+//                .transition(DrawableTransitionOptions.withCrossFade())
+//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+//            if (placeholder > 0) {
+//                builder = builder.placeholder(placeholder)
+//            }
+//            if (transformationType != TransformationType.NONE) {
+//                builder = builder.transform(transformationType.getTransformation(imageView.context))
+//            }
+//            builder.into(imageView)
+//        }
 
-    /**
-     * @param imageView       : target view
-     * @param url             : image url
-     * @param resPlaceHolder: placeholder
-     * @param progressBar     : ProgressBar
-     */
-    public static void load(@NonNull ImageView imageView, String url, int resPlaceHolder, @Nullable final ProgressBar progressBar) {
-        Glide.with(imageView.getContext()).load(url)
-                .apply(new RequestOptions().placeholder(resPlaceHolder))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        if (progressBar != null && progressBar.getVisibility() != View.GONE)
-                            progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
-                        if (progressBar != null && progressBar.getVisibility() != View.GONE)
-                            progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(imageView);
-    }
-
-    /**
-     * @param imageView   : target view
-     * @param url         : image url
-     * @param progressBar : ProgressBar
-     */
-    public static void load(@NonNull ImageView imageView, String url, final ProgressBar progressBar) {
-        load(imageView, url, Color.TRANSPARENT, progressBar);
-    }
-
-    public static void load(@NonNull ImageView imageView, @NonNull String imageUrl, int placeholder, TransformationType transformationType) {
-        RequestBuilder<Drawable> builder = Glide.with(imageView.getContext())
+        @JvmStatic
+        fun loadThumbnail(imageView: ImageView, imageUrl: String? = "") {
+            Glide.with(imageView)
                 .load(imageUrl)
-                .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-        if (placeholder > 0) {
-            builder = builder.placeholder(placeholder);
-        }
-        if (transformationType != TransformationType.NONE) {
-            builder = builder.transform(transformationType.getTransformation(imageView.getContext()));
-        }
-        builder.into(imageView);
-    }
-
-    /**
-     * Load image into imageView with Glide and centerCrop with {@link TransformationType#NONE }
-     *
-     * @param imageView: target view
-     * @param imageUrl   : image url
-     */
-    public static void load(@NonNull ImageView imageView, @NonNull String imageUrl, @DrawableRes int placeholder) {
-        load(imageView, imageUrl, placeholder, TransformationType.NONE);
-    }
-
-    /**
-     * Load image into imageView with Glide and centerCrop with {@link TransformationType#CIRCLE }
-     *
-     * @param imageView: target view
-     * @param imageUrl   : image url
-     */
-    public static void loadCircle(@NonNull ImageView imageView, @NonNull String imageUrl, @DrawableRes int placeholder) {
-        load(imageView, imageUrl, placeholder, TransformationType.CIRCLE);
-    }
-
-    /**
-     * Load image into imageView with Glide and centerCrop, no placeholder with {@link TransformationType#NONE }
-     *
-     * @param imageView : target view
-     * @param imageUrl  : image url
-     */
-    public static void load(@NonNull ImageView imageView, @NonNull String imageUrl) {
-        load(imageView, imageUrl, 0, TransformationType.NONE);
-    }
-
-    public static void loadThumbnail(@NonNull ImageView imageView, @NonNull String imageUrl, long position) {
-        Glide.with(imageView)
-                .load(imageUrl)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .into(imageView);
-    }
-
-
-    enum TransformationType {
-        CIRCLE,
-        ROUND,
-        NONE;
-
-        @NonNull
-        Transformation<Bitmap> getTransformation(Context context) {
-            switch (this) {
-                case CIRCLE:
-                    return new CircleCrop();
-                case ROUND:
-                    return new RoundedCorners(20);
-                default:
-                    return new RoundedCorners(0);
-            }
+//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                .into(imageView)
         }
     }
 }

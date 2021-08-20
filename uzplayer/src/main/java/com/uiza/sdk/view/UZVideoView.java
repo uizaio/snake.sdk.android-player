@@ -2008,7 +2008,7 @@ public class UZVideoView extends RelativeLayout
         playerManager.setPlayWhenReady(false);
         String posterUrl = UZData.getInstance().getPosterUrl();
         if (!TextUtils.isEmpty(posterUrl) && ivThumbnail != null)
-            ImageUtils.loadThumbnail(ivThumbnail, posterUrl, currentPosition);
+            ImageUtils.loadThumbnail(ivThumbnail, posterUrl);
     }
 
     private void onStateReadyFirst() {
