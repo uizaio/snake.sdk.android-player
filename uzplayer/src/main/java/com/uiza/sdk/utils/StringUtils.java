@@ -136,7 +136,7 @@ public final class StringUtils {
         try {
             String json = parserJsonInfo(linkPlay);
             if (json != null)
-                return JacksonUtils.fromJson(json, UZPlaybackInfo.class);
+                return JacksonUtils.INSTANCE.fromJson(json, UZPlaybackInfo.class);
         } catch (Exception e) {
             Timber.e(e);
         }
