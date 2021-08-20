@@ -13,10 +13,6 @@ import androidx.annotation.NonNull;
 
 import com.uiza.sdk.R;
 
-/**
- * Created by loitp on 13/11/2018.
- */
-
 public class UZSpeedDialog extends Dialog implements View.OnClickListener {
     private static final String SPEED_025 = "0.25";
     private static final String SPEED_050 = "0.5";
@@ -35,10 +31,10 @@ public class UZSpeedDialog extends Dialog implements View.OnClickListener {
     private CheckedTextView ct5;
     private CheckedTextView ct6;
 
-    private float currentSpeed;
+    private final float currentSpeed;
 
-    private Handler handler = new Handler();
-    private Callback callback;
+    private final Handler handler = new Handler();
+    private final Callback callback;
 
     public UZSpeedDialog(@NonNull Context context, float currentSpeed, Callback callback) {
         super(context);
