@@ -1,6 +1,5 @@
 package com.uiza.sdk.models;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -18,9 +17,6 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-/**
- * Created by namnd.bka@gmail.com on 15/03/2020.
- */
 public class UZPlayback implements Parcelable {
 
     public static final Creator<UZPlayback> CREATOR = new Creator<UZPlayback>() {
