@@ -1,5 +1,6 @@
 package com.uiza.sdk.dialog.setting;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,8 @@ import java.util.List;
 
 public class SettingAdapter extends ArrayAdapter<SettingItem> {
 
-    private Context mContext;
-    private List<SettingItem> items;
+    private final Context mContext;
+    private final List<SettingItem> items;
 
     public SettingAdapter(@NonNull Context context, List<SettingItem> list) {
         super(context, 0, list);
@@ -26,10 +27,11 @@ public class SettingAdapter extends ArrayAdapter<SettingItem> {
         items = list;
     }
 
+    @SuppressLint("InflateParams")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view = null;
+        View view;
         final ViewHolder holder;
         SettingItem item = getItem(position);
         if (convertView == null) {
@@ -95,8 +97,6 @@ public class SettingAdapter extends ArrayAdapter<SettingItem> {
         public void setOnToggleChangeListener(OnToggleChangeListener listener) {
             this.listener = listener;
         }
-
-        ;
 
     }
 
