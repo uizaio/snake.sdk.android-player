@@ -1,30 +1,21 @@
-package com.uiza.sdk.interfaces;
+package com.uiza.sdk.interfaces
 
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.view.UZPlayerView;
+import com.uiza.sdk.exceptions.UZException
+import com.uiza.sdk.view.UZPlayerView
 
-public interface UZPlayerCallback {
+interface UZPlayerCallback {
     //when video init done with result
     //isInitSuccess onStateReadyFirst
-
-    default void playerViewCreated(UZPlayerView playerView) {}
-
-    default void isInitResult(String linkPlay) {
-    }
+    fun playerViewCreated(playerView: UZPlayerView) {}
+    fun isInitResult(linkPlay: String) {}
 
     //when skin is changed
-    default void onSkinChange() {
-    }
-
-    default void onTimeShiftChange(boolean timeShiftOn) {
-    }
+    fun onSkinChange() {}
+    fun onTimeShiftChange(timeShiftOn: Boolean) {}
 
     //when screen rotate
-    default void onScreenRotate(boolean isLandscape) {
-    }
+    fun onScreenRotate(isLandscape: Boolean) {}
 
     //when UZVideoView had an error
-    default void onError(UZException e) {
-    }
-
+    fun onError(e: UZException) {}
 }

@@ -1,5 +1,6 @@
 package com.uiza.sampleplayer;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -103,5 +104,20 @@ public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCal
         if (!uzVideo.onBackPressed()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void playerViewCreated(@NonNull UZPlayerView playerView) {
+
+    }
+
+    @Override
+    public void onTimeShiftChange(boolean timeShiftOn) {
+
     }
 }

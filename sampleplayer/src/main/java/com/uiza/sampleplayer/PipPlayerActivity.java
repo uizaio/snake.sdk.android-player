@@ -160,4 +160,19 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
                 getLiveViewsTimer(false);
             }, firstRun ? 0 : 5000);
     }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    @Override
+    public void onSkinChange() {
+
+    }
+
+    @Override
+    public void onTimeShiftChange(boolean timeShiftOn) {
+
+    }
 }
