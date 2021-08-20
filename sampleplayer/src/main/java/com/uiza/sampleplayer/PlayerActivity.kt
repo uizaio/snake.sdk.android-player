@@ -191,16 +191,18 @@ class PlayerActivity : AppCompatActivity() {
         val playback = UZPlayer.getCurrentPlayback()
         if (playback != null) {
             handler?.postDelayed({
-                val d = getLiveViewers(linkPlay = playback.firstLinkPlay,
-                    onNext = Consumer { (views) ->
-                        uzVideoView.setLiveViewers(views)
-                    }, onError = Consumer { t: Throwable? ->
-                        log("$t")
-                    })
-                d?.let {
-                    compositeDisposable.add(it)
+                playback.firstLinkPlay?.let {
+                    val d = getLiveViewers(linkPlay = it,
+                        onNext = Consumer { (views) ->
+                            uzVideoView.setLiveViewers(views)
+                        }, onError = Consumer { t: Throwable? ->
+                            log("$t")
+                        })
+                    d?.let {
+                        compositeDisposable.add(it)
+                    }
+                    getLiveViewsTimer(false)
                 }
-                getLiveViewsTimer(false)
             }, if (firstRun) 0 else 5000L)
         }
     }
