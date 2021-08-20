@@ -41,22 +41,6 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class UZViewUtils {
-    public static ArrayList<View> getAllChildren(@NonNull View v) {
-        ArrayList<View> result = new ArrayList<>();
-        if (!(v instanceof ViewGroup)) {
-            result.add(v);
-            return result;
-        }
-        ViewGroup viewGroup = (ViewGroup) v;
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-            ArrayList<View> viewArrayList = new ArrayList<>();
-            viewArrayList.add(v);
-            viewArrayList.addAll(getAllChildren(child));
-            result.addAll(viewArrayList);
-        }
-        return result;
-    }
 
     public static boolean isFullScreen(@NonNull Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -116,12 +100,6 @@ public class UZViewUtils {
         }
     }
 
-    public static void invisibleViews(View... views) {
-        for (View v : views) {
-            if (v != null && v.getVisibility() != View.INVISIBLE)
-                v.setVisibility(View.INVISIBLE);
-        }
-    }
 
     public static void setVisibilityViews(int visibility, View... views) {
         for (View v : views) {
@@ -134,10 +112,6 @@ public class UZViewUtils {
     public static int heightOfView(@NonNull View view) {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         return view.getMeasuredHeight();
-    }
-
-    public static boolean isCanOverlay(@NonNull Context context) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context);
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -354,10 +328,6 @@ public class UZViewUtils {
             Timber.e(e, "Error setTextDuration");
             textView.setText(" - ");
         }
-    }
-
-    public static void updateUIFocusChange(@NonNull View view, boolean isFocus) {
-        updateUIFocusChange(view, isFocus, R.drawable.bkg_has_focus, R.drawable.bkg_no_focus);
     }
 
     public static void updateUIFocusChange(@NonNull View view, boolean isFocus, int resHasFocus, int resNoFocus) {

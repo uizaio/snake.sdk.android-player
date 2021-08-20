@@ -157,13 +157,6 @@ public final class UZPlayerView extends PlayerView implements PlayerControlView.
         return null;
     }
 
-    public View[] getAllChild() {
-        PlayerControlView playerControlView = getPlayerControlView();
-        if (playerControlView == null) return null;
-        List<View> viewList = UZViewUtils.getAllChildren(playerControlView);
-        return viewList.toArray(new View[0]);
-    }
-
     public interface ControllerStateCallback {
         void onVisibilityChange(boolean visible);
     }
