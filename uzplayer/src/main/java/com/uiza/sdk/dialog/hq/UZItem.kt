@@ -1,54 +1,33 @@
-package com.uiza.sdk.dialog.hq;
+package com.uiza.sdk.dialog.hq
 
-import android.widget.CheckedTextView;
-
-import com.google.android.exoplayer2.Format;
+import android.widget.CheckedTextView
+import com.google.android.exoplayer2.Format
+import com.uiza.sdk.dialog.hq.UZItem
 
 //https://www.image-engineering.de/library/technotes/991-separating-sd-hd-full-hd-4k-and-8k
-public class UZItem {
-    private CheckedTextView checkedTextView;
-    private String description;
-    private Format format;
+class UZItem {
 
-    private UZItem(Format format, String description) {
-        this.format = format;
-        this.description = description;
+    companion object {
+        fun create(format: Format, description: String): UZItem {
+            return UZItem(format, description)
+        }
+
+        @JvmStatic
+        fun create(): UZItem {
+            return UZItem()
+        }
     }
 
-    private UZItem() {
-        this.description = "Unknown";
+    var checkedTextView: CheckedTextView? = null
+    var description: String
+    var format: Format? = null
+
+    private constructor(format: Format, description: String) {
+        this.format = format
+        this.description = description
     }
 
-    public static UZItem create(Format format, String description) {
-        return new UZItem(format, description);
-
-    }
-
-    public static UZItem create() {
-        return new UZItem();
-    }
-
-    public CheckedTextView getCheckedTextView() {
-        return checkedTextView;
-    }
-
-    public void setCheckedTextView(CheckedTextView checkedTextView) {
-        this.checkedTextView = checkedTextView;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Format getFormat() {
-        return format;
-    }
-
-    public void setFormat(Format format) {
-        this.format = format;
+    private constructor() {
+        description = "Unknown"
     }
 }

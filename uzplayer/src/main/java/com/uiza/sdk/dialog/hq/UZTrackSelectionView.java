@@ -255,7 +255,7 @@ public class UZTrackSelectionView extends LinearLayout {
                 trackView.setSoundEffectsEnabled(false);
                 trackView.setBackgroundResource(selectableItemBackgroundResourceId);
                 Format f = group.getFormat(trackIndex);
-                UZItem uzItem = UZItem.create(f, parserNameProvider(f));
+                UZItem uzItem = UZItem.Companion.create(f, parserNameProvider(f));
                 trackView.setText(uzItem.getDescription());
                 if (trackInfo.getTrackSupport(rendererIndex, groupIndex, trackIndex) == RendererCapabilities.FORMAT_HANDLED) {
                     trackView.setFocusable(true);
