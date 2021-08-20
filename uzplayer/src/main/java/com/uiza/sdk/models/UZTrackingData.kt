@@ -1,97 +1,52 @@
-package com.uiza.sdk.models;
+package com.uiza.sdk.models
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Keep
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.uiza.sdk.analytics.UZAnalytic.Companion.deviceId
+import com.uiza.sdk.analytics.helps.JsonDateSerializer
+import com.uiza.sdk.utils.JacksonUtils
+import java.util.*
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.analytics.helps.JsonDateSerializer;
-import com.uiza.sdk.utils.JacksonUtils;
-
-import java.util.Date;
-
+@Keep
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UZTrackingData {
-    @JsonProperty("app_id")
-    private String appId;
-    @JsonProperty("entity_id")
-    private String entityId;
-    @JsonProperty("entity_source")
-    private String entitySource;
+class UZTrackingData(
+    @field:JsonProperty("app_id")
+    val appId: String,
+    @field:JsonProperty("entity_id")
+    var entityId: String,
+    @field:JsonProperty("entity_source")
+    var entitySource: String,
+    @field:JsonProperty("viewer_session_id")
+    val viewerSessionId: String?,
+    type: UZEventType?
+) {
     @JsonProperty("viewer_user_id")
-    private String viewerUserId; // android id
-    @JsonProperty("viewer_session_id")
-    private String viewerSessionId;
+    val viewerUserId: String? = deviceId
+
     @JsonProperty("event")
-    private UZEventType eventType;
+    var eventType: UZEventType? = type
+
     @JsonProperty("timestamp")
-    @JsonSerialize(using = JsonDateSerializer.class)
-    private Date timestamp;
+    @JsonSerialize(using = JsonDateSerializer::class)
+    val timestamp: Date = Date()
 
-    public UZTrackingData(UZPlaybackInfo info, String viewerSessionId, UZEventType type) {
-        this(info.getAppId(), info.getEntityId(), info.getEntitySource(), viewerSessionId, type);
+    constructor(
+        info: UZPlaybackInfo,
+        viewerSessionId: String,
+        type: UZEventType
+    ) : this(
+        appId = info.appId,
+        entityId = info.entityId,
+        entitySource = info.entitySource,
+        viewerSessionId = viewerSessionId,
+        type = type
+    ) {
     }
 
-    public UZTrackingData(String appId, String entityId, String entitySource, String viewerSessionId, UZEventType type) {
-        this.appId = appId;
-        this.entityId = entityId;
-        this.entitySource = entitySource;
-        this.viewerSessionId = viewerSessionId;
-        this.timestamp = new Date();
-        this.viewerUserId = UZAnalytic.Companion.getDeviceId();
-        this.eventType = type;
+    override fun toString(): String {
+        return JacksonUtils.toJson(this)
     }
 
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    /**
-     * @param entitySource: source of entity. ex: live
-     */
-    public void setEntitySource(String entitySource) {
-        this.entitySource = entitySource;
-    }
-
-    public String getEntitySource() {
-        return entitySource;
-    }
-
-    public String getViewerUserId() {
-        return viewerUserId;
-    }
-
-    /**
-     * @param eventType: type of event. ex: watching
-     */
-    public void setEventType(UZEventType eventType) {
-        this.eventType = eventType;
-    }
-
-    public UZEventType getEventType() {
-        return eventType;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public String getViewerSessionId() {
-        return viewerSessionId;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return JacksonUtils.toJson(this);
-    }
 }
