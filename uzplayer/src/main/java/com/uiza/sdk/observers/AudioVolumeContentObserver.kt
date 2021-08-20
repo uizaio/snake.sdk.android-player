@@ -1,50 +1,44 @@
-package com.uiza.sdk.observers;
+package com.uiza.sdk.observers
 
-import android.database.ContentObserver;
-import android.media.AudioManager;
-import android.net.Uri;
-import android.os.Handler;
+import android.database.ContentObserver
+import android.media.AudioManager
+import android.net.Uri
+import android.os.Handler
 
-import androidx.annotation.NonNull;
+class AudioVolumeContentObserver(
+    handler: Handler,
+    audioManager: AudioManager,
+    audioStreamType: Int,
+    listener: OnAudioVolumeChangedListener
+) : ContentObserver(handler) {
 
-
-public class AudioVolumeContentObserver extends ContentObserver {
-
-    private final OnAudioVolumeChangedListener mListener;
-    private final AudioManager mAudioManager;
-    private final int mAudioStreamType;
-    private int mLastVolume;
-
-    public AudioVolumeContentObserver(
-            @NonNull Handler handler,
-            @NonNull AudioManager audioManager,
-            int audioStreamType,
-            @NonNull OnAudioVolumeChangedListener listener) {
-
-        super(handler);
-        mAudioManager = audioManager;
-        mAudioStreamType = audioStreamType;
-        mListener = listener;
-        mLastVolume = audioManager.getStreamVolume(mAudioStreamType);
-    }
+    private val mListener: OnAudioVolumeChangedListener?
+    private val mAudioManager: AudioManager?
+    private val mAudioStreamType: Int
+    private var mLastVolume: Int
 
     /**
      * Depending on the handler this method may be executed on the UI thread
      */
-    @Override
-    public void onChange(boolean selfChange, Uri uri) {
+    override fun onChange(selfChange: Boolean, uri: Uri?) {
         if (mAudioManager != null && mListener != null) {
-            int maxVolume = mAudioManager.getStreamMaxVolume(mAudioStreamType);
-            int currentVolume = mAudioManager.getStreamVolume(mAudioStreamType);
+            val maxVolume = mAudioManager.getStreamMaxVolume(mAudioStreamType)
+            val currentVolume = mAudioManager.getStreamVolume(mAudioStreamType)
             if (currentVolume != mLastVolume) {
-                mLastVolume = currentVolume;
-                mListener.onAudioVolumeChanged(currentVolume, maxVolume);
+                mLastVolume = currentVolume
+                mListener.onAudioVolumeChanged(currentVolume, maxVolume)
             }
         }
     }
 
-    @Override
-    public boolean deliverSelfNotifications() {
-        return super.deliverSelfNotifications();
+    override fun deliverSelfNotifications(): Boolean {
+        return super.deliverSelfNotifications()
+    }
+
+    init {
+        mAudioManager = audioManager
+        mAudioStreamType = audioStreamType
+        mListener = listener
+        mLastVolume = audioManager.getStreamVolume(mAudioStreamType)
     }
 }
