@@ -36,7 +36,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
@@ -65,7 +64,6 @@ import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog;
 import com.uiza.sdk.dialog.setting.SettingAdapter;
 import com.uiza.sdk.dialog.setting.SettingItem;
 import com.uiza.sdk.dialog.speed.UZSpeedDialog;
-import com.uiza.sdk.events.ConnectEvent;
 import com.uiza.sdk.exceptions.ErrorConstant;
 import com.uiza.sdk.exceptions.ErrorUtils;
 import com.uiza.sdk.exceptions.UZException;
@@ -79,7 +77,6 @@ import com.uiza.sdk.models.UZEventType;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.models.UZPlaybackInfo;
 import com.uiza.sdk.models.UZTrackingData;
-import com.uiza.sdk.observers.ConnectivityReceiver;
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier;
 import com.uiza.sdk.utils.ConnectivityUtils;
 import com.uiza.sdk.utils.Constants;
@@ -218,7 +215,6 @@ public class UZVideoView extends RelativeLayout
     private String viewerSessionId;
     private CompositeDisposable disposables;
     private boolean viewCreated = false;
-    private ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
 
     public UZVideoView(Context context) {
         super(context);
@@ -290,22 +286,6 @@ public class UZVideoView extends RelativeLayout
         } else {
             setSize(this.getWidth(), this.getHeight());
         }
-    }
-
-    /**
-     * register connection internet listener
-     */
-    private void registerConnectifyReceiver() {
-        getContext().registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        EventBus.getDefault().register(this);
-    }
-
-    /**
-     * register connection internet listener
-     */
-    private void unregisterConnectifyReceiver() {
-        getContext().unregisterReceiver(connectivityReceiver);
-        EventBus.getDefault().unregister(this);
     }
 
     public boolean isAutoStart() {
@@ -675,7 +655,6 @@ public class UZVideoView extends RelativeLayout
 
     public void onResumeView() {
         SensorOrientationChangeNotifier.getInstance(getContext()).addListener(this);
-        registerConnectifyReceiver();
         if (isCastingChromecast)
             return;
         activityIsPausing = false;
@@ -728,7 +707,6 @@ public class UZVideoView extends RelativeLayout
         activityIsPausing = true;
         positionPIPPlayer = getCurrentPosition();
         SensorOrientationChangeNotifier.getInstance(getContext()).remove(this);
-        unregisterConnectifyReceiver();
         // in PIP to continue
         if (playerManager != null && !isInPipMode) {
             playerManager.pause();
@@ -863,8 +841,7 @@ public class UZVideoView extends RelativeLayout
     public void onClick(View v) {
         if (v == rlMsg) {
 
-        }
-        else if (v == ibFullscreenIcon) {
+        } else if (v == ibFullscreenIcon) {
             toggleFullscreen();
         } else if (v == ibBackScreenIcon) {
             handleClickBackScreen();
@@ -917,8 +894,7 @@ public class UZVideoView extends RelativeLayout
             handleClickSkipPrevious();
         else if (v == ibSpeedIcon)
             showSpeed();
-        else if (v == tvEndScreenMsg)
-        {
+        else if (v == tvEndScreenMsg) {
 
         }
         /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức, trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
@@ -2050,29 +2026,30 @@ public class UZVideoView extends RelativeLayout
 
     //=============================================================================================START CHROMECAST
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkEvent(ConnectEvent event) {
-        if (event == null || playerManager == null) return;
-        if (!event.isConnected()) {
-            notifyError(ErrorUtils.exceptionNoConnection());
-        } else {
-            if (playerManager.getExoPlaybackException() == null) {
-                hideController();
-                hideLayoutMsg();
-            } else {
-                isCalledFromConnectionEventBus = true;
-                playerManager.setResumeIfConnectionError();
-                if (!activityIsPausing) {
-                    playerManager.register(this);
-                    if (isCalledFromConnectionEventBus) {
-                        playerManager.setRunnable();
-                        isCalledFromConnectionEventBus = false;
-                    }
-                }
-            }
-            resume();
-        }
-    }
+    //TODO
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onNetworkEvent(ConnectEvent event) {
+//        if (event == null || playerManager == null) return;
+//        if (!event.isConnected()) {
+//            notifyError(ErrorUtils.exceptionNoConnection());
+//        } else {
+//            if (playerManager.getExoPlaybackException() == null) {
+//                hideController();
+//                hideLayoutMsg();
+//            } else {
+//                isCalledFromConnectionEventBus = true;
+//                playerManager.setResumeIfConnectionError();
+//                if (!activityIsPausing) {
+//                    playerManager.register(this);
+//                    if (isCalledFromConnectionEventBus) {
+//                        playerManager.setRunnable();
+//                        isCalledFromConnectionEventBus = false;
+//                    }
+//                }
+//            }
+//            resume();
+//        }
+//    }
 
     private void handleConnectedChromecast() {
         isCastingChromecast = true;
