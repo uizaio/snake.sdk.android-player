@@ -1,37 +1,24 @@
-package com.uiza.sdk.models;
+package com.uiza.sdk.models
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import androidx.annotation.Keep
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.io.Serializable
 
-import java.io.Serializable;
-
+@Keep
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UZPlaybackInfo implements Serializable {
+class UZPlaybackInfo(appId: String, entityId: String, entitySource: String) : Serializable {
+
     @JsonProperty("app_id")
-    private String appId;
+    var appId: String = appId
+        private set
+
     @JsonProperty("entity_id")
-    private String entityId;
+    var entityId: String = entityId
+        private set
+
     @JsonProperty("entity_source")
-    private String entitySource;
+    var entitySource: String = entitySource
+        private set
 
-    public UZPlaybackInfo() {
-    }
-
-    public UZPlaybackInfo(String appId, String entityId, String entitySource) {
-        this.appId = appId;
-        this.entityId = entityId;
-        this.entitySource = entitySource;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public String getEntitySource() {
-        return entitySource;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
 }
