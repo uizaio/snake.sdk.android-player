@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public class SensorOrientationChangeNotifier {
     private static SensorOrientationChangeNotifier mInstance;
     public final String TAG = getClass().getSimpleName();
-    private ArrayList<WeakReference<Listener>> mListeners = new ArrayList<WeakReference<SensorOrientationChangeNotifier.Listener>>(3);
+    private final ArrayList<WeakReference<Listener>> mListeners = new ArrayList<WeakReference<SensorOrientationChangeNotifier.Listener>>(3);
     private int mOrientation = 0;
-    private SensorEventListener mSensorEventListener;
-    private SensorManager mSensorManager;
+    private final SensorEventListener mSensorEventListener;
+    private final SensorManager mSensorManager;
 
     private SensorOrientationChangeNotifier(Context context) {
         mSensorEventListener = new NotifierSensorEventListener();
@@ -81,7 +81,7 @@ public class SensorOrientationChangeNotifier {
     }
 
     private void notifyListeners() {
-        ArrayList<WeakReference<Listener>> deadLiksArr = new ArrayList<WeakReference<SensorOrientationChangeNotifier.Listener>>();
+        ArrayList<WeakReference<Listener>> deadLiksArr = new ArrayList<>();
         for (WeakReference<SensorOrientationChangeNotifier.Listener> wr : mListeners) {
             if (wr.get() == null) {
                 deadLiksArr.add(wr);
