@@ -1,8 +1,5 @@
 package com.uiza.sdk.utils
 
-import android.app.ActivityManager
-import android.app.ActivityManager.RunningAppProcessInfo
-import android.app.KeyguardManager
 import android.app.UiModeManager
 import android.content.Context
 import android.content.pm.PackageManager

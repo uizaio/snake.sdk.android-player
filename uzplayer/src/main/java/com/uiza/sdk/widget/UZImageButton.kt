@@ -1,195 +1,195 @@
-package com.uiza.sdk.widget;
+package com.uiza.sdk.widget
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import androidx.appcompat.widget.AppCompatImageButton
+import com.uiza.sdk.R
+import com.uiza.sdk.utils.Constants
+import com.uiza.sdk.utils.ConvertUtils.dp2px
+import com.uiza.sdk.utils.UZAppUtils
+import com.uiza.sdk.utils.UZViewUtils
+import com.uiza.sdk.utils.UZViewUtils.isFullScreen
+import com.uiza.sdk.utils.UZViewUtils.screenWidth
 
-import androidx.appcompat.widget.AppCompatImageButton;
+class UZImageButton : AppCompatImageButton {
+    private var drawableEnabled: Drawable? = null
+    private var drawableDisabled: Drawable? = null
+    private var screenWPortrait = 0
+    private var screenWLandscape = 0
+    private var isUseDefault = false
+    var isSetSrcDrawableEnabled = false
+        private set
+    private var ratioLand = 7
+    private var ratioPort = 5
+    var size = 0
+        private set
 
-import com.uiza.sdk.R;
-import com.uiza.sdk.utils.Constants;
-import com.uiza.sdk.utils.ConvertUtils;
-import com.uiza.sdk.utils.UZAppUtils;
-import com.uiza.sdk.utils.UZViewUtils;
-
-public class UZImageButton extends AppCompatImageButton {
-    private Drawable drawableEnabled;
-    private Drawable drawableDisabled;
-    private int screenWPortrait;
-    private int screenWLandscape;
-    private boolean isUseDefault;
-    private boolean isSetSrcDrawableEnabled;
-    private int ratioLand = 7;
-    private int ratioPort = 5;
-    private int size;
-
-    public UZImageButton(Context context) {
-        super(context);
-        initSizeScreenW(null, 0);
+    constructor(context: Context?) : super(context) {
+        initSizeScreenW(null, 0)
     }
 
-    public UZImageButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initSizeScreenW(attrs, 0);
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        initSizeScreenW(attrs, 0)
     }
 
-    public UZImageButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initSizeScreenW(attrs, defStyleAttr);
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        initSizeScreenW(attrs, defStyleAttr)
     }
 
-    public boolean isSetSrcDrawableEnabled() {
-        return isSetSrcDrawableEnabled;
-    }
-
-    public void setSrcDrawableEnabled() {
-        if (drawableEnabled != null) {
-            setClickable(true);
-            setFocusable(true);
-            setImageDrawable(drawableEnabled);
+    fun setSrcDrawableEnabled() {
+        drawableEnabled?.let {
+            isClickable = true
+            isFocusable = true
+            setImageDrawable(it)
         }
-        clearColorFilter();
-        invalidate();
-        isSetSrcDrawableEnabled = true;
+        clearColorFilter()
+        invalidate()
+        isSetSrcDrawableEnabled = true
     }
 
-    public void setSrcDrawableDisabled() {
-        setClickable(false);
-        setFocusable(false);
-        if (drawableDisabled == null)
-            setColorFilter(Color.GRAY);
-        else {
-            setImageDrawable(drawableDisabled);
-            clearColorFilter();
+    fun setSrcDrawableDisabled() {
+        isClickable = false
+        isFocusable = false
+        if (drawableDisabled == null) {
+            setColorFilter(Color.GRAY)
+        } else {
+            setImageDrawable(drawableDisabled)
+            clearColorFilter()
         }
-        invalidate();
-        isSetSrcDrawableEnabled = false;
+        invalidate()
+        isSetSrcDrawableEnabled = false
     }
 
-    public void setSrcDrawableDisabledCanTouch() {
-        setClickable(true);
-        setFocusable(true);
-        if (drawableDisabled == null)
-            setColorFilter(Color.GRAY);
-        else {
-            setImageDrawable(drawableDisabled);
-            clearColorFilter();
+    fun setSrcDrawableDisabledCanTouch() {
+        isClickable = true
+        isFocusable = true
+        if (drawableDisabled == null) {
+            setColorFilter(Color.GRAY)
+        } else {
+            setImageDrawable(drawableDisabled)
+            clearColorFilter()
         }
-        invalidate();
-        isSetSrcDrawableEnabled = false;
+        invalidate()
+        isSetSrcDrawableEnabled = false
     }
 
-    private void initSizeScreenW(AttributeSet attrs, int defStyleAttr) {
+    private fun initSizeScreenW(attrs: AttributeSet?, defStyleAttr: Int) {
         if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.UZImageButton, defStyleAttr, 0);
+            val a =
+                context.obtainStyledAttributes(attrs, R.styleable.UZImageButton, defStyleAttr, 0)
             try {
-                isUseDefault = a.getBoolean(R.styleable.UZImageButton_useDefaultIB, true);
-                drawableDisabled = a.getDrawable(R.styleable.UZImageButton_srcDisabled);
+                isUseDefault = a.getBoolean(R.styleable.UZImageButton_useDefaultIB, true)
+                drawableDisabled = a.getDrawable(R.styleable.UZImageButton_srcDisabled)
             } finally {
-                a.recycle();
+                a.recycle()
             }
         } else {
-            isUseDefault = true;
-            drawableDisabled = null;
+            isUseDefault = true
+            drawableDisabled = null
         }
         //disable click sound of a particular button in android app
-        setSoundEffectsEnabled(false);
+        isSoundEffectsEnabled = false
         if (!isUseDefault) {
-            drawableEnabled = getDrawable();
-            return;
+            drawableEnabled = drawable
+            return
         }
-        boolean isTablet = UZAppUtils.isTablet(getContext());
+        val isTablet = UZAppUtils.isTablet(context)
         if (isTablet) {
-            ratioLand = Constants.RATIO_LAND_TABLET;
-            ratioPort = Constants.RATIO_PORTRAIT_TABLET;
+            ratioLand = Constants.RATIO_LAND_TABLET
+            ratioPort = Constants.RATIO_PORTRAIT_TABLET
         } else {
-            ratioLand = Constants.RATIO_LAND_MOBILE;
-            ratioPort = Constants.RATIO_PORTRAIT_MOBILE;
+            ratioLand = Constants.RATIO_LAND_MOBILE
+            ratioPort = Constants.RATIO_PORTRAIT_MOBILE
         }
-        screenWPortrait = UZViewUtils.getScreenWidth();
-        screenWLandscape = UZViewUtils.getScreenHeightIncludeNavigationBar(this.getContext());
+        screenWPortrait = screenWidth
+        screenWLandscape = UZViewUtils.getScreenHeightIncludeNavigationBar(this.context)
         //set padding 5dp
-        int px = ConvertUtils.dp2px(5);
-        setPadding(px, px, px, px);
-        post(() -> {
-            if (UZViewUtils.isFullScreen(getContext())) {
-                updateSizeLandscape();
+        val px = dp2px(5f)
+        setPadding(px, px, px, px)
+        post {
+            if (isFullScreen(context)) {
+                updateSizeLandscape()
             } else {
-                updateSizePortrait();
+                updateSizePortrait()
             }
-        });
-        drawableEnabled = getDrawable();
+        }
+        drawableEnabled = drawable
     }
 
-    public int getRatioLand() {
-        return ratioLand;
+    fun getRatioLand(): Int {
+        return ratioLand
     }
 
-    public void setRatioLand(int ratioLand) {
-        this.ratioLand = ratioLand;
-        if (UZViewUtils.isFullScreen(getContext())) {
-            updateSizeLandscape();
+    fun setRatioLand(ratioLand: Int) {
+        this.ratioLand = ratioLand
+        if (isFullScreen(context)) {
+            updateSizeLandscape()
         } else {
-            updateSizePortrait();
+            updateSizePortrait()
         }
     }
 
-    public int getRatioPort() {
-        return ratioPort;
+    fun getRatioPort(): Int {
+        return ratioPort
     }
 
-    public void setRatioPort(int ratioPort) {
-        this.ratioPort = ratioPort;
-        if (UZViewUtils.isFullScreen(getContext())) {
-            updateSizeLandscape();
+    fun setRatioPort(ratioPortrait: Int) {
+        this.ratioPort = ratioPortrait
+        if (isFullScreen(context)) {
+            updateSizeLandscape()
         } else {
-            updateSizePortrait();
+            updateSizePortrait()
         }
     }
 
-    private void updateSizePortrait() {
+    private fun updateSizePortrait() {
         if (!isUseDefault) {
-            return;
+            return
         }
-        size = screenWPortrait / ratioPort;
-        this.getLayoutParams().width = size;
-        this.getLayoutParams().height = size;
-        this.requestLayout();
+        if (ratioPort == 0) {
+            throw IllegalArgumentException("Invalid: ratioPort == 0")
+        }
+        size = screenWPortrait / ratioPort
+        this.layoutParams.width = size
+        this.layoutParams.height = size
+        requestLayout()
     }
 
-    private void updateSizeLandscape() {
+    private fun updateSizeLandscape() {
         if (!isUseDefault) {
-            return;
+            return
         }
-        size = screenWLandscape / ratioLand;
-        this.getLayoutParams().width = size;
-        this.getLayoutParams().height = size;
-        this.requestLayout();
+        if (ratioLand == 0) {
+            throw IllegalArgumentException("Invalid: ratioLand == 0")
+        }
+        size = screenWLandscape / ratioLand
+        this.layoutParams.width = size
+        this.layoutParams.height = size
+        requestLayout()
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            updateSizeLandscape();
+            updateSizeLandscape()
         } else {
-            updateSizePortrait();
+            updateSizePortrait()
         }
     }
 
-    public void setUIVisible(final boolean isVisible) {
-        setClickable(isVisible);
-        setFocusable(isVisible);
+    fun setUIVisible(isVisible: Boolean) {
+        isClickable = isVisible
+        isFocusable = isVisible
         if (isVisible) {
-            setSrcDrawableEnabled();
+            setSrcDrawableEnabled()
         } else {
-            setImageResource(0);
+            setImageResource(0)
         }
     }
 }
