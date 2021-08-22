@@ -1,49 +1,43 @@
-package com.uiza.sdk.widget;
+package com.uiza.sdk.widget
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.mediarouter.app.MediaRouteButton
+import com.uiza.sdk.exceptions.ErrorConstant
+import com.uiza.sdk.utils.UZAppUtils
 
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.mediarouter.app.MediaRouteButton;
+class UZMediaRouteButton : MediaRouteButton {
+    var mRemoteIndicatorDrawable: Drawable? = null
 
-import com.uiza.sdk.exceptions.ErrorConstant;
-import com.uiza.sdk.utils.UZAppUtils;
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-public class UZMediaRouteButton extends MediaRouteButton {
-
-    protected Drawable mRemoteIndicatorDrawable;
-
-    {
-        checkChromeCastAvailable();
+    init {
+        checkChromeCastAvailable()
     }
 
-    public UZMediaRouteButton(Context context) {
-        super(context);
+    override fun setRemoteIndicatorDrawable(d: Drawable) {
+        mRemoteIndicatorDrawable = d
+        super.setRemoteIndicatorDrawable(d)
     }
 
-    public UZMediaRouteButton(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    fun applyTint(color: Int) {
+        mRemoteIndicatorDrawable?.let {
+            val wrapDrawable = DrawableCompat.wrap(it)
+            DrawableCompat.setTint(wrapDrawable, color)
+        }
     }
 
-    public UZMediaRouteButton(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    public void setRemoteIndicatorDrawable(Drawable d) {
-        mRemoteIndicatorDrawable = d;
-        super.setRemoteIndicatorDrawable(d);
-    }
-
-    public void applyTint(int color) {
-        Drawable wrapDrawable = DrawableCompat.wrap(mRemoteIndicatorDrawable);
-        DrawableCompat.setTint(wrapDrawable, color);
-    }
-
-    private void checkChromeCastAvailable() {
+    private fun checkChromeCastAvailable() {
         if (!UZAppUtils.checkChromeCastAvailable()) {
-            throw new NoClassDefFoundError(ErrorConstant.ERR_505);
+            throw NoClassDefFoundError(ErrorConstant.ERR_505)
         }
     }
 }
