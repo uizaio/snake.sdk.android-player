@@ -20,17 +20,16 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class UZPreviewTimeBar extends DefaultTimeBar implements PreviewView,
         TimeBar.OnScrubListener {
 
-    private List<OnPreviewChangeListener> listeners;
+    private final List<OnPreviewChangeListener> listeners;
     private PreviewDelegate delegate;
     private int scrubProgress;
     private int duration;
-    private int scrubberColor;
-    private int frameLayoutId;
-    private int scrubberDiameter;
+    private final int scrubberColor;
+    private final int frameLayoutId;
+    private final int scrubberDiameter;
 
     public UZPreviewTimeBar(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -15,10 +15,6 @@ import com.uiza.sdk.utils.ConvertUtils;
 import com.uiza.sdk.utils.UZAppUtils;
 import com.uiza.sdk.utils.UZViewUtils;
 
-/**
- * Created by loitp on 2/27/2019.
- */
-
 public class UZImageButton extends AppCompatImageButton {
     private Drawable drawableEnabled;
     private Drawable drawableDisabled;
