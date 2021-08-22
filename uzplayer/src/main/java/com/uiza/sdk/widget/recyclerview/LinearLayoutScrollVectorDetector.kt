@@ -1,19 +1,14 @@
-package com.uiza.sdk.widget.recyclerview;
+package com.uiza.sdk.widget.recyclerview
 
-import android.graphics.PointF;
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.uiza.sdk.widget.recyclerview.SnappySmoothScroller.ScrollVectorDetector
+import android.graphics.PointF
 
-import androidx.recyclerview.widget.LinearLayoutManager;
+class LinearLayoutScrollVectorDetector(
+    private val layoutManager: LinearLayoutManager
+) : ScrollVectorDetector {
 
-public class LinearLayoutScrollVectorDetector implements SnappySmoothScroller.ScrollVectorDetector {
-
-    private LinearLayoutManager layoutManager;
-
-    public LinearLayoutScrollVectorDetector(LinearLayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
-    }
-
-    @Override
-    public PointF computeScrollVectorForPosition(int targetPosition) {
-        return layoutManager.computeScrollVectorForPosition(targetPosition);
+    override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+        return layoutManager.computeScrollVectorForPosition(targetPosition)
     }
 }
