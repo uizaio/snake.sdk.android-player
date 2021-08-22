@@ -6,7 +6,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.widget.FrameLayout
 import kotlin.math.min
 
-internal abstract class PreviewAnimator(
+abstract class PreviewAnimator(
     var parent: ViewGroup,
     var previewView: PreviewView,
     var morphView: View,
