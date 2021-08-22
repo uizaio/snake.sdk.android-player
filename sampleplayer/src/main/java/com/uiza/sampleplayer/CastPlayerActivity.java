@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
@@ -14,7 +15,6 @@ import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
-import com.uiza.sdk.widget.UZToast;
 
 public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
     private UZVideoView uzVideo;
@@ -73,7 +73,7 @@ public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCal
 
     @Override
     public void onError(UZException e) {
-        UZToast.show(this, e.getLocalizedMessage());
+        Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

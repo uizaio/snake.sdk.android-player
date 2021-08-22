@@ -6,13 +6,13 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.uiza.sdk.R;
-import com.uiza.sdk.widget.UZToast;
 
 /**
  * Created by LENOVO on 3/30/2018.
@@ -34,7 +34,7 @@ public class ImmersiveDialogFragment extends DialogFragment {
         if (dialogWindow != null)
             dialogWindow.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
-            if (getContext() != null) UZToast.show(getContext(), "Touch OK");
+            Toast.makeText(getContext(), "Touch OK", Toast.LENGTH_SHORT).show();
         });
         return alertDialog;
     }
