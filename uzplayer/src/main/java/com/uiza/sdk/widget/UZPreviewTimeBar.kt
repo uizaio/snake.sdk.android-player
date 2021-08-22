@@ -90,7 +90,9 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
     }
 
     override fun attachPreviewFrameLayout(frameLayout: FrameLayout?) {
-        delegate?.attachPreviewFrameLayout(frameLayout)
+        frameLayout?.let { fl ->
+            delegate?.attachPreviewFrameLayout(fl)
+        }
     }
 
     override fun setEnabled(enabled: Boolean) {

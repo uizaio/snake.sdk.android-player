@@ -1,171 +1,183 @@
-package com.uiza.sdk.widget.previewseekbar;
+package com.uiza.sdk.widget.previewseekbar
 
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.os.Build
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.uiza.sdk.R
+import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
+class PreviewDelegate(
+    private val previewView: PreviewView,
+    scrubberColor: Int
+) : OnPreviewChangeListener {
+    private var morphView: View? = null
+    private var previewFrameView: View? = null
+    private var previewParent: ViewGroup? = null
+    private var animator: PreviewAnimator? = null
+    private var previewLoader: PreviewLoader? = null
+    private val scrubberColor: Int
+    var isShowing = false
+        private set
+    private var startTouch = false
+    var isSetup = false
+        private set
+    private var enabled = false
+    private val alwaysHide = false
 
-import com.uiza.sdk.R;
-
-
-public class PreviewDelegate implements PreviewView.OnPreviewChangeListener {
-
-    private View morphView;
-    private View previewFrameView;
-    private ViewGroup previewParent;
-    private PreviewAnimator animator;
-    private PreviewView previewView;
-    private PreviewLoader previewLoader;
-
-    private int scrubberColor;
-    private boolean showing;
-    private boolean startTouch;
-    private boolean setup;
-    private boolean enabled;
-    private boolean alwaysHide;
-
-    public PreviewDelegate(PreviewView previewView, int scrubberColor) {
-        this.previewView = previewView;
-        this.previewView.addOnPreviewChangeListener(this);
-        this.scrubberColor = scrubberColor;
+    init {
+        previewView.addOnPreviewChangeListener(this)
+        this.scrubberColor = scrubberColor
     }
 
-    public void setPreviewLoader(PreviewLoader previewLoader) {
-        this.previewLoader = previewLoader;
+    fun setPreviewLoader(previewLoader: PreviewLoader?) {
+        this.previewLoader = previewLoader
     }
 
-    public void onLayout(ViewGroup previewParent, int frameLayoutId) {
-        if (!setup) {
-            this.previewParent = previewParent;
-            FrameLayout frameLayout = findFrameLayout(previewParent, frameLayoutId);
-            if (frameLayout != null)
-                attachPreviewFrameLayout(frameLayout);
-        }
-    }
-
-    public void attachPreviewFrameLayout(FrameLayout frameLayout) {
-        if (setup) return;
-        this.previewParent = (ViewGroup) frameLayout.getParent();
-        inflateViews(frameLayout);
-        morphView.setVisibility(View.INVISIBLE);
-        frameLayout.setVisibility(View.INVISIBLE);
-        previewFrameView.setVisibility(View.INVISIBLE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            animator = new PreviewAnimatorLollipopImpl(previewParent, previewView, morphView,
-                    frameLayout, previewFrameView);
-        else
-            animator = new PreviewAnimatorImpl(previewParent, previewView, morphView,
-                    frameLayout, previewFrameView);
-        setup = true;
-    }
-
-    public boolean isShowing() {
-        return showing;
-    }
-
-    public void show() {
-        if (!showing && setup) {
-            animator.show();
-            showing = true;
-        }
-    }
-
-    public void hide() {
-        if (showing) {
-            animator.hide();
-            showing = false;
-        }
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setPreviewColorTint(@ColorInt int color) {
-        Drawable drawable = DrawableCompat.wrap(morphView.getBackground());
-        DrawableCompat.setTint(drawable, color);
-        morphView.setBackground(drawable);
-        previewFrameView.setBackgroundColor(color);
-    }
-
-    public void setPreviewColorResourceTint(@ColorRes int color) {
-        setPreviewColorTint(ContextCompat.getColor(previewParent.getContext(), color));
-    }
-
-    @Override
-    public void onStartPreview(PreviewView previewView, int progress) {
-        startTouch = true;
-    }
-
-    @Override
-    public void onStopPreview(PreviewView previewView, int progress) {
-        if (showing) {
-            animator.hide();
-        }
-        showing = false;
-        startTouch = false;
-    }
-
-    @Override
-    public void onPreview(PreviewView previewView, int progress, boolean fromUser) {
-        if (setup && enabled) {
-            animator.move();
-            if (!showing && !startTouch && fromUser) {
-                show();
-            }
-            if (previewLoader != null) {
-                previewLoader.loadPreview(progress, previewView.getMax());
+    fun onLayout(previewParent: ViewGroup?, frameLayoutId: Int) {
+        if (!isSetup) {
+            this.previewParent = previewParent
+            val frameLayout = findFrameLayout(previewParent, frameLayoutId)
+            frameLayout?.let {
+                attachPreviewFrameLayout(it)
             }
         }
-        startTouch = false;
     }
 
-    public boolean isSetup() {
-        return setup;
+    fun attachPreviewFrameLayout(frameLayout: FrameLayout) {
+        if (isSetup) {
+            return
+        }
+        previewParent = frameLayout.parent as ViewGroup
+        inflateViews(frameLayout)
+        morphView?.visibility = View.INVISIBLE
+        frameLayout.visibility = View.INVISIBLE
+        previewFrameView?.visibility = View.INVISIBLE
+
+        previewParent?.let { pp ->
+            morphView?.let { mv ->
+                previewFrameView?.let { pfv ->
+                    animator =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            PreviewAnimatorLollipopImpl(
+                                parent = pp,
+                                previewView = previewView,
+                                morphView = mv,
+                                previewFrameLayout = frameLayout,
+                                previewFrameView = pfv
+                            )
+                        } else {
+                            PreviewAnimatorImpl(
+                                parent = pp,
+                                previewView = previewView,
+                                morphView = mv,
+                                previewFrameLayout = frameLayout,
+                                previewFrameView = pfv
+                            )
+                        }
+                }
+            }
+        }
+        isSetup = true
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
-    private void inflateViews(FrameLayout frameLayout) {
+    fun show() {
+        if (!isShowing && isSetup) {
+            animator?.show()
+            isShowing = true
+        }
+    }
+
+    fun hide() {
+        if (isShowing) {
+            animator?.hide()
+            isShowing = false
+        }
+    }
+
+    fun setEnabled(enabled: Boolean) {
+        this.enabled = enabled
+    }
+
+    fun setPreviewColorTint(@ColorInt color: Int) {
+        morphView?.let { mv ->
+            val drawable = DrawableCompat.wrap(mv.background)
+            DrawableCompat.setTint(drawable, color)
+            mv.background = drawable
+            previewFrameView?.setBackgroundColor(color)
+        }
+    }
+
+    fun setPreviewColorResourceTint(@ColorRes color: Int) {
+        previewParent?.context?.let {
+            setPreviewColorTint(ContextCompat.getColor(it, color))
+        }
+    }
+
+    override fun onStartPreview(previewView: PreviewView?, progress: Int) {
+        startTouch = true
+    }
+
+    override fun onStopPreview(previewView: PreviewView?, progress: Int) {
+        if (isShowing) {
+            animator?.hide()
+        }
+        isShowing = false
+        startTouch = false
+    }
+
+    override fun onPreview(previewView: PreviewView?, progress: Int, fromUser: Boolean) {
+        if (isSetup && enabled) {
+            animator?.move()
+            if (!isShowing && !startTouch && fromUser) {
+                show()
+            }
+            previewView?.let { pv ->
+                previewLoader?.loadPreview(
+                    currentPosition = progress.toLong(),
+                    max = pv.max.toLong()
+                )
+            }
+        }
+        startTouch = false
+    }
+
+    private fun inflateViews(frameLayout: FrameLayout) {
 
         // Create morph view
-        morphView = new View(frameLayout.getContext());
-        morphView.setBackgroundResource(R.drawable.previewseekbar_morph);
+        morphView = View(frameLayout.context)
+        morphView?.setBackgroundResource(R.drawable.previewseekbar_morph)
 
         // Setup morph view
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(0, 0);
-        layoutParams.width = frameLayout.getResources()
-                .getDimensionPixelSize(R.dimen.previewseekbar_indicator_width);
-        layoutParams.height = layoutParams.width;
-        previewParent.addView(morphView, layoutParams);
+        val layoutParams = ViewGroup.LayoutParams(0, 0)
+        layoutParams.width = frameLayout.resources
+            .getDimensionPixelSize(R.dimen.previewseekbar_indicator_width)
+        layoutParams.height = layoutParams.width
+        previewParent?.addView(morphView, layoutParams)
 
         // Create frame view for the circular reveal
-        previewFrameView = new View(frameLayout.getContext());
-        FrameLayout.LayoutParams frameLayoutParams
-                = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        frameLayout.addView(previewFrameView, frameLayoutParams);
+        previewFrameView = View(frameLayout.context)
+        val frameLayoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        frameLayout.addView(previewFrameView, frameLayoutParams)
 
         // Apply same color for the morph and frame views
-        setPreviewColorTint(scrubberColor);
-        frameLayout.requestLayout();
+        setPreviewColorTint(scrubberColor)
+        frameLayout.requestLayout()
     }
 
-    @Nullable
-    private FrameLayout findFrameLayout(ViewGroup parent, int id) {
-        if (id == View.NO_ID || parent == null)
-            return null;
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            View child = parent.getChildAt(i);
-            if (child.getId() == id && child instanceof FrameLayout)
-                return (FrameLayout) child;
+    private fun findFrameLayout(parent: ViewGroup?, id: Int): FrameLayout? {
+        if (id == View.NO_ID || parent == null) return null
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            if (child.id == id && child is FrameLayout) return child
         }
-        return null;
+        return null
     }
 }
