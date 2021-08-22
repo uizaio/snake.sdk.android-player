@@ -90,7 +90,6 @@ import com.uiza.sdk.widget.UZPreviewTimeBar;
 import com.uiza.sdk.widget.UZTextView;
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader;
 import com.uiza.sdk.widget.previewseekbar.PreviewView;
-import com.uiza.sdk.widget.seekbar.UZVerticalSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1483,7 +1482,7 @@ public class UZVideoView extends RelativeLayout
                     tvLiveView.setText(HYPHEN);
             }
         } else
-            //goi changeskin realtime thi no ko vao if nen ko update tvDuration dc
+            //goi change skin realtime thi no ko vao if nen ko update tvDuration dc
             updateTvDuration();
     }
 
@@ -1592,10 +1591,6 @@ public class UZVideoView extends RelativeLayout
                 tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(0));
             else
                 tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(getDuration()));
-    }
-
-    public void setProgressSeekBar(@NonNull UZVerticalSeekBar uzVerticalSeekBar, int progressSeekBar) {
-        uzVerticalSeekBar.setProgress(progressSeekBar);
     }
 
     private void setTextPosition(long currentMls) {
