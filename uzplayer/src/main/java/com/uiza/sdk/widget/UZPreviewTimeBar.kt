@@ -1,192 +1,175 @@
-package com.uiza.sdk.widget;
+package com.uiza.sdk.widget
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.content.Context
+import android.util.AttributeSet
+import android.util.DisplayMetrics
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.ColorRes
+import com.google.android.exoplayer2.ui.DefaultTimeBar
+import com.google.android.exoplayer2.ui.TimeBar
+import com.google.android.exoplayer2.ui.TimeBar.OnScrubListener
+import com.uiza.sdk.R
+import com.uiza.sdk.widget.previewseekbar.PreviewDelegate
+import com.uiza.sdk.widget.previewseekbar.PreviewLoader
+import com.uiza.sdk.widget.previewseekbar.PreviewView
+import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
+import java.util.*
 
-import androidx.annotation.ColorRes;
+class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(context, attrs),
+    PreviewView, OnScrubListener {
 
-import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.TimeBar;
-import com.uiza.sdk.R;
-import com.uiza.sdk.widget.previewseekbar.PreviewDelegate;
-import com.uiza.sdk.widget.previewseekbar.PreviewLoader;
-import com.uiza.sdk.widget.previewseekbar.PreviewView;
+    companion object {
+        fun getDefaultScrubberColor(playedColor: Int): Int {
+            return -0x1000000 or playedColor
+        }
+    }
 
-import java.util.ArrayList;
-import java.util.List;
+    private val listeners = ArrayList<OnPreviewChangeListener?>()
+    private var delegate: PreviewDelegate? = null
+    private var scrubProgress = 0
+    private var duration = 0
+    private val scrubberColor: Int
+    private val frameLayoutId: Int
+    private val scrubberDiameter: Int
 
-public class UZPreviewTimeBar extends DefaultTimeBar implements PreviewView,
-        TimeBar.OnScrubListener {
-
-    private final List<OnPreviewChangeListener> listeners;
-    private PreviewDelegate delegate;
-    private int scrubProgress;
-    private int duration;
-    private final int scrubberColor;
-    private final int frameLayoutId;
-    private final int scrubberDiameter;
-
-    public UZPreviewTimeBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        listeners = new ArrayList<>();
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar, 0, 0);
-        final int playedColor = a.getInt(
-                com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_played_color,
-                DEFAULT_PLAYED_COLOR);
+    init {
+        var a = context.theme.obtainStyledAttributes(
+            attrs,
+            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar, 0, 0
+        )
+        val playedColor = a.getInt(
+            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_played_color,
+            DEFAULT_PLAYED_COLOR
+        )
         scrubberColor = a.getInt(
-                com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_color,
-                getDefaultScrubberColor(playedColor));
-
-        int defaultScrubberDraggedSize = dpToPx(context.getResources().getDisplayMetrics(),
-                DEFAULT_SCRUBBER_DRAGGED_SIZE_DP);
-
+            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_color,
+            getDefaultScrubberColor(playedColor)
+        )
+        val defaultScrubberDraggedSize = dpToPx(
+            context.resources.displayMetrics,
+            DEFAULT_SCRUBBER_DRAGGED_SIZE_DP
+        )
         scrubberDiameter = a.getDimensionPixelSize(
-                com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_dragged_size,
-                defaultScrubberDraggedSize);
-
-        a.recycle();
-
-        a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.UZPreviewTimeBar, 0, 0);
-        frameLayoutId = a.getResourceId(R.styleable.UZPreviewTimeBar_previewFrameLayout, View.NO_ID);
+            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_dragged_size,
+            defaultScrubberDraggedSize
+        )
+        a.recycle()
+        a = context.theme.obtainStyledAttributes(attrs, R.styleable.UZPreviewTimeBar, 0, 0)
+        frameLayoutId = a.getResourceId(R.styleable.UZPreviewTimeBar_previewFrameLayout, NO_ID)
     }
 
-    public static int getDefaultScrubberColor(int playedColor) {
-        return 0xFF000000 | playedColor;
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        delegate = PreviewDelegate(this, scrubberColor)
+        delegate?.setEnabled(isEnabled)
+        addListener(this)
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        delegate = new PreviewDelegate(this, scrubberColor);
-        delegate.setEnabled(isEnabled());
-        addListener(this);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (!delegate.isSetup() && getWidth() != 0 && getHeight() != 0 && !isInEditMode()) {
-            delegate.onLayout((ViewGroup) getParent(), frameLayoutId);
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        delegate?.let { pd ->
+            if (!pd.isSetup && width != 0 && height != 0 && !isInEditMode) {
+                if (parent is ViewGroup) {
+                    pd.onLayout(parent as ViewGroup, frameLayoutId)
+                }
+            }
         }
     }
 
-    @Override
-    public void setPreviewColorTint(int color) {
-        delegate.setPreviewColorTint(color);
+    override fun setPreviewColorTint(color: Int) {
+        delegate?.setPreviewColorTint(color)
     }
 
-    @Override
-    public void setPreviewColorResourceTint(@ColorRes int color) {
-        delegate.setPreviewColorResourceTint(color);
+    override fun setPreviewColorResourceTint(@ColorRes color: Int) {
+        delegate?.setPreviewColorResourceTint(color)
     }
 
-    @Override
-    public void setPreviewLoader(PreviewLoader previewLoader) {
-        delegate.setPreviewLoader(previewLoader);
+    override fun setPreviewLoader(previewLoader: PreviewLoader) {
+        delegate?.setPreviewLoader(previewLoader)
     }
 
-    @Override
-    public void attachPreviewFrameLayout(FrameLayout frameLayout) {
-        delegate.attachPreviewFrameLayout(frameLayout);
+    override fun attachPreviewFrameLayout(frameLayout: FrameLayout?) {
+        delegate?.attachPreviewFrameLayout(frameLayout)
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        if (delegate != null)
-            delegate.setEnabled(enabled);
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        delegate?.setEnabled(enabled)
     }
 
-    @Override
-    public void setDuration(long duration) {
-        super.setDuration(duration);
-        this.duration = (int) duration;
+    override fun setDuration(duration: Long) {
+        super.setDuration(duration)
+        this.duration = duration.toInt()
     }
 
-    @Override
-    public void setPosition(long position) {
-        super.setPosition(position);
-        this.scrubProgress = (int) position;
+    override fun setPosition(position: Long) {
+        super.setPosition(position)
+        scrubProgress = position.toInt()
     }
 
-    @Override
-    public boolean isShowingPreview() {
-        return delegate.isShowing();
+    override fun isShowingPreview(): Boolean {
+        return delegate?.isShowing ?: false
     }
 
-    @Override
-    public void showPreview() {
-        if (isEnabled())
-            delegate.show();
-    }
-
-    @Override
-    public void hidePreview() {
-        if (isEnabled()) {
-            delegate.hide();
+    override fun showPreview() {
+        if (isEnabled) {
+            delegate?.show()
         }
     }
 
-    @Override
-    public int getProgress() {
-        return scrubProgress;
-    }
-
-    @Override
-    public int getMax() {
-        return duration;
-    }
-
-    @Override
-    public int getThumbOffset() {
-        return scrubberDiameter / 2;
-    }
-
-    @Override
-    public int getDefaultColor() {
-        return scrubberColor;
-    }
-
-    @Override
-    public void addOnPreviewChangeListener(OnPreviewChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeOnPreviewChangeListener(OnPreviewChangeListener listener) {
-        listeners.remove(listener);
-    }
-
-    @Override
-    public void onScrubStart(TimeBar timeBar, long position) {
-        for (OnPreviewChangeListener listener : listeners) {
-            scrubProgress = (int) position;
-            listener.onStartPreview(this, (int) position);
+    override fun hidePreview() {
+        if (isEnabled) {
+            delegate?.hide()
         }
     }
 
-    @Override
-    public void onScrubMove(TimeBar timeBar, long position) {
-        for (OnPreviewChangeListener listener : listeners) {
-            scrubProgress = (int) position;
-            listener.onPreview(this, (int) position, true);
+    override fun getProgress(): Int {
+        return scrubProgress
+    }
+
+    override fun getMax(): Int {
+        return duration
+    }
+
+    override fun getThumbOffset(): Int {
+        return scrubberDiameter / 2
+    }
+
+    override fun getDefaultColor(): Int {
+        return scrubberColor
+    }
+
+    override fun addOnPreviewChangeListener(listener: OnPreviewChangeListener) {
+        listeners.add(listener)
+    }
+
+    override fun removeOnPreviewChangeListener(listener: OnPreviewChangeListener?) {
+        listeners.remove(listener)
+    }
+
+    override fun onScrubStart(timeBar: TimeBar, position: Long) {
+        for (listener in listeners) {
+            scrubProgress = position.toInt()
+            listener?.onStartPreview(this, position.toInt())
         }
     }
 
-    @Override
-    public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
-        for (OnPreviewChangeListener listener : listeners) {
-            listener.onStopPreview(this, (int) position);
+    override fun onScrubMove(timeBar: TimeBar, position: Long) {
+        for (listener in listeners) {
+            scrubProgress = position.toInt()
+            listener?.onPreview(this, position.toInt(), true)
         }
     }
 
-    private int dpToPx(DisplayMetrics displayMetrics, int dp) {
-        return (int) (dp * displayMetrics.density + 0.5f);
+    override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+        for (listener in listeners) {
+            listener?.onStopPreview(this, position.toInt())
+        }
     }
+
+    private fun dpToPx(displayMetrics: DisplayMetrics, dp: Int): Int {
+        return (dp * displayMetrics.density + 0.5f).toInt()
+    }
+
 }
