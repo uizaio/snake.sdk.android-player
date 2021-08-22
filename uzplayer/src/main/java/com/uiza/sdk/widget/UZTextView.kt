@@ -2,12 +2,11 @@ package com.uiza.sdk.widget
 
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.AttributeSet
-import com.uiza.sdk.R
 import android.util.TypedValue
 import androidx.appcompat.widget.AppCompatTextView
+import com.uiza.sdk.R
 
 class UZTextView : AppCompatTextView {
     private var isUseDefault = false

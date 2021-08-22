@@ -6,13 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.uiza.sdk.R;
-import com.uiza.sdk.widget.UZSwitch;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class SettingAdapter extends ArrayAdapter<SettingItem> {
     }
 
     static class ViewHolder0 extends ViewHolder {
-        protected UZSwitch toggle;
+        protected SwitchCompat toggle;
         OnToggleChangeListener listener;
 
         public ViewHolder0(View root) {
