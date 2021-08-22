@@ -1,5 +1,5 @@
-package com.uiza.sdk.widget.previewseekbar;
+package com.uiza.sdk.widget.previewseekbar
 
-public interface PreviewLoader {
-    void loadPreview(long currentPosition, long max);
+interface PreviewLoader {
+    fun loadPreview(currentPosition: Long, max: Long)
 }
