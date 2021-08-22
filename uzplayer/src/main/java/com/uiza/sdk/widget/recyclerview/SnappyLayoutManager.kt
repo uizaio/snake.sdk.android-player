@@ -1,20 +1,13 @@
-package com.uiza.sdk.widget.recyclerview;
+package com.uiza.sdk.widget.recyclerview
 
-import android.view.animation.Interpolator;
+import android.view.animation.Interpolator
 
-public interface SnappyLayoutManager {
-
-    void setSnapType(SnapType snapType);
-
-    void setSnapDuration(int snapDuration);
-
-    void setSnapInterpolator(Interpolator snapInterpolator);
-
-    void setSnapPadding(int snapPadding);
-
-    void setSnapPaddingStart(int snapPaddingStart);
-
-    void setSnapPaddingEnd(int snapPaddingEnd);
-
-    void setSeekDuration(int seekDuration);
+interface SnappyLayoutManager {
+    fun setSnapType(snapType: SnapType)
+    fun setSnapDuration(snapDuration: Int)
+    fun setSnapInterpolator(snapInterpolator: Interpolator)
+    fun setSnapPadding(snapPadding: Int)
+    fun setSnapPaddingStart(snapPaddingStart: Int)
+    fun setSnapPaddingEnd(snapPaddingEnd: Int)
+    fun setSeekDuration(seekDuration: Int)
 }
