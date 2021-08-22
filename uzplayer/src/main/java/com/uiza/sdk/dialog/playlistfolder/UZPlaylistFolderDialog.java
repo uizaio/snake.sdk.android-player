@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Window;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -16,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.uiza.sdk.R;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZData;
-import com.uiza.sdk.widget.recyclerview.SnapType;
-import com.uiza.sdk.widget.recyclerview.SnappyLinearLayoutManager;
 
 import java.util.List;
 
@@ -60,9 +57,7 @@ public class UZPlaylistFolderDialog extends Dialog {
     }
 
     private void setupUI() {
-        SnappyLinearLayoutManager layoutManager = new SnappyLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        layoutManager.setSnapType(SnapType.CENTER);
-        layoutManager.setSnapInterpolator(new DecelerateInterpolator());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         AdapterPlaylistFolder adapterPlaylistFolder = new AdapterPlaylistFolder(context, playList, currentPositionOfDataList, new CallbackPlaylistFolder() {
             @Override
