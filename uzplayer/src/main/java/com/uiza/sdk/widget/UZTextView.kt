@@ -1,88 +1,79 @@
-package com.uiza.sdk.widget;
+package com.uiza.sdk.widget
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.TypedArray
+import android.graphics.Color
+import android.util.AttributeSet
+import com.uiza.sdk.R
+import android.util.TypedValue
+import androidx.appcompat.widget.AppCompatTextView
 
-import androidx.appcompat.widget.AppCompatTextView;
+class UZTextView : AppCompatTextView {
+    private var isUseDefault = false
+    private var isLandscape = false
 
-import com.uiza.sdk.R;
+    //sp
+    var textSizeLand = -1F
+        get() = if (field == -1F) 15F else field
 
-/**
- * Created by loitp on 4/19/2018.
- */
+    //sp
+    var textSizePortrait = -1F
+        get() = if (field == -1F) 10F else field
 
-public class UZTextView extends AppCompatTextView {
-    private boolean isUseDefault;
-    private boolean isLandscape;
-    private int textSizeLand = -1;
-    private int textSizePortrait = -1;
-
-    public UZTextView(Context context) {
-        super(context);
-        init(null, 0);
+    constructor(context: Context?) : super(context) {
+        init(null, 0)
     }
 
-    public UZTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs, 0);
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        init(attrs, 0)
     }
 
-    public UZTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(attrs, defStyleAttr);
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        init(attrs, defStyleAttr)
     }
 
-    private void init(AttributeSet attrs, int defStyleAttr) {
-        if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.UZTextView, defStyleAttr, 0);
+    private fun init(attrs: AttributeSet?, defStyleAttr: Int) {
+        isUseDefault = if (attrs != null) {
+            val a = context.obtainStyledAttributes(attrs, R.styleable.UZTextView, defStyleAttr, 0)
             try {
-                isUseDefault = a.getBoolean(R.styleable.UZTextView_useDefaultTV, true);
+                a.getBoolean(R.styleable.UZTextView_useDefaultTV, true)
             } finally {
-                a.recycle();
+                a.recycle()
             }
         } else {
-            isUseDefault = true;
+            true
         }
         setShadowLayer(
-                1f, // radius
-                1f, // dx
-                1f, // dy
-                Color.BLACK // shadow color
-        );
-        updateSize();
-        setSingleLine();
+            1f,  // radius
+            1f,  // dx
+            1f,  // dy
+            Color.BLACK // shadow color
+        )
+        updateSize()
+        setSingleLine()
     }
 
-    private void updateSize() {
-        if (!isUseDefault) return;
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, isLandscape ? getTextSizeLand() : getTextSizePortrait());
+    private fun updateSize() {
+        if (!isUseDefault) {
+            return
+        }
+        setTextSize(
+            TypedValue.COMPLEX_UNIT_SP,
+            if (isLandscape) {
+                textSizeLand
+            } else {
+                textSizePortrait
+            }
+        )
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE;
-        updateSize();
-    }
-
-    public int getTextSizeLand() {
-        return textSizeLand == -1 ? 15 : textSizeLand;
-    }
-
-    //sp
-    public void setTextSizeLand(int textSizeLand) {
-        this.textSizeLand = textSizeLand;
-    }
-
-    public int getTextSizePortrait() {
-        return textSizePortrait == -1 ? 10 : textSizePortrait;
-    }
-
-    //sp
-    public void setTextSizePortrait(int textSizePortrait) {
-        this.textSizePortrait = textSizePortrait;
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        updateSize()
     }
 }
