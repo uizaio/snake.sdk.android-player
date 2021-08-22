@@ -1,64 +1,49 @@
-package com.uiza.sdk.widget.previewseekbar;
+package com.uiza.sdk.widget.previewseekbar
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
+import android.widget.FrameLayout
+import kotlin.math.min
 
-abstract class PreviewAnimator {
-
-    View morphView;
-    View previewFrameView;
-    FrameLayout previewFrameLayout;
-    PreviewView previewView;
-    ViewGroup parent;
-
-    public PreviewAnimator(ViewGroup parent, PreviewView previewView, View morphView,
-                           FrameLayout previewFrameLayout, View previewFrameView) {
-        this.parent = parent;
-        this.previewView = previewView;
-        this.morphView = morphView;
-        this.previewFrameLayout = previewFrameLayout;
-        this.previewFrameView = previewFrameView;
-    }
-
-    public abstract void move();
-
-    public abstract void show();
-
-    public abstract void hide();
+internal abstract class PreviewAnimator(
+    var parent: ViewGroup,
+    var previewView: PreviewView,
+    var morphView: View,
+    var previewFrameLayout: FrameLayout,
+    var previewFrameView: View
+) {
+    abstract fun move()
+    abstract fun show()
+    abstract fun hide()// Don't move if we still haven't reached half of the width
 
     /**
      * Get x position for the preview frame. This method takes into account a margin
      * that'll make the frame not move until the scrub position exceeds half of the frame's width.
      */
-    float getFrameX() {
-        ViewGroup.MarginLayoutParams params
-                = (ViewGroup.MarginLayoutParams) previewFrameLayout.getLayoutParams();
-        float offset = getWidthOffset(previewView.getProgress());
-        float low = previewFrameLayout.getLeft();
-        float high = parent.getWidth() - params.rightMargin - previewFrameLayout.getWidth();
+    val frameX: Float
+        get() {
+            val params = previewFrameLayout.layoutParams as MarginLayoutParams
+            val offset = getWidthOffset(previewView.progress)
+            val low = previewFrameLayout.left.toFloat()
+            val high = (parent.width - params.rightMargin - previewFrameLayout.width).toFloat()
+            val startX = previewViewStartX + previewView.thumbOffset
+            val endX = previewViewEndX - previewView.thumbOffset
+            val center = (endX - startX) * offset + startX
+            val nextX = center - previewFrameLayout.width / 2f
 
-        float startX = getPreviewViewStartX() + previewView.getThumbOffset();
-        float endX = getPreviewViewEndX() - previewView.getThumbOffset();
-        float center = (endX - startX) * offset + startX;
-        float nextX = center - previewFrameLayout.getWidth() / 2f;
+            // Don't move if we still haven't reached half of the width
+            return if (nextX < low) {
+                low
+            } else min(nextX, high)
+        }
+    val previewViewStartX: Float
+        get() = (previewView as View).x
 
-        // Don't move if we still haven't reached half of the width
-        if (nextX < low) {
-            return low;
-        } else return Math.min(nextX, high);
+    val previewViewEndX: Float
+        get() = previewViewStartX + (previewView as View).width
+
+    fun getWidthOffset(progress: Int): Float {
+        return progress.toFloat() / previewView.max
     }
-
-    float getPreviewViewStartX() {
-        return ((View) previewView).getX();
-    }
-
-    float getPreviewViewEndX() {
-        return getPreviewViewStartX() + ((View) previewView).getWidth();
-    }
-
-    float getWidthOffset(int progress) {
-        return (float) progress / previewView.getMax();
-    }
-
 }

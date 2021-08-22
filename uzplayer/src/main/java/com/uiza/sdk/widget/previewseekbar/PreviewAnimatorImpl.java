@@ -15,7 +15,8 @@ class PreviewAnimatorImpl extends PreviewAnimator {
         @Override
         public void onAnimationEnd(Animator animation) {
             super.onAnimationEnd(animation);
-            previewFrameLayout.setVisibility(View.INVISIBLE);
+
+            getPreviewFrameLayout().setVisibility(View.INVISIBLE);
         }
     };
 
@@ -26,16 +27,16 @@ class PreviewAnimatorImpl extends PreviewAnimator {
 
     @Override
     public void move() {
-        previewFrameLayout.setX(getFrameX());
+        getPreviewFrameLayout().setX(getFrameX());
     }
 
     @Override
     public void show() {
         move();
-        previewFrameLayout.setVisibility(View.VISIBLE);
-        previewFrameLayout.setAlpha(0f);
-        previewFrameLayout.animate().cancel();
-        previewFrameLayout.animate()
+        getPreviewFrameLayout().setVisibility(View.VISIBLE);
+        getPreviewFrameLayout().setAlpha(0f);
+        getPreviewFrameLayout().animate().cancel();
+        getPreviewFrameLayout().animate()
                 .setDuration(ALPHA_DURATION)
                 .alpha(1f)
                 .setListener(null);
@@ -43,9 +44,9 @@ class PreviewAnimatorImpl extends PreviewAnimator {
 
     @Override
     public void hide() {
-        previewFrameLayout.setAlpha(1f);
-        previewFrameLayout.animate().cancel();
-        previewFrameLayout.animate()
+        getPreviewFrameLayout().setAlpha(1f);
+        getPreviewFrameLayout().animate().cancel();
+        getPreviewFrameLayout().animate()
                 .setDuration(ALPHA_DURATION)
                 .alpha(0f)
                 .setListener(hideListener);
