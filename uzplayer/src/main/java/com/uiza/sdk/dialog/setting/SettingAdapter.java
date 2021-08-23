@@ -51,7 +51,7 @@ public class SettingAdapter extends ArrayAdapter<SettingItem> {
         if (item != null) {
             holder.setTitle(item.getTitle());
             if (holder instanceof ViewHolder0) {
-                ((ViewHolder0) holder).setChecked(item.isChecked());
+                ((ViewHolder0) holder).setChecked(item.getChecked());
                 ((ViewHolder0) holder).setOnToggleChangeListener(item.getListener());
             }
         }
