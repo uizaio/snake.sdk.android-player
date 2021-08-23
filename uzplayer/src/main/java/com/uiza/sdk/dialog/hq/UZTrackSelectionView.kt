@@ -347,14 +347,14 @@ class UZTrackSelectionView @JvmOverloads constructor(
     }
 
     private fun scrollTo(checkedTextView: CheckedTextView) {
-        if (this.parent is ScrollView) {
-            val sv = this.parent as ScrollView
-            sv.postDelayed(
-                {
-                    sv.scrollTo(0, checkedTextView.top)
-                }, 100
-            )
-        }
+//        if (this.parent is ScrollView) {
+//            val sv = this.parent as ScrollView
+//            sv.postDelayed(
+//                {
+//                    sv.scrollTo(0, checkedTextView.top)
+//                }, 100
+//            )
+//        }
     }
 
     private fun applySelection() {
