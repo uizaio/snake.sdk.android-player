@@ -39,7 +39,7 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/bt_exit"
+            android:id="@+id/btExit"
             android:layout_width="@dimen/w_30"
             android:layout_height="@dimen/w_30"
             android:layout_alignParentEnd="true"

@@ -1,6 +1,5 @@
 package com.uiza.sdk.dialog.playlistfolder;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -20,13 +19,12 @@ import java.util.List;
 
 public class UZPlaylistFolderDialog extends Dialog {
     private final Context context;
-    private AlertDialog dialog;
     private RecyclerView recyclerView;
     private final List<UZPlayback> playList;
     private final int currentPositionOfDataList;
     private final CallbackPlaylistFolder callbackPlaylistFolder;
 
-    public UZPlaylistFolderDialog(@NonNull Context context, boolean isLandscape, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
+    public UZPlaylistFolderDialog(@NonNull Context context, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.context = context;
@@ -39,8 +37,8 @@ public class UZPlaylistFolderDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_list_playlist_folder);
-        recyclerView = findViewById(R.id.recycler_view);
-        final ImageButton btExit = findViewById(R.id.bt_exit);
+        recyclerView = findViewById(R.id.recyclerView);
+        final ImageButton btExit = findViewById(R.id.btExit);
         btExit.setOnClickListener(v ->
                 dismiss()
         );

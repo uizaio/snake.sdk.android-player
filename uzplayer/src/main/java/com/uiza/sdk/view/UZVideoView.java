@@ -1090,7 +1090,6 @@ public class UZVideoView extends RelativeLayout
     private void handleClickPlaylistFolder() {
         UZPlaylistFolderDialog uzPlaylistFolderDlg = new UZPlaylistFolderDialog(
                 getContext(),
-                isLandscape,
                 UZData.getInstance().getPlayList(),
                 UZData.getInstance().getCurrentPositionOfPlayList(),
                 new CallbackPlaylistFolder() {
