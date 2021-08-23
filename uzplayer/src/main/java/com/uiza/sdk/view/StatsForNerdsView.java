@@ -28,8 +28,8 @@ import com.uiza.sdk.utils.UZViewUtils;
 import java.util.Locale;
 
 public class StatsForNerdsView extends RelativeLayout implements AnalyticsListener, OnAudioVolumeChangedListener {
-    Handler handler = new Handler();
-    long bufferedDurationUs;
+    Handler mHandler = new Handler();
+    long mBufferedDurationUs;
     private TextView textEntityId, textBufferHealth, textNetworkActivity, textVolume, textViewPortFrame,
             textConnectionSpeed, textHost, textVersion, textDeviceInfo, textVideoFormat, textAudioFormat,
             textResolution, textLiveStreamLatency, textLiveStreamLatencyTitle;
@@ -103,7 +103,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
         super.onAttachedToWindow();
         init();
         if (volumeObserver == null) {
-            volumeObserver = new AudioVolumeObserver(getContext(), handler);
+            volumeObserver = new AudioVolumeObserver(getContext(), mHandler);
         }
         volumeObserver.register(AudioManager.STREAM_MUSIC, this);
         depictVersionInfo();
@@ -123,7 +123,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
     }
 
     void setBufferedDurationUs(long bufferedDurationUs) {
-        this.bufferedDurationUs = bufferedDurationUs;
+        this.mBufferedDurationUs = bufferedDurationUs;
     }
 
     @Override
@@ -174,13 +174,13 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
 
     @Override
     public void onAudioVolumeChanged(int currentVolume, int maxVolume) {
-        handler.post(() -> textVolume.setText(String.format(Locale.US, "%d / %d", currentVolume, maxVolume)));
+        mHandler.post(() -> textVolume.setText(String.format(Locale.US, "%d / %d", currentVolume, maxVolume)));
     }
 
     @Override
     public void onBandwidthEstimate(EventTime eventTime, int totalLoadTimeMs, long totalBytesLoaded, long bitrateEstimate) {
 //        Timber.e( "totalBufferedDurationMs: %ld", eventTime.totalBufferedDurationMs);
-        handler.post(() -> {
+        mHandler.post(() -> {
             String formattedValue;
             if (bitrateEstimate < 1e6) {
                 formattedValue = getResources().getString(R.string.format_connection_speed_k,
@@ -201,7 +201,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
         if (width != currentResWidth && height != currentResHeight) {
             currentResWidth = width;
             currentResHeight = height;
-            handler.post(() -> textResolution.setText(getResources().getString(R.string.format_resolution,
+            mHandler.post(() -> textResolution.setText(getResources().getString(R.string.format_resolution,
                     currentResWidth, currentResHeight, optimalResWidth, optimalResHeight)));
         }
     }
@@ -213,7 +213,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
             if (downloadFormat.width != optimalResWidth && downloadFormat.height != optimalResHeight) {
                 optimalResWidth = downloadFormat.width;
                 optimalResHeight = downloadFormat.height;
-                handler.post(() -> textResolution.setText(getResources().getString(R.string.format_resolution,
+                mHandler.post(() -> textResolution.setText(getResources().getString(R.string.format_resolution,
                         currentResWidth, currentResHeight, optimalResWidth, optimalResHeight)));
             }
         }
@@ -230,7 +230,7 @@ public class StatsForNerdsView extends RelativeLayout implements AnalyticsListen
             surfaceWidth = this.getWidth();
             surfaceHeight = this.getHeight();
         }
-        handler.post(() -> textViewPortFrame.setText(
+        mHandler.post(() -> textViewPortFrame.setText(
                 getResources().getString(R.string.format_viewport_frame, surfaceWidth, surfaceHeight, droppedFrames)));
     }
 
