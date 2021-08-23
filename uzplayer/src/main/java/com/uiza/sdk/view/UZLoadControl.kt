@@ -7,24 +7,18 @@ import com.uiza.sdk.listerner.UZBufferListener
 
 internal class UZLoadControl private constructor(
     private val bufferCallback: UZBufferListener?
-) :
-    DefaultLoadControl(
-        DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE),  /* minBufferAudioMs= */
-        DEFAULT_MIN_BUFFER_MS,  /* minBufferVideoMs= */
-        DEFAULT_MAX_BUFFER_MS,
-        DEFAULT_MAX_BUFFER_MS,
-        DEFAULT_BUFFER_FOR_PLAYBACK_MS,
-        DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
-        DEFAULT_TARGET_BUFFER_BYTES,
-        DEFAULT_PRIORITIZE_TIME_OVER_SIZE_THRESHOLDS,
-        DEFAULT_BACK_BUFFER_DURATION_MS,
-        DEFAULT_RETAIN_BACK_BUFFER_FROM_KEYFRAME
-    ) {
-
-    override fun shouldContinueLoading(bufferedDurationUs: Long, playbackSpeed: Float): Boolean {
-        bufferCallback?.onBufferChanged(bufferedDurationUs, playbackSpeed)
-        return super.shouldContinueLoading(bufferedDurationUs, playbackSpeed)
-    }
+) : DefaultLoadControl(
+    DefaultAllocator(true, C.DEFAULT_BUFFER_SEGMENT_SIZE),  /* minBufferAudioMs= */
+    DEFAULT_MIN_BUFFER_MS,  /* minBufferVideoMs= */
+    DEFAULT_MAX_BUFFER_MS,
+    DEFAULT_MAX_BUFFER_MS,
+    DEFAULT_BUFFER_FOR_PLAYBACK_MS,
+    DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
+    DEFAULT_TARGET_BUFFER_BYTES,
+    DEFAULT_PRIORITIZE_TIME_OVER_SIZE_THRESHOLDS,
+    DEFAULT_BACK_BUFFER_DURATION_MS,
+    DEFAULT_RETAIN_BACK_BUFFER_FROM_KEYFRAME
+) {
 
     companion object {
         /**
@@ -44,6 +38,11 @@ internal class UZLoadControl private constructor(
         fun createControl(listener: UZBufferListener?): UZLoadControl {
             return UZLoadControl(listener)
         }
+    }
+
+    override fun shouldContinueLoading(bufferedDurationUs: Long, playbackSpeed: Float): Boolean {
+        bufferCallback?.onBufferChanged(bufferedDurationUs, playbackSpeed)
+        return super.shouldContinueLoading(bufferedDurationUs, playbackSpeed)
     }
 
 }
