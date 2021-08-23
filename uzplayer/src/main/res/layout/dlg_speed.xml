@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_13"
-        android:paddingLeft="@dimen/padding_30"
-        android:paddingRight="@dimen/padding_30"
+        android:layout_marginTop="@dimen/margin_padding_medium"
+        android:paddingLeft="@dimen/margin_padding_medium"
+        android:paddingRight="@dimen/margin_padding_medium"
         android:text="@string/speed"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/txt_22" />
+        android:textSize="@dimen/txt_medium" />
 
     <ScrollView
         android:id="@+id/sv"
@@ -23,11 +23,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_30"
-            android:paddingRight="@dimen/padding_30">
+            android:paddingLeft="@dimen/margin_padding_medium"
+            android:paddingRight="@dimen/margin_padding_medium">
 
             <CheckedTextView
-                android:id="@+id/ct_0"
+                android:id="@+id/ct0"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -36,10 +36,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_1"
+                android:id="@+id/ct1"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -48,10 +48,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_2"
+                android:id="@+id/ct2"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -60,10 +60,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_3"
+                android:id="@+id/ct3"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -72,10 +72,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_4"
+                android:id="@+id/ct4"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -84,10 +84,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_5"
+                android:id="@+id/ct5"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -96,10 +96,10 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
 
             <CheckedTextView
-                android:id="@+id/ct_6"
+                android:id="@+id/ct6"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeightSmall"
                 android:checkMark="?android:attr/listChoiceIndicatorSingle"
@@ -108,7 +108,7 @@
                 android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
                 android:textAppearance="?android:attr/textAppearanceListItemSmall"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/txt_14" />
+                android:textSize="@dimen/txt_medium" />
         </LinearLayout>
     </ScrollView>
 

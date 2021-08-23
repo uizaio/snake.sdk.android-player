@@ -1,134 +1,130 @@
-package com.uiza.sdk.dialog.speed;
+package com.uiza.sdk.dialog.speed
 
-import android.app.Dialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.view.Window;
-import android.widget.CheckedTextView;
-import android.widget.ScrollView;
+import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
+import android.view.Window
+import android.widget.CheckedTextView
+import com.uiza.sdk.R
+import kotlinx.android.synthetic.main.dlg_speed.*
 
-import androidx.annotation.NonNull;
+class UZSpeedDialog(
+    context: Context,
+    private val currentSpeed: Float,
+    private val callback: Callback?
+) : Dialog(context), View.OnClickListener {
+    private val handler = Handler(Looper.getMainLooper())
 
-import com.uiza.sdk.R;
-
-public class UZSpeedDialog extends Dialog implements View.OnClickListener {
-    private static final String SPEED_025 = "0.25";
-    private static final String SPEED_050 = "0.5";
-    private static final String SPEED_075 = "0.75";
-    private static final String SPEED_100 = "Normal";
-    private static final String SPEED_125 = "1.25";
-    private static final String SPEED_150 = "1.5";
-    private static final String SPEED_200 = "2.0";
-    private ScrollView sv;
-    private CheckedTextView ct0;
-    private CheckedTextView ct1;
-    private CheckedTextView ct2;
-    private CheckedTextView ct3;
-    private CheckedTextView ct4;
-    private CheckedTextView ct5;
-    private CheckedTextView ct6;
-
-    private final float currentSpeed;
-
-    private final Handler handler = new Handler();
-    private final Callback callback;
-
-    public UZSpeedDialog(@NonNull Context context, float currentSpeed, Callback callback) {
-        super(context);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.currentSpeed = currentSpeed;
-        this.callback = callback;
+    companion object {
+        private const val SPEED_025 = "0.25"
+        private const val SPEED_050 = "0.5"
+        private const val SPEED_075 = "0.75"
+        private const val SPEED_100 = "Normal"
+        private const val SPEED_125 = "1.25"
+        private const val SPEED_150 = "1.5"
+        private const val SPEED_200 = "2.0"
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dlg_speed);
-        sv = findViewById(R.id.sv);
-        ct0 = findViewById(R.id.ct_0);
-        ct1 = findViewById(R.id.ct_1);
-        ct2 = findViewById(R.id.ct_2);
-        ct3 = findViewById(R.id.ct_3);
-        ct4 = findViewById(R.id.ct_4);
-        ct5 = findViewById(R.id.ct_5);
-        ct6 = findViewById(R.id.ct_6);
+    init {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+    }
 
-        Speed speed0 = new Speed(SPEED_025, 0.25f);
-        Speed speed1 = new Speed(SPEED_050, 0.5f);
-        Speed speed2 = new Speed(SPEED_075, 0.75f);
-        Speed speed3 = new Speed(SPEED_100, 1f);
-        Speed speed4 = new Speed(SPEED_125, 1.25f);
-        Speed speed5 = new Speed(SPEED_150, 1.5f);
-        Speed speed6 = new Speed(SPEED_200, 2f);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.dlg_speed)
+        setupViews()
+    }
 
-        ct0.setText(speed0.getName());
-        ct1.setText(speed1.getName());
-        ct2.setText(speed2.getName());
-        ct3.setText(speed3.getName());
-        ct4.setText(speed4.getName());
-        ct5.setText(speed5.getName());
-        ct6.setText(speed6.getName());
+    private fun setupViews() {
+        val speed0 = Speed(name = SPEED_025, value = 0.25f)
+        val speed1 = Speed(name = SPEED_050, value = 0.5f)
+        val speed2 = Speed(name = SPEED_075, value = 0.75f)
+        val speed3 = Speed(name = SPEED_100, value = 1f)
+        val speed4 = Speed(name = SPEED_125, value = 1.25f)
+        val speed5 = Speed(name = SPEED_150, value = 1.5f)
+        val speed6 = Speed(name = SPEED_200, value = 2f)
 
-        ct0.setTag(speed0);
-        ct1.setTag(speed1);
-        ct2.setTag(speed2);
-        ct3.setTag(speed3);
-        ct4.setTag(speed4);
-        ct5.setTag(speed5);
-        ct6.setTag(speed6);
+        ct0.text = speed0.name
+        ct1.text = speed1.name
+        ct2.text = speed2.name
+        ct3.text = speed3.name
+        ct4.text = speed4.name
+        ct5.text = speed5.name
+        ct6.text = speed6.name
 
-        setEvent(ct0);
-        setEvent(ct1);
-        setEvent(ct2);
-        setEvent(ct3);
-        setEvent(ct4);
-        setEvent(ct5);
-        setEvent(ct6);
+        ct0.tag = speed0
+        ct1.tag = speed1
+        ct2.tag = speed2
+        ct3.tag = speed3
+        ct4.tag = speed4
+        ct5.tag = speed5
+        ct6.tag = speed6
 
-        if (currentSpeed == speed0.getValue()) {
-            scrollTo(ct0);
-        } else if (currentSpeed == speed1.getValue()) {
-            scrollTo(ct1);
-        } else if (currentSpeed == speed2.getValue()) {
-            scrollTo(ct2);
-        } else if (currentSpeed == speed3.getValue()) {
-            scrollTo(ct3);
-        } else if (currentSpeed == speed4.getValue()) {
-            scrollTo(ct4);
-        } else if (currentSpeed == speed5.getValue()) {
-            scrollTo(ct5);
-        } else if (currentSpeed == speed6.getValue()) {
-            scrollTo(ct6);
+        setEvent(ct0)
+        setEvent(ct1)
+        setEvent(ct2)
+        setEvent(ct3)
+        setEvent(ct4)
+        setEvent(ct5)
+        setEvent(ct6)
+
+        when (currentSpeed) {
+            speed0.value -> {
+                scrollTo(ct0)
+            }
+            speed1.value -> {
+                scrollTo(ct1)
+            }
+            speed2.value -> {
+                scrollTo(ct2)
+            }
+            speed3.value -> {
+                scrollTo(ct3)
+            }
+            speed4.value -> {
+                scrollTo(ct4)
+            }
+            speed5.value -> {
+                scrollTo(ct5)
+            }
+            speed6.value -> {
+                scrollTo(ct6)
+            }
         }
     }
 
-    private void scrollTo(@NonNull CheckedTextView checkedTextView) {
-        checkedTextView.setChecked(true);
-        handler.postDelayed(() -> sv.scrollTo(0, checkedTextView.getTop()), 100);
+    private fun scrollTo(checkedTextView: CheckedTextView) {
+        checkedTextView.isChecked = true
+//        handler.postDelayed({
+//            sv.scrollTo(0, checkedTextView.top)
+//        }, 100)
     }
 
-    private void setEvent(@NonNull CheckedTextView checkedTextView) {
-        checkedTextView.setFocusable(true);
-        checkedTextView.setSoundEffectsEnabled(false);
-        checkedTextView.setOnClickListener(this);
+    private fun setEvent(checkedTextView: CheckedTextView) {
+        checkedTextView.isFocusable = true
+        checkedTextView.isSoundEffectsEnabled = false
+        checkedTextView.setOnClickListener(this)
     }
 
-    @Override
-    public void onClick(View view) {
-        ct0.setChecked(false);
-        ct1.setChecked(false);
-        ct2.setChecked(false);
-        ct3.setChecked(false);
-        ct4.setChecked(false);
-        ct5.setChecked(false);
-        ct6.setChecked(false);
-        if (view instanceof CheckedTextView) {
-            ((CheckedTextView) view).setChecked(!((CheckedTextView) view).isChecked());
-            if (callback != null)
-                callback.onSelectItem((Speed) view.getTag());
+    override fun onClick(view: View) {
+        ct0.isChecked = false
+        ct1.isChecked = false
+        ct2.isChecked = false
+        ct3.isChecked = false
+        ct4.isChecked = false
+        ct5.isChecked = false
+        ct6.isChecked = false
+        if (view is CheckedTextView) {
+            view.isChecked = !view.isChecked
+            if (view.getTag() is Speed) {
+                callback?.onSelectItem((view.getTag() as Speed))
+            }
         }
-        handler.postDelayed(this::cancel, 200);
+        handler.postDelayed({
+            cancel()
+        }, 100)
     }
 }
