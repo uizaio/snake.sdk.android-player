@@ -1,95 +1,79 @@
-package com.uiza.sdk.dialog.playlistfolder;
+package com.uiza.sdk.dialog.playlistfolder
 
-import android.content.Context;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.uiza.sdk.R
+import com.uiza.sdk.dialog.playlistfolder.AdapterPlaylistFolder.PlayListHolder
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.ImageUtils
+import com.uiza.sdk.utils.UZViewUtils
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+class AdapterPlaylistFolder(
+    context: Context,
+    private val playList: List<UZPlayback>,
+    currentPositionOfDataList: Int,
+    private val callbackPlaylistFolder: CallbackPlaylistFolder?
+) : RecyclerView.Adapter<PlayListHolder>() {
 
-import com.uiza.sdk.R;
-import com.uiza.sdk.models.UZPlayback;
-import com.uiza.sdk.utils.ImageUtils;
-import com.uiza.sdk.utils.UZViewUtils;
-
-import java.util.List;
-
-public class AdapterPlaylistFolder extends RecyclerView.Adapter<AdapterPlaylistFolder.PlayListHolder> {
-    private final List<UZPlayback> playList;
-    private final CallbackPlaylistFolder callbackPlaylistFolder;
-
-    public AdapterPlaylistFolder(@NonNull Context context, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
-        this.playList = playList;
-        this.callbackPlaylistFolder = callbackPlaylistFolder;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListHolder {
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.row_playlist_folder, parent, false)
+        return PlayListHolder(itemView)
     }
 
-    @Override
-    @NonNull
-    public PlayListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_playlist_folder, parent, false);
-        return new PlayListHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull final PlayListHolder playListHolder, final int position) {
-        final UZPlayback data = playList.get(position);
-        UZViewUtils.setTextDuration(playListHolder.tvDuration, String.valueOf(data.getDuration()));
-        playListHolder.tvName.setText(data.getName());
-
-        UZViewUtils.setTextDuration(playListHolder.tvDuration2, String.valueOf(data.getDuration()));
-        if (TextUtils.isEmpty(data.getDescription())) {
-            playListHolder.tvDescription.setVisibility(View.GONE);
+    override fun onBindViewHolder(playListHolder: PlayListHolder, position: Int) {
+        val uzPlayback = playList[position]
+        UZViewUtils.setTextDuration(
+            textView = playListHolder.tvDuration,
+            duration = "${uzPlayback.duration}"
+        )
+        playListHolder.tvName.text = uzPlayback.name
+        UZViewUtils.setTextDuration(
+            textView = playListHolder.tvDuration2,
+            duration = "${uzPlayback.duration}"
+        )
+        if (TextUtils.isEmpty(uzPlayback.description)) {
+            playListHolder.tvDescription.visibility = View.GONE
         } else {
-            playListHolder.tvDescription.setText(data.getDescription());
-            playListHolder.tvDescription.setVisibility(View.VISIBLE);
+            playListHolder.tvDescription.text = uzPlayback.description
+            playListHolder.tvDescription.visibility = View.VISIBLE
         }
-
-        ImageUtils.Companion.loadThumbnail(playListHolder.ivCover, data.getPoster());
-
-        playListHolder.rootView.setOnClickListener(v -> {
-            if (callbackPlaylistFolder != null) {
-                callbackPlaylistFolder.onClickItem(data, position);
+        ImageUtils.loadThumbnail(imageView = playListHolder.ivCover, imageUrl = uzPlayback.poster)
+        playListHolder.rootView.setOnClickListener {
+            callbackPlaylistFolder?.onClickItem(
+                playback = uzPlayback,
+                position = position
+            )
+        }
+        playListHolder.rootView.onFocusChangeListener =
+            OnFocusChangeListener { _: View?, isFocus: Boolean ->
+                if (isFocus) {
+                    playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder)
+                } else {
+                    playListHolder.rootView.setBackgroundResource(0)
+                }
+                callbackPlaylistFolder?.onFocusChange(playback = uzPlayback, position = position)
             }
-        });
-
-        playListHolder.rootView.setOnFocusChangeListener((view, isFocus) -> {
-            if (isFocus) {
-                playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder);
-            } else {
-                playListHolder.rootView.setBackgroundResource(0);
-            }
-            if (callbackPlaylistFolder != null) {
-                callbackPlaylistFolder.onFocusChange(data, position);
-            }
-        });
     }
 
-    @Override
-    public int getItemCount() {
-        return playList == null ? 0 : playList.size();
+    override fun getItemCount(): Int {
+        return playList.size
     }
 
-    public static class PlayListHolder extends RecyclerView.ViewHolder {
-        private final TextView tvDuration;
-        private final TextView tvDuration2;
-        private final ImageView ivCover;
-        private final TextView tvName;
-        private final TextView tvDescription;
-        private final CardView rootView;
-
-        public PlayListHolder(View view) {
-            super(view);
-            rootView = view.findViewById(R.id.rootView);
-            tvDuration = view.findViewById(R.id.tvDuration);
-            tvDuration2 = view.findViewById(R.id.tvDuration2);
-            tvName = view.findViewById(R.id.tvName);
-            tvDescription = view.findViewById(R.id.tvDescription);
-            ivCover = view.findViewById(R.id.ivCover);
-        }
+    class PlayListHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvDuration: TextView = view.findViewById(R.id.tvDuration)
+        val tvDuration2: TextView = view.findViewById(R.id.tvDuration2)
+        val ivCover: ImageView = view.findViewById(R.id.ivCover)
+        val tvName: TextView = view.findViewById(R.id.tvName)
+        val tvDescription: TextView = view.findViewById(R.id.tvDescription)
+        val rootView: CardView = view.findViewById(R.id.rootView)
     }
 }
