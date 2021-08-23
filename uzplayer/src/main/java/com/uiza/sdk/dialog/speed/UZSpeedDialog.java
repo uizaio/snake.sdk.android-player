@@ -21,7 +21,6 @@ public class UZSpeedDialog extends Dialog implements View.OnClickListener {
     private static final String SPEED_125 = "1.25";
     private static final String SPEED_150 = "1.5";
     private static final String SPEED_200 = "2.0";
-    private final String TAG = getClass().getSimpleName();
     private ScrollView sv;
     private CheckedTextView ct0;
     private CheckedTextView ct1;
@@ -88,19 +87,19 @@ public class UZSpeedDialog extends Dialog implements View.OnClickListener {
         setEvent(ct5);
         setEvent(ct6);
 
-        if (currentSpeed == speed0.value) {
+        if (currentSpeed == speed0.getValue()) {
             scrollTo(ct0);
-        } else if (currentSpeed == speed1.value) {
+        } else if (currentSpeed == speed1.getValue()) {
             scrollTo(ct1);
-        } else if (currentSpeed == speed2.value) {
+        } else if (currentSpeed == speed2.getValue()) {
             scrollTo(ct2);
-        } else if (currentSpeed == speed3.value) {
+        } else if (currentSpeed == speed3.getValue()) {
             scrollTo(ct3);
-        } else if (currentSpeed == speed4.value) {
+        } else if (currentSpeed == speed4.getValue()) {
             scrollTo(ct4);
-        } else if (currentSpeed == speed5.value) {
+        } else if (currentSpeed == speed5.getValue()) {
             scrollTo(ct5);
-        } else if (currentSpeed == speed6.value) {
+        } else if (currentSpeed == speed6.getValue()) {
             scrollTo(ct6);
         }
     }
@@ -131,35 +130,5 @@ public class UZSpeedDialog extends Dialog implements View.OnClickListener {
                 callback.onSelectItem((Speed) view.getTag());
         }
         handler.postDelayed(this::cancel, 200);
-    }
-
-    public interface Callback {
-        void onSelectItem(Speed speed);
-    }
-
-    public static class Speed {
-        private String name;
-        private float value;
-
-        public Speed(String name, float value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public float getValue() {
-            return value;
-        }
-
-        public void setValue(float value) {
-            this.value = value;
-        }
     }
 }
