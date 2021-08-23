@@ -6,13 +6,13 @@ public class SettingItem {
     private final String title;
     private final boolean toggle;
     private final boolean checked;
-    private final SettingAdapter.OnToggleChangeListener listener;
+    private final OnToggleChangeListener listener;
 
     public SettingItem(String title) {
         this(title, false, null);
     }
 
-    public SettingItem(String title, boolean checked, SettingAdapter.OnToggleChangeListener listener) {
+    public SettingItem(String title, boolean checked, OnToggleChangeListener listener) {
         this.title = title;
         this.toggle = listener != null;
         this.checked = checked;
@@ -31,7 +31,7 @@ public class SettingItem {
         return checked;
     }
 
-    public SettingAdapter.OnToggleChangeListener getListener() {
+    public OnToggleChangeListener getListener() {
         return listener;
     }
 
