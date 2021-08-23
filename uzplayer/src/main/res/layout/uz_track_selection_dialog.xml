@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.uiza.sdk.dialog.hq.UZTrackSelectionView
-        android:id="@+id/uz_track_selection_view"
+        android:id="@+id/uzTrackSelectionView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical" />

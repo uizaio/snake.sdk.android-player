@@ -59,4 +59,6 @@
     <dimen name="margin_padding_medium">10dp</dimen>
     <dimen name="margin_padding_large">20dp</dimen>
 
+    <dimen name="radius_medium">15dp</dimen>
+
 </resources>

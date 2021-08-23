@@ -75,7 +75,7 @@ public class UZChromeCast {
         try {
             castContext = CastContext.getSharedInstance(context);
         } catch (Exception e) {
-            Timber.e(e, "Error addUIChromecastLayer:");
+            e.printStackTrace();
         }
         if (castContext == null) {
             UZViewUtils.goneViews(uzMediaRouteButton);

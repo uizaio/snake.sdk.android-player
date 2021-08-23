@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_view"
+    android:id="@+id/rootView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_5"
@@ -14,17 +14,17 @@
         android:layout_height="113dp">
 
         <ImageView
-            android:id="@+id/iv_cover"
+            android:id="@+id/ivCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/app_name"
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tv_duration"
+            android:id="@+id/tvDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/iv_cover"
+            android:layout_alignEnd="@+id/ivCover"
             android:layout_margin="@dimen/margin_5"
             android:background="@drawable/ic_button_duration"
             android:gravity="center"
@@ -43,7 +43,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_name"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -75,7 +75,7 @@
                     android:background="@android:color/white" />
 
                 <TextView
-                    android:id="@+id/tv_duration_2"
+                    android:id="@+id/tvDuration2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_5"
@@ -105,7 +105,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_description"
+                android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_5"

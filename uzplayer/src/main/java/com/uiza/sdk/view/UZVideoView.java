@@ -56,7 +56,6 @@ import com.uiza.sdk.analytics.UZAnalytic;
 import com.uiza.sdk.chromecast.Casty;
 import com.uiza.sdk.dialog.hq.UZItem;
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView;
-import com.uiza.sdk.dialog.info.UZDlgInfoV1;
 import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder;
 import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog;
 import com.uiza.sdk.dialog.setting.SettingAdapter;
@@ -90,7 +89,6 @@ import com.uiza.sdk.widget.UZPreviewTimeBar;
 import com.uiza.sdk.widget.UZTextView;
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader;
 import com.uiza.sdk.widget.previewseekbar.PreviewView;
-import com.uiza.sdk.widget.seekbar.UZVerticalSeekBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,9 +97,6 @@ import java.util.UUID;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-/**
- * View of UZPlayer
- */
 public class UZVideoView extends RelativeLayout
         implements UZManagerObserver, PreviewLoader, PreviewView.OnPreviewChangeListener, View.OnClickListener, View.OnFocusChangeListener,
         SensorOrientationChangeNotifier.Listener {
@@ -143,7 +138,6 @@ public class UZVideoView extends RelativeLayout
     private UZImageButton ibBackScreenIcon;
     private UZImageButton ibVolumeIcon;
     private UZImageButton ibSettingIcon;
-    private UZImageButton ibCcIcon;
     private UZImageButton ibPlaylistFolderIcon; //playlist folder
     private UZImageButton ibHearingIcon;
     private UZImageButton pipIcon;
@@ -246,7 +240,7 @@ public class UZVideoView extends RelativeLayout
         if (UZAppUtils.checkChromeCastAvailable())
             setupChromeCast();
         inflate(getContext(), R.layout.uz_ima_video_core_rl, this);
-        rootView = findViewById(R.id.root_view);
+        rootView = findViewById(R.id.rootView);
         int skinId = UZData.getInstance().getUZPlayerSkinLayoutId();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -842,8 +836,6 @@ public class UZVideoView extends RelativeLayout
             handleClickBtVolume();
         else if (v == ibSettingIcon)
             showSettingsDialog();
-        else if (v == ibCcIcon)
-            handleClickCC();
         else if (v == ibPlaylistFolderIcon)
             handleClickPlaylistFolder();
         else if (v == ibHearingIcon)
@@ -1091,7 +1083,6 @@ public class UZVideoView extends RelativeLayout
     private void handleClickPlaylistFolder() {
         UZPlaylistFolderDialog uzPlaylistFolderDlg = new UZPlaylistFolderDialog(
                 getContext(),
-                isLandscape,
                 UZData.getInstance().getPlayList(),
                 UZData.getInstance().getCurrentPositionOfPlayList(),
                 new CallbackPlaylistFolder() {
@@ -1164,17 +1155,6 @@ public class UZVideoView extends RelativeLayout
             toggleFullscreen();
         } else {
             ((Activity) getContext()).onBackPressed();
-        }
-    }
-
-    private void handleClickCC() {
-        if (playerManager.getSubtitleList().isEmpty()) {
-            UZDlgInfoV1 uzDlgInfoV1 = new UZDlgInfoV1(getContext(), getContext().getString(R.string.text), getContext().getString(R.string.no_caption));
-            UZViewUtils.showDialog(uzDlgInfoV1);
-        } else {
-            View view = DebugUtils.getTextButton(debugRootView);
-            if (view != null)
-                view.performClick();
         }
     }
 
@@ -1325,7 +1305,7 @@ public class UZVideoView extends RelativeLayout
         TextView tvMsg = findViewById(R.id.tv_msg);
         if (tvMsg != null)
             UZViewUtils.setTextShadow(tvMsg, Color.BLACK);
-        ivVideoCover = findViewById(R.id.iv_cover);
+        ivVideoCover = findViewById(R.id.ivCover);
         llTop = findViewById(R.id.ll_top);
         progressBar = findViewById(R.id.pb);
         if (progressBar != null)
@@ -1384,7 +1364,6 @@ public class UZVideoView extends RelativeLayout
         ibBackScreenIcon = playerView.findViewById(R.id.exo_back_screen);
         ibVolumeIcon = playerView.findViewById(R.id.exo_volume);
         ibSettingIcon = playerView.findViewById(R.id.exo_setting);
-        ibCcIcon = playerView.findViewById(R.id.exo_cc);
         ibPlaylistFolderIcon = playerView.findViewById(R.id.exo_playlist_folder);
         ibHearingIcon = playerView.findViewById(R.id.exo_hearing);
         pipIcon = playerView.findViewById(R.id.exo_picture_in_picture);
@@ -1422,7 +1401,7 @@ public class UZVideoView extends RelativeLayout
 
     private void setEventForViews() {
         setClickAndFocusEventForViews(ibFullscreenIcon, ibBackScreenIcon, ibVolumeIcon, ibSettingIcon,
-                ibCcIcon, ibPlaylistFolderIcon, ibHearingIcon, pipIcon, ibFfwdIcon,
+                ibPlaylistFolderIcon, ibHearingIcon, pipIcon, ibFfwdIcon,
                 ibRewIcon, ibPlayIcon, ibPauseIcon, ibReplayIcon, ibSkipNextIcon, ibSkipPreviousIcon, ibSpeedIcon, tvLiveStatus);
     }
 
@@ -1483,7 +1462,7 @@ public class UZVideoView extends RelativeLayout
                     tvLiveView.setText(HYPHEN);
             }
         } else
-            //goi changeskin realtime thi no ko vao if nen ko update tvDuration dc
+            //goi change skin realtime thi no ko vao if nen ko update tvDuration dc
             updateTvDuration();
     }
 
@@ -1592,10 +1571,6 @@ public class UZVideoView extends RelativeLayout
                 tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(0));
             else
                 tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(getDuration()));
-    }
-
-    public void setProgressSeekBar(@NonNull UZVerticalSeekBar uzVerticalSeekBar, int progressSeekBar) {
-        uzVerticalSeekBar.setProgress(progressSeekBar);
     }
 
     private void setTextPosition(long currentMls) {
