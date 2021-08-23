@@ -56,7 +56,6 @@ import com.uiza.sdk.analytics.UZAnalytic;
 import com.uiza.sdk.chromecast.Casty;
 import com.uiza.sdk.dialog.hq.UZItem;
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView;
-import com.uiza.sdk.dialog.info.UZDlgInfoV1;
 import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder;
 import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog;
 import com.uiza.sdk.dialog.setting.SettingAdapter;
@@ -98,9 +97,6 @@ import java.util.UUID;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-/**
- * View of UZPlayer
- */
 public class UZVideoView extends RelativeLayout
         implements UZManagerObserver, PreviewLoader, PreviewView.OnPreviewChangeListener, View.OnClickListener, View.OnFocusChangeListener,
         SensorOrientationChangeNotifier.Listener {
@@ -142,7 +138,6 @@ public class UZVideoView extends RelativeLayout
     private UZImageButton ibBackScreenIcon;
     private UZImageButton ibVolumeIcon;
     private UZImageButton ibSettingIcon;
-    private UZImageButton ibCcIcon;
     private UZImageButton ibPlaylistFolderIcon; //playlist folder
     private UZImageButton ibHearingIcon;
     private UZImageButton pipIcon;
@@ -841,8 +836,6 @@ public class UZVideoView extends RelativeLayout
             handleClickBtVolume();
         else if (v == ibSettingIcon)
             showSettingsDialog();
-        else if (v == ibCcIcon)
-            handleClickCC();
         else if (v == ibPlaylistFolderIcon)
             handleClickPlaylistFolder();
         else if (v == ibHearingIcon)
@@ -1165,17 +1158,6 @@ public class UZVideoView extends RelativeLayout
         }
     }
 
-    private void handleClickCC() {
-        if (playerManager.getSubtitleList().isEmpty()) {
-            UZDlgInfoV1 uzDlgInfoV1 = new UZDlgInfoV1(getContext(), getContext().getString(R.string.text), getContext().getString(R.string.no_caption));
-            UZViewUtils.showDialog(uzDlgInfoV1);
-        } else {
-            View view = DebugUtils.getTextButton(debugRootView);
-            if (view != null)
-                view.performClick();
-        }
-    }
-
     private void handleClickHearing() {
         View view = DebugUtils.getAudioButton(debugRootView);
         if (view != null)
@@ -1382,7 +1364,6 @@ public class UZVideoView extends RelativeLayout
         ibBackScreenIcon = playerView.findViewById(R.id.exo_back_screen);
         ibVolumeIcon = playerView.findViewById(R.id.exo_volume);
         ibSettingIcon = playerView.findViewById(R.id.exo_setting);
-        ibCcIcon = playerView.findViewById(R.id.exo_cc);
         ibPlaylistFolderIcon = playerView.findViewById(R.id.exo_playlist_folder);
         ibHearingIcon = playerView.findViewById(R.id.exo_hearing);
         pipIcon = playerView.findViewById(R.id.exo_picture_in_picture);
@@ -1420,7 +1401,7 @@ public class UZVideoView extends RelativeLayout
 
     private void setEventForViews() {
         setClickAndFocusEventForViews(ibFullscreenIcon, ibBackScreenIcon, ibVolumeIcon, ibSettingIcon,
-                ibCcIcon, ibPlaylistFolderIcon, ibHearingIcon, pipIcon, ibFfwdIcon,
+                ibPlaylistFolderIcon, ibHearingIcon, pipIcon, ibFfwdIcon,
                 ibRewIcon, ibPlayIcon, ibPauseIcon, ibReplayIcon, ibSkipNextIcon, ibSkipPreviousIcon, ibSpeedIcon, tvLiveStatus);
     }
 
