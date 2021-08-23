@@ -24,7 +24,7 @@
     <item name="viewDesc" type="id" />
     <item name="bkg" type="id" />
     <item name="iv_logo" type="id" />
-    <item name="root_view" type="id" />
+    <item name="rootView" type="id" />
     <item name="root_view_controller" type="id" />
     <item name="root_view_uz_video" type="id" />
     <item name="player_view" type="id" />

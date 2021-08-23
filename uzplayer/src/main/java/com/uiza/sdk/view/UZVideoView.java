@@ -245,7 +245,7 @@ public class UZVideoView extends RelativeLayout
         if (UZAppUtils.checkChromeCastAvailable())
             setupChromeCast();
         inflate(getContext(), R.layout.uz_ima_video_core_rl, this);
-        rootView = findViewById(R.id.root_view);
+        rootView = findViewById(R.id.rootView);
         int skinId = UZData.getInstance().getUZPlayerSkinLayoutId();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -1323,7 +1323,7 @@ public class UZVideoView extends RelativeLayout
         TextView tvMsg = findViewById(R.id.tv_msg);
         if (tvMsg != null)
             UZViewUtils.setTextShadow(tvMsg, Color.BLACK);
-        ivVideoCover = findViewById(R.id.iv_cover);
+        ivVideoCover = findViewById(R.id.ivCover);
         llTop = findViewById(R.id.ll_top);
         progressBar = findViewById(R.id.pb);
         if (progressBar != null)

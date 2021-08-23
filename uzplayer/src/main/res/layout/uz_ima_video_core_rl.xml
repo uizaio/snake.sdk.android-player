@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@id/root_view"
+            android:id="@id/rootView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -32,7 +32,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/iv_cover"
+        android:id="@+id/ivCover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_5"
