@@ -1,98 +1,79 @@
-package com.uiza.sdk.dialog.playlistfolder;
+package com.uiza.sdk.dialog.playlistfolder
 
-import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.view.Window;
-import android.widget.ImageButton;
+import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.Window
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.uiza.sdk.R
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.UZData
+import kotlinx.android.synthetic.main.dlg_list_playlist_folder.*
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class UZPlaylistFolderDialog(
+    private val mContext: Context,
+    private val playList: List<UZPlayback>,
+    private val currentPositionOfDataList: Int,
+    private val callbackPlaylistFolder: CallbackPlaylistFolder?
+) : Dialog(mContext) {
 
-import com.uiza.sdk.R;
-import com.uiza.sdk.models.UZPlayback;
-import com.uiza.sdk.utils.UZData;
-
-import java.util.List;
-
-public class UZPlaylistFolderDialog extends Dialog {
-    private final Context context;
-    private RecyclerView recyclerView;
-    private final List<UZPlayback> playList;
-    private final int currentPositionOfDataList;
-    private final CallbackPlaylistFolder callbackPlaylistFolder;
-
-    public UZPlaylistFolderDialog(@NonNull Context context, List<UZPlayback> playList, int currentPositionOfDataList, CallbackPlaylistFolder callbackPlaylistFolder) {
-        super(context);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.context = context;
-        this.playList = playList;
-        this.currentPositionOfDataList = currentPositionOfDataList;
-        this.callbackPlaylistFolder = callbackPlaylistFolder;
+    init {
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_list_playlist_folder);
-        recyclerView = findViewById(R.id.recyclerView);
-        final ImageButton btExit = findViewById(R.id.btExit);
-        btExit.setOnClickListener(v ->
-                dismiss()
-        );
-        btExit.setOnFocusChangeListener((view, isFocus) -> {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.dlg_list_playlist_folder)
+
+        setupViews()
+    }
+
+    private fun setupViews() {
+        btExit.setOnClickListener {
+            dismiss()
+        }
+        btExit.onFocusChangeListener = OnFocusChangeListener { _: View?, isFocus: Boolean ->
             if (isFocus) {
-                btExit.setColorFilter(Color.WHITE);
-                btExit.setBackgroundColor(Color.BLACK);
+                btExit.setColorFilter(Color.WHITE)
+                btExit.setBackgroundColor(Color.BLACK)
             } else {
-                btExit.setBackgroundColor(Color.TRANSPARENT);
-                btExit.setColorFilter(Color.BLACK);
+                btExit.setBackgroundColor(Color.TRANSPARENT)
+                btExit.setColorFilter(Color.BLACK)
             }
-        });
-        setupUI();
-    }
-
-    private void setupUI() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        AdapterPlaylistFolder adapterPlaylistFolder = new AdapterPlaylistFolder(context, playList, currentPositionOfDataList, new CallbackPlaylistFolder() {
-            @Override
-            public void onClickItem(@NonNull UZPlayback data, int position) {
-                if (UZData.getInstance().isSettingPlayer()) {
-                    return;
+        }
+        val layoutManager = LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        val adapterPlaylistFolder = AdapterPlaylistFolder(
+            mContext,
+            playList,
+            currentPositionOfDataList,
+            object : CallbackPlaylistFolder {
+                override fun onClickItem(playback: UZPlayback, position: Int) {
+                    if (UZData.getInstance().isSettingPlayer) {
+                        return
+                    }
+                    dismiss()
+                    callbackPlaylistFolder?.onClickItem(playback, position)
                 }
-                dismiss();
-                if (callbackPlaylistFolder != null) {
-                    callbackPlaylistFolder.onClickItem(data, position);
-                }
-            }
 
-            @Override
-            public void onFocusChange(@NonNull UZPlayback data, int position) {
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(position);
+                override fun onFocusChange(playback: UZPlayback, position: Int) {
+                    recyclerView.smoothScrollToPosition(position)
                 }
-            }
 
-            @Override
-            public void onDismiss() {
-                if (callbackPlaylistFolder != null) {
-                    callbackPlaylistFolder.onDismiss();
+                override fun onDismiss() {
+                    callbackPlaylistFolder?.onDismiss()
                 }
-            }
-        });
-        recyclerView.setAdapter(adapterPlaylistFolder);
-        recyclerView.scrollToPosition(currentPositionOfDataList);
-        recyclerView.requestFocus();
-
-        recyclerView.postDelayed(() -> {
-            RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(currentPositionOfDataList);
-            if (holder == null) {
-                return;
-            }
-            holder.itemView.requestFocus();
-        }, 50);
+            })
+        recyclerView.adapter = adapterPlaylistFolder
+        recyclerView.scrollToPosition(currentPositionOfDataList)
+        recyclerView.requestFocus()
+        recyclerView.postDelayed({
+            val holder = recyclerView.findViewHolderForAdapterPosition(currentPositionOfDataList)
+                ?: return@postDelayed
+            holder.itemView.requestFocus()
+        }, 100)
     }
 }
