@@ -424,7 +424,7 @@ abstract class AbstractPlayerManager {
                 createMediaSourceVideoExt(linkPlayExt);
                 extIsTimeShift = true;
             } else {
-                String linkPlayExt = linkPlay.replace("extras/" +timeShift,  timeShift);
+                String linkPlayExt = linkPlay.replace("extras/" + timeShift, timeShift);
                 createMediaSourceVideoExt(linkPlayExt);
                 extIsTimeShift = false;
             }
@@ -461,7 +461,7 @@ abstract class AbstractPlayerManager {
             UUID drmSchemeUuid = Util.getDrmUuid(drmScheme);
             try {
                 drmSessionManager = buildDrmSessionManagerV18(drmSchemeUuid, drmLicenseUrl);
-            }catch (UnsupportedDrmException e) {
+            } catch (UnsupportedDrmException e) {
                 Timber.e(e, "UnsupportedDrmException");
             }
         }
