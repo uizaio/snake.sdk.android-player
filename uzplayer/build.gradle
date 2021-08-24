@@ -59,13 +59,13 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.5'
     // if you want to modify the version of these dependencies, check this link below
     // https://github.com/powermock/powermock/wiki/Mockito
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.mockito:mockito-core:2.28.2"
-    testImplementation "org.mockito:mockito-inline:2.23.0"
-    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
+//    testImplementation 'junit:junit:4.13.2'
+//    testImplementation "org.mockito:mockito-core:2.28.2"
+//    testImplementation "org.mockito:mockito-inline:2.23.0"
+//    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
