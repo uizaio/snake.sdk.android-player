@@ -15,8 +15,6 @@ import com.uiza.sdk.utils.UZData;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.widget.UZMediaRouteButton;
 
-import timber.log.Timber;
-
 /**
  * Created by loitp on 2/27/2019.
  */
@@ -46,7 +44,7 @@ public class UZChromeCast {
 
     @UiThread
     private void setUpMediaRouteButton() {
-        Casty casty = UZData.getInstance().getCasty();
+        Casty casty = UZData.INSTANCE.getCasty();
         if (casty != null) {
             casty.setUpMediaRouteButton(uzMediaRouteButton);
             casty.setOnConnectChangeListener(new Casty.OnConnectChangeListener() {

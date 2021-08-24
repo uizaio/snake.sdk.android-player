@@ -7,7 +7,7 @@ import com.uiza.sdk.view.UZPlayerView
 
 interface UZManagerObserver {
     val title: String?
-        get() = UZData.getInstance().entityName
+        get() = UZData.getEntityName()
     val isPIPEnable: Boolean
     val playerView: UZPlayerView?
 

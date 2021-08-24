@@ -14,9 +14,6 @@ import androidx.core.view.GestureDetectorCompat;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.uiza.sdk.utils.UZData;
-import com.uiza.sdk.utils.UZViewUtils;
-
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -92,13 +89,13 @@ public final class UZPlayerView extends PlayerView implements PlayerControlView.
 
     @Override
     public void showController() {
-        if (!UZData.getInstance().isSettingPlayer())
+        if (!UZData.INSTANCE.isSettingPlayer())
             super.showController();
     }
 
     @Override
     public void hideController() {
-        if (!UZData.getInstance().isSettingPlayer())
+        if (!UZData.INSTANCE.isSettingPlayer())
             super.hideController();
     }
 
@@ -142,7 +139,7 @@ public final class UZPlayerView extends PlayerView implements PlayerControlView.
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (UZData.getInstance().isUseUZDragView())
+        if (UZData.INSTANCE.getUseUZDragView())
             return false;
         else {
             return mDetector.onTouchEvent(ev);

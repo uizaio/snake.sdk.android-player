@@ -280,8 +280,8 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
     }
 
     private fun depictVideoInfo() {
-        setEntityInfo(UZData.getInstance().entityId)
-        setTextHost(UZData.getInstance().host)
+        setEntityInfo(UZData.getEntityId())
+        setTextHost(UZData.getHost())
     }
 
     /**

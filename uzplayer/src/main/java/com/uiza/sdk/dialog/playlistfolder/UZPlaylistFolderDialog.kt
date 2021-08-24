@@ -52,7 +52,7 @@ class UZPlaylistFolderDialog(
             currentPositionOfDataList,
             object : CallbackPlaylistFolder {
                 override fun onClickItem(playback: UZPlayback, position: Int) {
-                    if (UZData.getInstance().isSettingPlayer) {
+                    if (UZData.isSettingPlayer) {
                         return
                     }
                     dismiss()

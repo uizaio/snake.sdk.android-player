@@ -55,7 +55,7 @@ public class UZPlayer {
     }
 
     public static String getVersionName() {
-        return  Constants.PLAYER_SDK_VERSION;
+        return Constants.PLAYER_SDK_VERSION;
     }
 
     /**
@@ -69,14 +69,14 @@ public class UZPlayer {
         if (!UZAppUtils.checkChromeCastAvailable()) {
             throw new NoClassDefFoundError("Chromecast library is missing");
         }
-        UZData.getInstance().setCasty(Casty.create(activity));
+        UZData.INSTANCE.setCasty(Casty.create(activity));
     }
 
     /**
      * @return Casty
      */
     public static Casty getCasty() {
-        return UZData.getInstance().getCasty();
+        return UZData.INSTANCE.getCasty();
     }
 
     /**
@@ -85,7 +85,7 @@ public class UZPlayer {
      * @param resLayoutMain: id of layout xml
      */
     public static void setUZPlayerSkinLayoutId(@LayoutRes int resLayoutMain) {
-        UZData.getInstance().setUZPlayerSkinLayoutId(resLayoutMain);
+        UZData.INSTANCE.setUzPlayerSkinLayoutId(resLayoutMain);
     }
 
     /**
@@ -94,7 +94,7 @@ public class UZPlayer {
      * @param useUZDragView: boolean
      */
     public static void setUseWithUZDragView(boolean useUZDragView) {
-        UZData.getInstance().setUseWithUZDragView(useUZDragView);
+        UZData.INSTANCE.setUseUZDragView(useUZDragView);
     }
 
     /**
@@ -103,11 +103,11 @@ public class UZPlayer {
      * @param playback: {@link UZPlayback}
      */
     public static void setCurrentPlayback(UZPlayback playback) {
-        UZData.getInstance().setPlayback(playback);
+        UZData.INSTANCE.setPlayback(playback);
     }
 
     public static UZPlayback getCurrentPlayback() {
-        return UZData.getInstance().getPlayback();
+        return UZData.INSTANCE.getPlayback();
     }
 
     public static long getElapsedTime() {
