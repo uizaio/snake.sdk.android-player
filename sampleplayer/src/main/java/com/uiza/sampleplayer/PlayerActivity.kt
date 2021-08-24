@@ -188,7 +188,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun getLiveViewsTimer(firstRun: Boolean) {
-        val playback = UZPlayer.getCurrentPlayback()
+        val playback = UZPlayer.currentPlayback
         if (playback != null) {
             handler?.postDelayed({
                 playback.firstLinkPlay?.let {

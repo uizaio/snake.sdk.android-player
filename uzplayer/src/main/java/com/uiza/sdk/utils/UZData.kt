@@ -38,9 +38,9 @@ object UZData {
         return playbackInfo
     }
 
-    fun setPlayback(playback: UZPlayback) {
+    fun setPlayback(playback: UZPlayback?) {
         this.playback = playback
-        val firstLinkPlay = playback.firstLinkPlay
+        val firstLinkPlay = playback?.firstLinkPlay
         if (firstLinkPlay != null) {
             playbackInfo = parserInfo(linkPlay = firstLinkPlay)
         }

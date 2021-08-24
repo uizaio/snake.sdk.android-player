@@ -1,116 +1,121 @@
-package com.uiza.sdk;
+package com.uiza.sdk
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.os.SystemClock;
-import android.provider.Settings;
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.os.SystemClock
+import android.provider.Settings
+import androidx.annotation.LayoutRes
+import com.uiza.sdk.analytics.UZAnalytic.Companion.init
+import com.uiza.sdk.chromecast.Casty
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.Constants
+import com.uiza.sdk.utils.UZAppUtils
+import com.uiza.sdk.utils.UZData
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
+class UZPlayer {
+    companion object {
+        @JvmStatic
+        var elapsedTime = SystemClock.elapsedRealtime()
+            private set
 
-import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.chromecast.Casty;
-import com.uiza.sdk.models.UZPlayback;
-import com.uiza.sdk.utils.Constants;
-import com.uiza.sdk.utils.UZAppUtils;
-import com.uiza.sdk.utils.UZData;
-
-public class UZPlayer {
-    private UZPlayer() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
-    private static long elapsedTime = SystemClock.elapsedRealtime();
-
-    /**
-     * default dev
-     * init SDK
-     */
-    public static void init(@NonNull Context context) {
-        init(context, R.layout.uzplayer_skin_default, false);
-    }
-
-    /**
-     * init SDK
-     */
-    public static void init(@NonNull Context context, boolean prodEnv) {
-        init(context, R.layout.uzplayer_skin_default, prodEnv);
-    }
-
-    /**
-     * initSDK
-     *
-     * @param skinLayoutId Skin of player
-     */
-    @SuppressLint("HardwareIds")
-    public static void init(@NonNull Context context, @LayoutRes int skinLayoutId, boolean prodEnv) {
-        if (!UZAppUtils.isDependencyAvailable("com.google.android.exoplayer2.SimpleExoPlayer")) {
-            throw new NoClassDefFoundError("Exo Player library is missing");
+        /**
+         * default dev
+         * init SDK
+         */
+        fun init(context: Context) {
+            init(
+                context = context,
+                skinLayoutId = R.layout.uzplayer_skin_default,
+                prodEnv = false
+            )
         }
-        String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        UZAnalytic.init(deviceId, prodEnv);
-        setUZPlayerSkinLayoutId(skinLayoutId);
-        elapsedTime = SystemClock.elapsedRealtime();
-    }
 
-    public static String getVersionName() {
-        return Constants.PLAYER_SDK_VERSION;
-    }
-
-    /**
-     * set Casty
-     *
-     * @param activity: Activity
-     */
-    public static void setCasty(@NonNull Activity activity) {
-        if (UZAppUtils.isTV(activity))
-            return;
-        if (!UZAppUtils.checkChromeCastAvailable()) {
-            throw new NoClassDefFoundError("Chromecast library is missing");
+        /**
+         * init SDK
+         */
+        fun init(context: Context, prodEnv: Boolean) {
+            init(
+                context = context,
+                skinLayoutId = R.layout.uzplayer_skin_default,
+                prodEnv = prodEnv
+            )
         }
-        UZData.INSTANCE.setCasty(Casty.create(activity));
+
+        /**
+         * initSDK
+         *
+         * @param skinLayoutId Skin of player
+         */
+        @SuppressLint("HardwareIds")
+        fun init(context: Context, @LayoutRes skinLayoutId: Int, prodEnv: Boolean) {
+            if (!UZAppUtils.isDependencyAvailable(dependencyClass = "com.google.android.exoplayer2.SimpleExoPlayer")) {
+                throw NoClassDefFoundError("Exo Player library is missing")
+            }
+            val deviceId =
+                Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            init(deviceId = deviceId, prodEnv = prodEnv)
+            setUZPlayerSkinLayoutId(skinLayoutId)
+            elapsedTime = SystemClock.elapsedRealtime()
+        }
+
+        /**
+         * set Casty
+         *
+         * @param activity: Activity
+         */
+        @JvmStatic
+        fun setCasty(activity: Activity) {
+            if (UZAppUtils.isTV(activity)) {
+                return
+            }
+            if (!UZAppUtils.checkChromeCastAvailable()) {
+                throw NoClassDefFoundError("Chromecast library is missing")
+            }
+            UZData.casty = Casty.create(activity)
+        }
+
+        /**
+         * @return Casty
+         */
+        @JvmStatic
+        val casty: Casty?
+            get() = UZData.casty
+
+        /**
+         * set Player Skin layout_id
+         *
+         * @param resLayoutMain: id of layout xml
+         */
+        @JvmStatic
+        fun setUZPlayerSkinLayoutId(@LayoutRes resLayoutMain: Int) {
+            UZData.uzPlayerSkinLayoutId = resLayoutMain
+        }
+
+        /**
+         * user with UZDragView
+         *
+         * @param useUZDragView: boolean
+         */
+        fun setUseWithUZDragView(useUZDragView: Boolean) {
+            UZData.useUZDragView = useUZDragView
+        }
+
+        /**
+         * set current UZPlayBack for Custom Link Play
+         *
+         * @param playback: [UZPlayback]
+         */
+        @JvmStatic
+        var currentPlayback: UZPlayback?
+            get() = UZData.getPlayback()
+            set(playback) {
+                UZData.setPlayback(playback)
+            }
+
+        fun getVersionName(): String {
+            return Constants.PLAYER_SDK_VERSION
+        }
     }
 
-    /**
-     * @return Casty
-     */
-    public static Casty getCasty() {
-        return UZData.INSTANCE.getCasty();
-    }
-
-    /**
-     * set Player Skin layout_id
-     *
-     * @param resLayoutMain: id of layout xml
-     */
-    public static void setUZPlayerSkinLayoutId(@LayoutRes int resLayoutMain) {
-        UZData.INSTANCE.setUzPlayerSkinLayoutId(resLayoutMain);
-    }
-
-    /**
-     * user with UZDragView
-     *
-     * @param useUZDragView: boolean
-     */
-    public static void setUseWithUZDragView(boolean useUZDragView) {
-        UZData.INSTANCE.setUseUZDragView(useUZDragView);
-    }
-
-    /**
-     * set current UZPlayBack for Custom Link Play
-     *
-     * @param playback: {@link UZPlayback}
-     */
-    public static void setCurrentPlayback(UZPlayback playback) {
-        UZData.INSTANCE.setPlayback(playback);
-    }
-
-    public static UZPlayback getCurrentPlayback() {
-        return UZData.INSTANCE.getPlayback();
-    }
-
-    public static long getElapsedTime() {
-        return elapsedTime;
-    }
 }

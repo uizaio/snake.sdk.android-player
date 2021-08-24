@@ -15,7 +15,6 @@ import com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer;
 import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.ext.ima.ImaAdsLoader;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -33,12 +32,12 @@ public final class UZPlayerManager extends AbstractPlayerManager {
     private ImaAdsLoader adsLoader = null;
     private boolean isOnAdEnded;
     private UZAdPlayerCallback adPlayerCallback;
-    private UZVideoAdPlayerListener uzVideoAdPlayerListener = new UZVideoAdPlayerListener();
+    private final UZVideoAdPlayerListener uzVideoAdPlayerListener = new UZVideoAdPlayerListener();
 
     MediaSessionCompat mediaSession;
 
     public static class Builder {
-        private Context context;
+        private final Context context;
         private String playUrl;
         private String imaAdUrl;
         private String drmScheme;
@@ -105,7 +104,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
         new Handler().postDelayed(runnable, 0);
     }
 
-    private void handleAdProgress(){
+    private void handleAdProgress() {
         isOnAdEnded = false;
         VideoProgressUpdate videoProgressUpdate = adsLoader.getAdProgress();
         if (adPlayerCallback != null) adPlayerCallback.onAdProgress(videoProgressUpdate);
@@ -169,7 +168,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
         mediaSession.setActive(true);
     }
 
-    private MediaSessionCompat.Callback mediasSessionCallback = new MediaSessionCompat.Callback() {
+    private final MediaSessionCompat.Callback mediasSessionCallback = new MediaSessionCompat.Callback() {
         @Override
         public void onPause() {
             super.onPause();
