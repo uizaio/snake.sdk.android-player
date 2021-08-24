@@ -75,7 +75,7 @@ abstract class AbstractPlayerManager {
     protected Context context;
     UZManagerObserver managerObserver;
     String drmScheme;
-    private String linkPlay;
+    private final String linkPlay;
     long contentPosition;
     protected final SimpleExoPlayer player;
     private UZPlayerEventListener uzPlayerEventListener;
@@ -92,7 +92,7 @@ abstract class AbstractPlayerManager {
     int percent = 0;
     protected int s = 0;
     private DefaultTrackSelector trackSelector;
-    private String userAgent;
+    private final String userAgent;
     private boolean isCanAddViewWatchTime;
     private long timestampPlayed;
     private long bufferPosition;
@@ -418,6 +418,7 @@ abstract class AbstractPlayerManager {
         String timeShift = ConvertUtils.getTimeShiftUrl(playlist);
         timeShiftSupport = !TextUtils.isEmpty(timeShift);
         if (timeShiftSupport && mediaSourceVideoExt == null) {
+            assert timeShift != null;
             if (timeShift.contains("extras/")) {
                 String fileName = timeShift.replace("extras/", "");
                 String linkPlayExt = linkPlay.replace(fileName, timeShift);
