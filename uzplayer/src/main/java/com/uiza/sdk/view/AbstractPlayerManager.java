@@ -69,7 +69,6 @@ abstract class AbstractPlayerManager {
     private static final String READY = "ready";
     private static final String UNKNOWN = "unknown";
 
-
     private final HttpDataSource.Factory manifestDataSourceFactory;
     private final DataSource.Factory mediaDataSourceFactory;
     protected Context context;
@@ -116,7 +115,7 @@ abstract class AbstractPlayerManager {
         // Default parameters, except allowCrossProtocolRedirects is true
         this.manifestDataSourceFactory = buildHttpDataSourceFactory();
         this.mediaDataSourceFactory =
-                new DefaultDataSourceFactory(context, null /* listener */, manifestDataSourceFactory);
+                new DefaultDataSourceFactory(context, null, manifestDataSourceFactory);
         this.drmSessionManager = buildDrmSessionManager();
     }
 
@@ -131,8 +130,9 @@ abstract class AbstractPlayerManager {
     public void register(@NonNull UZManagerObserver observer) {
         this.unregister();
         this.managerObserver = observer;
-        if (managerObserver.getPlayerView() != null)
+        if (managerObserver.getPlayerView() != null) {
             managerObserver.getPlayerView().setPlayer(player);
+        }
         initSource();
     }
 
@@ -163,9 +163,9 @@ abstract class AbstractPlayerManager {
         handler = null;
         runnable = null;
         try {
-            Objects.requireNonNull(managerObserver.getPlayerView().getOverlayFrameLayout()).removeAllViews();
+            Objects.requireNonNull(Objects.requireNonNull(managerObserver.getPlayerView()).getOverlayFrameLayout()).removeAllViews();
         } catch (NullPointerException e) {
-            Timber.e(e);
+            e.printStackTrace();
         }
     }
 
@@ -234,13 +234,15 @@ abstract class AbstractPlayerManager {
     }
 
     void setVolume(float volume) {
-        if (player != null)
+        if (player != null) {
             player.setVolume(volume);
+        }
     }
 
     void setPlayWhenReady(boolean ready) {
-        if (player != null)
+        if (player != null) {
             player.setPlayWhenReady(ready);
+        }
     }
 
     boolean seekTo(long positionMs) {
@@ -253,16 +255,18 @@ abstract class AbstractPlayerManager {
 
     //forward  10000mls
     void seekToForward(long forward) {
-        if (player != null)
+        if (player != null) {
             player.seekTo(Math.min(player.getCurrentPosition() + forward, player.getDuration()));
+        }
     }
 
     //next 10000mls
     void seekToBackward(long backward) {
-        if (player.getCurrentPosition() - backward > 0)
+        if (player.getCurrentPosition() - backward > 0) {
             player.seekTo(player.getCurrentPosition() - backward);
-        else
+        } else {
             player.seekTo(0);
+        }
     }
 
     long getCurrentPosition() {
@@ -401,8 +405,9 @@ abstract class AbstractPlayerManager {
     }
 
     void notifyUpdateButtonVisibility() {
-        if (debugCallback != null)
+        if (debugCallback != null) {
             debugCallback.onUpdateButtonVisibilities();
+        }
     }
 
     void createMediaSourceVideo() {
@@ -463,7 +468,7 @@ abstract class AbstractPlayerManager {
             try {
                 drmSessionManager = buildDrmSessionManagerV18(drmSchemeUuid, drmLicenseUrl);
             } catch (UnsupportedDrmException e) {
-                Timber.e(e, "UnsupportedDrmException");
+                e.printStackTrace();
             }
         }
         return drmSessionManager;
@@ -535,8 +540,9 @@ abstract class AbstractPlayerManager {
 
         @Override
         public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
-            if (managerObserver != null)
+            if (managerObserver != null) {
                 managerObserver.onTimelineChanged(timeline, player.getCurrentManifest(), reason);
+            }
         }
 
         //This is called when the available or selected tracks change
@@ -555,10 +561,12 @@ abstract class AbstractPlayerManager {
                 }
             }
             notifyUpdateButtonVisibility();
-            if (managerObserver != null)
+            if (managerObserver != null) {
                 managerObserver.onPlayerStateChanged(playWhenReady, playbackState);
-            if (progressListener != null)
+            }
+            if (progressListener != null) {
                 progressListener.onPlayerStateChanged(playWhenReady, playbackState);
+            }
         }
 
         //This is called then a error happens
@@ -566,17 +574,19 @@ abstract class AbstractPlayerManager {
         public void onPlayerError(ExoPlaybackException error) {
             if (error == null)
                 return;
-            Timber.e(error, "onPlayerError ");
-            if (error.type == ExoPlaybackException.TYPE_SOURCE)
+            error.printStackTrace();
+            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                 Timber.e("onPlayerError TYPE_SOURCE");
-            else if (error.type == ExoPlaybackException.TYPE_RENDERER)
+            } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
                 Timber.e("onPlayerError TYPE_RENDERER");
-            else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED)
+            } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
                 Timber.e("onPlayerError TYPE_UNEXPECTED");
+            }
             exoPlaybackException = error;
             notifyUpdateButtonVisibility();
-            if (managerObserver != null)
+            if (managerObserver != null) {
                 managerObserver.onPlayerError(error);
+            }
         }
     }
 }
