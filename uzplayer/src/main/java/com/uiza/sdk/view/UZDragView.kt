@@ -274,15 +274,15 @@ class UZDragView @JvmOverloads constructor(
             })
         }
         val v = findFirstVideoView()
-        v?.let {
-            setOnSingleTap { _: Float, _: Float ->
+        setOnSingleTap(object : OnSingleTap {
+            override fun onSingleTapConfirmed(x: Float, y: Float) {
                 if (isMaximizeView) {
                     post {
-                        it.toggleShowHideController()
+                        v?.toggleShowHideController()
                     }
                 }
             }
-        }
+        })
     }
 
     private fun findFirstVideoView(): UZVideoView? {

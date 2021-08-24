@@ -1313,6 +1313,21 @@ public class UZVideoView extends RelativeLayout
         updateUIPositionOfProgressBar();
         playerView.setOnDoubleTap(new UZPlayerView.OnDoubleTap() {
             @Override
+            public void onDoubleTapFinished() {
+
+            }
+
+            @Override
+            public void onDoubleTapProgressDown(float posX, float posY) {
+
+            }
+
+            @Override
+            public void onDoubleTapStarted(float posX, float posY) {
+
+            }
+
+            @Override
             public void onDoubleTapProgressUp(float posX, float posY) {
                 float halfScreen = UZViewUtils.getScreenWidth() / 2.0f;
                 if (posX - 60.0f > halfScreen) {

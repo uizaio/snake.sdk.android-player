@@ -1,321 +1,298 @@
-package com.uiza.sdk.view;
+package com.uiza.sdk.view
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.AttributeSet
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import androidx.core.view.GestureDetectorCompat
+import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.android.exoplayer2.ui.PlayerView
+import com.uiza.sdk.utils.UZData.isSettingPlayer
+import com.uiza.sdk.utils.UZData.useUZDragView
+import kotlin.math.abs
 
-import androidx.annotation.Nullable;
-import androidx.core.view.GestureDetectorCompat;
-
-import com.google.android.exoplayer2.ui.PlayerControlView;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.uiza.sdk.utils.UZData;
-
-import timber.log.Timber;
-
-/**
- * Player View
- */
-
-//https://github.com/google/ExoPlayer/issues/4031
 //I want to to show playback controls only when onTouch event is fired.
 // How to prevent control buttons being showed up when on long pressing, dragging etc.?
-public final class UZPlayerView extends PlayerView implements PlayerControlView.VisibilityListener {
+class UZPlayerView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : PlayerView(
+    context,
+    attrs,
+    defStyleAttr
+), PlayerControlView.VisibilityListener {
 
-    private boolean controllerVisible;
-    private GestureDetectorCompat mDetector;
-    private OnTouchEvent onTouchEvent;
-    private OnSingleTap onSingleTap;
-    private OnDoubleTap onDoubleTap;
-    private OnLongPressed onLongPressed;
-    private ControllerStateCallback controllerStateCallback;
+    companion object {
+        private const val SWIPE_THRESHOLD = 100
+        private const val SWIPE_VELOCITY_THRESHOLD = 100
+    }
 
-    private boolean doubleTapActivated = true;
+    private var controllerVisible = false
+    private val mDetector: GestureDetectorCompat
+    private var onTouchEvent: OnTouchEvent? = null
+    private var onSingleTap: OnSingleTap? = null
+    private var onDoubleTap: OnDoubleTap? = null
+    private var onLongPressed: OnLongPressed? = null
+    private var controllerStateCallback: ControllerStateCallback? = null
+    private val doubleTapActivated = true
+
     // Variable to save current state
-    private boolean isDoubleTap = false;
+    private var isDoubleTap = false
+
     /**
      * Default time window in which the double tap is active
      * Resets if another tap occurred within the time window by calling
-     * {@link UZPlayerView#keepInDoubleTapMode()}
-     **/
-    long doubleTapDelay = 650;
-    private Handler mHandler = new Handler();
-    private Runnable mRunnable = () -> {
-        isDoubleTap = false;
-        if (onDoubleTap != null)
-            onDoubleTap.onDoubleTapFinished();
-    };
-
-    public UZPlayerView(Context context) {
-        this(context, null);
+     * [UZPlayerView.keepInDoubleTapMode]
+     */
+    var doubleTapDelay: Long = 650
+    private val mHandler = Handler(Looper.getMainLooper())
+    private val mRunnable = Runnable {
+        isDoubleTap = false
+        onDoubleTap?.onDoubleTapFinished()
     }
 
-    public UZPlayerView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+    init {
+        if (!isInEditMode) {
+            setControllerVisibilityListener(this)
+        }
+        mDetector = GestureDetectorCompat(context, UZGestureListener())
     }
 
-    public UZPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        if (!isInEditMode())
-            setControllerVisibilityListener(this);
-        mDetector = new GestureDetectorCompat(context, new UZGestureListener());
+    override fun isControllerVisible(): Boolean {
+        return controllerVisible
     }
 
-    public boolean isControllerVisible() {
-        return controllerVisible;
+    fun setControllerStateCallback(controllerStateCallback: ControllerStateCallback?) {
+        this.controllerStateCallback = controllerStateCallback
     }
 
-    public void setControllerStateCallback(ControllerStateCallback controllerStateCallback) {
-        this.controllerStateCallback = controllerStateCallback;
+    override fun onVisibilityChange(visibility: Int) {
+        controllerVisible = visibility == VISIBLE
+        controllerStateCallback?.onVisibilityChange(controllerVisible)
     }
 
-    @Override
-    public void onVisibilityChange(int visibility) {
-        controllerVisible = visibility == View.VISIBLE;
-        if (controllerStateCallback != null)
-            controllerStateCallback.onVisibilityChange(controllerVisible);
+    fun toggleShowHideController() {
+        if (controllerVisible) {
+            hideController()
+        } else {
+            showController()
+        }
     }
 
-    public void toggleShowHideController() {
-        if (controllerVisible)
-            hideController();
-        else
-            showController();
+    override fun showController() {
+        if (!isSettingPlayer) {
+            super.showController()
+        }
     }
 
-    @Override
-    public void showController() {
-        if (!UZData.INSTANCE.isSettingPlayer())
-            super.showController();
+    override fun hideController() {
+        if (!isSettingPlayer) {
+            super.hideController()
+        }
     }
 
-    @Override
-    public void hideController() {
-        if (!UZData.INSTANCE.isSettingPlayer())
-            super.hideController();
+    fun setOnTouchEvent(onTouchEvent: OnTouchEvent?) {
+        this.onTouchEvent = onTouchEvent
     }
 
-    public void setOnTouchEvent(OnTouchEvent onTouchEvent) {
-        this.onTouchEvent = onTouchEvent;
+    fun setOnSingleTap(onSingleTap: OnSingleTap?) {
+        this.onSingleTap = onSingleTap
     }
 
-    public void setOnSingleTap(OnSingleTap onSingleTap) {
-        this.onSingleTap = onSingleTap;
-    }
-
-    public void setOnDoubleTap(OnDoubleTap onDoubleTap) {
-        this.onDoubleTap = onDoubleTap;
+    fun setOnDoubleTap(onDoubleTap: OnDoubleTap?) {
+        this.onDoubleTap = onDoubleTap
     }
 
     /**
      * Resets the timeout to keep in double tap mode.
-     * <p>
-     * Called once in {@link OnDoubleTap#onDoubleTapStarted} Needs to be called
+     *
+     *
+     * Called once in [OnDoubleTap.onDoubleTapStarted] Needs to be called
      * from outside if the double tap is customized / overridden to detect ongoing taps
      */
-    public void keepInDoubleTapMode() {
-        isDoubleTap = true;
-        mHandler.removeCallbacks(mRunnable);
-        mHandler.postDelayed(mRunnable, doubleTapDelay);
+    fun keepInDoubleTapMode() {
+        isDoubleTap = true
+        mHandler.removeCallbacks(mRunnable)
+        mHandler.postDelayed(mRunnable, doubleTapDelay)
     }
 
     /**
-     * Cancels double tap mode instantly by calling {@link OnDoubleTap#onDoubleTapFinished()}
+     * Cancels double tap mode instantly by calling [OnDoubleTap.onDoubleTapFinished]
      */
-    public void cancelInDoubleTapMode() {
-        mHandler.removeCallbacks(mRunnable);
-        isDoubleTap = false;
-        onDoubleTap.onDoubleTapFinished();
+    fun cancelInDoubleTapMode() {
+        mHandler.removeCallbacks(mRunnable)
+        isDoubleTap = false
+        onDoubleTap?.onDoubleTapFinished()
     }
 
-    public void setOnLongPressed(OnLongPressed onLongPressed) {
-        this.onLongPressed = onLongPressed;
+    fun setOnLongPressed(onLongPressed: OnLongPressed?) {
+        this.onLongPressed = onLongPressed
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (UZData.INSTANCE.getUseUZDragView())
-            return false;
-        else {
-            return mDetector.onTouchEvent(ev);
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        return if (useUZDragView) {
+            false
+        } else {
+            mDetector.onTouchEvent(ev)
         }
     }
 
-    public PlayerControlView getPlayerControlView() {
-        for (int i = 0; i < this.getChildCount(); i++) {
-            if (this.getChildAt(i) instanceof PlayerControlView)
-                return (PlayerControlView) getChildAt(i);
+    val playerControlView: PlayerControlView?
+        get() {
+            for (i in 0 until this.childCount) {
+                if (getChildAt(i) is PlayerControlView) {
+                    return getChildAt(i) as PlayerControlView
+                }
+            }
+            return null
         }
-        return null;
+
+    interface ControllerStateCallback {
+        fun onVisibilityChange(visible: Boolean)
     }
 
-    public interface ControllerStateCallback {
-        void onVisibilityChange(boolean visible);
+    interface OnSingleTap {
+        fun onSingleTapConfirmed(x: Float, y: Float)
     }
 
-    public interface OnSingleTap {
-        void onSingleTapConfirmed(float x, float y);
+    interface OnLongPressed {
+        fun onLongPressed(x: Float, y: Float)
     }
 
-    public interface OnLongPressed {
-        void onLongPressed(float x, float y);
-    }
-
-    public interface OnDoubleTap {
+    interface OnDoubleTap {
         /**
          * Called when double tapping starts, after double tap gesture
          *
          * @param posX x tap position on the root view
          * @param posY y tap position on the root view
          */
-        default void onDoubleTapStarted(float posX, float posY) {
-        }
+        fun onDoubleTapStarted(posX: Float, posY: Float) {}
 
         /**
          * Called for each ongoing tap (also single tap) (MotionEvent#ACTION_DOWN)
          * when double tap started and still in double tap mode defined
-         * by {@link UZPlayerView#doubleTapDelay}
+         * by [UZPlayerView.doubleTapDelay]
          *
          * @param posX x tap position on the root view
          * @param posY y tap position on the root view
          */
-        default void onDoubleTapProgressDown(float posX, float posY) {
-        }
+        fun onDoubleTapProgressDown(posX: Float, posY: Float) {}
 
         /**
          * Called for each ongoing tap (also single tap) (MotionEvent#ACTION_UP}
          * when double tap started and still in double tap mode defined
-         * by {@link UZPlayerView#doubleTapDelay}
+         * by [UZPlayerView.doubleTapDelay]
          *
          * @param posX x tap position on the root view
          * @param posY y tap position on the root view
          */
-        default void onDoubleTapProgressUp(float posX, float posY) {
-        }
+        fun onDoubleTapProgressUp(posX: Float, posY: Float) {}
 
         /**
-         * Called when {@link UZPlayerView#doubleTapDelay} is over
+         * Called when [UZPlayerView.doubleTapDelay] is over
          */
-        default void onDoubleTapFinished() {
-        }
+        fun onDoubleTapFinished() {}
     }
 
-    public interface OnTouchEvent {
-
-        void onSwipeRight();
-
-        void onSwipeLeft();
-
-        void onSwipeBottom();
-
-        void onSwipeTop();
+    interface OnTouchEvent {
+        fun onSwipeRight()
+        fun onSwipeLeft()
+        fun onSwipeBottom()
+        fun onSwipeTop()
     }
 
-    private class UZGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onDown(MotionEvent event) {
-            if (isDoubleTap && onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressDown(event.getX(), event.getY());
+    private inner class UZGestureListener : SimpleOnGestureListener() {
+        override fun onDown(event: MotionEvent): Boolean {
+            if (isDoubleTap) {
+                onDoubleTap?.onDoubleTapProgressDown(event.x, event.y)
             }
-            return true;
+            return true
         }
 
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            if (isDoubleTap && onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressUp(e.getX(), e.getY());
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            if (isDoubleTap) {
+                onDoubleTap?.onDoubleTapProgressUp(e.x, e.y)
             }
-            return true;
+            return true
         }
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             if (!controllerVisible) {
-                showController();
-            } else if (getControllerHideOnTouch()) {
-                hideController();
+                showController()
+            } else if (controllerHideOnTouch) {
+                hideController()
             }
-            if (onSingleTap != null) {
-                onSingleTap.onSingleTapConfirmed(e.getX(), e.getY());
-            }
-            return true;
+            onSingleTap?.onSingleTapConfirmed(e.x, e.y)
+            return true
         }
 
-        @Override
-        public void onLongPress(MotionEvent e) {
-            if (onLongPressed != null) {
-                onLongPressed.onLongPressed(e.getX(), e.getY());
-            }
+        override fun onLongPress(e: MotionEvent) {
+            onLongPressed?.onLongPressed(e.x, e.y)
         }
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (!isDoubleTap && onDoubleTap != null) {
-                isDoubleTap = true;
-                keepInDoubleTapMode();
-                onDoubleTap.onDoubleTapStarted(e.getX(), e.getY());
-                return true;
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            if (!isDoubleTap) {
+                isDoubleTap = true
+                keepInDoubleTapMode()
+                onDoubleTap?.onDoubleTapStarted(e.x, e.y)
+                return true
             }
-            return false;
+            return false
         }
 
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
+        override fun onDoubleTapEvent(e: MotionEvent): Boolean {
             // Second tap (ACTION_UP) of both taps
-            if (e.getActionMasked() == MotionEvent.ACTION_UP && isDoubleTap && onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressUp(e.getX(), e.getY());
-                return true;
+            if (e.actionMasked == MotionEvent.ACTION_UP && isDoubleTap) {
+                onDoubleTap?.onDoubleTapProgressUp(e.x, e.y)
+                return true
             }
-            return super.onDoubleTapEvent(e);
+            return super.onDoubleTapEvent(e)
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            return true;
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            return true
         }
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             try {
-                float diffY = e2.getY() - e1.getY();
-                float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            if (onTouchEvent != null) {
-                                onTouchEvent.onSwipeRight();
-                            }
+                            onTouchEvent?.onSwipeRight()
                         } else {
-                            if (onTouchEvent != null) {
-                                onTouchEvent.onSwipeLeft();
-                            }
+                            onTouchEvent?.onSwipeLeft()
                         }
                     }
                 } else {
-                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (abs(diffY) > Companion.SWIPE_THRESHOLD && abs(velocityY) > Companion.SWIPE_VELOCITY_THRESHOLD) {
                         if (diffY > 0) {
-                            if (onTouchEvent != null) {
-                                onTouchEvent.onSwipeBottom();
-                            }
+                            onTouchEvent?.onSwipeBottom()
                         } else {
-                            if (onTouchEvent != null) {
-                                onTouchEvent.onSwipeTop();
-                            }
+                            onTouchEvent?.onSwipeTop()
                         }
                     }
                 }
-            } catch (Exception exception) {
-                Timber.e(exception);
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
-            return true;
+            return true
         }
     }
 }
