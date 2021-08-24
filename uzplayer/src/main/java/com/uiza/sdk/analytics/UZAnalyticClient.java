@@ -11,7 +11,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import timber.log.Timber;
 
 public class UZAnalyticClient {
     private final static String DEV_BASE_URL = "https://tracking-dev.uizadev.io";
@@ -50,7 +49,7 @@ public class UZAnalyticClient {
     }
 
     private Interceptor provideLogging() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(Timber::d);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         return logging;

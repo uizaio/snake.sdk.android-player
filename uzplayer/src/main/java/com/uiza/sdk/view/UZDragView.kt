@@ -3,6 +3,7 @@ package com.uiza.sdk.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +17,6 @@ import com.uiza.sdk.R
 import com.uiza.sdk.utils.UZViewUtils.screenHeight
 import com.uiza.sdk.utils.UZViewUtils.screenWidth
 import com.uiza.sdk.view.UZPlayerView.*
-import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -29,6 +29,10 @@ class UZDragView @JvmOverloads constructor(
     companion object {
         private const val SWIPE_THRESHOLD = 100
         private const val SWIPE_VELOCITY_THRESHOLD = 100
+    }
+
+    private fun log(msg: String) {
+        Log.d(javaClass.simpleName, msg)
     }
 
     private var headerView: View? = null
@@ -404,7 +408,7 @@ class UZDragView @JvmOverloads constructor(
             0,
             0
         ) else {
-            Timber.e("Error: cannot maximize because isEnableRevertMaxSize is true")
+            log("Error: cannot maximize because isEnableRevertMaxSize is true")
         }
     }
 
@@ -425,11 +429,11 @@ class UZDragView @JvmOverloads constructor(
     fun minimizeTopRight() {
         if (!isAppear) return
         if (isEnableRevertMaxSize) {
-            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
+            log("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
             return
         }
         if (!isMinimizedAtLeastOneTime) {
-            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
+            log("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
             return
         }
         val posX = screenW - sizeWHeaderViewMin * 3 / 2
@@ -440,11 +444,11 @@ class UZDragView @JvmOverloads constructor(
     fun minimizeTopLeft() {
         if (!isAppear) return
         if (isEnableRevertMaxSize) {
-            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
+            log("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
             return
         }
         if (!isMinimizedAtLeastOneTime) {
-            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
+            log("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
             return
         }
         val posX = -sizeWHeaderViewMin / 2

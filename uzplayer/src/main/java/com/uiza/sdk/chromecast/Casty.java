@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,12 +32,15 @@ import com.uiza.sdk.R;
 
 import java.io.IOException;
 
-import timber.log.Timber;
-
 /**
  * Core class of Casty. It manages buttons/widgets and gives access to the media player.
  */
 public class Casty implements CastyPlayer.OnMediaLoadedListener {
+
+    private static void log(String msg) {
+        Log.d(Casty.class.getSimpleName(), msg);
+    }
+
     static String receiverId = CastMediaControlIntent.DEFAULT_MEDIA_RECEIVER_APPLICATION_ID;
     static CastOptions customCastOptions;
 
@@ -91,7 +95,7 @@ public class Casty implements CastyPlayer.OnMediaLoadedListener {
         if (playServicesState == ConnectionResult.SUCCESS) {
             return new Casty(activity);
         } else {
-            Timber.w("Google Play services not found on a device, Casty won't work.");
+            log("Google Play services not found on a device, Casty won't work.");
             return new CastyNoOp();
         }
     }
@@ -214,53 +218,53 @@ public class Casty implements CastyPlayer.OnMediaLoadedListener {
         return new SessionManagerListener<CastSession>() {
             @Override
             public void onSessionStarted(CastSession castSession, String s) {
-                Timber.d("onSessionStarted %s", s);
+                log("onSessionStarted " + s);
                 activity.invalidateOptionsMenu();
                 onConnected(castSession);
             }
 
             @Override
             public void onSessionEnded(CastSession castSession, int i) {
-                Timber.d("onSessionEnded");
+                log("onSessionEnded");
                 activity.invalidateOptionsMenu();
                 onDisconnected();
             }
 
             @Override
             public void onSessionResumed(CastSession castSession, boolean b) {
-                Timber.d("onSessionResumed");
+                log("onSessionResumed");
                 activity.invalidateOptionsMenu();
                 onConnected(castSession);
             }
 
             @Override
             public void onSessionStarting(CastSession castSession) {
-                Timber.d("onSessionStarting");
+                log("onSessionStarting");
             }
 
             @Override
             public void onSessionStartFailed(CastSession castSession, int i) {
-                Timber.d("onSessionStartFailed");
+                log("onSessionStartFailed");
             }
 
             @Override
             public void onSessionEnding(CastSession castSession) {
-                Timber.d("onSessionEnding");
+                log("onSessionEnding");
             }
 
             @Override
             public void onSessionResuming(CastSession castSession, String s) {
-                Timber.d("onSessionResuming");
+                log("onSessionResuming");
             }
 
             @Override
             public void onSessionResumeFailed(CastSession castSession, int i) {
-                Timber.d("onSessionResumeFailed");
+                log("onSessionResumeFailed");
             }
 
             @Override
             public void onSessionSuspended(CastSession castSession, int i) {
-                Timber.d("onSessionSuspended");
+                log("onSessionSuspended");
             }
         };
     }
@@ -365,11 +369,11 @@ public class Casty implements CastyPlayer.OnMediaLoadedListener {
         try {
             CastSession newCastSession = CastContext.getSharedInstance(activity).getSessionManager().getCurrentCastSession();
             if (newCastSession.isMute()) {
-                Timber.d("setVolume %d", volume);
+                log("setVolume " + volume);
                 newCastSession.setVolume(volume);
             }
         } catch (IOException e) {
-            Timber.e(e, "IOException setVolume");
+            e.printStackTrace();
         }
     }
 
@@ -378,11 +382,11 @@ public class Casty implements CastyPlayer.OnMediaLoadedListener {
         try {
             CastSession newCastSession = CastContext.getSharedInstance(activity).getSessionManager().getCurrentCastSession();
             if (newCastSession.isMute()) {
-                Timber.d("turnOnVolume isMute -> setMute false");
+                log("turnOnVolume isMute -> setMute false");
                 newCastSession.setMute(false);
             }
         } catch (IOException e) {
-            Timber.e(e, "IOException turnOnVolume");
+            e.printStackTrace();
         }
     }
 
@@ -393,16 +397,16 @@ public class Casty implements CastyPlayer.OnMediaLoadedListener {
         try {
             CastSession newCastSession = CastContext.getSharedInstance(activity).getSessionManager().getCurrentCastSession();
             if (newCastSession.isMute()) {
-                Timber.d("toggleMuteVolume isMute -> setMute false");
+                log("toggleMuteVolume isMute -> setMute false");
                 newCastSession.setMute(false);
                 return false;
             } else {
-                Timber.d("toggleMuteVolume !isMute -> setMute true");
+                log("toggleMuteVolume !isMute -> setMute true");
                 newCastSession.setMute(true);
                 return true;
             }
         } catch (IOException e) {
-            Timber.e(e, "IOException setMute");
+            e.printStackTrace();
             return false;
         }
     }

@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.util.Base64
 import com.uiza.sdk.models.UZPlaybackInfo
 import com.uiza.sdk.utils.JacksonUtils.fromJson
-import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException

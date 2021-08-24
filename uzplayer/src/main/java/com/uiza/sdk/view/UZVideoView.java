@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Rational;
 import android.view.LayoutInflater;
@@ -95,12 +96,12 @@ import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
 public class UZVideoView extends RelativeLayout
         implements UZManagerObserver, PreviewLoader, PreviewView.OnPreviewChangeListener, View.OnClickListener, View.OnFocusChangeListener,
         SensorOrientationChangeNotifier.Listener {
 
+    private final String logTag = getClass().getSimpleName();
     private static final String HYPHEN = "-";
     private static final long FAST_FORWARD_REWIND_INTERVAL = 10000L; // 10s
     /**
@@ -344,7 +345,7 @@ public class UZVideoView extends RelativeLayout
             try {
                 playerView.setResizeMode(resizeMode);
             } catch (java.lang.IllegalStateException e) {
-                Timber.e(e);
+                e.printStackTrace();
             }
         }
     }
@@ -369,9 +370,9 @@ public class UZVideoView extends RelativeLayout
         if (uzException == null) {
             return;
         }
+        uzException.printStackTrace();
         notifyError(uzException);
         // Capture by Sentry, in uzException already contains Message, Error Code
-        Timber.e(uzException);
         if (isHasError) {
             return;
         }
@@ -405,11 +406,11 @@ public class UZVideoView extends RelativeLayout
     public boolean play() {
         UZPlayback playback = UZData.INSTANCE.getPlayback();
         if (playback == null) {
-            Timber.e(ErrorConstant.ERR_14);
+            Log.d(logTag, "ErrorConstant.ERR_14");
             return false;
         }
         if (!ConnectivityUtils.isConnected(getContext())) {
-            Timber.e(ErrorConstant.ERR_0);
+            Log.d(logTag, "ErrorConstant.ERR_0");
             return false;
         }
         initPlayback(playback, true);
@@ -844,9 +845,9 @@ public class UZVideoView extends RelativeLayout
             enterPIPMode();
         else if (v.getParent() == debugRootView)
             showTrackSelectionDialog(v, true);
-        else if (v == rlChromeCast)
-            Timber.e("dangerous to remove");
-        else if (v == tvLiveStatus) {
+        else if (v == rlChromeCast) {
+            //TODO dangerous to remove
+        } else if (v == tvLiveStatus) {
             seekToEndLive();
         } else if (v == ibFfwdIcon) {
             if (isCastingChromecast) {
@@ -967,17 +968,17 @@ public class UZVideoView extends RelativeLayout
 
     private void playPlaylistPosition(int position) {
         if (!isPlayPlaylistFolder()) {
-            Timber.e("playPlaylistPosition error: incorrect position");
+            Log.d(logTag, "playPlaylistPosition error: incorrect position");
             return;
         }
-        Timber.d("playPlaylistPosition position: %d", position);
+        Log.d(logTag, "playPlaylistPosition position: %d\", position");
         if (position < 0) {
-            Timber.e("This is the first item");
+            Log.d(logTag, "This is the first item");
             notifyError(ErrorUtils.exceptionPlaylistFolderItemFirst());
             return;
         }
         if (position > UZData.INSTANCE.getPlayList().size() - 1) {
-            Timber.e("This is the last item");
+            Log.d(logTag, "This is the last item");
             notifyError(ErrorUtils.exceptionPlaylistFolderItemLast());
             return;
         }
@@ -2088,7 +2089,7 @@ public class UZVideoView extends RelativeLayout
         List<MediaTrack> mediaTrackList = new ArrayList<>();
         long duration = getDuration();
         if (duration < 0) {
-            Timber.e("invalid duration -> cannot play chromecast");
+            Log.d(logTag, "invalid duration -> cannot play chromecast");
             return;
         }
 
@@ -2210,15 +2211,18 @@ public class UZVideoView extends RelativeLayout
             UZTrackingData data = new UZTrackingData(pi, viewerSessionId, UZEventType.WATCHING);
             handler.postDelayed(() -> {
                         if (isPlaying()) {
-                            disposables.add(UZAnalytic.Companion.pushEvent(data, res -> Timber.d("send track watching: %s, response: %s", viewerSessionId, res.string()),
-                                    error -> Timber.e("send track watching error: %s", error.getMessage())
+                            disposables.add(UZAnalytic.Companion.pushEvent(data, res ->
+                                            Log.d(logTag, "send track watching: " + viewerSessionId + ", response " + res.string()),
+                                    error -> {
+                                        Log.d(logTag, "send track watching error: %s" + error.getMessage());
+                                    }
                             ));
                         }
                         trackWatchingTimer(false);
                     }
                     , firstRun ? 0 : DEFAULT_VALUE_TRACKING_LOOP); // 5s
         } else {
-            Timber.e("Do not track watching");
+            Log.d(logTag, "Do not track watching");
         }
     }
 

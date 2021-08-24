@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,9 +59,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
-import timber.log.Timber;
-
 abstract class AbstractPlayerManager {
+    private void log(String msg) {
+        Log.d(getClass().getSimpleName(), msg);
+    }
 
     private static final String PLAYER_STATE_FORMAT = "playWhenReady:%s playbackState:%s window:%s";
     private static final String BUFFERING = "buffering";
@@ -576,11 +578,11 @@ abstract class AbstractPlayerManager {
                 return;
             error.printStackTrace();
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                Timber.e("onPlayerError TYPE_SOURCE");
+                log("onPlayerError TYPE_SOURCE");
             } else if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                Timber.e("onPlayerError TYPE_RENDERER");
+                log("onPlayerError TYPE_RENDERER");
             } else if (error.type == ExoPlaybackException.TYPE_UNEXPECTED) {
-                Timber.e("onPlayerError TYPE_UNEXPECTED");
+                log("onPlayerError TYPE_UNEXPECTED");
             }
             exoPlaybackException = error;
             notifyUpdateButtonVisibility();

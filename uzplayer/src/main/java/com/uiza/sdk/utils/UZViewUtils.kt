@@ -22,7 +22,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
 import com.uiza.sdk.widget.UZImageButton
-import timber.log.Timber
 import java.util.*
 import kotlin.math.max
 
@@ -319,7 +318,7 @@ object UZViewUtils {
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
             } else {
-                Timber.w("cần làm ở sdk thấp, thanh navigation ko chịu ẩn")
+                //TODO cần làm ở sdk thấp, thanh navigation ko chịu ẩn
             }
         }
         dialog.show()
