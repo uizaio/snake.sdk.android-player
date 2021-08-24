@@ -44,7 +44,7 @@
     <item name="tv_end_screen_msg" type="id" />
     <item name="uz_position" type="id" />
     <item name="uz_duration" type="id" />
-    <item name="header_view" type="id" />
+    <item name="headerView" type="id" />
     <item name="svBodyView" type="id" />
     <item name="stats_for_nerds" type="id" />
     <item name="uz_mini_full_screen" type="id" />

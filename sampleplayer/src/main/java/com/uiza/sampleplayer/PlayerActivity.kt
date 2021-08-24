@@ -49,7 +49,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzDragView.setCallback(object : UZDragView.Callback {
-            override fun onOverScroll(state: UZDragView.State, part: UZDragView.Part) {
+            override fun onOverScroll(state: UZDragView.State?, part: UZDragView.Part?) {
                 uzVideoView.pause()
                 uzDragView.disappear()
                 showToast("Disappear successfully")

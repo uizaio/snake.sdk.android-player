@@ -1,609 +1,664 @@
-package com.uiza.sdk.view;
+package com.uiza.sdk.view
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.annotation.AttrRes
+import androidx.core.view.GestureDetectorCompat
+import androidx.core.view.ViewCompat
+import androidx.customview.widget.ViewDragHelper
+import com.uiza.sdk.R
+import com.uiza.sdk.utils.UZViewUtils.screenHeight
+import com.uiza.sdk.utils.UZViewUtils.screenWidth
+import com.uiza.sdk.view.UZPlayerView.*
+import timber.log.Timber
+import kotlin.math.abs
+import kotlin.math.min
 
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.ViewCompat;
-import androidx.customview.widget.ViewDragHelper;
+class UZDragView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    @AttrRes defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
-import com.uiza.sdk.R;
-import com.uiza.sdk.utils.UZViewUtils;
+    companion object {
+        private const val SWIPE_THRESHOLD = 100
+        private const val SWIPE_VELOCITY_THRESHOLD = 100
+    }
 
-import timber.log.Timber;
+    private var headerView: View? = null
+    private var bodyView: View? = null
+    private var mViewDragHelper: ViewDragHelper? = null
+    private var mAutoBackViewX = 0
+    private var mAutoBackViewY = 0
+    private var mDragRange = 0
+    private var mDragOffset = 0f
+    private var isEnableRevertMaxSize = true
 
-public class UZDragView extends LinearLayout {
-    private View headerView;
-    private View bodyView;
-    private ViewDragHelper mViewDragHelper;
-    private int mAutoBackViewX;
-    private int mAutoBackViewY;
-    private int mDragRange;
-    private float mDragOffset;
-    private boolean isEnableRevertMaxSize = true;
-    private boolean isMinimizedAtLeastOneTime;//header view is scaled at least 1
-    private int sizeWHeaderViewOriginal;
-    private int sizeHHeaderViewOriginal;
-    private int sizeWHeaderViewMin;
-    private int sizeHHeaderViewMin;
-    private int newSizeWHeaderView;
-    private int newSizeHHeaderView;
-    private int mCenterY;
-    private int mCenterX;
-    private int screenW;
-    private int screenH;
-    private boolean maximizeView = true;
-    private Callback callback;
-    private State state = State.NULL;
-    private Part part;
-    private GestureDetectorCompat mDetector;
-    private UZPlayerView.OnTouchEvent onTouchEvent;
-    private UZPlayerView.OnSingleTap onSingleTap;
-    private UZPlayerView.OnDoubleTap onDoubleTap;
-    private UZPlayerView.OnLongPressed onLongPressed;
-    private boolean isAppear = true;
-    private boolean isEnableSlide;
-    private boolean isInitSuccess;
-    private boolean isLandscape;
-    private boolean isControllerShowing;
-    private ViewDragHelper.Callback mCallback = new ViewDragHelper.Callback() {
-        @Override
-        public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) {
-            super.onViewPositionChanged(changedView, left, top, dx, dy);
-            if (mDragOffset == (float) top / mDragRange) return;
-            else
-                mDragOffset = (float) top / mDragRange;
+    //header view is scaled at least 1
+    var isMinimizedAtLeastOneTime = false
+        private set
+    private var sizeWHeaderViewOriginal = 0
+    private var sizeHHeaderViewOriginal = 0
+    private var sizeWHeaderViewMin = 0
+    private var sizeHHeaderViewMin = 0
+    private var newSizeWHeaderView = 0
+    private var newSizeHHeaderView = 0
+    private var mCenterY = 0
+    private var mCenterX = 0
+    private var screenW = 0
+    private var screenH = 0
+    var isMaximizeView = true
+        private set
+    private var callback: Callback? = null
+    var state: State? = State.NULL
+        private set
+    var part: Part? = null
+        private set
+    private var mDetector: GestureDetectorCompat? = null
+    private var onTouchEvent: OnTouchEvent? = null
+    private var onSingleTap: OnSingleTap? = null
+    private var onDoubleTap: OnDoubleTap? = null
+    private var onLongPressed: OnLongPressed? = null
+    var isAppear = true
+        private set
+    private var isEnableSlide = false
+    private var isInitSuccess = false
+    private var isLandscape = false
+    private var isControllerShowing = false
+
+    private val mCallback: ViewDragHelper.Callback = object : ViewDragHelper.Callback() {
+        override fun onViewPositionChanged(
+            changedView: View,
+            left: Int,
+            top: Int,
+            dx: Int,
+            dy: Int
+        ) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy)
+            mDragOffset =
+                if (mDragOffset == top.toFloat() / mDragRange) {
+                    return
+                } else {
+                    top.toFloat() / mDragRange
+                }
             if (mDragOffset >= 1) {
-                mDragOffset = 1;
-                if (maximizeView) {
-                    maximizeView = false;
-                    if (callback != null)
-                        callback.onViewSizeChange(false);
+                mDragOffset = 1f
+                if (isMaximizeView) {
+                    isMaximizeView = false
+                    callback?.onViewSizeChange(false)
                 }
             }
             if (mDragOffset <= 0) {
-                mDragOffset = 0;
-                if (!maximizeView && isEnableRevertMaxSize) {
-                    maximizeView = true;
-                    if (callback != null)
-                        callback.onViewSizeChange(true);
+                mDragOffset = 0f
+                if (!isMaximizeView && isEnableRevertMaxSize) {
+                    isMaximizeView = true
+                    callback?.onViewSizeChange(true)
                 }
             }
-            if (callback != null)
-                callback.onViewPositionChanged(left, top, mDragOffset);
+            callback?.onViewPositionChanged(left = left, top = top, dragOffset = mDragOffset)
 
-            int x = 0;
-            int y = headerView.getHeight() + top;
-            bodyView.layout(x, y, x + bodyView.getMeasuredWidth(), y + bodyView.getMeasuredHeight());
-            bodyView.setAlpha(1 - mDragOffset / 2);
+            bodyView?.let { bv ->
+                headerView?.let { hv ->
+                    val x = 0
+                    val y = hv.height + top
+                    bv.layout(x, y, x + bv.measuredWidth, y + bv.measuredHeight)
+                    bv.alpha = 1 - mDragOffset / 2
 
-            if (isMinimizedAtLeastOneTime) {
-                if (isEnableRevertMaxSize) {
-                    headerView.setPivotX(headerView.getWidth() / 2f);
-                    headerView.setPivotY(headerView.getHeight());
-                    headerView.setScaleX(1 - mDragOffset / 2);
-                    headerView.setScaleY(1 - mDragOffset / 2);
+                    if (isMinimizedAtLeastOneTime) {
+                        if (isEnableRevertMaxSize) {
+                            hv.pivotX = hv.width / 2f
+                            hv.pivotY = hv.height.toFloat()
+                            hv.scaleX = 1 - mDragOffset / 2
+                            hv.scaleY = 1 - mDragOffset / 2
+                        }
+                    } else {
+                        hv.pivotX = hv.width / 2f
+                        hv.pivotY = hv.height.toFloat()
+                        hv.scaleX = 1 - mDragOffset / 2
+                        hv.scaleY = 1 - mDragOffset / 2
+                    }
+
+                    newSizeWHeaderView = (sizeWHeaderViewOriginal * hv.scaleX).toInt()
+                    newSizeHHeaderView = (sizeHHeaderViewOriginal * hv.scaleY).toInt()
+                    mCenterX = left + sizeWHeaderViewOriginal / 2
+                    mCenterY =
+                        top + newSizeHHeaderView / 2 + sizeHHeaderViewOriginal - newSizeHHeaderView
+
+                    val halfHeaderWidth = hv.width / 2
+                    when (mDragOffset) {
+                        //top_left, top, top_right
+                        0f -> {
+                            changeState(
+                                when {
+                                    left <= -halfHeaderWidth -> {
+                                        State.TOP_LEFT
+                                    }
+                                    left >= halfHeaderWidth -> {
+                                        State.TOP_RIGHT
+                                    }
+                                    else -> {
+                                        State.TOP
+                                    }
+                                }
+                            )
+                        }
+                        //bottom_left, bottom, bottom_right
+                        1f -> {
+                            changeState(
+                                when {
+                                    left <= -halfHeaderWidth -> {
+                                        State.BOTTOM_LEFT
+                                    }
+                                    left >= halfHeaderWidth -> {
+                                        State.BOTTOM_RIGHT
+                                    }
+                                    else -> {
+                                        State.BOTTOM
+                                    }
+                                }
+                            )
+
+                            isMinimizedAtLeastOneTime = true
+                        }
+                        //mid_left, mid, mid_right
+                        else -> {
+                            changeState(
+                                when {
+                                    left <= -halfHeaderWidth -> {
+                                        State.MID_LEFT
+                                    }
+                                    left >= halfHeaderWidth -> {
+                                        State.MID_RIGHT
+                                    }
+                                    else -> {
+                                        State.MID
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    if (mCenterY < screenH / 2) {
+                        changePart(
+                            if (mCenterX < screenW / 2) {
+                                Part.TOP_LEFT
+                            } else {
+                                Part.TOP_RIGHT
+                            }
+                        )
+                    } else {
+                        changePart(
+                            if (mCenterX < screenW / 2) {
+                                Part.BOTTOM_LEFT
+                            } else {
+                                Part.BOTTOM_RIGHT
+                            }
+                        )
+                    }
                 }
+            }
+
+        }
+
+        override fun tryCaptureView(child: View, pointerId: Int): Boolean {
+            return headerView === child
+        }
+
+        override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
+            val minY = if (isEnableRevertMaxSize) {
+                -child.height / 2
             } else {
-                headerView.setPivotX(headerView.getWidth() / 2f);
-                headerView.setPivotY(headerView.getHeight());
-                headerView.setScaleX(1 - mDragOffset / 2);
-                headerView.setScaleY(1 - mDragOffset / 2);
+                -sizeHHeaderViewMin * 3 / 2
             }
-
-            newSizeWHeaderView = (int) (sizeWHeaderViewOriginal * headerView.getScaleX());
-            newSizeHHeaderView = (int) (sizeHHeaderViewOriginal * headerView.getScaleY());
-
-            mCenterX = left + sizeWHeaderViewOriginal / 2;
-            mCenterY = top + newSizeHHeaderView / 2 + sizeHHeaderViewOriginal - newSizeHHeaderView;
-            int halfHeaderWidth = headerView.getWidth() / 2;
-            if (mDragOffset == 0)
-                //top_left, top, top_right
-                changeState(left <= -halfHeaderWidth ? State.TOP_LEFT : left >= halfHeaderWidth ? State.TOP_RIGHT : State.TOP);
-            else if (mDragOffset == 1) {
-                //bottom_left, bottom, bottom_right
-                changeState(left <= -halfHeaderWidth ? State.BOTTOM_LEFT : left >= halfHeaderWidth ? State.BOTTOM_RIGHT : State.BOTTOM);
-                isMinimizedAtLeastOneTime = true;
-            } else
-                //mid_left, mid, mid_right
-                changeState(left <= -halfHeaderWidth ? State.MID_LEFT : left >= halfHeaderWidth ? State.MID_RIGHT : State.MID);
-            if (mCenterY < screenH / 2)
-                changePart(mCenterX < screenW / 2 ? Part.TOP_LEFT : Part.TOP_RIGHT);
-            else
-                changePart(mCenterX < screenW / 2 ? Part.BOTTOM_LEFT : Part.BOTTOM_RIGHT);
+            val scaledY = child.scaleY
+            val sizeHScaled = (scaledY * child.height).toInt()
+            val maxY = height - sizeHScaled * 3 / 2
+            return if (top <= minY) {
+                minY
+            } else {
+                min(top, maxY)
+            }
         }
 
-        @Override
-        public boolean tryCaptureView(@NonNull View child, int pointerId) {
-            return headerView == child;
+        override fun clampViewPositionHorizontal(child: View, left: Int, dx: Int): Int {
+            val minX = -child.width / 2
+            val maxX = child.width / 2
+            return if (left <= minX) {
+                minX
+            } else {
+                min(left, maxX)
+            }
         }
 
-        @Override
-        public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
-            int minY = isEnableRevertMaxSize ? -child.getHeight() / 2 : -sizeHHeaderViewMin * 3 / 2;
-            float scaledY = child.getScaleY();
-            int sizeHScaled = (int) (scaledY * child.getHeight());
-            int maxY = getHeight() - sizeHScaled * 3 / 2;
-            if (top <= minY) return minY;
-            else return Math.min(top, maxY);
-        }
-
-        @Override
-        public int clampViewPositionHorizontal(@NonNull View child, int left, int dx) {
-            int minX = -child.getWidth() / 2;
-            int maxX = child.getWidth() / 2;
-            if (left <= minX) return minX;
-            else return Math.min(left, maxX);
-        }
-
-        @Override
-        public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
-            if (releasedChild == headerView)
-                mViewDragHelper.settleCapturedViewAt(mAutoBackViewX, mAutoBackViewY);
-            invalidate();
-        }
-    };
-
-    public UZDragView(@NonNull Context context) {
-        this(context, null);
-    }
-
-    public UZDragView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public UZDragView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        initView();
-    }
-
-    private void initView() {
-        mViewDragHelper = ViewDragHelper.create(this, 1.0f, mCallback);
-        mViewDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
-        mDetector = new GestureDetectorCompat(getContext(), new UZGestureListener());
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        screenW = UZViewUtils.getScreenWidth();
-        screenH = UZViewUtils.getScreenHeight();
-        headerView = findViewById(R.id.header_view);
-        bodyView = findViewById(R.id.svBodyView);
-        headerView.post(() -> {
-            sizeWHeaderViewOriginal = headerView.getMeasuredWidth();
-            sizeHHeaderViewOriginal = headerView.getMeasuredHeight();
-            sizeWHeaderViewMin = sizeWHeaderViewOriginal / 2;
-            sizeHHeaderViewMin = sizeHHeaderViewOriginal / 2;
-        });
-        UZVideoView v = findFirstVideoView();
-        if (v != null) {
-            setOnSingleTap((x, y) -> {
-                if (maximizeView) {
-                    post(v::toggleShowHideController);
-                }
-            });
+        override fun onViewReleased(releasedChild: View, xvel: Float, yvel: Float) {
+            if (releasedChild === headerView) {
+                mViewDragHelper?.settleCapturedViewAt(mAutoBackViewX, mAutoBackViewY)
+            }
+            invalidate()
         }
     }
 
-    private UZVideoView findFirstVideoView() {
-        if (headerView instanceof ViewGroup) {
-            ViewGroup hg = (ViewGroup) headerView;
-            for (int i = 0; i < hg.getChildCount(); i++) {
-                View v = hg.getChildAt(i);
-                if (v instanceof UZVideoView) {
-                    return (UZVideoView) v;
+    fun setCallback(callback: Callback?) {
+        this.callback = callback
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        initView()
+    }
+
+    private fun initView() {
+        mViewDragHelper = ViewDragHelper.create(this, 1.0f, mCallback)
+        mViewDragHelper?.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT)
+        mDetector = GestureDetectorCompat(context, UZGestureListener())
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        screenW = screenWidth
+        screenH = screenHeight
+        headerView = findViewById(R.id.headerView)
+        bodyView = findViewById(R.id.svBodyView)
+
+        headerView?.let { hv ->
+            hv.post(Runnable {
+                sizeWHeaderViewOriginal = hv.measuredWidth
+                sizeHHeaderViewOriginal = hv.measuredHeight
+                sizeWHeaderViewMin = sizeWHeaderViewOriginal / 2
+                sizeHHeaderViewMin = sizeHHeaderViewOriginal / 2
+            })
+        }
+        val v = findFirstVideoView()
+        v?.let {
+            setOnSingleTap { _: Float, _: Float ->
+                if (isMaximizeView) {
+                    post {
+                        it.toggleShowHideController()
+                    }
                 }
             }
         }
-        return null;
     }
 
-    private void changeState(State newState) {
+    private fun findFirstVideoView(): UZVideoView? {
+        if (headerView is ViewGroup) {
+            val hg = headerView as ViewGroup
+            for (i in 0 until hg.childCount) {
+                val v = hg.getChildAt(i)
+                if (v is UZVideoView) {
+                    return v
+                }
+            }
+        }
+        return null
+    }
+
+    private fun changeState(newState: State) {
         if (state != newState) {
-            state = newState;
-            if (state == UZDragView.State.BOTTOM || state == UZDragView.State.BOTTOM_LEFT || state == UZDragView.State.BOTTOM_RIGHT)
-                setEnableRevertMaxSize(false);
-            if (callback != null)
-                callback.onStateChange(state);
+            state = newState
+            if (state == State.BOTTOM || state == State.BOTTOM_LEFT || state == State.BOTTOM_RIGHT) {
+                setEnableRevertMaxSize(false)
+            }
+            callback?.onStateChange(state)
         }
     }
 
-    private void changePart(Part newPart) {
+    private fun changePart(newPart: Part) {
         if (part != newPart) {
-            part = newPart;
-            if (callback != null)
-                callback.onPartChange(part);
+            part = newPart
+            callback?.onPartChange(part)
         }
     }
 
-    @Override
-    public void computeScroll() {
-        if (mViewDragHelper.continueSettling(true))
-            ViewCompat.postInvalidateOnAnimation(this);
+    override fun computeScroll() {
+        if (mViewDragHelper?.continueSettling(true) == true) {
+            ViewCompat.postInvalidateOnAnimation(this)
+        }
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return mViewDragHelper.shouldInterceptTouchEvent(event);
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        return mViewDragHelper?.shouldInterceptTouchEvent(event) ?: false
     }
 
-    private boolean isTouchInSideHeaderView(float touchX, float touchY) {
-        if (maximizeView)
-            return true;
-        float d2 = newSizeWHeaderView / 2f;
-        float r2 = newSizeHHeaderView / 2f;
-        float topLeftX = mCenterX - d2;
-        float topLeftY = mCenterY - r2;
-        float topRightX = mCenterX + d2;
-        float bottomLeftY = mCenterY + r2;
-        if (touchX < topLeftX || touchX > topRightX)
-            return false;
-        else
-            return !(touchY < topLeftY) && !(touchY > bottomLeftY);
-
+    private fun isTouchInSideHeaderView(touchX: Float, touchY: Float): Boolean {
+        if (isMaximizeView) {
+            return true
+        }
+        val d2 = newSizeWHeaderView / 2f
+        val r2 = newSizeHHeaderView / 2f
+        val topLeftX = mCenterX - d2
+        val topLeftY = mCenterY - r2
+        val topRightX = mCenterX + d2
+        val bottomLeftY = mCenterY + r2
+        return if (touchX < topLeftX || touchX > topRightX) {
+            false
+        } else {
+            touchY in topLeftY..bottomLeftY
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         if (isEnableSlide) {
-            if (isTouchInSideHeaderView(event.getX(), event.getY()))
-                mViewDragHelper.processTouchEvent(event);
-            else {
-                mViewDragHelper.cancel();
-                return false;
-            }
-        } else
-            mViewDragHelper.cancel();
-
-        mDetector.onTouchEvent(event);
-        final float x = event.getX();
-        final float y = event.getY();
-        boolean isViewUnder = mViewDragHelper.isViewUnder(headerView, (int) x, (int) y);
-        if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-            if (state == null) return isViewUnder;
-            if (state == State.TOP_LEFT || state == State.TOP_RIGHT || state == State.BOTTOM_LEFT || state == State.BOTTOM_RIGHT) {
-                if (callback != null)
-                    callback.onOverScroll(state, part);
+            if (isTouchInSideHeaderView(touchX = event.x, touchY = event.y)) {
+                mViewDragHelper?.processTouchEvent(event)
             } else {
-                if (part == Part.BOTTOM_LEFT)
-                    minimizeBottomLeft();
-                else if (part == Part.BOTTOM_RIGHT)
-                    minimizeBottomRight();
-                else if (part == Part.TOP_LEFT) {
-                    if (isEnableRevertMaxSize)
-                        maximize();
-                    else if (isMinimizedAtLeastOneTime)
-                        minimizeTopLeft();
+                mViewDragHelper?.cancel()
+                return false
+            }
+        } else {
+            mViewDragHelper?.cancel()
+        }
+        mDetector?.onTouchEvent(event)
+        val x = event.x
+        val y = event.y
+        val isViewUnder = mViewDragHelper?.isViewUnder(headerView, x.toInt(), y.toInt()) ?: false
+        if (event.action and MotionEvent.ACTION_MASK == MotionEvent.ACTION_UP) {
+            if (state == null) {
+                return isViewUnder
+            }
+            if (state == State.TOP_LEFT || state == State.TOP_RIGHT || state == State.BOTTOM_LEFT || state == State.BOTTOM_RIGHT) {
+                callback?.onOverScroll(state = state, part = part)
+            } else {
+                if (part == Part.BOTTOM_LEFT) {
+                    minimizeBottomLeft()
+                } else if (part == Part.BOTTOM_RIGHT) {
+                    minimizeBottomRight()
+                } else if (part == Part.TOP_LEFT) {
+                    if (isEnableRevertMaxSize) {
+                        maximize()
+                    } else if (isMinimizedAtLeastOneTime) {
+                        minimizeTopLeft()
+                    }
                 } else if (part == Part.TOP_RIGHT) {
-                    if (isEnableRevertMaxSize)
-                        maximize();
-                    else if (isMinimizedAtLeastOneTime)
-                        minimizeTopRight();
+                    if (isEnableRevertMaxSize) {
+                        maximize()
+                    } else if (isMinimizedAtLeastOneTime) {
+                        minimizeTopRight()
+                    }
                 }
             }
         }
-        return isViewUnder;
+        return isViewUnder
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (state == State.BOTTOM ||
-                state == State.BOTTOM_RIGHT ||
-                state == State.BOTTOM_LEFT ||
-                state == State.TOP_RIGHT ||
-                state == State.TOP_LEFT)
-            return;
-        super.onLayout(changed, l, t, r, b);
-        mDragRange = getHeight() - headerView.getHeight();
-        mAutoBackViewX = headerView.getLeft();
-        mAutoBackViewY = headerView.getTop();
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        if (state == State.BOTTOM || state == State.BOTTOM_RIGHT || state == State.BOTTOM_LEFT || state == State.TOP_RIGHT || state == State.TOP_LEFT) {
+            return
+        }
+        super.onLayout(changed, l, t, r, b)
+        headerView?.let { hv ->
+            mDragRange = height - hv.height
+            mAutoBackViewX = hv.left
+            mAutoBackViewY = hv.top
+        }
     }
 
-    public State getState() {
-        return state;
+    private fun maximize() {
+        if (isEnableRevertMaxSize) smoothSlideTo(
+            0,
+            0
+        ) else {
+            Timber.e("Error: cannot maximize because isEnableRevertMaxSize is true")
+        }
     }
 
-    public Part getPart() {
-        return part;
+    fun minimizeBottomLeft() {
+        if (!isAppear) return
+        val posX = width - sizeWHeaderViewOriginal - sizeWHeaderViewMin / 2
+        val posY = height - sizeHHeaderViewOriginal
+        smoothSlideTo(posX, posY)
     }
 
-    private void maximize() {
-        if (isEnableRevertMaxSize)
-            smoothSlideTo(0, 0);
-        else
-            Timber.e("Error: cannot maximize because isEnableRevertMaxSize is true");
+    fun minimizeBottomRight() {
+        if (!isAppear) return
+        val posX = width - sizeWHeaderViewOriginal + sizeWHeaderViewMin / 2
+        val posY = height - sizeHHeaderViewOriginal
+        smoothSlideTo(posX, posY)
     }
 
-    public void minimizeBottomLeft() {
-        if (!isAppear) return;
-        int posX = getWidth() - sizeWHeaderViewOriginal - sizeWHeaderViewMin / 2;
-        int posY = getHeight() - sizeHHeaderViewOriginal;
-        smoothSlideTo(posX, posY);
-    }
-
-    public void minimizeBottomRight() {
-        if (!isAppear) return;
-        int posX = getWidth() - sizeWHeaderViewOriginal + sizeWHeaderViewMin / 2;
-        int posY = getHeight() - sizeHHeaderViewOriginal;
-        smoothSlideTo(posX, posY);
-    }
-
-    public void minimizeTopRight() {
-        if (!isAppear) return;
+    fun minimizeTopRight() {
+        if (!isAppear) return
         if (isEnableRevertMaxSize) {
-            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true");
-            return;
+            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
+            return
         }
         if (!isMinimizedAtLeastOneTime) {
-            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM");
-            return;
+            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
+            return
         }
-        int posX = screenW - sizeWHeaderViewMin * 3 / 2;
-        int posY = -sizeHHeaderViewMin;
-        smoothSlideTo(posX, posY);
+        val posX = screenW - sizeWHeaderViewMin * 3 / 2
+        val posY = -sizeHHeaderViewMin
+        smoothSlideTo(posX, posY)
     }
 
-    public void minimizeTopLeft() {
-        if (!isAppear) return;
+    fun minimizeTopLeft() {
+        if (!isAppear) return
         if (isEnableRevertMaxSize) {
-            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true");
-            return;
+            Timber.w("Error: cannot minimizeTopRight because isEnableRevertMaxSize is true")
+            return
         }
         if (!isMinimizedAtLeastOneTime) {
-            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM");
-            return;
+            Timber.w("Error: cannot minimizeTopRight because isMinimizedAtLeastOneTime is false. This function only works if the header view is scrolled BOTTOM")
+            return
         }
-        int posX = -sizeWHeaderViewMin / 2;
-        int posY = -sizeHHeaderViewMin;
-        smoothSlideTo(posX, posY);
+        val posX = -sizeWHeaderViewMin / 2
+        val posY = -sizeHHeaderViewMin
+        smoothSlideTo(positionX = posX, positionY = posY)
     }
 
-    public void smoothSlideTo(int positionX, int positionY) {
-        if (!isAppear) return;
-        if (mViewDragHelper.smoothSlideViewTo(headerView, positionX, positionY)) {
-            ViewCompat.postInvalidateOnAnimation(this);
-            postInvalidate();
+    fun smoothSlideTo(positionX: Int, positionY: Int) {
+        if (!isAppear) {
+            return
+        }
+        headerView?.let { hv ->
+            if (mViewDragHelper?.smoothSlideViewTo(hv, positionX, positionY) == true) {
+                ViewCompat.postInvalidateOnAnimation(this)
+                postInvalidate()
+            }
         }
     }
 
-    public boolean isMinimizedAtLeastOneTime() {
-        return isMinimizedAtLeastOneTime;
+    fun isEnableRevertMaxSize(): Boolean {
+        return isEnableRevertMaxSize
     }
 
-    public boolean isEnableRevertMaxSize() {
-        return isEnableRevertMaxSize;
+    private fun setEnableRevertMaxSize(enableRevertMaxSize: Boolean) {
+        isEnableRevertMaxSize = enableRevertMaxSize
+        setVisibilityBodyView(
+            if (isEnableRevertMaxSize) {
+                VISIBLE
+            } else {
+                INVISIBLE
+            }
+        )
+        callback?.onEnableRevertMaxSize(isEnableRevertMaxSize)
     }
 
-    private void setEnableRevertMaxSize(boolean enableRevertMaxSize) {
-        this.isEnableRevertMaxSize = enableRevertMaxSize;
-        setVisibilityBodyView(isEnableRevertMaxSize ? VISIBLE : INVISIBLE);
-        if (callback != null)
-            callback.onEnableRevertMaxSize(isEnableRevertMaxSize);
+    private fun setVisibilityBodyView(visibilityBodyView: Int) {
+        bodyView?.visibility = visibilityBodyView
     }
 
-    private void setVisibilityBodyView(int visibilityBodyView) {
-        bodyView.setVisibility(visibilityBodyView);
-    }
-
-    public void onPause() {
+    fun onPause() {
         if (!isEnableRevertMaxSize) {
-            minimizeBottomRight();
-            headerView.setVisibility(INVISIBLE);
-            setVisibilityBodyView(INVISIBLE);
+            minimizeBottomRight()
+            headerView?.visibility = INVISIBLE
+            setVisibilityBodyView(INVISIBLE)
         }
     }
 
-    public void disappear() {
-        headerView.setVisibility(GONE);
-        setVisibilityBodyView(GONE);
-        isAppear = false;
-        if (callback != null)
-            callback.onAppear(false);
+    fun disappear() {
+        headerView?.visibility = GONE
+        setVisibilityBodyView(GONE)
+        isAppear = false
+        callback?.onAppear(false)
     }
 
-    public boolean isAppear() {
-        return isAppear;
-    }
-
-    public boolean isMaximizeView() {
-        return maximizeView;
-    }
-
-    public void appear() {
-        headerView.setVisibility(VISIBLE);
-        setVisibilityBodyView(VISIBLE);
-        if (!isEnableRevertMaxSize) {
-            headerView.setScaleX(1f);
-            headerView.setScaleY(1f);
-            isEnableRevertMaxSize = true;
+    fun appear() {
+        headerView?.let { hv ->
+            hv.visibility = VISIBLE
+            setVisibilityBodyView(VISIBLE)
+            if (!isEnableRevertMaxSize) {
+                hv.scaleX = 1f
+                hv.scaleY = 1f
+                isEnableRevertMaxSize = true
+            }
+            isAppear = true
+            callback?.onAppear(true)
         }
-        isAppear = true;
-        if (callback != null)
-            callback.onAppear(true);
     }
 
     //private State stateBeforeDisappear;
-
-    private void setEnableSlide(boolean isEnableSlide) {
-        if (isInitSuccess)
-            this.isEnableSlide = isEnableSlide;
-
+    private fun setEnableSlide(isEnableSlide: Boolean) {
+        if (isInitSuccess) {
+            this.isEnableSlide = isEnableSlide
+        }
     }
 
-    public void setInitResult(boolean isInitSuccess) {
-        this.isInitSuccess = isInitSuccess;
-        if (isInitSuccess)
-            setEnableSlide(true);
+    fun setInitResult(isInitSuccess: Boolean) {
+        this.isInitSuccess = isInitSuccess
+        if (isInitSuccess) {
+            setEnableSlide(true)
+        }
     }
 
-    public void setScreenRotate(boolean isLandscape) {
-        this.isLandscape = isLandscape;
-        if (isControllerShowing)
-            setEnableSlide(false);
-        else
-            setEnableSlide(!isLandscape);
-    }
-
-    public void setVisibilityChange(boolean isShow) {
-        this.isControllerShowing = isShow;
-        if (isLandscape) {
-            setEnableSlide(false);
+    fun setScreenRotate(isLandscape: Boolean) {
+        this.isLandscape = isLandscape
+        if (isControllerShowing) {
+            setEnableSlide(false)
         } else {
-            setEnableSlide(!isShow);
+            setEnableSlide(!isLandscape)
         }
     }
 
-    public void setOnTouchEvent(UZPlayerView.OnTouchEvent onTouchEvent) {
-        this.onTouchEvent = onTouchEvent;
-    }
-
-    private void setOnSingleTap(UZPlayerView.OnSingleTap onSingleTap) {
-        this.onSingleTap = onSingleTap;
-    }
-
-    private void setOnDoubleTap(UZPlayerView.OnDoubleTap onDoubleTap) {
-        this.onDoubleTap = onDoubleTap;
-    }
-
-    public void setOnLongPressed(UZPlayerView.OnLongPressed onLongPressed) {
-        this.onLongPressed = onLongPressed;
-    }
-
-    public enum State {TOP, TOP_LEFT, TOP_RIGHT, BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, MID, MID_LEFT, MID_RIGHT, NULL}
-
-    public enum Part {TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT}
-
-    public interface Callback {
-        default void onViewSizeChange(boolean isMaximizeView) {
-        }
-
-        default void onStateChange(State state) {
-        }
-
-        default void onPartChange(Part part) {
-        }
-
-        default void onViewPositionChanged(int left, int top, float dragOffset) {
-        }
-
-        default void onOverScroll(State state, Part part) {
-        }
-
-        default void onEnableRevertMaxSize(boolean isEnableRevertMaxSize) {
-        }
-
-        default void onAppear(boolean isAppear) {
+    fun setVisibilityChange(isShow: Boolean) {
+        isControllerShowing = isShow
+        if (isLandscape) {
+            setEnableSlide(false)
+        } else {
+            setEnableSlide(!isShow)
         }
     }
 
-    private class UZGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    fun setOnTouchEvent(onTouchEvent: OnTouchEvent?) {
+        this.onTouchEvent = onTouchEvent
+    }
 
-        @Override
-        public boolean onDown(MotionEvent event) {
-            if (onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressDown(event.getX(), event.getY());
+    private fun setOnSingleTap(onSingleTap: OnSingleTap) {
+        this.onSingleTap = onSingleTap
+    }
+
+    private fun setOnDoubleTap(onDoubleTap: OnDoubleTap) {
+        this.onDoubleTap = onDoubleTap
+    }
+
+    fun setOnLongPressed(onLongPressed: OnLongPressed?) {
+        this.onLongPressed = onLongPressed
+    }
+
+    enum class State {
+        TOP, TOP_LEFT, TOP_RIGHT, BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, MID, MID_LEFT, MID_RIGHT, NULL
+    }
+
+    enum class Part {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+    }
+
+    interface Callback {
+        fun onViewSizeChange(isMaximizeView: Boolean) {}
+        fun onStateChange(state: State?) {}
+        fun onPartChange(part: Part?) {}
+        fun onViewPositionChanged(left: Int, top: Int, dragOffset: Float) {}
+        fun onOverScroll(state: State?, part: Part?) {}
+        fun onEnableRevertMaxSize(isEnableRevertMaxSize: Boolean) {}
+        fun onAppear(isAppear: Boolean) {}
+    }
+
+    private inner class UZGestureListener : SimpleOnGestureListener() {
+        override fun onDown(event: MotionEvent): Boolean {
+            onDoubleTap?.onDoubleTapProgressDown(event.x, event.y)
+            return true
+        }
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            onDoubleTap?.onDoubleTapProgressUp(e.x, e.y)
+            return true
+        }
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            if (!isEnableRevertMaxSize) {
+                setEnableRevertMaxSize(true)
             }
-            return true;
+            maximize()
+            onSingleTap?.onSingleTapConfirmed(e.x, e.y)
+            return true
         }
 
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
+        override fun onLongPress(e: MotionEvent) {
+            onLongPressed?.onLongPressed(e.x, e.y)
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
             if (onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressUp(e.getX(), e.getY());
+                onDoubleTap?.onDoubleTapStarted(e.x, e.y)
+                return true
             }
-            return true;
+            return false
         }
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (!isEnableRevertMaxSize)
-                setEnableRevertMaxSize(true);
-            maximize();
-            if (onSingleTap != null)
-                onSingleTap.onSingleTapConfirmed(e.getX(), e.getY());
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            if (onLongPressed != null)
-                onLongPressed.onLongPressed(e.getX(), e.getY());
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            if (onDoubleTap != null) {
-                onDoubleTap.onDoubleTapStarted(e.getX(), e.getY());
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent e) {
+        override fun onDoubleTapEvent(e: MotionEvent): Boolean {
             // Second tap (ACTION_UP) of both taps
-            if (e.getActionMasked() == MotionEvent.ACTION_UP && onDoubleTap != null) {
-                onDoubleTap.onDoubleTapProgressUp(e.getX(), e.getY());
-                return true;
+            if (e.actionMasked == MotionEvent.ACTION_UP && onDoubleTap != null) {
+                onDoubleTap?.onDoubleTapProgressUp(e.x, e.y)
+                return true
             }
-            return super.onDoubleTapEvent(e);
+            return super.onDoubleTapEvent(e)
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            return true;
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
+            return true
         }
 
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             try {
-                float diffY = e2.getY() - e1.getY();
-                float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (onTouchEvent != null) {
-                            if (diffX > 0)
-                                onTouchEvent.onSwipeRight();
-                            else
-                                onTouchEvent.onSwipeLeft();
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            onTouchEvent?.onSwipeRight()
+                        } else {
+                            onTouchEvent?.onSwipeLeft()
                         }
                     }
                 } else {
-                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (onTouchEvent != null) {
-                            if (diffY > 0)
-                                onTouchEvent.onSwipeBottom();
-                            else
-                                onTouchEvent.onSwipeTop();
+                    if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY > 0) {
+                            onTouchEvent?.onSwipeBottom()
+                        } else {
+                            onTouchEvent?.onSwipeTop()
                         }
                     }
                 }
-            } catch (Exception exception) {
-                Timber.e(exception);
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
-            return true;
+            return true
         }
     }
 }
