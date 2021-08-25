@@ -64,7 +64,7 @@
                     android:hint="@string/enter_any_linkplay_here"
                     android:imeOptions="actionDone"
                     android:padding="@dimen/margin_padding_medium"
-                    android:textSize="@dimen/txt_14" />
+                    android:textSize="@dimen/txt_medium" />
 
                 <HorizontalScrollView
                     android:id="@+id/hsvBottom"
