@@ -285,7 +285,7 @@ object UZViewUtils {
         }
         //edit size of imageview thumnail
         val flImgThumnailPreviewSeekbar =
-            viewGroup.findViewById<FrameLayout>(R.id.preview_frame_layout)
+            viewGroup.findViewById<FrameLayout>(R.id.previewFrameLayout)
         flImgThumnailPreviewSeekbar?.let {
             if (isFullScreen) {
                 it.layoutParams.width = widthSurfaceView / 4

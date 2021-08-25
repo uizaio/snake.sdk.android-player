@@ -9,7 +9,7 @@
     android:layoutDirection="ltr">
 
     <LinearLayout
-        android:id="@id/ll_top"
+        android:id="@id/llTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -25,7 +25,7 @@
             android:src="@drawable/ic_arrow_down" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_live"
+            android:id="@id/tvLiveStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -38,7 +38,7 @@
             tools:ignore="RelativeOverlap" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_title"
+            android:id="@id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10"
@@ -48,7 +48,7 @@
             android:textStyle="bold" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/iv_live_view"
+            android:id="@id/ivLiveView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -56,7 +56,7 @@
             android:src="@drawable/ic_eyes_show_and_hide" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_live_view"
+            android:id="@id/tvLiveView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -64,7 +64,7 @@
             android:textColor="@android:color/white" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/exo_playlist_folder"
+            android:id="@id/ibPlaylistFolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -72,7 +72,7 @@
             android:src="@drawable/ic_playlist_play_white" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/exo_picture_in_picture"
+            android:id="@id/ibPip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -96,12 +96,12 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@id/rl_end_screen"
+            android:id="@id/rlEndScreen"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@id/tv_end_screen_msg"
+                android:id="@id/tvEndScreenMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -115,7 +115,7 @@
             android:orientation="horizontal">
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_skip_previous"
+                android:id="@id/ibSkipPrevious"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -165,7 +165,7 @@
                 android:src="@drawable/ic_forward_10_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_skip_next"
+                android:id="@id/ibSkipNext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -190,14 +190,14 @@
             tools:ignore="UselessParent">
 
             <FrameLayout
-                android:id="@id/preview_frame_layout"
+                android:id="@id/previewFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:background="@drawable/video_frame">
 
                 <ImageView
-                    android:id="@id/image_view_thumbnail"
+                    android:id="@id/ivThumbnail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/exo_controls_fastforward_description" />
@@ -208,10 +208,10 @@
                 android:id="@+id/top_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/preview_frame_layout">
+                android:layout_below="@id/previewFrameLayout">
 
                 <com.uiza.sdk.widget.UZTextView
-                    android:id="@id/uz_position"
+                    android:id="@id/tvPosition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -222,19 +222,19 @@
                     tools:ignore="RelativeOverlap" />
 
                 <com.uiza.sdk.widget.UZTextView
-                    android:id="@id/uz_duration"
+                    android:id="@id/tvDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/margin_5"
-                    android:layout_toEndOf="@+id/uz_position"
+                    android:layout_toEndOf="@+id/tvPosition"
                     android:includeFontPadding="false"
                     android:textColor="@color/light_grey"
                     android:textStyle="bold"
                     tools:ignore="RelativeOverlap" />
 
                 <com.uiza.sdk.widget.UZImageButton
-                    android:id="@id/exo_fullscreen_toggle_icon"
+                    android:id="@id/ibFullscreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

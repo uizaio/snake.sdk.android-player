@@ -1,2242 +1,2284 @@
-package com.uiza.sdk.view;
+package com.uiza.sdk.view
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.PictureInPictureParams;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.util.Pair;
-import android.util.Rational;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
+import android.app.PictureInPictureParams
+import android.content.Context
+import android.content.DialogInterface
+import android.content.res.Configuration
+import android.graphics.Color
+import android.os.*
+import android.text.TextUtils
+import android.util.AttributeSet
+import android.util.Log
+import android.util.Pair
+import android.util.Rational
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.ViewGroup
+import android.widget.*
+import androidx.annotation.LayoutRes
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.source.hls.HlsManifest
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaTrack
+import com.uiza.sdk.BuildConfig
+import com.uiza.sdk.R
+import com.uiza.sdk.UZPlayer.Companion.elapsedTime
+import com.uiza.sdk.analytics.UZAnalytic.Companion.pushEvent
+import com.uiza.sdk.dialog.hq.UZItem
+import com.uiza.sdk.dialog.hq.UZTrackSelectionView
+import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder
+import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog
+import com.uiza.sdk.dialog.setting.OnToggleChangeListener
+import com.uiza.sdk.dialog.setting.SettingAdapter
+import com.uiza.sdk.dialog.setting.SettingItem
+import com.uiza.sdk.dialog.speed.Callback
+import com.uiza.sdk.dialog.speed.Speed
+import com.uiza.sdk.dialog.speed.UZSpeedDialog
+import com.uiza.sdk.exceptions.ErrorConstant
+import com.uiza.sdk.exceptions.ErrorUtils
+import com.uiza.sdk.exceptions.UZException
+import com.uiza.sdk.interfaces.DebugCallback
+import com.uiza.sdk.interfaces.UZAdPlayerCallback
+import com.uiza.sdk.interfaces.UZManagerObserver
+import com.uiza.sdk.interfaces.UZPlayerCallback
+import com.uiza.sdk.listerner.UZBufferListener
+import com.uiza.sdk.listerner.UZChromeCastListener
+import com.uiza.sdk.listerner.UZProgressListener
+import com.uiza.sdk.listerner.UZTVFocusChangeListener
+import com.uiza.sdk.models.UZEventType
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.models.UZTrackingData
+import com.uiza.sdk.observers.SensorOrientationChangeNotifier
+import com.uiza.sdk.utils.*
+import com.uiza.sdk.utils.ConvertUtils.getProgramDateTime
+import com.uiza.sdk.view.UZPlayerView.OnDoubleTap
+import com.uiza.sdk.widget.UZImageButton
+import com.uiza.sdk.widget.UZPreviewTimeBar
+import com.uiza.sdk.widget.UZTextView
+import com.uiza.sdk.widget.previewseekbar.PreviewLoader
+import com.uiza.sdk.widget.previewseekbar.PreviewView
+import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
+import okhttp3.ResponseBody
+import java.util.*
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
+class UZVideoView : RelativeLayout,
+    UZManagerObserver,
+    SensorOrientationChangeNotifier.Listener,
+    View.OnClickListener,
+    OnFocusChangeListener {
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.hls.HlsManifest;
-import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.gms.cast.MediaInfo;
-import com.google.android.gms.cast.MediaMetadata;
-import com.google.android.gms.cast.MediaTrack;
-import com.uiza.sdk.BuildConfig;
-import com.uiza.sdk.R;
-import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.analytics.UZAnalytic;
-import com.uiza.sdk.chromecast.Casty;
-import com.uiza.sdk.dialog.hq.UZItem;
-import com.uiza.sdk.dialog.hq.UZTrackSelectionView;
-import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder;
-import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog;
-import com.uiza.sdk.dialog.setting.SettingAdapter;
-import com.uiza.sdk.dialog.setting.SettingItem;
-import com.uiza.sdk.dialog.speed.UZSpeedDialog;
-import com.uiza.sdk.exceptions.ErrorConstant;
-import com.uiza.sdk.exceptions.ErrorUtils;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZAdPlayerCallback;
-import com.uiza.sdk.interfaces.UZManagerObserver;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
-import com.uiza.sdk.listerner.UZChromeCastListener;
-import com.uiza.sdk.listerner.UZProgressListener;
-import com.uiza.sdk.listerner.UZTVFocusChangeListener;
-import com.uiza.sdk.models.UZEventType;
-import com.uiza.sdk.models.UZPlayback;
-import com.uiza.sdk.models.UZPlaybackInfo;
-import com.uiza.sdk.models.UZTrackingData;
-import com.uiza.sdk.observers.SensorOrientationChangeNotifier;
-import com.uiza.sdk.utils.ConnectivityUtils;
-import com.uiza.sdk.utils.Constants;
-import com.uiza.sdk.utils.ConvertUtils;
-import com.uiza.sdk.utils.DebugUtils;
-import com.uiza.sdk.utils.ImageUtils;
-import com.uiza.sdk.utils.StringUtils;
-import com.uiza.sdk.utils.UZAppUtils;
-import com.uiza.sdk.utils.UZData;
-import com.uiza.sdk.utils.UZViewUtils;
-import com.uiza.sdk.widget.UZImageButton;
-import com.uiza.sdk.widget.UZPreviewTimeBar;
-import com.uiza.sdk.widget.UZTextView;
-import com.uiza.sdk.widget.previewseekbar.PreviewLoader;
-import com.uiza.sdk.widget.previewseekbar.PreviewView;
+    companion object {
+        private const val HYPHEN = "-"
+        private const val FAST_FORWARD_REWIND_INTERVAL = 10000L // 10s
+        private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 8000 // 8s
+        private const val DEFAULT_VALUE_TRACKING_LOOP = 5000L // 5s
+        const val DEFAULT_TARGET_DURATION_MLS = 2000L // 2s
+        private const val ARG_VIDEO_POSITION = "ARG_VIDEO_POSITION"
+    }
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+    private fun log(msg: String) {
+        Log.d(javaClass.simpleName, msg)
+    }
 
-import io.reactivex.disposables.CompositeDisposable;
+    private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
+    private var mHandler = Handler(Looper.getMainLooper())
+    private var llTop: LinearLayout? = null
+    private var rlChromeCast: RelativeLayout? = null
+    private var playerManager: UZPlayerManager? = null
+    private var rlLiveInfo: RelativeLayout? = null
+    private var previewFrameLayout: FrameLayout? = null
+    private var timeBar: UZPreviewTimeBar? = null
+    private var ivThumbnail: ImageView? = null
+    private var tvPosition: UZTextView? = null
+    private var tvDuration: UZTextView? = null
+    private var tvTitle: TextView? = null
+    private var tvLiveStatus: TextView? = null
+    private var tvLiveView: TextView? = null
+    private var tvLiveTime: TextView? = null
+    private var ibFullscreen: UZImageButton? = null
+    private var ibPauseIcon: UZImageButton? = null
+    private var ibPlayIcon: UZImageButton? = null
+    private var ibReplay: UZImageButton? = null
+    private var ibRew: UZImageButton? = null
+    private var ibFfwd: UZImageButton? = null
+    private var ibBackScreen: UZImageButton? = null
+    private var ibVolume: UZImageButton? = null
+    private var ibSetting: UZImageButton? = null
+    private var ibPlaylistFolder: UZImageButton? = null
+    private var ibHearing: UZImageButton? = null
+    private var ibPip: UZImageButton? = null
+    private var ibSkipPrevious: UZImageButton? = null
+    private var ibSkipNext: UZImageButton? = null
+    private var ibSpeed: UZImageButton? = null
+    private var ivLiveTime: UZImageButton? = null
+    private var ivLiveView: UZImageButton? = null
+    private var tvEndScreenMsg: TextView? = null
+    override var playerView: UZPlayerView? = null
+    private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
+    private var timeBarAtBottom = false
+    private var uzChromeCast: UZChromeCast? = null
+    override var isCastingChromecast = false
 
-public class UZVideoView extends RelativeLayout
-        implements UZManagerObserver, PreviewLoader, PreviewView.OnPreviewChangeListener, View.OnClickListener, View.OnFocusChangeListener,
-        SensorOrientationChangeNotifier.Listener {
+    override var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
+        set(isAutoStart) {
+            field = isAutoStart
+            updateUIButtonPlayPauseDependOnIsAutoStart()
+        }
 
-    private final String logTag = getClass().getSimpleName();
-    private static final String HYPHEN = "-";
-    private static final long FAST_FORWARD_REWIND_INTERVAL = 10000L; // 10s
-    /**
-     * The timeout in milliseconds. A non-positive value will cause the
-     * controller to remain visible indefinitely.
-     */
-    private static final int DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 8000; // 8s
-    private static final long DEFAULT_VALUE_TRACKING_LOOP = 5000L;  // 5s
-    public static final long DEFAULT_TARGET_DURATION_MLS = 2000L; // 2s
+    private var autoMoveToLiveEdge = false
+    private var isInPipMode = false
+    private var isPIPModeEnabled = true //Has the user disabled PIP mode in AppOpps?
+    private var positionPIPPlayer = 0L
+    var isAutoSwitchItemPlaylistFolder = true
+    private var isAutoShowController = false
+    private var isFreeSize = false
+    private var isPlayerControllerAlwayVisible = false
+    private var isSetFirstRequestFocusDone = false
+    private var countTryLinkPlayError = 0
+    private var activityIsPausing = false
+    private var timestampOnStartPreview = 0L
+    private var isOnPreview = false
+    private var maxSeekLastDuration = 0L
+    var isLandscape = false
+    var isAlwaysPortraitScreen = false
+    private var isHideOnTouch = true
+    private var useController = true
+    private var isOnPlayerEnded = false
+    private var alwaysHideLiveViewers = false
 
-    //===================================================================START FOR PLAYLIST/FOLDER
-    //
-    private long targetDurationMls = DEFAULT_TARGET_DURATION_MLS;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private RelativeLayout rootView, rlChromeCast;
-    private UZPlayerManager playerManager;
-    private ProgressBar progressBar;
-    private LinearLayout llTop, debugRootView;
-    private RelativeLayout rlMsg;
-    private RelativeLayout rlLiveInfo;
-    private FrameLayout previewFrameLayout;
-    private UZPreviewTimeBar timeBar;
-    private ImageView ivThumbnail, ivVideoCover;
-    private UZTextView tvPosition, tvDuration;
-    private TextView tvTitle;
-    private TextView tvLiveStatus;
-    private TextView tvLiveView;
-    private TextView tvLiveTime;
-    private UZImageButton ibFullscreenIcon;
-    private UZImageButton ibPauseIcon;
-    private UZImageButton ibPlayIcon;
-    private UZImageButton ibReplayIcon;
-    private UZImageButton ibRewIcon;
-    private UZImageButton ibFfwdIcon;
-    private UZImageButton ibBackScreenIcon;
-    private UZImageButton ibVolumeIcon;
-    private UZImageButton ibSettingIcon;
-    private UZImageButton ibPlaylistFolderIcon; //playlist folder
-    private UZImageButton ibHearingIcon;
-    private UZImageButton pipIcon;
-    private UZImageButton ibSkipPreviousIcon;
-    private UZImageButton ibSkipNextIcon;
-    private UZImageButton ibSpeedIcon;
-    private UZImageButton ivLiveTime;
-    private UZImageButton ivLiveView;
-    private TextView tvEndScreenMsg;
-    private UZPlayerView playerView;
-    private long defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL;
-    private boolean timeBarAtBottom;
-    private UZChromeCast uzChromeCast;
-    private boolean isCastingChromecast = false;
-    private boolean autoMoveToLiveEdge;
-    private boolean isInPipMode = false;
-    private boolean isPIPModeEnabled = true; //Has the user disabled PIP mode in AppOpps?
-    private long positionPIPPlayer;
-    //========================================================================START CONFIG
-    private boolean isAutoStart = Constants.DF_PLAYER_IS_AUTO_START;
-    private boolean isAutoSwitchItemPlaylistFolder = true;
-    private boolean isAutoShowController;
-    private boolean isFreeSize;
-    private boolean isPlayerControllerAlwayVisible;
-    private boolean isSetFirstRequestFocusDone;
-    private boolean isHasError;
-    private int countTryLinkPlayError = 0;
-    private boolean activityIsPausing = false;
-    private long timestampOnStartPreview;
-    private boolean isOnPreview;
-    private long maxSeekLastDuration;
-    private boolean isLandscape;//current screen is landscape or portrait
-    private boolean isAlwaysPortraitScreen = false;
-    private boolean isHideOnTouch = true;
-    private boolean useController = true;
-    private boolean isOnPlayerEnded;
-    private boolean alwaysHideLiveViewers = false;
-    //========================================================================END CONFIG
     /*
      **Change skin via skin id resources
      * changeSkin(R.layout.uzplayer_skin_1);
      */
     //TODO improve this func
-    private boolean isRefreshFromChangeSkin;
-    private long currentPositionBeforeChangeSkin;
-    private boolean isCalledFromChangeSkin;
-    private View firstViewHasFocus;
-    /**
-     * ======== START EVENT =====
-     */
-    private PreviewView.OnPreviewChangeListener onPreviewChangeListener;
-    private UZPlayerCallback playerCallback;
-    private UZTVFocusChangeListener uzTVFocusChangeListener;
-    private UZAdPlayerCallback adPlayerCallback;
-    boolean isFirstStateReady = false;
-    //=============================================================================================START EVENTBUS
-    private boolean isCalledFromConnectionEventBus = false;
+    private var isRefreshFromChangeSkin = false
+    private var currentPositionBeforeChangeSkin = 0L
+    private var isCalledFromChangeSkin = false
+    private var firstViewHasFocus: View? = null
+
+
+    private var onPreviewChangeListener: OnPreviewChangeListener? = null
+    private var playerCallback: UZPlayerCallback? = null
+    private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
+    override var adPlayerCallback: UZAdPlayerCallback? = null
+        set(callback) {
+            field = callback
+            if (UZAppUtils.isAdsDependencyAvailable) {
+                playerManager?.setAdPlayerCallback(callback)
+            } else {
+                throw NoClassDefFoundError(ErrorConstant.ERR_506)
+            }
+        }
+    var isFirstStateReady = false
+
+    private var isCalledFromConnectionEventBus = false
+
     //last current position lúc từ exoplayer switch sang cast player
-    private long lastCurrentPosition;
-    private boolean isCastPlayerPlayingFirst;
-    private StatsForNerdsView statsForNerdsView;
-    private String viewerSessionId;
-    private CompositeDisposable disposables;
-    private boolean viewCreated = false;
+    private var lastCurrentPosition = 0L
+    private var isCastPlayerPlayingFirst = false
+    private var viewerSessionId: String? = null
+    private var disposables = CompositeDisposable()
+    var isViewCreated = false
 
-    public UZVideoView(Context context) {
-        super(context);
-    }
-
-    public UZVideoView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public UZVideoView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UZVideoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (!viewCreated) {
-            onCreateView();
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        if (!isViewCreated) {
+            onCreateView()
         }
     }
 
-    public boolean isViewCreated() {
-        return viewCreated;
-    }
+    private fun onCreateView() {
+        if (UZAppUtils.checkChromeCastAvailable()) {
+            setupChromeCast()
+        }
+        inflate(context, R.layout.layout_uz_ima_video_core, this)
 
-    /**
-     * Call one time from {@link #onAttachedToWindow}
-     * Note: you must call inflate in this method
-     */
-    private void onCreateView() {
-        if (UZAppUtils.checkChromeCastAvailable())
-            setupChromeCast();
-        inflate(getContext(), R.layout.layout_uz_ima_video_core, this);
-        rootView = findViewById(R.id.layoutRootView);
-        int skinId = UZData.INSTANCE.getUzPlayerSkinLayoutId();
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (inflater != null) {
-            playerView = (UZPlayerView) inflater.inflate(skinId, null);
-            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT);
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-            playerView.setLayoutParams(lp);
-            playerView.setVisibility(GONE);
-            rootView.addView(playerView);
-            setControllerAutoShow(isAutoShowController);
-            findViews();
-            resizeContainerView();
+        val skinId = UZData.uzPlayerSkinLayoutId
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+
+        if (inflater == null) {
+            throw NullPointerException("Can not inflater view")
         } else {
-            throw new NullPointerException("Can not inflater view");
+            playerView = inflater.inflate(skinId, null) as UZPlayerView
+            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
+            val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            layoutParams.addRule(CENTER_IN_PARENT, TRUE)
+
+            playerView?.let {
+                it.layoutParams = layoutParams
+                it.visibility = GONE
+                layoutRootView.addView(it)
+            }
+
+            controllerAutoShow = isAutoShowController
+            findViews()
+            resizeContainerView()
         }
-        updateUIEachSkin();
-        setMarginPreviewTimeBar();
-        setMarginRlLiveInfo();
-        updateUISizeThumbnail();
-        viewCreated = true;
-        if (playerCallback != null) {
-            playerCallback.playerViewCreated(playerView);
+        updateUIEachSkin()
+        setMarginPreviewTimeBar()
+        setMarginRlLiveInfo()
+        updateUISizeThumbnail()
+        isViewCreated = true
+
+        playerView?.let {
+            playerCallback?.playerViewCreated(it)
         }
     }
 
-    private void resizeContainerView() {
-        if (!isFreeSize) {
-            setSize(getVideoWidth(), getVideoHeight());
+    private fun findViews() {
+        rlMsg.setOnClickListener(this)
+        UZViewUtils.setTextShadow(textView = tvMsg, color = Color.BLACK)
+        UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
+        updateUIPositionOfProgressBar()
+
+        playerView?.let { pv ->
+            pv.setOnDoubleTap(object : OnDoubleTap {
+                override fun onDoubleTapFinished() {}
+                override fun onDoubleTapProgressDown(posX: Float, posY: Float) {}
+                override fun onDoubleTapStarted(posX: Float, posY: Float) {}
+                override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
+                    val halfScreen = UZViewUtils.screenWidth / 2.0f
+                    if (posX - 60.0f > halfScreen) {
+                        seekToForward()
+                    } else if (posX + 60.0f < halfScreen) {
+                        seekToBackward()
+                    }
+                }
+            })
+            timeBar = pv.findViewById(R.id.exo_progress)
+            previewFrameLayout = pv.findViewById(R.id.previewFrameLayout)
+
+            if (timeBar == null) {
+                pv.visibility = VISIBLE
+            } else {
+                timeBar?.let { tb ->
+                    if (tb.tag == null) {
+                        timeBarAtBottom = false
+                        pv.visibility = VISIBLE
+                    } else {
+                        if (tb.tag.toString() == resources.getString(R.string.use_bottom_uz_timebar)) {
+                            timeBarAtBottom = true
+                            setMarginDependOnUZTimeBar(pv.videoSurfaceView)
+                        } else {
+                            timeBarAtBottom = false
+                            pv.visibility = VISIBLE
+                        }
+                    }
+                    tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
+                        override fun onStartPreview(previewView: PreviewView?, progress: Int) {
+                            timestampOnStartPreview = System.currentTimeMillis()
+                            onPreviewChangeListener?.onStartPreview(previewView, progress)
+                        }
+
+                        override fun onStopPreview(previewView: PreviewView?, progress: Int) {
+                            if (isCastingChromecast) {
+                                val casty = UZData.casty
+                                casty?.player?.seek(progress.toLong())
+                            }
+                            val seekLastDuration =
+                                System.currentTimeMillis() - timestampOnStartPreview
+                            if (maxSeekLastDuration < seekLastDuration) {
+                                maxSeekLastDuration = seekLastDuration
+                            }
+                            isOnPreview = false
+                            onStopPreview(progress)
+                            onPreviewChangeListener?.onStopPreview(previewView, progress)
+                        }
+
+                        override fun onPreview(
+                            previewView: PreviewView?,
+                            progress: Int,
+                            fromUser: Boolean
+                        ) {
+                            isOnPreview = true
+                            updateUIIbRewIconDependOnProgress(
+                                currentMls = progress.toLong(),
+                                isCalledFromUZTimeBarEvent = true
+                            )
+                            onPreviewChangeListener?.onPreview(previewView, progress, fromUser)
+                        }
+
+                    })
+                    tb.onFocusChangeListener = this
+                }
+            }
+
+            llTop = pv.findViewById(R.id.llTop)
+            ivThumbnail = pv.findViewById(R.id.ivThumbnail)
+            tvPosition = pv.findViewById(R.id.tvPosition)
+            tvDuration = pv.findViewById(R.id.tvDuration)
+            ibFullscreen = pv.findViewById(R.id.ibFullscreen)
+            tvTitle = pv.findViewById(R.id.tvTitle)
+            ibPauseIcon = pv.findViewById(R.id.exo_pause)
+            ibPlayIcon = pv.findViewById(R.id.exo_play)
+            ibReplay = pv.findViewById(R.id.exo_replay)
+            ibRew = pv.findViewById(R.id.exo_rew)
+            ibFfwd = pv.findViewById(R.id.exo_ffwd)
+            ibBackScreen = pv.findViewById(R.id.exo_back_screen)
+            ibVolume = pv.findViewById(R.id.exo_volume)
+            ibSetting = pv.findViewById(R.id.exo_setting)
+            ibPlaylistFolder = pv.findViewById(R.id.ibPlaylistFolder)
+            ibHearing = pv.findViewById(R.id.ibHearing)
+            ibPip = pv.findViewById(R.id.ibPip)
+            ibSkipNext = pv.findViewById(R.id.ibSkipNext)
+            ibSkipPrevious = pv.findViewById(R.id.ibSkipPrevious)
+            ibSpeed = pv.findViewById(R.id.ibSpeed)
+            rlLiveInfo = pv.findViewById(R.id.rlLiveInfo)
+            tvLiveStatus = pv.findViewById(R.id.tvLiveStatus)
+            tvLiveView = pv.findViewById(R.id.tvLiveView)
+            tvLiveTime = pv.findViewById(R.id.tvLiveTime)
+            ivLiveView = pv.findViewById(R.id.ivLiveView)
+            ivLiveTime = pv.findViewById(R.id.ivLiveTime)
+
+            tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(0)
+            tvDuration?.text = "-:-"
+
+            //If auto start true, show button play and gone button pause
+            UZViewUtils.goneViews(ibPlayIcon)
+
+            ibRew?.setSrcDrawableDisabled()
+
+            if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
+                UZViewUtils.goneViews(ibPip)
+            }
+
+            if (BuildConfig.DEBUG) {
+                layoutDebug.visibility = VISIBLE
+            } else {
+                layoutDebug.visibility = GONE
+            }
+
+            UZViewUtils.setFocusableViews(focusable = false, ivLiveView, ivLiveTime)
+
+            val rlEndScreen = pv.findViewById<RelativeLayout>(R.id.rlEndScreen)
+            UZViewUtils.goneViews(rlEndScreen)
+
+            tvEndScreenMsg = pv.findViewById(R.id.tvEndScreenMsg)
+            tvEndScreenMsg?.let {
+                UZViewUtils.setTextShadow(textView = it, color = Color.WHITE)
+                it.setOnClickListener(this)
+            }
+            setEventForViews()
+            setVisibilityOfPlaylistFolderController(GONE)
+        }
+    }
+
+    private fun resizeContainerView() {
+        if (isFreeSize) {
+            setSize(width = this.width, height = this.height)
         } else {
-            setSize(this.getWidth(), this.getHeight());
+            setSize(width = videoWidth, height = videoHeight)
         }
     }
 
-    public boolean isAutoStart() {
-        return isAutoStart;
-    }
-
-    public void setAutoStart(boolean isAutoStart) {
-        this.isAutoStart = isAutoStart;
-        updateUIButtonPlayPauseDependOnIsAutoStart();
-    }
-
-    public boolean isAutoSwitchItemPlaylistFolder() {
-        return isAutoSwitchItemPlaylistFolder;
-    }
-
-    public void setAutoSwitchItemPlaylistFolder(boolean isAutoSwitchItemPlaylistFolder) {
-        this.isAutoSwitchItemPlaylistFolder = isAutoSwitchItemPlaylistFolder;
-    }
-
-    public boolean getControllerAutoShow() {
-        return (playerView != null) && playerView.getControllerAutoShow();
-    }
-
-    public void setControllerAutoShow(boolean isAutoShowController) {
-        this.isAutoShowController = isAutoShowController;
-        if (playerView != null) {
-            playerView.setControllerAutoShow(isAutoShowController);
+    var controllerAutoShow: Boolean
+        get() = playerView?.controllerAutoShow ?: false
+        set(isAutoShowController) {
+            this.isAutoShowController = isAutoShowController
+            playerView?.controllerAutoShow = isAutoShowController
         }
-    }
 
     // Lay pixel dung cho custom UI like youtube, timeBar bottom of player controller
-    public int getPixelAdded() {
-        return timeBarAtBottom ? (getHeightTimeBar() / 2) : 0;
-    }
+    private val pixelAdded: Int
+        get() = if (timeBarAtBottom) {
+            heightTimeBar / 2
+        } else {
+            0
+        }
 
     //return pixel
-    public int getHeightTimeBar() {
-        return UZViewUtils.heightOfView(timeBar);
-    }
-
-    private long getDuration() {
-        return (getPlayer() == null) ? -1 : getPlayer().getDuration();
-    }
-
-    private long getCurrentPosition() {
-        return (getPlayer() == null) ? -1 : getPlayer().getCurrentPosition();
-    }
-
-    @Nullable
-    public Format getVideoFormat() {
-        return (getPlayer() == null) ? null : getPlayer().getVideoFormat();
-    }
-
-    @Nullable
-    public Format getAudioFormat() {
-        return (getPlayer() == null) ? null : getPlayer().getAudioFormat();
-    }
-
-    public int getVideoProfileW() {
-        return (playerManager == null) ? 0 : playerManager.getVideoProfileW();
-    }
-
-    public int getVideoProfileH() {
-        return (playerManager == null) ? 0 : playerManager.getVideoProfileH();
-    }
-
-    public void setResizeMode(int resizeMode) {
-        if (playerView != null) {
-            try {
-                playerView.setResizeMode(resizeMode);
-            } catch (java.lang.IllegalStateException e) {
-                e.printStackTrace();
+    private val heightTimeBar: Int
+        get() {
+            timeBar?.let {
+                return UZViewUtils.heightOfView(it)
             }
+            return 0
+        }
+
+    private val duration: Long
+        get() = player?.duration ?: -1
+
+    private val currentPosition: Long
+        get() = player?.currentPosition ?: -1
+
+    val videoFormat: Format?
+        get() = player?.videoFormat
+
+    val audioFormat: Format?
+        get() = player?.audioFormat
+
+    val videoProfileW: Int
+        get() = playerManager?.videoProfileW ?: 0
+
+    val videoProfileH: Int
+        get() = playerManager?.videoProfileH ?: 0
+
+    fun setResizeMode(resizeMode: Int) {
+        try {
+            playerView?.resizeMode = resizeMode
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
     }
 
-    public void setSize(int width, int height) {
-        UZViewUtils.resizeLayout(rootView, ivVideoCover, getPixelAdded(), width, height, isFreeSize);
+    fun setSize(width: Int, height: Int) {
+        UZViewUtils.resizeLayout(
+            viewGroup = layoutRootView,
+            ivVideoCover = ivCover,
+            pixelAdded = pixelAdded,
+            videoW = width,
+            videoH = height,
+            isFreeSize = isFreeSize
+        )
     }
 
-    public void setFreeSize(boolean isFreeSize) {
-        this.isFreeSize = isFreeSize;
-        resizeContainerView();
+    fun setFreeSize(isFreeSize: Boolean) {
+        this.isFreeSize = isFreeSize
+        resizeContainerView()
     }
 
-    public void setPlayerControllerAlwaysVisible() {
-        setControllerAutoShow(true);
-        setHideControllerOnTouch(false);
-        setControllerShowTimeoutMs(0);
-        isPlayerControllerAlwayVisible = true;
+    fun setPlayerControllerAlwaysVisible() {
+        controllerAutoShow = true
+        setHideControllerOnTouch(false)
+        controllerShowTimeoutMs = 0
+        isPlayerControllerAlwayVisible = true
     }
 
-    protected void handleError(UZException uzException) {
+    private fun handleError(uzException: UZException?) {
         if (uzException == null) {
-            return;
+            return
         }
-        uzException.printStackTrace();
-        notifyError(uzException);
-        // Capture by Sentry, in uzException already contains Message, Error Code
-        if (isHasError) {
-            return;
-        }
-        isHasError = true;
-        UZData.INSTANCE.setSettingPlayer(false);
+        uzException.printStackTrace()
+        notifyError(uzException)
+        UZData.isSettingPlayer = false
     }
 
-    private void notifyError(UZException exception) {
-        if (playerCallback != null)
-            playerCallback.onError(exception);
+    private fun notifyError(exception: UZException) {
+        playerCallback?.onError(exception)
     }
 
-    private void handlePlayPlayListFolderUI() {
-        setVisibilityOfPlaylistFolderController(isPlayPlaylistFolder() ? VISIBLE : GONE);
+    private fun handlePlayPlayListFolderUI() {
+        setVisibilityOfPlaylistFolderController(
+            if (isPlayPlaylistFolder) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        )
     }
 
-    public SimpleExoPlayer getPlayer() {
-        return (playerManager == null) ? null : playerManager.getPlayer();
+    val player: SimpleExoPlayer?
+        get() = playerManager?.getPlayer()
+
+    fun seekTo(positionMs: Long) {
+        playerManager?.seekTo(positionMs)
     }
 
-    public void seekTo(long positionMs) {
-        if (playerManager != null)
-            playerManager.seekTo(positionMs);
-    }
 
-    /**
-     * Play with custom playback
-     *
-     * @return true if not error
-     */
-    public boolean play() {
-        UZPlayback playback = UZData.INSTANCE.getPlayback();
+    fun play(): Boolean {
+        val playback = UZData.getPlayback()
         if (playback == null) {
-            Log.d(logTag, "ErrorConstant.ERR_14");
-            return false;
+            log("ErrorConstant.ERR_14")
+            return false
         }
-        if (!ConnectivityUtils.isConnected(getContext())) {
-            Log.d(logTag, "ErrorConstant.ERR_0");
-            return false;
+        if (!ConnectivityUtils.isConnected(context)) {
+            log("ErrorConstant.ERR_0")
+            return false
         }
-        initPlayback(playback, true);
-        return true;
+        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
+        return true
     }
 
-    /**
-     * Play with {@link UZPlayback}
-     *
-     * @param playback PlaybackInfo nonnull
-     * @return true if not error
-     */
-    public boolean play(@NonNull UZPlayback playback) {
-        if (!ConnectivityUtils.isConnected(getContext())) {
-            notifyError(ErrorUtils.exceptionNoConnection());
-            return false;
+    fun play(playback: UZPlayback): Boolean {
+        if (!ConnectivityUtils.isConnected(context)) {
+            notifyError(ErrorUtils.exceptionNoConnection())
+            return false
         }
-        UZData.INSTANCE.setPlayback(playback);
-        initPlayback(playback, true);
-        return true;
+        UZData.setPlayback(playback = playback)
+        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
+        return true
     }
 
-    /**
-     * Play with {@link UZPlayback}
-     *
-     * @param playlist List of PlaybackInfo
-     * @return true if not error
-     */
-    public boolean play(ArrayList<UZPlayback> playlist) {
+    fun play(playlist: ArrayList<UZPlayback>): Boolean {
         // TODO: Check how to get subtitle of a custom link play, because we have no idea about entityId or appId
-        if (!ConnectivityUtils.isConnected(getContext())) {
-            handleError(ErrorUtils.exceptionNoConnection());
-            return false;
+        if (!ConnectivityUtils.isConnected(context)) {
+            handleError(uzException = ErrorUtils.exceptionNoConnection())
+            return false
         }
         if (playlist.isEmpty()) {
-            handleError(ErrorUtils.exceptionPlaylistFolderItemFirst());
-            return false;
+            handleError(uzException = ErrorUtils.exceptionPlaylistFolderItemFirst())
+            return false
         } else {
-            UZData.INSTANCE.clearDataForPlaylistFolder();
-            UZData.INSTANCE.setPlayList(playlist);
-            playPlaylistPosition(UZData.INSTANCE.getCurrentPositionOfPlayList());
+            UZData.clearDataForPlaylistFolder()
+            UZData.setPlayList(playlist = playlist)
+            playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList())
         }
-        isHasError = false;
-        return true;
+        return true
     }
 
-
-    public void resume() {
+    fun resume() {
         if (isCastingChromecast) {
-            Casty casty = UZData.INSTANCE.getCasty();
-            if (casty != null)
-                casty.getPlayer().play();
-        } else if (playerManager != null) {
-            playerManager.resume();
+            val casty = UZData.casty
+            casty?.player?.play()
+        } else {
+            playerManager?.resume()
         }
-        UZViewUtils.goneViews(ibPlayIcon);
-        if (ibPauseIcon != null) {
-            UZViewUtils.visibleViews(ibPauseIcon);
-            ibPauseIcon.requestFocus();
+
+        UZViewUtils.goneViews(ibPlayIcon)
+        ibPauseIcon?.let {
+            UZViewUtils.visibleViews(it)
+            it.requestFocus()
         }
-        setKeepScreenOn(true);
+        keepScreenOn = true
     }
 
-    public void pause() {
+    fun pause() {
         if (isCastingChromecast) {
-            Casty casty = UZData.INSTANCE.getCasty();
-            if (casty != null)
-                casty.getPlayer().pause();
-        } else if (playerManager != null) {
-            playerManager.pause();
+            val casty = UZData.casty
+            casty?.player?.pause()
+        } else {
+            playerManager?.pause()
         }
-        UZViewUtils.goneViews(ibPauseIcon);
-        setKeepScreenOn(false);
-        if (ibPlayIcon != null) {
-            UZViewUtils.visibleViews(ibPlayIcon);
-            ibPlayIcon.requestFocus();
+        UZViewUtils.goneViews(ibPauseIcon)
+        keepScreenOn = false
+        ibPlayIcon?.let {
+            UZViewUtils.visibleViews(it)
+            it.requestFocus()
         }
-        // tracking here
     }
 
-    public int getVideoWidth() {
-        return (playerManager == null) ? 0 : playerManager.getVideoWidth();
-    }
+    val videoWidth: Int
+        get() = playerManager?.videoWidth ?: 0
 
-    public int getVideoHeight() {
-        return (playerManager == null) ? 0 : playerManager.getVideoHeight();
-    }
+    val videoHeight: Int
+        get() = playerManager?.videoHeight ?: 0
 
-    private void initPlayback(@NonNull UZPlayback playback, boolean isClearDataPlaylistFolder) {
+    private fun initPlayback(playback: UZPlayback, isClearDataPlaylistFolder: Boolean) {
         if (isClearDataPlaylistFolder) {
-            UZData.INSTANCE.clearDataForPlaylistFolder();
+            UZData.clearDataForPlaylistFolder()
         }
-        isCalledFromChangeSkin = false;
-        handlePlayPlayListFolderUI();
-        hideLayoutMsg();
-        setControllerShowTimeoutMs(DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS);
-        isOnPlayerEnded = false;
-        updateUIEndScreen();
-        isHasError = false;
-        viewerSessionId = UUID.randomUUID().toString();
-        if (playerManager != null) {
-            releasePlayerManager();
-            resetCountTryLinkPlayError();
-            showProgress();
+        isCalledFromChangeSkin = false
+        handlePlayPlayListFolderUI()
+        hideLayoutMsg()
+        controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+        isOnPlayerEnded = false
+        updateUIEndScreen()
+        viewerSessionId = UUID.randomUUID().toString()
+        releasePlayerManager()
+        resetCountTryLinkPlayError()
+        showProgress()
+        updateUIDependOnLiveStream()
+        val linkPlay = playback.firstLinkPlay
+        if (linkPlay.isNullOrEmpty()) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
+            return
         }
-        updateUIDependOnLiveStream();
-        disposables = new CompositeDisposable();
-        String linkPlay = playback.getFirstLinkPlay();
-        if (TextUtils.isEmpty(linkPlay)) {
-            handleError(ErrorUtils.exceptionNoLinkPlay());
-            return;
-        }
-        initDataSource(linkPlay, UZData.INSTANCE.getUrlIMAAd(), playback.getPoster());
-        if (playerCallback != null)
-            playerCallback.isInitResult(linkPlay);
-        trackWatchingTimer(true);
-        initPlayerManager();
+        initDataSource(
+            linkPlay = linkPlay,
+            urlIMAAd = UZData.urlIMAAd,
+            urlThumbnailsPreviewSeekBar = playback.poster
+        )
+        playerCallback?.isInitResult(linkPlay)
+        trackWatchingTimer(firstRun = true)
+        initPlayerManager()
     }
 
-    private void initPlayerManager() {
-        if (playerManager != null) {
-            playerManager.register(this);
+    private fun initPlayerManager() {
+        playerManager?.let { pm ->
+            pm.register(this)
             if (isRefreshFromChangeSkin) {
-                playerManager.seekTo(currentPositionBeforeChangeSkin);
-                isRefreshFromChangeSkin = false;
-                currentPositionBeforeChangeSkin = 0;
+                pm.seekTo(currentPositionBeforeChangeSkin)
+                isRefreshFromChangeSkin = false
+                currentPositionBeforeChangeSkin = 0
             }
             if (isCalledFromConnectionEventBus) {
-                playerManager.setRunnable();
-                isCalledFromConnectionEventBus = false;
+                pm.setRunnable()
+                isCalledFromConnectionEventBus = false
             }
-            // Always using this options
-            initStatsForNerds();
+            initStatsForNerds()
         }
     }
 
-    public void toggleStatsForNerds() {
-        if (getPlayer() == null) return;
-        boolean isEnableStatsForNerds =
-                statsForNerdsView == null || statsForNerdsView.getVisibility() != View.VISIBLE;
-        if (isEnableStatsForNerds)
-            UZViewUtils.visibleViews(statsForNerdsView);
-        else
-            UZViewUtils.goneViews(statsForNerdsView);
+    fun toggleStatsForNerds() {
+        if (player == null) return
+        val isEnableStatsForNerds =
+            statsForNerdsView == null || statsForNerdsView.visibility != VISIBLE
+        if (isEnableStatsForNerds) {
+            UZViewUtils.visibleViews(statsForNerdsView)
+        } else {
+            UZViewUtils.goneViews(statsForNerdsView)
+        }
     }
 
-    protected void tryNextLinkPlay() {
-        if (isLIVE()) {
+    protected fun tryNextLinkPlay() {
+        if (isLIVE) {
             // try to play 5 times
-            if (countTryLinkPlayError >= UZData.INSTANCE.getPlayback().getSize()) {
-                return;
+            UZData.getPlayback()?.let { playBack ->
+                if (countTryLinkPlayError >= playBack.size) {
+                    return
+                }
             }
             // if entity is livestreaming, dont try to next link play
-            if (playerManager != null) {
-                playerManager.initWithoutReset();
-                playerManager.setRunnable();
+            playerManager?.let {
+                it.initWithoutReset()
+                it.setRunnable()
             }
-            countTryLinkPlayError++;
-            isFirstStateReady = false;
-            return;
+            countTryLinkPlayError++
+            isFirstStateReady = false
+            return
         }
-        countTryLinkPlayError++;
-        isFirstStateReady = false;
-        releasePlayerManager();
-        checkToSetUpResource();
+        countTryLinkPlayError++
+        isFirstStateReady = false
+        releasePlayerManager()
+        checkToSetUpResource()
     }
 
     //khi call api callAPIGetLinkPlay nhung json tra ve ko co data
     //se co gang choi video da play gan nhat
     //neu co thi se play
     //khong co thi bao loi
-    private void handleErrorNoData() {
-        removeVideoCover(true);
+    private fun handleErrorNoData() {
+        removeVideoCover(true)
         if (playerCallback != null) {
-            UZData.INSTANCE.setSettingPlayer(false);
-            handleError(ErrorUtils.exceptionNoLinkPlay());
+            UZData.isSettingPlayer = false
+            handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
         }
     }
 
-    protected void resetCountTryLinkPlayError() {
-        countTryLinkPlayError = 0;
+    protected fun resetCountTryLinkPlayError() {
+        countTryLinkPlayError = 0
     }
 
-    public boolean onBackPressed() {
-        if (isLandscape()) {
-            toggleFullscreen();
-            return true;
+    fun onBackPressed(): Boolean {
+        if (isLandscape) {
+            toggleFullscreen()
+            return true
         }
-        return false;
+        return false
     }
 
-    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
-        positionPIPPlayer = getCurrentPosition();
-        isInPipMode = !isInPictureInPictureMode;
+    fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        positionPIPPlayer = currentPosition
+        isInPipMode = !isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             // Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.
-            setUseController(false);
+            setUseController(useController = false)
         } else {
             // Restore the full-screen UI.
-            setUseController(true);
+            setUseController(useController = true)
         }
     }
 
-    public void onDestroyView() {
-        releasePlayerStats();
-        releasePlayerManager();
-        UZData.INSTANCE.setSettingPlayer(false);
-        isCastingChromecast = false;
-        isCastPlayerPlayingFirst = false;
-        if (UZAppUtils.hasSupportPIP(getContext())) {
-            ((Activity) getContext()).finishAndRemoveTask();
+    fun onDestroyView() {
+        releasePlayerStats()
+        releasePlayerManager()
+        UZData.isSettingPlayer = false
+        isCastingChromecast = false
+        isCastPlayerPlayingFirst = false
+        if (UZAppUtils.hasSupportPIP(context)) {
+            if (context is Activity) {
+                (context as Activity).finishAndRemoveTask()
+            }
         }
-        if (playerManager != null) {
-            playerManager.unregister();
-        }
-        if (disposables != null)
-            disposables.dispose();
-        mHandler = null;
+        playerManager?.unregister()
+        disposables.dispose()
     }
 
-    private void releasePlayerStats() {
-        if (getPlayer() != null)
-            getPlayer().removeAnalyticsListener(statsForNerdsView);
+    private fun releasePlayerStats() {
+        player?.removeAnalyticsListener(statsForNerdsView)
     }
 
-    private void releasePlayerManager() {
-        if (playerManager != null)
-            playerManager.release();
+    private fun releasePlayerManager() {
+        playerManager?.release()
     }
 
-    public void onResumeView() {
-        SensorOrientationChangeNotifier.getInstance(getContext()).addListener(this);
-        if (isCastingChromecast)
-            return;
-        activityIsPausing = false;
-        if (playerManager != null) {
-            if (ibPlayIcon == null || ibPlayIcon.getVisibility() != VISIBLE)
-                playerManager.resume();
+    fun onResumeView() {
+        SensorOrientationChangeNotifier.getInstance(context)?.addListener(this)
+        if (isCastingChromecast) {
+            return
         }
-
+        activityIsPausing = false
+        if (ibPlayIcon == null || ibPlayIcon?.visibility != VISIBLE) {
+            playerManager?.resume()
+        }
         if (positionPIPPlayer > 0L && isInPipMode) {
-            seekTo(positionPIPPlayer);
-        } else if (autoMoveToLiveEdge && isLIVE()) {
+            seekTo(positionPIPPlayer)
+        } else if (autoMoveToLiveEdge && isLIVE) {
             // try to move to the edge of livestream video
-            seekToLiveEdge();
+            seekToLiveEdge()
         }
         //Makes sure that the media controls pop up on resuming and when going between PIP and non-PIP states.
-        setUseController(true);
+        setUseController(true)
     }
 
-
-    public boolean isPlaying() {
-        return (getPlayer() != null) && getPlayer().getPlayWhenReady();
-    }
+    val isPlaying: Boolean
+        get() = player?.playWhenReady ?: false
 
     /**
      * Set auto move the the last window of livestream, default is false
      *
      * @param autoMoveToLiveEdge true if always seek to last livestream video, otherwise false
      */
-    public void setAutoMoveToLiveEdge(boolean autoMoveToLiveEdge) {
-        this.autoMoveToLiveEdge = autoMoveToLiveEdge;
+    fun setAutoMoveToLiveEdge(autoMoveToLiveEdge: Boolean) {
+        this.autoMoveToLiveEdge = autoMoveToLiveEdge
     }
 
     /**
      * Seek to live edge of a streaming video
      */
-    public void seekToLiveEdge() {
-        if (isLIVE() && getPlayer() != null)
-            getPlayer().seekToDefaultPosition();
+    fun seekToLiveEdge() {
+        if (isLIVE) {
+            player?.seekToDefaultPosition()
+        }
     }
 
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putLong("ARG_VIDEO_POSITION", getCurrentPosition());
+    fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong(ARG_VIDEO_POSITION, currentPosition)
     }
 
-    public void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        positionPIPPlayer = savedInstanceState.getLong("ARG_VIDEO_POSITION");
+    fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        positionPIPPlayer = savedInstanceState.getLong(ARG_VIDEO_POSITION)
     }
 
-    public void onPauseView() {
-        activityIsPausing = true;
-        positionPIPPlayer = getCurrentPosition();
-        SensorOrientationChangeNotifier.getInstance(getContext()).remove(this);
+    fun onPauseView() {
+        activityIsPausing = true
+        positionPIPPlayer = currentPosition
+        SensorOrientationChangeNotifier.getInstance(context)?.remove(this)
+
         // in PIP to continue
-        if (playerManager != null && !isInPipMode) {
-            playerManager.pause();
+        if (!isInPipMode) {
+            playerManager?.pause()
         }
     }
 
-    @Override
-    public boolean isPIPEnable() {
-        return (pipIcon != null)
-                && !isCastingChromecast()
-                && UZAppUtils.hasSupportPIP(getContext())
-                && !UZData.INSTANCE.getUseUZDragView();
-    }
+    override val isPIPEnable: Boolean
+        get() = (ibPip != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
 
-    @Override
-    public void onStartPreview(PreviewView previewView, int progress) {
-        timestampOnStartPreview = System.currentTimeMillis();
-        if (onPreviewChangeListener != null)
-            onPreviewChangeListener.onStartPreview(previewView, progress);
-    }
-
-    @Override
-    public void onPreview(PreviewView previewView, int progress, boolean fromUser) {
-        isOnPreview = true;
-        updateUIIbRewIconDependOnProgress(progress, true);
-        if (onPreviewChangeListener != null)
-            onPreviewChangeListener.onPreview(previewView, progress, fromUser);
-    }
-
-    @Override
-    public void onStopPreview(PreviewView previewView, int progress) {
-        if (isCastingChromecast) {
-            Casty casty = UZData.INSTANCE.getCasty();
-            if (casty != null) casty.getPlayer().seek(progress);
-        }
-        long seekLastDuration = System.currentTimeMillis() - timestampOnStartPreview;
-        if (maxSeekLastDuration < seekLastDuration) {
-            maxSeekLastDuration = seekLastDuration;
-        }
-        isOnPreview = false;
-        onStopPreview(progress);
-        if (onPreviewChangeListener != null)
-            onPreviewChangeListener.onStopPreview(previewView, progress);
-    }
-
-    public void onStopPreview(int progress) {
-        if (playerManager != null && !isCastingChromecast) {
-            playerManager.seekTo(progress);
-            playerManager.resume();
-            isOnPlayerEnded = false;
-            updateUIEndScreen();
+    fun onStopPreview(progress: Int) {
+        if (!isCastingChromecast) {
+            playerManager?.seekTo(progress.toLong())
+            playerManager?.resume()
+            isOnPlayerEnded = false
+            updateUIEndScreen()
         }
     }
 
-    @Override
-    public void onFocusChange(View view, boolean isFocus) {
-        if (uzTVFocusChangeListener != null)
-            uzTVFocusChangeListener.onFocusChange(view, isFocus);
-        else if (firstViewHasFocus == null)
-            firstViewHasFocus = view;
-    }
+    public override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
 
-    public void setAdPlayerCallback(UZAdPlayerCallback callback) {
-        this.adPlayerCallback = callback;
-        if (UZAppUtils.INSTANCE.isAdsDependencyAvailable()) {
-            if (playerManager != null)
-                playerManager.setAdPlayerCallback(callback);
-        } else
-            throw new NoClassDefFoundError(ErrorConstant.ERR_506);
-    }
-
-    @Override
-    public UZAdPlayerCallback getAdPlayerCallback() {
-        return adPlayerCallback;
-    }
-
-    public boolean isLandscape() {
-        return isLandscape;
-    }
-
-    @Override
-    public void onOrientationChange(int orientation) {
-        //270 land trai
-        //0 portrait duoi
-        //90 land phai
-        //180 portrait tren
-        boolean isDeviceAutoRotation = UZViewUtils.isRotationPossible(getContext());
-        if (orientation == 90 || orientation == 270) {
-            if (isDeviceAutoRotation && !isLandscape)
-                if (!isAlwaysPortraitScreen) {
-                    UZViewUtils.changeScreenLandscape((Activity) getContext(), orientation);
+        playerView?.let { pv ->
+            resizeContainerView()
+            val currentOrientation = resources.configuration.orientation
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                UZViewUtils.hideSystemUiFullScreen(pv)
+                isLandscape = true
+                ibFullscreen?.let {
+                    UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
-        } else {
-            if (isDeviceAutoRotation && isLandscape)
-                if (!isAlwaysPortraitScreen) {
-                    UZViewUtils.changeScreenPortrait((Activity) getContext());
+                UZViewUtils.goneViews(ibPip)
+            } else {
+                UZViewUtils.hideSystemUi(pv)
+                isLandscape = false
+                ibFullscreen?.let {
+                    UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
-        }
-    }
-
-    //===================================================================END FOR PLAYLIST/FOLDER
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (playerView == null) return;
-        resizeContainerView();
-        int currentOrientation = getResources().getConfiguration().orientation;
-        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            UZViewUtils.hideSystemUiFullScreen(playerView);
-            isLandscape = true;
-            UZViewUtils.setUIFullScreenIcon(ibFullscreenIcon, true);
-            UZViewUtils.goneViews(pipIcon);
-        } else {
-            UZViewUtils.hideSystemUi(playerView);
-            isLandscape = false;
-            UZViewUtils.setUIFullScreenIcon(ibFullscreenIcon, false);
-            if (isPIPEnable())
-                UZViewUtils.visibleViews(pipIcon);
-        }
-        setMarginPreviewTimeBar();
-        setMarginRlLiveInfo();
-        updateUISizeThumbnail();
-        updateUIPositionOfProgressBar();
-        if (timeBarAtBottom)
-            setMarginDependOnUZTimeBar(playerView.getVideoSurfaceView());
-        if (playerCallback != null)
-            playerCallback.onScreenRotate(isLandscape);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == rlMsg) {
-
-        } else if (v == ibFullscreenIcon) {
-            toggleFullscreen();
-        } else if (v == ibBackScreenIcon) {
-            handleClickBackScreen();
-        } else if (v == ibVolumeIcon)
-            handleClickBtVolume();
-        else if (v == ibSettingIcon)
-            showSettingsDialog();
-        else if (v == ibPlaylistFolderIcon)
-            handleClickPlaylistFolder();
-        else if (v == ibHearingIcon)
-            handleClickHearing();
-        else if (v == pipIcon)
-            enterPIPMode();
-        else if (v.getParent() == debugRootView)
-            showTrackSelectionDialog(v, true);
-        else if (v == rlChromeCast) {
-            //TODO dangerous to remove
-        } else if (v == tvLiveStatus) {
-            seekToEndLive();
-        } else if (v == ibFfwdIcon) {
-            if (isCastingChromecast) {
-                Casty casty = UZData.INSTANCE.getCasty();
-                if (casty != null)
-                    casty.getPlayer().seekToForward(defaultSeekValue);
-            } else if (playerManager != null)
-                playerManager.seekToForward(defaultSeekValue);
-        } else if (v == ibRewIcon) {
-            if (isCastingChromecast) {
-                Casty casty = UZData.INSTANCE.getCasty();
-                if (casty != null)
-                    casty.getPlayer().seekToRewind(defaultSeekValue);
-            } else if (playerManager != null) {
-                playerManager.seekToBackward(defaultSeekValue);
-                if (isPlaying()) {
-                    isOnPlayerEnded = false;
-                    updateUIEndScreen();
+                if (isPIPEnable) {
+                    UZViewUtils.visibleViews(ibPip)
                 }
             }
-        } else if (v == ibPauseIcon)
-            pause();
-        else if (v == ibPlayIcon)
-            resume();
-        else if (v == ibReplayIcon)
-            replay();
-        else if (v == ibSkipNextIcon)
-            handleClickSkipNext();
-        else if (v == ibSkipPreviousIcon)
-            handleClickSkipPrevious();
-        else if (v == ibSpeedIcon)
-            showSpeed();
-        else if (v == tvEndScreenMsg) {
-
+            setMarginPreviewTimeBar()
+            setMarginRlLiveInfo()
+            updateUISizeThumbnail()
+            updateUIPositionOfProgressBar()
+            if (timeBarAtBottom) {
+                setMarginDependOnUZTimeBar(pv.videoSurfaceView)
+            }
+            playerCallback?.onScreenRotate(isLandscape)
         }
-        /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức, trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
-        default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
-        if (useController
-                && (rlMsg == null || rlMsg.getVisibility() != VISIBLE)
-                && isPlayerControllerShowing())
-            showController();
+    }
 
+    override fun onClick(v: View) {
+        if (v === ibFullscreen) {
+            toggleFullscreen()
+        } else if (v === ibBackScreen) {
+            handleClickBackScreen()
+        } else if (v === ibVolume) {
+            handleClickBtVolume()
+        } else if (v === ibSetting) {
+            showSettingsDialog()
+        } else if (v === ibPlaylistFolder) {
+            handleClickPlaylistFolder()
+        } else if (v === ibHearing) {
+            handleClickHearing()
+        } else if (v === ibPip) {
+            enterPIPMode()
+        } else if (v.parent === layoutControls) {
+            showTrackSelectionDialog(v, true)
+        } else if (v === tvLiveStatus) {
+            seekToEndLive()
+        } else if (v === ibFfwd) {
+            if (isCastingChromecast) {
+                val casty = UZData.casty
+                casty?.player?.seekToForward(defaultSeekValue)
+            }
+            playerManager?.seekToForward(defaultSeekValue)
+        } else if (v === ibRew) {
+            if (isCastingChromecast) {
+                val casty = UZData.casty
+                casty?.player?.seekToRewind(defaultSeekValue)
+            } else if (playerManager != null) {
+                playerManager?.seekToBackward(defaultSeekValue)
+                if (isPlaying) {
+                    isOnPlayerEnded = false
+                    updateUIEndScreen()
+                }
+            }
+        } else if (v === ibPauseIcon) {
+            pause()
+        } else if (v === ibPlayIcon) {
+            resume()
+        } else if (v === ibReplay) {
+            replay()
+        } else if (v === ibSkipNext) {
+            handleClickSkipNext()
+        } else if (v === ibSkipPrevious) {
+            handleClickSkipPrevious()
+        } else if (v === ibSpeed) {
+            showSpeed()
+        }
+        /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức,
+        trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
+        default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
+        if (useController && (rlMsg == null || rlMsg?.visibility != VISIBLE) && isPlayerControllerShowing
+        ) {
+            showController()
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    public void enterPIPMode() {
-        if (isPIPEnable()) {
-            positionPIPPlayer = getCurrentPosition();
-            setUseController(false);
+    fun enterPIPMode() {
+        if (isPIPEnable) {
+            positionPIPPlayer = currentPosition
+            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                PictureInPictureParams.Builder params = new PictureInPictureParams.Builder();
-                Rational aspectRatio = new Rational(getVideoWidth(), getVideoHeight());
-                params.setAspectRatio(aspectRatio);
-                ((Activity) getContext()).enterPictureInPictureMode(params.build());
+                val params = PictureInPictureParams.Builder()
+                val aspectRatio = Rational(videoWidth, videoHeight)
+                params.setAspectRatio(aspectRatio)
+                if (context is Activity) {
+                    (context as Activity).enterPictureInPictureMode(params.build())
+                }
             } else {
-                ((Activity) getContext()).enterPictureInPictureMode();
+                if (context is Activity) {
+                    (context as Activity).enterPictureInPictureMode()
+                }
             }
         }
-        postDelayed(() -> {
-            isPIPModeEnabled = ((Activity) getContext()).isInPictureInPictureMode();
+        postDelayed({
+            if (context is Activity) {
+                isPIPModeEnabled = (context as Activity).isInPictureInPictureMode
+            }
             if (!isPIPModeEnabled) {
-                enterPIPMode();
+                enterPIPMode()
             }
-        }, 50);
+        }, 50)
     }
 
-    public int getControllerShowTimeoutMs() {
-        return (playerView == null) ? -1 : playerView.getControllerShowTimeoutMs();
+    var controllerShowTimeoutMs: Int
+        get() = playerView?.controllerShowTimeoutMs ?: -1
+        set(controllerShowTimeoutMs) {
+            post {
+                playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
+            }
+        }
+    val isPlayerControllerShowing: Boolean
+        get() = playerView?.isControllerVisible ?: false
+
+    fun showController() {
+        playerView?.showController()
     }
 
-    public void setControllerShowTimeoutMs(int controllerShowTimeoutMs) {
-        post(() -> playerView.setControllerShowTimeoutMs(controllerShowTimeoutMs));
-    }
-
-    public boolean isPlayerControllerShowing() {
-        return (playerView != null) && playerView.isControllerVisible();
-
-    }
-
-    public void showController() {
-        if (playerView != null)
-            playerView.showController();
-    }
-
-    public void hideController() {
-        if (isPlayerControllerAlwayVisible) return;
-        if (playerView != null && !isCastingChromecast)//do not hide if is casting chromecast
-            playerView.hideController();
-    }
-
-    public void setHideControllerOnTouch(boolean isHide) {
-        if (playerView != null) {
-            this.isHideOnTouch = isHide;
-            playerView.setControllerHideOnTouch(isHide);
+    fun hideController() {
+        if (isPlayerControllerAlwayVisible) {
+            return
+        }
+        //do not hide if is casting chromecast
+        if (!isCastingChromecast) {
+            playerView?.hideController()
         }
     }
 
-    public boolean getControllerHideOnTouch() {
-        return (playerView != null) && playerView.getControllerHideOnTouch();
+    fun setHideControllerOnTouch(isHide: Boolean) {
+        isHideOnTouch = isHide
+        playerView?.controllerHideOnTouch = isHide
     }
 
-    public boolean isUseController() {
-        return useController;
+    val controllerHideOnTouch: Boolean
+        get() = playerView?.controllerHideOnTouch ?: false
+
+    fun isUseController(): Boolean {
+        return useController
     }
 
-    public void setUseController(boolean useController) {
-        this.useController = useController;
-        if (playerView != null)
-            playerView.setUseController(useController);
+    fun setUseController(useController: Boolean) {
+        this.useController = useController
+        playerView?.useController = useController
     }
 
-    protected boolean isPlayPlaylistFolder() {
-        if (UZData.INSTANCE.getPlayList() == null || UZData.INSTANCE.getPlayList().isEmpty()) {
-            return false;
+    protected val isPlayPlaylistFolder: Boolean
+        get() = !(UZData.getPlayList().isNullOrEmpty())
+
+    private fun playPlaylistPosition(position: Int) {
+        if (!isPlayPlaylistFolder) {
+            log("playPlaylistPosition error: incorrect position")
+            return
         }
-        return true;
-    }
-
-    private void playPlaylistPosition(int position) {
-        if (!isPlayPlaylistFolder()) {
-            Log.d(logTag, "playPlaylistPosition error: incorrect position");
-            return;
-        }
-        Log.d(logTag, "playPlaylistPosition position: %d\", position");
+        log("playPlaylistPosition position: $position")
         if (position < 0) {
-            Log.d(logTag, "This is the first item");
-            notifyError(ErrorUtils.exceptionPlaylistFolderItemFirst());
-            return;
+            log("This is the first item")
+            notifyError(ErrorUtils.exceptionPlaylistFolderItemFirst())
+            return
         }
-        if (position > UZData.INSTANCE.getPlayList().size() - 1) {
-            Log.d(logTag, "This is the last item");
-            notifyError(ErrorUtils.exceptionPlaylistFolderItemLast());
-            return;
+        UZData.getPlayList()?.let {
+            if (position > it.size - 1) {
+                log("This is the last item")
+                notifyError(ErrorUtils.exceptionPlaylistFolderItemLast())
+                return
+            }
         }
-        pause();
-        hideController();
-        //update UI for skip next and skip previous button
-        UZViewUtils.setSrcDrawableEnabledForViews(ibSkipPreviousIcon, ibSkipNextIcon);
+        pause()
+        hideController()
+        UZViewUtils.setSrcDrawableEnabledForViews(ibSkipPrevious, ibSkipNext)
         //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(false, ibSkipPreviousIcon, ibSkipNextIcon);
+        UZViewUtils.setClickableForViews(able = false, ibSkipPrevious, ibSkipNext)
         //end update UI for skip next and skip previous button
-        UZData.INSTANCE.setCurrentPositionOfPlayList(position);
-        UZPlayback playback = UZData.INSTANCE.getPlayback();
+        UZData.setCurrentPositionOfPlayList(position)
+        val playback = UZData.getPlayback()
         if (playback == null || !playback.canPlay()) {
-            notifyError(ErrorUtils.exceptionNoLinkPlay());
-            return;
+            notifyError(ErrorUtils.exceptionNoLinkPlay())
+            return
         }
-        initPlayback(playback, false);
+        initPlayback(playback = playback, isClearDataPlaylistFolder = false)
     }
 
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-        if (manifest instanceof HlsManifest) {
-            HlsMediaPlaylist playlist = ((HlsManifest) manifest).mediaPlaylist;
-            targetDurationMls = C.usToMs(playlist.targetDurationUs);
+    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
+        if (manifest is HlsManifest) {
+            val playlist = manifest.mediaPlaylist
+            targetDurationMls = C.usToMs(playlist.targetDurationUs)
             // From the current playing frame to end time of chunk
-            long timeToEndChunk = getDuration() - getCurrentPosition();
-            long extProgramDateTime = ConvertUtils.getProgramDateTime(playlist, timeToEndChunk);
-            if (extProgramDateTime == C.INDEX_UNSET) {
-                hideTextLiveStreamLatency();
-                return;
+            val timeToEndChunk = duration - currentPosition
+            val extProgramDateTime = getProgramDateTime(
+                playlist = playlist,
+                timeToEndChunk = timeToEndChunk
+            )
+            if (extProgramDateTime == C.INDEX_UNSET.toLong()) {
+                hideTextLiveStreamLatency()
+                return
             }
-            long elapsedTime = SystemClock.elapsedRealtime() - UZPlayer.getElapsedTime();
-            long currentTime = System.currentTimeMillis() + elapsedTime;
-            long latency = currentTime - extProgramDateTime;
-            updateLiveStreamLatency(latency);
-        } else
-            hideTextLiveStreamLatency();
+            val elapsedTime = SystemClock.elapsedRealtime() - elapsedTime
+            val currentTime = System.currentTimeMillis() + elapsedTime
+            val latency = currentTime - extProgramDateTime
+            updateLiveStreamLatency(latency)
+        } else {
+            hideTextLiveStreamLatency()
+        }
     }
 
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-        hideProgress();
-        handleError(ErrorUtils.exceptionPlayback());
-        if (ConnectivityUtils.isConnected(getContext()))
-            tryNextLinkPlay();
-        else
-            pause();
+    override fun onPlayerError(error: ExoPlaybackException?) {
+        hideProgress()
+        handleError(ErrorUtils.exceptionPlayback())
+        if (ConnectivityUtils.isConnected(context)) {
+            tryNextLinkPlay()
+        } else {
+            pause()
+        }
     }
 
-    @Override
-    public void onPlayerEnded() {
-        if (isPlaying()) {
-            setKeepScreenOn(false);
-            isOnPlayerEnded = true;
-            if (isPlayPlaylistFolder() && isAutoSwitchItemPlaylistFolder) {
-                hideController();
-                autoSwitchNextVideo();
+    override fun onPlayerEnded() {
+        if (isPlaying) {
+            keepScreenOn = false
+            isOnPlayerEnded = true
+            if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
+                hideController()
+                autoSwitchNextVideo()
             } else {
-                updateUIEndScreen();
+                updateUIEndScreen()
             }
         }
-        hideProgress();
+        hideProgress()
     }
 
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        switch (playbackState) {
-            case Player.STATE_BUFFERING: // more data needs to load
-            case Player.STATE_IDLE: // nothing to play media
-                showProgress();
-                break;
-            case Player.STATE_ENDED:
-                onPlayerEnded();
-                break;
-            case Player.STATE_READY: // can start playback
-                hideProgress();
-                updateTvDuration();
-                updateTimeBarWithTimeShiftStatus();
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        when (playbackState) {
+            Player.STATE_BUFFERING, Player.STATE_IDLE -> {
+                showProgress()
+            }
+            Player.STATE_ENDED -> {
+                onPlayerEnded()
+            }
+            Player.STATE_READY -> {
+                hideProgress()
+                updateTvDuration()
+                updateTimeBarWithTimeShiftStatus()
                 if (playWhenReady) {
-                    // media actually playing
-                    hideLayoutMsg();
-                    resetCountTryLinkPlayError();
-                    if (timeBar != null)
-                        timeBar.hidePreview();
+                    hideLayoutMsg()
+                    resetCountTryLinkPlayError()
+                    timeBar?.hidePreview()
                 }
-                ((Activity) getContext()).setResult(Activity.RESULT_OK);
+                if (context is Activity) {
+                    (context as Activity).setResult(Activity.RESULT_OK)
+                }
+
                 if (!isFirstStateReady) {
-                    removeVideoCover(false);
-                    isFirstStateReady = true;
+                    removeVideoCover(isFromHandleError = false)
+                    isFirstStateReady = true
                 }
-                break;
+            }
         }
     }
 
-    private void autoSwitchNextVideo() {
-        playPlaylistPosition(UZData.INSTANCE.getCurrentPositionOfPlayList() + 1);
+    private fun autoSwitchNextVideo() {
+        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() + 1)
     }
 
-    private void autoSwitchPreviousLinkVideo() {
-        playPlaylistPosition(UZData.INSTANCE.getCurrentPositionOfPlayList() - 1);
+    private fun autoSwitchPreviousLinkVideo() {
+        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() - 1)
     }
 
-    private void handleClickPlaylistFolder() {
-        UZPlaylistFolderDialog uzPlaylistFolderDlg = new UZPlaylistFolderDialog(
-                getContext(),
-                UZData.INSTANCE.getPlayList(),
-                UZData.INSTANCE.getCurrentPositionOfPlayList(),
-                new CallbackPlaylistFolder() {
-                    @Override
-                    public void onDismiss() {
-
+    private fun handleClickPlaylistFolder() {
+        UZData.getPlayList()?.let { playList ->
+            val uzPlaylistFolderDlg = UZPlaylistFolderDialog(
+                mContext = context,
+                playList = playList,
+                currentPositionOfDataList = UZData.getCurrentPositionOfPlayList(),
+                callbackPlaylistFolder = object : CallbackPlaylistFolder {
+                    override fun onDismiss() {}
+                    override fun onFocusChange(playback: UZPlayback, position: Int) {}
+                    override fun onClickItem(playback: UZPlayback, position: Int) {
+                        playPlaylistPosition(position)
                     }
-
-                    @Override
-                    public void onFocusChange(@NonNull UZPlayback playback, int position) {
-
-                    }
-
-                    @Override
-                    public void onClickItem(UZPlayback playback, int position) {
-                        playPlaylistPosition(position);
-                    }
-                });
-        UZViewUtils.showDialog(uzPlaylistFolderDlg);
+                })
+            UZViewUtils.showDialog(uzPlaylistFolderDlg)
+        }
     }
 
-    private void handleClickSkipNext() {
-        isOnPlayerEnded = false;
-        updateUIEndScreen();
-        autoSwitchNextVideo();
+    private fun handleClickSkipNext() {
+        isOnPlayerEnded = false
+        updateUIEndScreen()
+        autoSwitchNextVideo()
     }
 
-    private void handleClickSkipPrevious() {
-        isOnPlayerEnded = false;
-        updateUIEndScreen();
-        autoSwitchPreviousLinkVideo();
+    private fun handleClickSkipPrevious() {
+        isOnPlayerEnded = false
+        updateUIEndScreen()
+        autoSwitchPreviousLinkVideo()
     }
 
-    public void replay() {
-        if (playerManager == null) return;
+    fun replay() {
+        if (playerManager == null) {
+            return
+        }
         //TODO Chỗ này đáng lẽ chỉ clear value của tracking khi đảm bảo rằng seekTo(0) true
-        boolean result = playerManager.seekTo(0);
-        if (result) {
-            isSetFirstRequestFocusDone = false;
-            isOnPlayerEnded = false;
-            updateUIEndScreen();
-            handlePlayPlayListFolderUI();
+        val result = playerManager?.seekTo(0)
+        if (result == true) {
+            isSetFirstRequestFocusDone = false
+            isOnPlayerEnded = false
+            updateUIEndScreen()
+            handlePlayPlayListFolderUI()
         }
-        if (isCastingChromecast)
-            replayChromeCast();
+        if (isCastingChromecast) {
+            replayChromeCast()
+        }
     }
 
-    private void replayChromeCast() {
-        lastCurrentPosition = 0;
-        handleConnectedChromecast();
-        showController();
+    private fun replayChromeCast() {
+        lastCurrentPosition = 0
+        handleConnectedChromecast()
+        showController()
     }
 
     /*Nếu đang casting thì button này sẽ handle volume on/off ở cast player
      * Ngược lại, sẽ handle volume on/off ở exo player*/
-    private void handleClickBtVolume() {
+    private fun handleClickBtVolume() {
         if (isCastingChromecast) {
-            Casty casty = UZData.INSTANCE.getCasty();
+            val casty = UZData.casty
             if (casty != null) {
-                boolean isMute = casty.toggleMuteVolume();
-                if (ibVolumeIcon != null)
-                    ibVolumeIcon.setImageResource(isMute ? R.drawable.ic_volume_off_white_24 : R.drawable.ic_volume_up_white_24);
+                val isMute = casty.toggleMuteVolume()
+                ibVolume?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
             }
         }
-        toggleVolumeMute();
+        toggleVolumeMute()
     }
 
-    private void handleClickBackScreen() {
+    private fun handleClickBackScreen() {
         if (isLandscape) {
-            toggleFullscreen();
+            toggleFullscreen()
         } else {
-            ((Activity) getContext()).onBackPressed();
+            if (context is Activity) {
+                (context as Activity).onBackPressed()
+            }
         }
     }
 
-    private void handleClickHearing() {
-        View view = DebugUtils.getAudioButton(debugRootView);
-        if (view != null)
-            view.performClick();
+    private fun handleClickHearing() {
+        val view = DebugUtils.getAudioButton(layoutControls)
+        view?.performClick()
     }
 
-    public void setDefaultSeekValue(int mls) {
-        defaultSeekValue = mls;
+    fun setDefaultSeekValue(mls: Int) {
+        defaultSeekValue = mls.toLong()
     }
 
-    /**
-     * Seek tu vi tri hien tai cong them bao nhieu mls
-     */
-    public void seekToForward(int mls) {
-        setDefaultSeekValue(mls);
-        ibFfwdIcon.performClick();
+    fun seekToForward(mls: Int) {
+        setDefaultSeekValue(mls)
+        ibFfwd?.performClick()
     }
 
-    public void seekToForward() {
-        if (!isLIVE())
-            ibFfwdIcon.performClick();
+    fun seekToForward() {
+        if (!isLIVE) {
+            ibFfwd?.performClick()
+        }
     }
 
-    /**
-     * Seek tu vi tri hien tai tru di bao nhieu mls
-     */
-    public void seekToBackward(int mls) {
-        setDefaultSeekValue(mls);
-        ibRewIcon.performClick();
+    fun seekToBackward(mls: Int) {
+        setDefaultSeekValue(mls)
+        ibRew?.performClick()
     }
 
-    public void seekToBackward() {
-        ibRewIcon.performClick();
+    fun seekToBackward() {
+        ibRew?.performClick()
     }
 
-    //chi toggle show hide controller khi video da vao dc onStateReadyFirst();
-    public void toggleShowHideController() {
-        if (playerView != null)
-            playerView.toggleShowHideController();
+    fun toggleShowHideController() {
+        playerView?.toggleShowHideController()
     }
 
-    public void togglePlayPause() {
-        if (getPlayer() == null) return;
-        if (getPlayer().getPlayWhenReady())
-            pause();
-        else
-            resume();
+    fun togglePlayPause() {
+        if (player == null) {
+            return
+        }
+        if (player?.playWhenReady == true) {
+            pause()
+        } else {
+            resume()
+        }
     }
 
-    public void toggleVolume() {
-        ibVolumeIcon.performClick();
+    fun toggleVolume() {
+        ibVolume?.performClick()
     }
 
-    public void toggleFullscreen() {
-        UZViewUtils.toggleScreenOrientation((Activity) getContext());
+    fun toggleFullscreen() {
+        if (context is Activity) {
+            UZViewUtils.toggleScreenOrientation(activity = (context as Activity))
+        }
     }
 
-    public void showSpeed() {
-        if (getPlayer() == null) return;
-        final UZSpeedDialog uzDlgSpeed = new UZSpeedDialog(getContext(), getPlayer().getPlaybackParameters().speed,
-                speed -> {
-                    if (speed != null)
-                        setSpeed(speed.getValue());
-                });
-        UZViewUtils.showDialog(uzDlgSpeed);
-    }
-
-    /**
-     * Bo video hien tai va choi tiep theo 1 video trong playlist/folder
-     */
-    public void skipNextVideo() {
-        handleClickSkipNext();
+    fun showSpeed() {
+        player?.let { p ->
+            val uzDlgSpeed = UZSpeedDialog(
+                context = context,
+                currentSpeed = p.playbackParameters.speed,
+                callback = object : Callback {
+                    override fun onSelectItem(speed: Speed) {
+                        setSpeed(speed = speed.value)
+                    }
+                })
+            UZViewUtils.showDialog(uzDlgSpeed)
+        }
     }
 
     /**
-     * Bo video hien tai va choi lui lai 1 video trong playlist/folder
+     * Bo video hien tai va choi tiep theo mot video trong playlist/folder
      */
-    public void skipPreviousVideo() {
-        handleClickSkipPrevious();
+    fun skipNextVideo() {
+        handleClickSkipNext()
     }
 
-    @Override
-    public UZPlayerView getPlayerView() {
-        return playerView;
+    /**
+     * Bo video hien tai va choi lui lai mot video trong playlist/folder
+     */
+    fun skipPreviousVideo() {
+        handleClickSkipPrevious()
     }
 
-    public boolean isLIVE() {
-        return playerManager != null && playerManager.isLIVE();
-    }
+    val isLIVE: Boolean
+        get() = playerManager != null && playerManager?.isLIVE == true
 
-    public void setLiveViewers(int viewers) {
-        if (tvLiveView != null && !alwaysHideLiveViewers) {
+    fun setLiveViewers(viewers: Int) {
+        if (!alwaysHideLiveViewers) {
             if (viewers == 1) {
-                tvLiveView.setText(getResources().getString(R.string.oneViewer));
+                tvLiveView?.text = resources.getString(R.string.oneViewer)
             } else {
-                tvLiveView.setText(getResources().getString(R.string.numberOfViewers, viewers));
+                tvLiveView?.text = resources.getString(R.string.numberOfViewers, viewers)
             }
         }
     }
 
-    public float getVolume() {
-        return (playerManager == null) ? -1 : playerManager.getVolume();
-    }
-
-    public void setVolume(float volume) {
-        if (playerManager == null) return;
-        playerManager.setVolume(volume);
-        if (ibVolumeIcon != null) {
-            if (playerManager.getVolume() != 0f) {
-                ibVolumeIcon.setSrcDrawableEnabled();
-            } else {
-                ibVolumeIcon.setSrcDrawableDisabledCanTouch();
-            }
-        }
-    }
-
-    private float volumeToggle;
-
-    public void toggleVolumeMute() {
-        if (playerManager == null) return;
-        if (playerManager.getVolume() == 0f) {
-            setVolume(volumeToggle);
-            ibVolumeIcon.setSrcDrawableEnabled();
-        } else {
-            volumeToggle = getVolume();
-            setVolume(0f);
-            ibVolumeIcon.setSrcDrawableDisabledCanTouch();
-        }
-    }
-
-    public void setSpeed(float speed) {
-        if (isLIVE())
-            throw new IllegalArgumentException(getResources().getString(R.string.error_speed_live_content));
-        if (speed > 3 || speed < -3)
-            throw new IllegalArgumentException(getResources().getString(R.string.error_speed_illegal));
-        PlaybackParameters playbackParameters = new PlaybackParameters(speed);
-        if (getPlayer() != null)
-            getPlayer().setPlaybackParameters(playbackParameters);
-    }
-
-    //=============================================================================================START UI
-    private void findViews() {
-        rlMsg = findViewById(R.id.rlMsg);
-        rlMsg.setOnClickListener(this);
-        TextView tvMsg = findViewById(R.id.tvMsg);
-        if (tvMsg != null)
-            UZViewUtils.setTextShadow(tvMsg, Color.BLACK);
-        ivVideoCover = findViewById(R.id.ivCover);
-        llTop = findViewById(R.id.ll_top);
-        progressBar = findViewById(R.id.pb);
-        if (progressBar != null)
-            UZViewUtils.setColorProgressBar(progressBar, Color.WHITE);
-        updateUIPositionOfProgressBar();
-        playerView.setOnDoubleTap(new UZPlayerView.OnDoubleTap() {
-            @Override
-            public void onDoubleTapFinished() {
-
-            }
-
-            @Override
-            public void onDoubleTapProgressDown(float posX, float posY) {
-
-            }
-
-            @Override
-            public void onDoubleTapStarted(float posX, float posY) {
-
-            }
-
-            @Override
-            public void onDoubleTapProgressUp(float posX, float posY) {
-                float halfScreen = UZViewUtils.getScreenWidth() / 2.0f;
-                if (posX - 60.0f > halfScreen) {
-                    seekToForward();
-                } else if (posX + 60.0f < halfScreen) {
-                    seekToBackward();
-                }
-            }
-        });
-        timeBar = playerView.findViewById(R.id.exo_progress);
-        previewFrameLayout = playerView.findViewById(R.id.preview_frame_layout);
-        if (timeBar != null) {
-            if (timeBar.getTag() == null) {
-                timeBarAtBottom = false;
-                playerView.setVisibility(VISIBLE);
-            } else {
-                if (timeBar.getTag().toString().equals(getResources().getString(R.string.use_bottom_uz_timebar))) {
-                    timeBarAtBottom = true;
-                    setMarginDependOnUZTimeBar(playerView.getVideoSurfaceView());
+    var volume: Float
+        get() = playerManager?.volume ?: -1F
+        set(volume) {
+            playerManager?.let { pm ->
+                pm.volume = volume
+                if (pm.volume != 0f) {
+                    ibVolume?.setSrcDrawableEnabled()
                 } else {
-                    timeBarAtBottom = false;
-                    playerView.setVisibility(VISIBLE);
+                    ibVolume?.setSrcDrawableDisabledCanTouch()
                 }
             }
-            timeBar.addOnPreviewChangeListener(this);
-            timeBar.setOnFocusChangeListener(this);
-        } else
-            playerView.setVisibility(VISIBLE);
-        ivThumbnail = playerView.findViewById(R.id.image_view_thumbnail);
-        tvPosition = playerView.findViewById(R.id.uz_position);
-        if (tvPosition != null) {
-            tvPosition.setText(StringUtils.convertMlsecondsToHMmSs(0));
         }
-        tvDuration = playerView.findViewById(R.id.uz_duration);
-        if (tvDuration != null) {
-            tvDuration.setText("-:-");
+    private var volumeToggle = 0f
+
+    fun toggleVolumeMute() {
+        playerManager?.let { pm ->
+            if (pm.volume == 0f) {
+                volume = volumeToggle
+                ibVolume?.setSrcDrawableEnabled()
+            } else {
+                volumeToggle = volume
+                volume = 0f
+                ibVolume?.setSrcDrawableDisabledCanTouch()
+            }
         }
-        ibFullscreenIcon = playerView.findViewById(R.id.exo_fullscreen_toggle_icon);
-        tvTitle = playerView.findViewById(R.id.tv_title);
-        ibPauseIcon = playerView.findViewById(R.id.exo_pause);
-        ibPlayIcon = playerView.findViewById(R.id.exo_play);
-        //If auto start true, show button play and gone button pause
-        UZViewUtils.goneViews(ibPlayIcon);
-        ibReplayIcon = playerView.findViewById(R.id.exo_replay);
-        ibRewIcon = playerView.findViewById(R.id.exo_rew);
-        if (ibRewIcon != null)
-            ibRewIcon.setSrcDrawableDisabled();
-        ibFfwdIcon = playerView.findViewById(R.id.exo_ffwd);
-        ibBackScreenIcon = playerView.findViewById(R.id.exo_back_screen);
-        ibVolumeIcon = playerView.findViewById(R.id.exo_volume);
-        ibSettingIcon = playerView.findViewById(R.id.exo_setting);
-        ibPlaylistFolderIcon = playerView.findViewById(R.id.exo_playlist_folder);
-        ibHearingIcon = playerView.findViewById(R.id.exo_hearing);
-        pipIcon = playerView.findViewById(R.id.exo_picture_in_picture);
-        ibSkipNextIcon = playerView.findViewById(R.id.exo_skip_next);
-        ibSkipPreviousIcon = playerView.findViewById(R.id.exo_skip_previous);
-        ibSpeedIcon = playerView.findViewById(R.id.exo_speed);
-        if (!UZAppUtils.hasSupportPIP(getContext()) || UZData.INSTANCE.getUseUZDragView())
-            UZViewUtils.goneViews(pipIcon);
-        LinearLayout debugLayout = findViewById(R.id.layoutDebug);
-        debugRootView = findViewById(R.id.layoutControls);
-        if (BuildConfig.DEBUG) {
-            debugLayout.setVisibility(View.VISIBLE);
-        } else {
-            debugLayout.setVisibility(View.GONE);
-        }
-        rlLiveInfo = playerView.findViewById(R.id.rl_live_info);
-        tvLiveStatus = playerView.findViewById(R.id.tv_live);
-        tvLiveView = playerView.findViewById(R.id.tv_live_view);
-        tvLiveTime = playerView.findViewById(R.id.tv_live_time);
-        ivLiveView = playerView.findViewById(R.id.iv_live_view);
-        ivLiveTime = playerView.findViewById(R.id.iv_live_time);
-        UZViewUtils.setFocusableViews(false, ivLiveView, ivLiveTime);
-        RelativeLayout rlEndScreen = playerView.findViewById(R.id.rl_end_screen);
-        UZViewUtils.goneViews(rlEndScreen);
-        tvEndScreenMsg = playerView.findViewById(R.id.tv_end_screen_msg);
-        if (tvEndScreenMsg != null) {
-            UZViewUtils.setTextShadow(tvEndScreenMsg, Color.WHITE);
-            tvEndScreenMsg.setOnClickListener(this);
-        }
-        setEventForViews();
-        //set visibility first, so scared if removed
-        setVisibilityOfPlaylistFolderController(GONE);
-        statsForNerdsView = findViewById(R.id.statsForNerds);
     }
 
-    private void setEventForViews() {
-        setClickAndFocusEventForViews(ibFullscreenIcon, ibBackScreenIcon, ibVolumeIcon, ibSettingIcon,
-                ibPlaylistFolderIcon, ibHearingIcon, pipIcon, ibFfwdIcon,
-                ibRewIcon, ibPlayIcon, ibPauseIcon, ibReplayIcon, ibSkipNextIcon, ibSkipPreviousIcon, ibSpeedIcon, tvLiveStatus);
+    fun setSpeed(speed: Float) {
+        require(!isLIVE) {
+            resources.getString(R.string.error_speed_live_content)
+        }
+        require(!(speed > 3 || speed < -3)) {
+            resources.getString(R.string.error_speed_illegal)
+        }
+        val playbackParameters = PlaybackParameters(speed)
+        player?.playbackParameters = playbackParameters
     }
 
-    private void setClickAndFocusEventForViews(View... views) {
-        for (View v : views) {
-            if (v != null) {
-                v.setOnClickListener(this);
-                v.setOnFocusChangeListener(this);
+    private fun setEventForViews() {
+        setClickAndFocusEventForViews(
+            ibFullscreen,
+            ibBackScreen,
+            ibVolume,
+            ibSetting,
+            ibPlaylistFolder,
+            ibHearing,
+            ibPip,
+            ibFfwd,
+            ibRew,
+            ibPlayIcon,
+            ibPauseIcon,
+            ibReplay,
+            ibSkipNext,
+            ibSkipPrevious,
+            ibSpeed,
+            tvLiveStatus
+        )
+    }
+
+    private fun setClickAndFocusEventForViews(vararg views: View?) {
+        for (v in views) {
+            v?.let {
+                it.setOnClickListener(this)
+                it.onFocusChangeListener = this
             }
         }
     }
 
     //If auto start true, show button play and gone button pause
     //if not, gone button play and show button pause
-    private void updateUIButtonPlayPauseDependOnIsAutoStart() {
+    private fun updateUIButtonPlayPauseDependOnIsAutoStart() {
         if (isAutoStart) {
-            UZViewUtils.goneViews(ibPlayIcon);
-            if (ibPauseIcon != null) {
-                UZViewUtils.visibleViews(ibPauseIcon);
+            UZViewUtils.goneViews(ibPlayIcon)
+            ibPauseIcon?.let { ib ->
+                UZViewUtils.visibleViews(ib)
                 if (!isSetFirstRequestFocusDone) {
-                    ibPauseIcon.requestFocus();//set first request focus if using player for TV
-                    isSetFirstRequestFocusDone = true;
+                    ib.requestFocus() //set first request focus if using player for TV
+                    isSetFirstRequestFocusDone = true
                 }
             }
         } else {
-            if (isPlaying()) {
-                UZViewUtils.goneViews(ibPlayIcon);
-                if (ibPauseIcon != null) {
-                    UZViewUtils.visibleViews(ibPauseIcon);
+            if (isPlaying) {
+                UZViewUtils.goneViews(ibPlayIcon)
+                ibPauseIcon?.let { ib ->
+                    UZViewUtils.visibleViews(ib)
                     if (!isSetFirstRequestFocusDone) {
-                        ibPauseIcon.requestFocus();//set first request focus if using player for TV
-                        isSetFirstRequestFocusDone = true;
+                        ib.requestFocus() //set first request focus if using player for TV
+                        isSetFirstRequestFocusDone = true
                     }
                 }
             } else {
-                if (ibPlayIcon != null) {
-                    UZViewUtils.visibleViews(ibPlayIcon);
+                ibPlayIcon?.let { ib ->
+                    UZViewUtils.visibleViews(ib)
                     if (!isSetFirstRequestFocusDone) {
-                        ibPlayIcon.requestFocus();//set first request focus if using player for TV
-                        isSetFirstRequestFocusDone = true;
+                        ib.requestFocus() //set first request focus if using player for TV
+                        isSetFirstRequestFocusDone = true
                     }
                 }
-                UZViewUtils.goneViews(ibPauseIcon);
+                UZViewUtils.goneViews(ibPauseIcon)
             }
         }
     }
 
-    private void removeVideoCover(boolean isFromHandleError) {
-        if (!isFromHandleError)
-            onStateReadyFirst();
-        if (ivVideoCover.getVisibility() != GONE) {
-            ivVideoCover.setVisibility(GONE);
-            ivVideoCover.invalidate();
-            if (isLIVE()) {
-                if (tvLiveTime != null)
-                    tvLiveTime.setText(HYPHEN);
-                if (tvLiveView != null)
-                    tvLiveView.setText(HYPHEN);
+    private fun removeVideoCover(isFromHandleError: Boolean) {
+        if (!isFromHandleError) {
+            onStateReadyFirst()
+        }
+        if (ivCover.visibility != View.GONE) {
+            ivCover.visibility = View.GONE
+            ivCover.invalidate()
+            if (isLIVE) {
+                tvLiveTime?.text = HYPHEN
             }
-        } else
+        } else {
             //goi change skin realtime thi no ko vao if nen ko update tvDuration dc
-            updateTvDuration();
-    }
-
-    private void updateUIEachSkin() {
-        int curSkinLayoutId = UZData.INSTANCE.getUzPlayerSkinLayoutId();
-        if (curSkinLayoutId == R.layout.uzplayer_skin_2 || curSkinLayoutId == R.layout.uzplayer_skin_3) {
-            if (ibPlayIcon != null) {
-                ibPlayIcon.setRatioLand(7);
-                ibPlayIcon.setRatioPort(5);
-            }
-            if (ibPauseIcon != null) {
-                ibPauseIcon.setRatioLand(7);
-                ibPauseIcon.setRatioPort(5);
-            }
-            if (ibReplayIcon != null) {
-                ibReplayIcon.setRatioLand(7);
-                ibReplayIcon.setRatioPort(5);
-            }
+            updateTvDuration()
         }
     }
 
-    private void updateUIPositionOfProgressBar() {
-        if (progressBar == null)
-            return;
-        postDelayed(() -> {
-            int marginL = playerView.getMeasuredWidth() / 2 - progressBar.getMeasuredWidth() / 2;
-            int marginT = playerView.getMeasuredHeight() / 2 - progressBar.getMeasuredHeight() / 2;
-            UZViewUtils.setMarginPx(progressBar, marginL, marginT, 0, 0);
-        }, 10);
+    private fun updateUIEachSkin() {
+        val curSkinLayoutId = UZData.uzPlayerSkinLayoutId
+        if (curSkinLayoutId == R.layout.uzplayer_skin_2 || curSkinLayoutId == R.layout.uzplayer_skin_3) {
+
+            ibPlayIcon?.setRatioLand(7)
+            ibPlayIcon?.setRatioPort(5)
+
+            ibPauseIcon?.setRatioLand(7)
+            ibPauseIcon?.setRatioPort(5)
+
+            ibReplay?.setRatioLand(7)
+            ibReplay?.setRatioPort(5)
+        }
+    }
+
+    private fun updateUIPositionOfProgressBar() {
+        playerView?.let { pv ->
+            postDelayed({
+                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
+                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
+                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
+            }, 10)
+        }
     }
 
     /*
      ** change skin of player (realtime)
      * return true if success
      */
-    public boolean changeSkin(@LayoutRes int skinId) {
-        if (playerManager == null) return false;
-        if (UZData.INSTANCE.getUseUZDragView())
-            throw new IllegalArgumentException(getResources().getString(R.string.error_change_skin_with_uzdragview));
-        if (playerManager.isPlayingAd()) {
-            notifyError(ErrorUtils.exceptionChangeSkin());
-            return false;
+    fun changeSkin(@LayoutRes skinId: Int): Boolean {
+        if (playerManager == null) {
+            return false
         }
-        UZData.INSTANCE.setUzPlayerSkinLayoutId(skinId);
-        isRefreshFromChangeSkin = true;
-        isCalledFromChangeSkin = true;
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        require(!UZData.useUZDragView) {
+            { resources.getString(R.string.error_change_skin_with_uzdragview) }
+        }
+        if (playerManager?.isPlayingAd == true) {
+            notifyError(ErrorUtils.exceptionChangeSkin())
+            return false
+        }
+        UZData.uzPlayerSkinLayoutId = skinId
+        isRefreshFromChangeSkin = true
+        isCalledFromChangeSkin = true
+
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater != null) {
-            rootView.removeView(playerView);
-            rootView.requestLayout();
-            playerView = (UZPlayerView) inflater.inflate(skinId, null);
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            lp.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-            playerView.setLayoutParams(lp);
-            rootView.addView(playerView);
-            rootView.requestLayout();
-            findViews();
-            resizeContainerView();
-            updateUIEachSkin();
-            updateUIDependOnLiveStream();
-            setMarginPreviewTimeBar();
-            setMarginRlLiveInfo();
+            layoutRootView.removeView(playerView)
+            layoutRootView.requestLayout()
+            playerView = inflater.inflate(skinId, null) as UZPlayerView
+
+            val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            layoutParams.addRule(CENTER_IN_PARENT, TRUE)
+            playerView?.let {
+                it.layoutParams = layoutParams
+                layoutRootView.addView(it)
+            }
+            layoutRootView.requestLayout()
+            findViews()
+
+            resizeContainerView()
+            updateUIEachSkin()
+            updateUIDependOnLiveStream()
+            setMarginPreviewTimeBar()
+            setMarginRlLiveInfo()
+
             //setup chromecast
-            if (UZAppUtils.checkChromeCastAvailable())
-                setupChromeCast();
-            currentPositionBeforeChangeSkin = getCurrentPosition();
-            releasePlayerManager();
-            setTitle();
-            checkToSetUpResource();
-            updateUISizeThumbnail();
-            if (playerCallback != null)
-                playerCallback.onSkinChange();
-            return true;
+            if (UZAppUtils.checkChromeCastAvailable()) {
+                setupChromeCast()
+            }
+            currentPositionBeforeChangeSkin = currentPosition
+            releasePlayerManager()
+            setTitle()
+            checkToSetUpResource()
+            updateUISizeThumbnail()
+            playerCallback?.onSkinChange()
+
+            return true
         }
-        return false;
-
+        return false
     }
 
-    private void setupChromeCast() {
-        uzChromeCast = new UZChromeCast();
-        uzChromeCast.setUZChromeCastListener(new UZChromeCastListener() {
-            @Override
-            public void onConnected() {
-                lastCurrentPosition = getCurrentPosition();
-                handleConnectedChromecast();
+    private fun setupChromeCast() {
+        uzChromeCast = UZChromeCast()
+        uzChromeCast?.setUZChromeCastListener(object : UZChromeCastListener {
+            override fun onConnected() {
+                lastCurrentPosition = currentPosition
+                handleConnectedChromecast()
             }
 
-            @Override
-            public void onDisconnected() {
-                handleDisconnectedChromecast();
+            override fun onDisconnected() {
+                handleDisconnectedChromecast()
             }
 
-            @Override
-            public void addUIChromeCast() {
-                if (llTop != null)
-                    llTop.addView(uzChromeCast.getMediaRouteButton());
-                addUIChromecastLayer();
+            override fun addUIChromeCast() {
+                uzChromeCast?.let {
+                    llTop?.addView(it.mediaRouteButton)
+                }
+                addUIChromecastLayer()
             }
-        });
-        uzChromeCast.setupChromeCast(getContext());
+        })
+        uzChromeCast?.setupChromeCast(context)
     }
 
-    private void updateTvDuration() {
-        if (tvDuration != null)
-            if (isLIVE())
-                tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(0));
-            else
-                tvDuration.setText(StringUtils.convertMlsecondsToHMmSs(getDuration()));
-    }
-
-    private void setTextPosition(long currentMls) {
-        if (tvPosition == null) return;
-        if (isLIVE()) {
-            long duration = getDuration();
-            long past = duration - currentMls;
-            tvPosition.setText(String.format("%s%s", HYPHEN, StringUtils.convertMlsecondsToHMmSs(past)));
-        } else
-            tvPosition.setText(StringUtils.convertMlsecondsToHMmSs(currentMls));
-    }
-
-
-    private void updateUIIbRewIconDependOnProgress(long currentMls, boolean isCalledFromUZTimeBarEvent) {
-        if (isCalledFromUZTimeBarEvent)
-            setTextPosition(currentMls);
-        else {
-            if (!isOnPreview) //uzTimeBar is displaying
-                setTextPosition(currentMls);
-            return;
+    private fun updateTvDuration() {
+        if (isLIVE) {
+            tvDuration?.text = StringUtils.convertMlsecondsToHMmSs(mls = 0)
+        } else {
+            tvDuration?.text = StringUtils.convertMlsecondsToHMmSs(mls = duration)
         }
-        if (isLIVE()) return;
-        if (ibRewIcon != null && ibFfwdIcon != null) {
-            if (currentMls == 0) {
-                if (ibRewIcon.isSetSrcDrawableEnabled())
-                    ibRewIcon.setSrcDrawableDisabled();
-                if (!ibFfwdIcon.isSetSrcDrawableEnabled())
-                    ibFfwdIcon.setSrcDrawableEnabled();
-            } else if (currentMls == getDuration()) {
-                if (!ibRewIcon.isSetSrcDrawableEnabled())
-                    ibRewIcon.setSrcDrawableEnabled();
-                if (ibFfwdIcon.isSetSrcDrawableEnabled())
-                    ibFfwdIcon.setSrcDrawableDisabled();
-            } else {
-                if (!ibRewIcon.isSetSrcDrawableEnabled())
-                    ibRewIcon.setSrcDrawableEnabled();
-                if (!ibFfwdIcon.isSetSrcDrawableEnabled())
-                    ibFfwdIcon.setSrcDrawableEnabled();
+    }
+
+    private fun setTextPosition(currentMls: Long) {
+        if (isLIVE) {
+            val duration = duration
+            val past = duration - currentMls
+            tvPosition?.text = String.format(
+                "%s%s",
+                HYPHEN,
+                StringUtils.convertMlsecondsToHMmSs(past)
+            )
+        } else {
+            tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(currentMls)
+        }
+    }
+
+    private fun updateUIIbRewIconDependOnProgress(
+        currentMls: Long,
+        isCalledFromUZTimeBarEvent: Boolean
+    ) {
+        if (isCalledFromUZTimeBarEvent) {
+            setTextPosition(currentMls)
+        } else {
+            if (!isOnPreview) {
+                //uzTimeBar is displaying
+                setTextPosition(currentMls)
+            }
+            return
+        }
+        if (isLIVE) {
+            return
+        }
+        ibRew?.let { r ->
+            ibFfwd?.let { f ->
+                if (currentMls == 0L) {
+                    if (r.isSetSrcDrawableEnabled) {
+                        r.setSrcDrawableDisabled()
+                    }
+                    if (!f.isSetSrcDrawableEnabled) {
+                        f.setSrcDrawableEnabled()
+                    }
+                } else if (currentMls == duration) {
+                    if (!r.isSetSrcDrawableEnabled) {
+                        r.setSrcDrawableEnabled()
+                    }
+                    if (f.isSetSrcDrawableEnabled) {
+                        f.setSrcDrawableDisabled()
+                    }
+                } else {
+                    if (!r.isSetSrcDrawableEnabled) {
+                        r.setSrcDrawableEnabled()
+                    }
+                    if (!f.isSetSrcDrawableEnabled) {
+                        f.setSrcDrawableEnabled()
+                    }
+                }
             }
         }
     }
 
     //FOR TV
-    public void updateUIFocusChange(@NonNull View view, boolean isFocus) {
-        if (view instanceof UZImageButton) {
-            UZViewUtils.updateUIFocusChange(view, isFocus, R.drawable.bkg_tv_has_focus, R.drawable.bkg_tv_no_focus);
-            ((UZImageButton) view).clearColorFilter();
-        } else if (view instanceof Button) {
-            UZViewUtils.updateUIFocusChange(view, isFocus, R.drawable.bkg_tv_has_focus, R.drawable.bkg_tv_no_focus);
-        } else if (view instanceof UZPreviewTimeBar) {
-            UZViewUtils.updateUIFocusChange(view, isFocus, R.drawable.bkg_tv_has_focus_uz_timebar, R.drawable.bkg_tv_no_focus_uz_timebar);
-        }
-    }
-
-    private void handleFirstViewHasFocus() {
-        if (firstViewHasFocus != null && uzTVFocusChangeListener != null) {
-            uzTVFocusChangeListener.onFocusChange(firstViewHasFocus, true);
-            firstViewHasFocus = null;
-        }
-    }
-
-    private void updateUISizeThumbnail() {
-        int screenWidth = UZViewUtils.getScreenWidth();
-        int widthIv = isLandscape ? screenWidth / 4 : screenWidth / 5;
-        if (previewFrameLayout != null) {
-            RelativeLayout.LayoutParams layoutParams =
-                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.width = widthIv;
-            layoutParams.height = (int) (widthIv * Constants.RATIO_9_16);
-            previewFrameLayout.setLayoutParams(layoutParams);
-            previewFrameLayout.requestLayout();
-        }
-    }
-
-    private void setMarginPreviewTimeBar() {
-        if (timeBar != null)
-            if (isLandscape)
-                UZViewUtils.setMarginDimen(timeBar, 5, 0, 5, 0);
-            else
-                UZViewUtils.setMarginDimen(timeBar, 0, 0, 0, 0);
-    }
-
-    private void setMarginRlLiveInfo() {
-        if (rlLiveInfo != null)
-            if (isLandscape)
-                UZViewUtils.setMarginDimen(rlLiveInfo, 50, 0, 50, 0);
-            else
-                UZViewUtils.setMarginDimen(rlLiveInfo, 5, 0, 5, 0);
-    }
-
-    private void setTitle() {
-        if (tvTitle != null)
-            tvTitle.setText(UZData.INSTANCE.getEntityName());
-    }
-
-    public void setAlwaysHideLiveViewers(boolean hide) {
-        this.alwaysHideLiveViewers = hide;
-    }
-
-    /**
-     * ======== END UI =========
-     */
-
-    private void updateUIDependOnLiveStream() {
-        if (isCastingChromecast)
-            UZViewUtils.goneViews(pipIcon);
-        else if (UZAppUtils.isTablet(getContext()) && UZAppUtils.isTV(getContext()))//only hide ibPictureInPictureIcon if device is TV
-            UZViewUtils.goneViews(pipIcon);
-        if (isLIVE()) {
-            if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime);
-                UZViewUtils.goneViews(ivLiveTime, ivLiveView);
-            } else {
-                UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime, tvLiveView, ivLiveView);
+    fun updateUIFocusChange(view: View, isFocus: Boolean) {
+        when (view) {
+            is UZImageButton -> {
+                UZViewUtils.updateUIFocusChange(
+                    view = view,
+                    isFocus = isFocus,
+                    resHasFocus = R.drawable.bkg_tv_has_focus,
+                    resNoFocus = R.drawable.bkg_tv_no_focus
+                )
+                view.clearColorFilter()
             }
-            UZViewUtils.goneViews(ibSpeedIcon, tvDuration, ibRewIcon, ibFfwdIcon);
-            setUIVisible(false, ibRewIcon, ibFfwdIcon);
+            is Button -> {
+                UZViewUtils.updateUIFocusChange(
+                    view = view,
+                    isFocus = isFocus,
+                    resHasFocus = R.drawable.bkg_tv_has_focus,
+                    resNoFocus = R.drawable.bkg_tv_no_focus
+                )
+            }
+            is UZPreviewTimeBar -> {
+                UZViewUtils.updateUIFocusChange(
+                    view = view,
+                    isFocus = isFocus,
+                    resHasFocus = R.drawable.bkg_tv_has_focus_uz_timebar,
+                    resNoFocus = R.drawable.bkg_tv_no_focus_uz_timebar
+                )
+            }
+        }
+    }
+
+    private fun handleFirstViewHasFocus() {
+        if (firstViewHasFocus != null) {
+            uzTVFocusChangeListener?.onFocusChange(view = firstViewHasFocus, isFocus = true)
+            firstViewHasFocus = null
+        }
+    }
+
+    private fun updateUISizeThumbnail() {
+        val screenWidth = UZViewUtils.screenWidth
+        val widthIv = if (isLandscape) {
+            screenWidth / 4
         } else {
-            UZViewUtils.goneViews(rlLiveInfo, tvLiveStatus, tvLiveTime, tvLiveView, ivLiveTime, ivLiveView);
-            UZViewUtils.visibleViews(ibSpeedIcon, tvDuration, ibFfwdIcon, ibRewIcon);
-            setUIVisible(true, ibRewIcon, ibFfwdIcon);
+            screenWidth / 5
+        }
+        previewFrameLayout?.let { fl ->
+            val layoutParams = LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams.width = widthIv
+            layoutParams.height = (widthIv * Constants.RATIO_9_16).toInt()
+            fl.layoutParams = layoutParams
+            fl.requestLayout()
+        }
+    }
+
+    private fun setMarginPreviewTimeBar() {
+        timeBar?.let { tb ->
+            if (isLandscape) {
+                UZViewUtils.setMarginDimen(view = tb, dpL = 5, dpT = 0, dpR = 5, dpB = 0)
+            } else {
+                UZViewUtils.setMarginDimen(view = tb, dpL = 0, dpT = 0, dpR = 0, dpB = 0)
+            }
+        }
+    }
+
+    private fun setMarginRlLiveInfo() {
+        rlLiveInfo?.let { rl ->
+            if (isLandscape) {
+                UZViewUtils.setMarginDimen(view = rl, dpL = 50, dpT = 0, dpR = 50, dpB = 0)
+            } else {
+                UZViewUtils.setMarginDimen(view = rl, dpL = 5, dpT = 0, dpR = 5, dpB = 0)
+            }
+        }
+    }
+
+    private fun setTitle() {
+        tvTitle?.text = UZData.getEntityName()
+    }
+
+    fun setAlwaysHideLiveViewers(hide: Boolean) {
+        alwaysHideLiveViewers = hide
+    }
+
+    private fun updateUIDependOnLiveStream() {
+        if (isCastingChromecast) {
+            UZViewUtils.goneViews(ibPip)
+        } else if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
+            //only hide ibPictureInPictureIcon if device is TV
+            UZViewUtils.goneViews(ibPip)
+        }
+        if (isLIVE) {
+            if (alwaysHideLiveViewers) {
+                UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime)
+                UZViewUtils.goneViews(ivLiveTime, ivLiveView)
+            } else {
+                UZViewUtils.visibleViews(
+                    rlLiveInfo,
+                    tvLiveStatus,
+                    tvLiveTime,
+                    ivLiveTime,
+                    tvLiveView,
+                    ivLiveView
+                )
+            }
+            UZViewUtils.goneViews(ibSpeed, tvDuration, ibRew, ibFfwd)
+            setUIVisible(visible = false, ibRew, ibFfwd)
+        } else {
+            UZViewUtils.goneViews(
+                rlLiveInfo,
+                tvLiveStatus,
+                tvLiveTime,
+                tvLiveView,
+                ivLiveTime,
+                ivLiveView
+            )
+            UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, ibRew)
+            setUIVisible(visible = true, ibRew, ibFfwd)
             //TODO why set visible not work?
         }
-        if (UZAppUtils.isTV(getContext()))
-            UZViewUtils.goneViews(ibFullscreenIcon);
-    }
-
-    private void setUIVisible(boolean visible, UZImageButton... views) {
-        for (UZImageButton v : views) {
-            if (v != null)
-                v.setUIVisible(visible);
+        if (UZAppUtils.isTV(context)) {
+            UZViewUtils.goneViews(ibFullscreen)
         }
     }
 
-    protected void updateUIButtonVisibilities() {
-        if (getContext() == null) return;
-        if (debugRootView != null) debugRootView.removeAllViews();
-        if (getPlayer() == null) return;
-        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = playerManager.getTrackSelector().getCurrentMappedTrackInfo();
-        if (mappedTrackInfo == null)
-            return;
-        for (int i = 0; i < mappedTrackInfo.getRendererCount(); i++) {
+    private fun setUIVisible(visible: Boolean, vararg views: UZImageButton?) {
+        for (v in views) {
+            v?.setUIVisible(visible)
+        }
+    }
 
-            TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(i);
+    protected fun updateUIButtonVisibilities() {
+        if (context == null) {
+            return
+        }
+        layoutControls.removeAllViews()
+        if (player == null) {
+            return
+        }
+        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo ?: return
+        for (i in 0 until mappedTrackInfo.rendererCount) {
+            val trackGroups = mappedTrackInfo.getTrackGroups(i)
             if (trackGroups.length != 0) {
-                Button button = new Button(getContext());
-                button.setSoundEffectsEnabled(false);
-                int label;
-                switch (playerManager.getPlayer().getRendererType(i)) {
-                    case C.TRACK_TYPE_AUDIO:
-                        label = R.string.audio;
-                        break;
-                    case C.TRACK_TYPE_VIDEO:
-                        label = R.string.video;
-                        break;
-                    case C.TRACK_TYPE_TEXT:
-                        label = R.string.text;
-                        break;
-                    default:
-                        continue;
+                val button = Button(context)
+                button.isSoundEffectsEnabled = false
+                val label: Int = when (playerManager?.getPlayer()?.getRendererType(i)) {
+                    C.TRACK_TYPE_AUDIO -> R.string.audio
+                    C.TRACK_TYPE_VIDEO -> R.string.video
+                    C.TRACK_TYPE_TEXT -> R.string.text
+                    else -> continue
                 }
-                button.setText(label);
-                button.setTag(i);
-                button.setOnClickListener(this);
-                if (debugRootView != null)
-                    debugRootView.addView(button);
+                button.setText(label)
+                button.tag = i
+                button.setOnClickListener(this)
+                layoutControls.addView(button)
             }
         }
     }
 
-    public void showLayoutMsg() {
-        hideController();
-        UZViewUtils.visibleViews(rlMsg);
+    fun showLayoutMsg() {
+        hideController()
+        UZViewUtils.visibleViews(rlMsg)
     }
 
-    public void hideLayoutMsg() {
-        UZViewUtils.goneViews(rlMsg);
+    fun hideLayoutMsg() {
+        UZViewUtils.goneViews(rlMsg)
     }
 
-    private void updateUIEndScreen() {
-        if (isOnPlayerEnded) {
-            setVisibilityOfPlayPauseReplay(true);
-            showController();
-            if (playerView != null) {
-                playerView.setControllerShowTimeoutMs(0);
-                playerView.setControllerHideOnTouch(false);
+    private fun updateUIEndScreen() {
+        playerView?.let { pv ->
+            if (isOnPlayerEnded) {
+                setVisibilityOfPlayPauseReplay(true)
+                showController()
+                pv.controllerShowTimeoutMs = 0
+                pv.controllerHideOnTouch = false
+            } else {
+                setVisibilityOfPlayPauseReplay(false)
+                pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+                setHideControllerOnTouch(isHideOnTouch)
             }
-        } else {
-            setVisibilityOfPlayPauseReplay(false);
-            if (playerView != null)
-                playerView.setControllerShowTimeoutMs(DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS);
-            setHideControllerOnTouch(isHideOnTouch);
         }
     }
 
-    private void setVisibilityOfPlayPauseReplay(boolean isShowReplay) {
+    private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
         if (isShowReplay) {
-            UZViewUtils.goneViews(ibPlayIcon, ibPauseIcon);
-            if (ibReplayIcon != null) {
-                UZViewUtils.visibleViews(ibReplayIcon);
-                ibReplayIcon.requestFocus();
-            }
+            UZViewUtils.goneViews(ibPlayIcon, ibPauseIcon)
+            UZViewUtils.visibleViews(ibReplay)
+            ibReplay?.requestFocus()
         } else {
-            updateUIButtonPlayPauseDependOnIsAutoStart();
-            UZViewUtils.goneViews(ibReplayIcon);
+            updateUIButtonPlayPauseDependOnIsAutoStart()
+            UZViewUtils.goneViews(ibReplay)
         }
     }
 
-    private void setVisibilityOfPlaylistFolderController(int visibilityOfPlaylistFolderController) {
-        UZViewUtils.setVisibilityViews(visibilityOfPlaylistFolderController, ibPlaylistFolderIcon,
-                ibSkipNextIcon, ibSkipPreviousIcon);
-        setVisibilityOfPlayPauseReplay(false);
+    private fun setVisibilityOfPlaylistFolderController(visibilityOfPlaylistFolderController: Int) {
+        UZViewUtils.setVisibilityViews(
+            visibility = visibilityOfPlaylistFolderController,
+            ibPlaylistFolder,
+            ibSkipNext,
+            ibSkipPrevious
+        )
+        setVisibilityOfPlayPauseReplay(false)
     }
 
-    Dialog dlg = null;
+    var dlg: Dialog? = null
 
-    /**
-     * show Setting Dialog
-     */
-    private void showSettingsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        if (inflater != null)
-            builder.setCustomTitle(inflater.inflate(R.layout.custom_header_dragview, null));
-        // add a list
-        int actionCount = debugRootView.getChildCount();
-        if (actionCount < 1) return;
-        List<SettingItem> actions = new ArrayList<>();
-        for (int i = 0; i < actionCount; i++) {
-            actions.add(new SettingItem(((Button) debugRootView.getChildAt(i)).getText().toString()));
+
+    @SuppressLint("InflateParams")
+    private fun showSettingsDialog() {
+        val builder = AlertDialog.Builder(context)
+        val inflater = LayoutInflater.from(context)
+        if (inflater != null) {
+            builder.setCustomTitle(inflater.inflate(R.layout.custom_header_dragview, null))
+        }
+        val actionCount = layoutControls.childCount
+        if (actionCount < 1) {
+            return
+        }
+        val actions = ArrayList<SettingItem>()
+        for (i in 0 until actionCount) {
+            val v = layoutControls.getChildAt(i)
+            if (v is Button) {
+                actions.add(
+                    SettingItem(v.text.toString())
+                )
+            }
         }
         if (statsForNerdsView != null) {
-            actions.add(new SettingItem(getResources().getString(R.string.stats), statsForNerdsView.getVisibility() == View.VISIBLE, isChecked -> {
-                if (dlg != null) {
-                    postDelayed(() -> dlg.dismiss(), 500);
-                }
-                if (isChecked)
-                    UZViewUtils.visibleViews(statsForNerdsView);
-                else
-                    UZViewUtils.goneViews(statsForNerdsView);
-                return true;
-            }));
+            actions.add(
+                SettingItem(
+                    resources.getString(R.string.stats),
+                    statsForNerdsView.visibility == VISIBLE,
+                    object : OnToggleChangeListener {
+                        override fun onCheckedChanged(isChecked: Boolean): Boolean {
+                            dlg?.dismiss()
+                            if (isChecked) {
+                                UZViewUtils.visibleViews(statsForNerdsView)
+                            } else {
+                                UZViewUtils.goneViews(statsForNerdsView)
+                            }
+                            return true
+                        }
+                    })
+            )
         }
-        if (playerManager != null && playerManager.isTimeShiftSupport()) {
-            actions.add(new SettingItem(getResources().getString(R.string.time_shift), playerManager.isTimeShiftOn(), isChecked -> {
-                if (dlg != null) {
-                    postDelayed(() -> dlg.dismiss(), 600);
-                }
-                boolean sw = playerManager.switchTimeShift(isChecked);
-                if (playerCallback != null && sw)
-                    playerCallback.onTimeShiftChange(playerManager.isTimeShiftOn());
-                return sw;
-            }));
+        playerManager?.let { pm ->
+            if (pm.isTimeShiftSupport) {
+                actions.add(
+                    SettingItem(
+                        resources.getString(R.string.time_shift),
+                        pm.isTimeShiftOn,
+                        object : OnToggleChangeListener {
+                            override fun onCheckedChanged(isChecked: Boolean): Boolean {
+                                dlg?.dismiss()
+                                val sw = pm.switchTimeShift(isChecked)
+                                if (sw) {
+                                    playerCallback?.onTimeShiftChange(pm.isTimeShiftOn)
+                                }
+                                return sw
+                            }
+                        })
+                )
+            }
         }
-        builder.setAdapter(new SettingAdapter(getContext(), actions), (dialog, which) -> {
-            if (which < actionCount)
-                (debugRootView.getChildAt(which)).performClick();
-        });
-        dlg = builder.create();
-        UZViewUtils.showDialog(dlg);
+        builder.setAdapter(
+            SettingAdapter(
+                context,
+                actions
+            )
+        ) { _: DialogInterface?, which: Int ->
+            if (which < actionCount) {
+                layoutControls.getChildAt(which).performClick()
+            }
+        }
+        dlg = builder.create()
+        dlg?.let {
+            UZViewUtils.showDialog(it)
+        }
     }
 
-    private List<UZItem> showTrackSelectionDialog(final View view, boolean showDialog) {
-        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = playerManager.getTrackSelector().getCurrentMappedTrackInfo();
-        if (mappedTrackInfo != null) {
-            CharSequence title = ((Button) view).getText();
-            int rendererIndex = (int) view.getTag();
-            final Pair<AlertDialog, UZTrackSelectionView> dialogPair = UZTrackSelectionView.getDialog(getContext(), title, playerManager.getTrackSelector(), rendererIndex);
-            dialogPair.second.setShowDisableOption(false);
-            dialogPair.second.setAllowAdaptiveSelections(false);
-            dialogPair.second.setCallback(() -> mHandler.postDelayed(() -> {
-                        if (dialogPair.first == null)
-                            return;
-                        dialogPair.first.cancel();
+    private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
+        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
+        mappedTrackInfo?.let {
+            if (view is Button) {
+                val title = view.text
+                val rendererIndex = view.getTag() as Int
+                val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
+                    UZTrackSelectionView.getDialog(
+                        context = context,
+                        title = title,
+                        trackSelector = playerManager?.trackSelector,
+                        rendererIndex = rendererIndex
+                    )
+                dialogPair.second.setShowDisableOption(false)
+                dialogPair.second.setAllowAdaptiveSelections(false)
+                dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
+                    override fun onClick() {
+                        mHandler.postDelayed(
+                            {
+                                if (dialogPair.first == null) {
+                                    return@postDelayed
+                                }
+                                dialogPair.first?.cancel()
+                            }, 300
+                        )
                     }
-                    , 300));
-            if (showDialog)
-                UZViewUtils.showDialog(dialogPair.first);
-            return dialogPair.second.getUZItemList();
+                })
+                if (showDialog) {
+                    UZViewUtils.showDialog(dialogPair.first)
+                }
+                return dialogPair.second.uZItemList
+            }
         }
-        return null;
+
+        return null
     }
 
-    public void setBackgroundColor(int color) {
-        RelativeLayout uzVideoRootView = findViewById(R.id.rootViewUZVideo);
-        if (uzVideoRootView != null)
-            uzVideoRootView.setBackgroundColor(color);
+    override fun setBackgroundColor(color: Int) {
+        rootViewUZVideo.setBackgroundColor(color)
     }
 
-    public void setMarginDependOnUZTimeBar(View view) {
-        if (view == null || timeBar == null) return;
-        int heightTimeBar;
-        if (isLandscape)
-            UZViewUtils.setMarginPx(view, 0, 0, 0, 0);
-        else {
-            heightTimeBar = getHeightTimeBar();
-            UZViewUtils.setMarginPx(view, 0, 0, 0, heightTimeBar / 2);
+    fun setMarginDependOnUZTimeBar(view: View?) {
+        if (view == null || timeBar == null) {
+            return
+        }
+        val tmpHeightTimeBar: Int
+        if (isLandscape) {
+            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = 0)
+        } else {
+            tmpHeightTimeBar = heightTimeBar
+            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = tmpHeightTimeBar / 2)
         }
     }
 
-    public void hideProgress() {
-        if (progressBar != null)
-            progressBar.setVisibility(View.GONE);
+    fun hideProgress() {
+        pb.visibility = View.GONE
     }
 
-    public void showProgress() {
-        if (progressBar != null)
-            progressBar.setVisibility(View.VISIBLE);
+    fun showProgress() {
+        pb.visibility = View.VISIBLE
     }
 
-    /**
-     * @param callback {@see UZPlayerCallback}
-     */
-    public void setPlayerCallback(UZPlayerCallback callback) {
-        this.playerCallback = callback;
+    fun setPlayerCallback(callback: UZPlayerCallback?) {
+        playerCallback = callback
     }
 
-    public void setTVFocusChangeListener(UZTVFocusChangeListener uzTVFocusChangeListener) {
-        this.uzTVFocusChangeListener = uzTVFocusChangeListener;
-        handleFirstViewHasFocus();
+    fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
+        this.uzTVFocusChangeListener = uzTVFocusChangeListener
+        handleFirstViewHasFocus()
     }
 
-    public void setOnPreviewChangeListener(PreviewView.OnPreviewChangeListener onPreviewChangeListener) {
-        this.onPreviewChangeListener = onPreviewChangeListener;
+    fun setOnPreviewChangeListener(onPreviewChangeListener: OnPreviewChangeListener?) {
+        this.onPreviewChangeListener = onPreviewChangeListener
     }
 
-    //=============================================================================================END EVENT
-
-    private void checkToSetUpResource() {
-        UZPlayback playback = UZData.INSTANCE.getPlayback();
-        if (playback != null) {
-            List<String> listLinkPlay = playback.getLinkPlays();
+    private fun checkToSetUpResource() {
+        val playback = UZData.getPlayback()
+        if (playback == null) {
+            handleError(ErrorUtils.exceptionSetup())
+        } else {
+            val listLinkPlay = playback.getLinkPlays()
             if (listLinkPlay.isEmpty()) {
-                handleErrorNoData();
-                return;
+                handleErrorNoData()
+                return
             }
-            if (countTryLinkPlayError >= listLinkPlay.size()) {
-                if (ConnectivityUtils.isConnected(getContext()))
-                    handleError(ErrorUtils.exceptionTryAllLinkPlay());
-                else
-                    handleError(ErrorUtils.exceptionNoConnection());
-                return;
+            if (countTryLinkPlayError >= listLinkPlay.size) {
+                if (ConnectivityUtils.isConnected(context)) {
+                    handleError(ErrorUtils.exceptionTryAllLinkPlay())
+                } else {
+                    handleError(ErrorUtils.exceptionNoConnection())
+                }
+                return
             }
-            String linkPlay = listLinkPlay.get(countTryLinkPlayError);
-            if (TextUtils.isEmpty(linkPlay)) {
-                handleError(ErrorUtils.exceptionNoLinkPlay());
-                return;
+            val linkPlay = listLinkPlay[countTryLinkPlayError]
+            if (linkPlay.isEmpty()) {
+                handleError(ErrorUtils.exceptionNoLinkPlay())
+                return
             }
-            initDataSource(linkPlay,
-                    isCalledFromChangeSkin ? null : UZData.INSTANCE.getUrlIMAAd(),
-                    playback.getPoster());
-            if (playerCallback != null)
-                playerCallback.isInitResult(linkPlay);
-            initPlayerManager();
-        } else
-            handleError(ErrorUtils.exceptionSetup());
-    }
-
-    private void initDataSource(String linkPlay, String urlIMAAd, String urlThumbnailsPreviewSeekBar) {
-        playerManager = new UZPlayerManager.Builder(getContext())
-                .withPlayUrl(linkPlay)
-                .withIMAAdUrl(urlIMAAd)
-                .build();
-        isFirstStateReady = false;
-        if (timeBar != null) {
-            boolean disable = TextUtils.isEmpty(urlThumbnailsPreviewSeekBar);
-            timeBar.setEnabled(!disable);
-            timeBar.setPreviewLoader(this);
+            initDataSource(
+                linkPlay = linkPlay,
+                urlIMAAd = if (isCalledFromChangeSkin) null else UZData.urlIMAAd,
+                urlThumbnailsPreviewSeekBar = playback.poster
+            )
+            playerCallback?.isInitResult(linkPlay)
+            initPlayerManager()
         }
-        playerManager.setProgressListener(new UZProgressListener() {
-            @Override
-            public void onBufferProgress(long bufferedPosition, int bufferedPercentage, long duration) {
-
-            }
-
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-            }
-
-            @Override
-            public void onAdEnded() {
-
-            }
-
-            @Override
-            public void onAdProgress(int s, int duration, int percent) {
-
-            }
-
-            @Override
-            public void onVideoProgress(long currentMls, int s, long duration, int percent) {
-                post(() -> updateUIIbRewIconDependOnProgress(currentMls, false));
-                if (isLIVE())
-                    post(() -> updateLiveStatus(currentMls, duration));
-            }
-        });
-        playerManager.setDebugCallback(this::updateUIButtonVisibilities);
-        playerManager.setBufferCallback((bufferedDurationUs, playbackSpeed) -> statsForNerdsView.setBufferedDurationUs(bufferedDurationUs));
     }
 
-    @Override
-    public void loadPreview(long currentPosition, long max) {
-        if (playerManager == null) return;
-        playerManager.setPlayWhenReady(false);
-        String posterUrl = UZData.INSTANCE.getPosterUrl();
-        if (!TextUtils.isEmpty(posterUrl) && ivThumbnail != null)
-            ImageUtils.loadThumbnail(ivThumbnail, posterUrl);
+    private fun initDataSource(
+        linkPlay: String,
+        urlIMAAd: String?,
+        urlThumbnailsPreviewSeekBar: String?
+    ) {
+        playerManager = UZPlayerManager.Builder(context)
+            .withPlayUrl(linkPlay)
+            .withIMAAdUrl(urlIMAAd)
+            .build()
+
+        isFirstStateReady = false
+
+        timeBar?.let {
+            val disable = TextUtils.isEmpty(urlThumbnailsPreviewSeekBar)
+            it.isEnabled = !disable
+            it.setPreviewLoader(object : PreviewLoader {
+                override fun loadPreview(currentPosition: Long, max: Long) {
+                    playerManager?.let { pm ->
+                        pm.setPlayWhenReady(false)
+                        val posterUrl = UZData.getPosterUrl()
+                        if (!TextUtils.isEmpty(posterUrl))
+                            ivThumbnail?.let {
+                                ImageUtils.loadThumbnail(imageView = it, imageUrl = posterUrl)
+                            }
+                    }
+                }
+            })
+        }
+
+        playerManager?.setProgressListener(object : UZProgressListener {
+            override fun onBufferProgress(
+                bufferedPosition: Long,
+                bufferedPercentage: Int,
+                duration: Long
+            ) {
+            }
+
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
+            override fun onAdEnded() {}
+            override fun onAdProgress(s: Int, duration: Int, percent: Int) {}
+            override fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {
+                post {
+                    updateUIIbRewIconDependOnProgress(
+                        currentMls = currentMls,
+                        isCalledFromUZTimeBarEvent = false
+                    )
+                }
+                if (isLIVE) {
+                    post {
+                        updateLiveStatus(currentMls = currentMls, duration = duration)
+                    }
+                }
+            }
+        })
+        playerManager?.setDebugCallback(object : DebugCallback {
+            override fun onUpdateButtonVisibilities() {
+                updateUIButtonVisibilities()
+            }
+        })
+        playerManager?.setBufferCallback(object : UZBufferListener {
+            override fun onBufferChanged(bufferedDurationUs: Long, playbackSpeed: Float) {
+                statsForNerdsView.setBufferedDurationUs(bufferedDurationUs)
+            }
+        })
     }
 
-    private void onStateReadyFirst() {
-        updateTvDuration();
-        updateUIButtonPlayPauseDependOnIsAutoStart();
-        updateUIDependOnLiveStream();
-        if (timeBarAtBottom)
-            UZViewUtils.visibleViews(playerView);
-        resizeContainerView();
+    private fun onStateReadyFirst() {
+        updateTvDuration()
+        updateUIButtonPlayPauseDependOnIsAutoStart()
+        updateUIDependOnLiveStream()
+        if (timeBarAtBottom) {
+            UZViewUtils.visibleViews(playerView)
+        }
+        resizeContainerView()
+
         //enable from playPlaylistPosition() prevent double click
-        UZViewUtils.setClickableForViews(true, ibSkipPreviousIcon, ibSkipNextIcon);
-        if (playerCallback != null) {
-            playerCallback.isInitResult(UZData.INSTANCE.getPlayback().getLinkPlay(countTryLinkPlayError));
+        UZViewUtils.setClickableForViews(able = true, ibSkipPrevious, ibSkipNext)
+
+        UZData.getPlayback()?.getLinkPlay(countTryLinkPlayError)?.let {
+            playerCallback?.isInitResult(it)
         }
-        if (isCastingChromecast)
-            replayChromeCast();
-        if (timeBar != null) {
-            timeBar.hidePreview();
+
+        if (isCastingChromecast) {
+            replayChromeCast()
         }
-        UZData.INSTANCE.setSettingPlayer(false);
+        timeBar?.hidePreview()
+        UZData.isSettingPlayer = false
     }
 
     /**
      * When isLive = true, if not time shift then hide timber
      */
-    private void updateTimeBarWithTimeShiftStatus() {
-        if (playerManager != null && playerManager.isTimeShiftSupport()) {
-            if (!playerManager.isTimeShiftOn()) {
-                UZViewUtils.goneViews(timeBar);
-            } else {
-                UZViewUtils.visibleViews(timeBar);
+    private fun updateTimeBarWithTimeShiftStatus() {
+        playerManager?.let { pm ->
+            if (pm.isTimeShiftSupport) {
+                if (pm.isTimeShiftOn) {
+                    UZViewUtils.visibleViews(timeBar)
+                } else {
+                    UZViewUtils.goneViews(timeBar)
+                }
             }
         }
     }
 
-    //=============================================================================================START CHROMECAST
-
     //TODO
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onNetworkEvent(ConnectEvent event) {
-//        if (event == null || playerManager == null) return;
-//        if (!event.isConnected()) {
-//            notifyError(ErrorUtils.exceptionNoConnection());
-//        } else {
-//            if (playerManager.getExoPlaybackException() == null) {
-//                hideController();
-//                hideLayoutMsg();
-//            } else {
-//                isCalledFromConnectionEventBus = true;
-//                playerManager.setResumeIfConnectionError();
-//                if (!activityIsPausing) {
-//                    playerManager.register(this);
-//                    if (isCalledFromConnectionEventBus) {
-//                        playerManager.setRunnable();
-//                        isCalledFromConnectionEventBus = false;
-//                    }
-//                }
-//            }
-//            resume();
-//        }
-//    }
+    //    @Subscribe(threadMode = ThreadMode.MAIN)
+    //    public void onNetworkEvent(ConnectEvent event) {
+    //        if (event == null || playerManager == null) return;
+    //        if (!event.isConnected()) {
+    //            notifyError(ErrorUtils.exceptionNoConnection());
+    //        } else {
+    //            if (playerManager.getExoPlaybackException() == null) {
+    //                hideController();
+    //                hideLayoutMsg();
+    //            } else {
+    //                isCalledFromConnectionEventBus = true;
+    //                playerManager.setResumeIfConnectionError();
+    //                if (!activityIsPausing) {
+    //                    playerManager.register(this);
+    //                    if (isCalledFromConnectionEventBus) {
+    //                        playerManager.setRunnable();
+    //                        isCalledFromConnectionEventBus = false;
+    //                    }
+    //                }
+    //            }
+    //            resume();
+    //        }
+    //    }
 
-    private void handleConnectedChromecast() {
-        isCastingChromecast = true;
-        isCastPlayerPlayingFirst = false;
-        playChromecast();
-        updateUIChromecast();
+    private fun handleConnectedChromecast() {
+        isCastingChromecast = true
+        isCastPlayerPlayingFirst = false
+        playChromecast()
+        updateUIChromecast()
     }
 
-    private void handleDisconnectedChromecast() {
-        isCastingChromecast = false;
-        isCastPlayerPlayingFirst = false;
-        updateUIChromecast();
+    private fun handleDisconnectedChromecast() {
+        isCastingChromecast = false
+        isCastPlayerPlayingFirst = false
+        updateUIChromecast()
     }
 
-    public boolean isCastingChromecast() {
-        return isCastingChromecast;
-    }
-
-    private void playChromecast() {
-        if (UZData.INSTANCE.getPlayback() == null || playerManager == null || playerManager.getPlayer() == null) {
-            return;
+    private fun playChromecast() {
+        if (UZData.getPlayback() == null || playerManager == null || playerManager?.getPlayer() == null) {
+            return
         }
-        showProgress();
-        MediaMetadata movieMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-//        movieMetadata.putString(MediaMetadata.KEY_SUBTITLE, UizaData.getInstance().getPlayback().getDescription());
+        playerManager?.let { pm ->
+            showProgress()
+            val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+
+            //        movieMetadata.putString(MediaMetadata.KEY_SUBTITLE, UizaData.getInstance().getPlayback().getDescription());
 //        movieMetadata.putString(MediaMetadata.KEY_TITLE, UizaData.getInstance().getPlayback().getEntityName());
 //        movieMetadata.addImage(new WebImage(Uri.parse(UizaData.getInstance().getPlayback().getThumbnail())));
-        // NOTE: The receiver app (on TV) should Satisfy CORS requirements
-        // https://developers.google.com/cast/docs/android_sender/media_tracks#satisfy_cors_requirements
-        List<MediaTrack> mediaTrackList = new ArrayList<>();
-        long duration = getDuration();
-        if (duration < 0) {
-            Log.d(logTag, "invalid duration -> cannot play chromecast");
-            return;
-        }
+            // NOTE: The receiver app (on TV) should Satisfy CORS requirements
+            // https://developers.google.com/cast/docs/android_sender/media_tracks#satisfy_cors_requirements
 
-        MediaInfo mediaInfo = new MediaInfo.Builder(playerManager.getLinkPlay())
+            val mediaTrackList = ArrayList<MediaTrack>()
+            val duration = duration
+            if (duration < 0) {
+                log("invalid duration -> cannot play chromecast")
+                return
+            }
+            val mediaInfo = MediaInfo.Builder(pm.linkPlay)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setContentType("videos/mp4")
                 .setMetadata(movieMetadata)
                 .setMediaTracks(mediaTrackList)
                 .setStreamDuration(duration)
-                .build();
+                .build()
 
-        //play chromecast without screen control
-        Casty casty = UZData.INSTANCE.getCasty();
-        if (casty != null) {
-            casty.getPlayer().loadMediaAndPlayInBackground(mediaInfo, true, lastCurrentPosition);
-            casty.getPlayer().getRemoteMediaClient().addProgressListener((currentPosition, duration1) -> {
-                if (currentPosition >= lastCurrentPosition && !isCastPlayerPlayingFirst) {
-                    hideProgress();
-                    isCastPlayerPlayingFirst = true;
-                }
-                if (currentPosition > 0)
-                    playerManager.seekTo(currentPosition);
-            }, 1000);
+            //play chromecast without screen control
+            val casty = UZData.casty
+            if (casty != null) {
+                casty.player.loadMediaAndPlayInBackground(mediaInfo, true, lastCurrentPosition)
+                casty.player.remoteMediaClient.addProgressListener({ currentPosition: Long, _: Long ->
+                    if (currentPosition >= lastCurrentPosition && !isCastPlayerPlayingFirst) {
+                        hideProgress()
+                        isCastPlayerPlayingFirst = true
+                    }
+                    if (currentPosition > 0) {
+                        pm.seekTo(currentPosition)
+                    }
+                }, 1000)
+            }
         }
-
     }
 
     /* khi click vào biểu tượng casting
      * thì sẽ pause local player và bắt đầu loading lên cast player
      * khi disconnect thì local player sẽ resume*/
-    private void updateUIChromecast() {
-        if (playerManager == null || rlChromeCast == null || UZAppUtils.isTV(getContext()))
-            return;
-        if (isCastingChromecast) {
-            playerManager.pause();
-            setVolume(0f);
-            UZViewUtils.visibleViews(rlChromeCast, ibPlayIcon);
-            UZViewUtils.goneViews(ibPauseIcon);
-            //casting player luôn play first với volume not mute
-            //UizaData.getInstance().getCasty().setVolume(0.99);
-            if (playerView != null)
-                playerView.setControllerShowTimeoutMs(0);
-        } else {
-            playerManager.resume();
-            setVolume(0.99f);
-            UZViewUtils.goneViews(rlChromeCast, ibPlayIcon);
-            UZViewUtils.visibleViews(ibPauseIcon);
-            //TODO iplm volume mute on/off o cast player
-            //khi quay lại exoplayer từ cast player thì mặc định sẽ bật lại âm thanh (dù cast player đang mute hay !mute)
-            if (playerView != null)
-                playerView.setControllerShowTimeoutMs(DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS);
+    private fun updateUIChromecast() {
+        if (playerManager == null || rlChromeCast == null || UZAppUtils.isTV(context)) {
+            return
+        }
+        playerManager?.let { pm ->
+            if (isCastingChromecast) {
+                pm.pause()
+                volume = 0f
+                UZViewUtils.visibleViews(rlChromeCast, ibPlayIcon)
+                UZViewUtils.goneViews(ibPauseIcon)
+                //casting player luôn play first với volume not mute
+                //UizaData.getInstance().getCasty().setVolume(0.99);
+                playerView?.controllerShowTimeoutMs = 0
+            } else {
+                pm.resume()
+                volume = 0.99f
+                UZViewUtils.goneViews(rlChromeCast, ibPlayIcon)
+                UZViewUtils.visibleViews(ibPauseIcon)
+                //TODO iplm volume mute on/off o cast player
+                //khi quay lại exoplayer từ cast player thì mặc định sẽ bật lại âm thanh (dù cast player đang mute hay !mute)
+                playerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+            }
         }
     }
 
     // ===== Stats For Nerds =====
-    private void initStatsForNerds() {
-        if (getPlayer() != null)
-            getPlayer().addAnalyticsListener(statsForNerdsView);
+    private fun initStatsForNerds() {
+        player?.addAnalyticsListener(statsForNerdsView)
     }
 
-    private void addUIChromecastLayer() {
-        rlChromeCast = new RelativeLayout(getContext());
-        RelativeLayout.LayoutParams rlChromeCastParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        rlChromeCast.setLayoutParams(rlChromeCastParams);
-        rlChromeCast.setVisibility(GONE);
-        rlChromeCast.setBackgroundColor(Color.BLACK);
-        UZImageButton ibsCast = new UZImageButton(getContext());
-        ibsCast.setBackgroundColor(Color.TRANSPARENT);
-        ibsCast.setImageResource(R.drawable.cast);
-        RelativeLayout.LayoutParams ibsCastParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        ibsCastParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        ibsCast.setLayoutParams(ibsCastParams);
-        ibsCast.setRatioPort(5);
-        ibsCast.setRatioLand(5);
-        ibsCast.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        ibsCast.setColorFilter(Color.WHITE);
-        rlChromeCast.addView(ibsCast);
-        rlChromeCast.setOnClickListener(this);
-        if (llTop != null) {
-            if (llTop.getParent() instanceof ViewGroup)
-                ((RelativeLayout) llTop.getParent()).addView(rlChromeCast, 0);
-        } else if (rlLiveInfo != null) {
-            if (rlLiveInfo.getParent() instanceof ViewGroup)
-                ((RelativeLayout) rlLiveInfo.getParent()).addView(rlChromeCast, 0);
+    private fun addUIChromecastLayer() {
+        rlChromeCast = RelativeLayout(context)
+        val rlChromeCastParams =
+            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        rlChromeCast?.let { rl ->
+            rl.layoutParams = rlChromeCastParams
+            rl.visibility = View.GONE
+            rl.setBackgroundColor(Color.BLACK)
+
+            val ibsCast = UZImageButton(context)
+            ibsCast.setBackgroundColor(Color.TRANSPARENT)
+            ibsCast.setImageResource(R.drawable.cast)
+            val ibsCastParams =
+                LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            ibsCastParams.addRule(CENTER_IN_PARENT, TRUE)
+            ibsCast.layoutParams = ibsCastParams
+            ibsCast.setRatioPort(5)
+            ibsCast.setRatioLand(5)
+            ibsCast.scaleType = ImageView.ScaleType.FIT_CENTER
+            ibsCast.setColorFilter(Color.WHITE)
+            rl.addView(ibsCast)
+
+            rl.setOnClickListener(this)
+
+            llTop?.let { ll ->
+                if (ll.parent is RelativeLayout) {
+                    (ll.parent as RelativeLayout).addView(rl, 0)
+                }
+            }
+            rlLiveInfo?.let { rl ->
+                if (rl.parent is RelativeLayout) {
+                    (rl.parent as RelativeLayout).addView(rl, 0)
+                }
+            }
         }
     }
 
-    private void updateLiveStatus(long currentMls, long duration) {
-        if (tvLiveStatus == null) return;
-        long timeToEndChunk = duration - currentMls;
-        if (timeToEndChunk <= targetDurationMls * 10) {
-            tvLiveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.text_live_color_focus));
-            UZViewUtils.goneViews(tvPosition);
-        } else {
-            tvLiveStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.text_live_color));
-            UZViewUtils.visibleViews(tvPosition);
+    private fun updateLiveStatus(currentMls: Long, duration: Long) {
+        tvLiveStatus?.let { tv ->
+            val timeToEndChunk = duration - currentMls
+            if (timeToEndChunk <= targetDurationMls * 10) {
+                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color_focus))
+                UZViewUtils.goneViews(tvPosition)
+            } else {
+                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color))
+                UZViewUtils.visibleViews(tvPosition)
+            }
         }
     }
 
-    private void seekToEndLive() {
-        long timeToEndChunk = getDuration() - getCurrentPosition();
+    private fun seekToEndLive() {
+        val timeToEndChunk = duration - currentPosition
         if (timeToEndChunk > targetDurationMls * 10) {
-            seekToLiveEdge();
+            seekToLiveEdge()
         }
     }
 
-    public void updateLiveStreamLatency(long latency) {
-        statsForNerdsView.showTextLiveStreamLatency();
-        statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency));
+    fun updateLiveStreamLatency(latency: Long) {
+        statsForNerdsView.showTextLiveStreamLatency()
+        statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency))
     }
 
-    public void hideTextLiveStreamLatency() {
-        statsForNerdsView.hideTextLiveStreamLatency();
+    fun hideTextLiveStreamLatency() {
+        statsForNerdsView.hideTextLiveStreamLatency()
     }
 
-    private void trackWatchingTimer(boolean firstRun) {
-        final UZPlaybackInfo pi = UZData.INSTANCE.getPlaybackInfo();
-        if (pi != null && mHandler != null) {
-            UZTrackingData data = new UZTrackingData(pi, viewerSessionId, UZEventType.WATCHING);
-            mHandler.postDelayed(() -> {
-                        if (isPlaying()) {
-                            disposables.add(UZAnalytic.Companion.pushEvent(data, res ->
-                                            Log.d(logTag, "send track watching: " + viewerSessionId + ", response " + res.string()),
-                                    error -> {
-                                        Log.d(logTag, "send track watching error: %s" + error.getMessage());
-                                    }
-                            ));
-                        }
-                        trackWatchingTimer(false);
-                    }
-                    , firstRun ? 0 : DEFAULT_VALUE_TRACKING_LOOP); // 5s
+    private fun trackWatchingTimer(firstRun: Boolean) {
+        val pi = UZData.getPlaybackInfo()
+        if (pi == null) {
+            log("Do not track watching")
         } else {
-            Log.d(logTag, "Do not track watching");
+            viewerSessionId?.let { vsi ->
+                val data = UZTrackingData(
+                    info = pi,
+                    viewerSessionId = vsi,
+                    type = UZEventType.WATCHING
+                )
+                mHandler.postDelayed(
+                    {
+                        if (isPlaying) {
+                            disposables.add(
+                                pushEvent(
+                                    data = data,
+                                    onNext = { res: ResponseBody? ->
+                                        log("send track watching: " + viewerSessionId + ", response " + res?.string())
+                                    }
+                                ) { error: Throwable? ->
+                                    error?.printStackTrace()
+                                    log("send track watching error: ${error?.toString()}")
+                                })
+                        }
+                        trackWatchingTimer(false)
+
+                    }, if (firstRun) 0 else DEFAULT_VALUE_TRACKING_LOOP
+                ) // 5s
+            }
         }
     }
 
-    public void setAlwaysPortraitScreen(boolean isAlwaysPortraitScreen) {
-        this.isAlwaysPortraitScreen = isAlwaysPortraitScreen;
+    override val title: String?
+        get() = null
+
+    override fun onOrientationChange(orientation: Int) {
+        //270 land trai
+        //0 portrait duoi
+        //90 land phai
+        //180 portrait tren
+        val isDeviceAutoRotation = UZViewUtils.isRotationPossible(context)
+        if (orientation == 90 || orientation == 270) {
+            if (isDeviceAutoRotation && !isLandscape) {
+                if (!isAlwaysPortraitScreen) {
+                    if (context is Activity) {
+                        UZViewUtils.changeScreenLandscape(
+                            activity = (context as Activity),
+                            orientation = orientation
+                        )
+                    }
+                }
+            }
+        } else {
+            if (isDeviceAutoRotation && isLandscape) {
+                if (!isAlwaysPortraitScreen) {
+                    if (context is Activity) {
+                        UZViewUtils.changeScreenPortrait(activity = (context as Activity))
+                    }
+                }
+            }
+        }
     }
 
-    public boolean isAlwaysPortraitScreen() {
-        return isAlwaysPortraitScreen;
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+        if (uzTVFocusChangeListener != null) {
+            uzTVFocusChangeListener?.onFocusChange(view = v, isFocus = hasFocus)
+        } else if (firstViewHasFocus == null) {
+            firstViewHasFocus = v
+        }
     }
 
-    @Nullable
-    @Override
-    public String getTitle() {
-        return null;
-    }
 }

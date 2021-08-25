@@ -23,7 +23,7 @@
         </RelativeLayout>
 
         <com.uiza.sdk.view.StatsForNerdsView
-            android:id="@id/statsForNerds"
+            android:id="@id/statsForNerdsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/black_65"
