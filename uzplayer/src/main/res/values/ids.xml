@@ -26,11 +26,11 @@
     <item name="iv_logo" type="id" />
     <item name="rootView" type="id" />
     <item name="root_view_controller" type="id" />
-    <item name="root_view_uz_video" type="id" />
+    <item name="rootViewUZVideo" type="id" />
     <item name="player_view" type="id" />
     <item name="pb" type="id" />
-    <item name="debug_layout" type="id" />
-    <item name="controls_root" type="id" />
+    <item name="layoutDebug" type="id" />
+    <item name="layoutControls" type="id" />
     <item name="tv_live" type="id" />
     <item name="iv_live_time" type="id" />
     <item name="tv_live_time" type="id" />
@@ -46,7 +46,7 @@
     <item name="uz_duration" type="id" />
     <item name="headerView" type="id" />
     <item name="svBodyView" type="id" />
-    <item name="stats_for_nerds" type="id" />
+    <item name="statsForNerds" type="id" />
     <item name="uz_mini_full_screen" type="id" />
     <item name="uz_mini_pause_resume" type="id" />
     <item name="uz_mini_exit" type="id" />

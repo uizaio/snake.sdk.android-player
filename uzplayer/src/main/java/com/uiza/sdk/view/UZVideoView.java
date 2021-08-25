@@ -115,7 +115,7 @@ public class UZVideoView extends RelativeLayout
     //===================================================================START FOR PLAYLIST/FOLDER
     //
     private long targetDurationMls = DEFAULT_TARGET_DURATION_MLS;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private RelativeLayout rootView, rlChromeCast;
     private UZPlayerManager playerManager;
     private ProgressBar progressBar;
@@ -240,8 +240,8 @@ public class UZVideoView extends RelativeLayout
     private void onCreateView() {
         if (UZAppUtils.checkChromeCastAvailable())
             setupChromeCast();
-        inflate(getContext(), R.layout.uz_ima_video_core_rl, this);
-        rootView = findViewById(R.id.rootView);
+        inflate(getContext(), R.layout.layout_uz_ima_video_core, this);
+        rootView = findViewById(R.id.layoutRootView);
         int skinId = UZData.INSTANCE.getUzPlayerSkinLayoutId();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (inflater != null) {
@@ -628,7 +628,7 @@ public class UZVideoView extends RelativeLayout
         }
         if (disposables != null)
             disposables.dispose();
-        handler = null;
+        mHandler = null;
     }
 
     private void releasePlayerStats() {
@@ -1301,9 +1301,9 @@ public class UZVideoView extends RelativeLayout
 
     //=============================================================================================START UI
     private void findViews() {
-        rlMsg = findViewById(R.id.rl_msg);
+        rlMsg = findViewById(R.id.rlMsg);
         rlMsg.setOnClickListener(this);
-        TextView tvMsg = findViewById(R.id.tv_msg);
+        TextView tvMsg = findViewById(R.id.tvMsg);
         if (tvMsg != null)
             UZViewUtils.setTextShadow(tvMsg, Color.BLACK);
         ivVideoCover = findViewById(R.id.ivCover);
@@ -1388,8 +1388,8 @@ public class UZVideoView extends RelativeLayout
         ibSpeedIcon = playerView.findViewById(R.id.exo_speed);
         if (!UZAppUtils.hasSupportPIP(getContext()) || UZData.INSTANCE.getUseUZDragView())
             UZViewUtils.goneViews(pipIcon);
-        LinearLayout debugLayout = findViewById(R.id.debug_layout);
-        debugRootView = findViewById(R.id.controls_root);
+        LinearLayout debugLayout = findViewById(R.id.layoutDebug);
+        debugRootView = findViewById(R.id.layoutControls);
         if (BuildConfig.DEBUG) {
             debugLayout.setVisibility(View.VISIBLE);
         } else {
@@ -1412,7 +1412,7 @@ public class UZVideoView extends RelativeLayout
         setEventForViews();
         //set visibility first, so scared if removed
         setVisibilityOfPlaylistFolderController(GONE);
-        statsForNerdsView = findViewById(R.id.stats_for_nerds);
+        statsForNerdsView = findViewById(R.id.statsForNerds);
     }
 
     private void setEventForViews() {
@@ -1858,7 +1858,7 @@ public class UZVideoView extends RelativeLayout
             final Pair<AlertDialog, UZTrackSelectionView> dialogPair = UZTrackSelectionView.getDialog(getContext(), title, playerManager.getTrackSelector(), rendererIndex);
             dialogPair.second.setShowDisableOption(false);
             dialogPair.second.setAllowAdaptiveSelections(false);
-            dialogPair.second.setCallback(() -> handler.postDelayed(() -> {
+            dialogPair.second.setCallback(() -> mHandler.postDelayed(() -> {
                         if (dialogPair.first == null)
                             return;
                         dialogPair.first.cancel();
@@ -1872,7 +1872,7 @@ public class UZVideoView extends RelativeLayout
     }
 
     public void setBackgroundColor(int color) {
-        RelativeLayout uzVideoRootView = findViewById(R.id.root_view_uz_video);
+        RelativeLayout uzVideoRootView = findViewById(R.id.rootViewUZVideo);
         if (uzVideoRootView != null)
             uzVideoRootView.setBackgroundColor(color);
     }
@@ -2207,9 +2207,9 @@ public class UZVideoView extends RelativeLayout
 
     private void trackWatchingTimer(boolean firstRun) {
         final UZPlaybackInfo pi = UZData.INSTANCE.getPlaybackInfo();
-        if (pi != null && handler != null) {
+        if (pi != null && mHandler != null) {
             UZTrackingData data = new UZTrackingData(pi, viewerSessionId, UZEventType.WATCHING);
-            handler.postDelayed(() -> {
+            mHandler.postDelayed(() -> {
                         if (isPlaying()) {
                             disposables.add(UZAnalytic.Companion.pushEvent(data, res ->
                                             Log.d(logTag, "send track watching: " + viewerSessionId + ", response " + res.string()),

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/root_view_uz_video"
+    android:id="@id/rootViewUZVideo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="false">
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@id/rootView"
+            android:id="@+id/layoutRootView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -23,7 +23,7 @@
         </RelativeLayout>
 
         <com.uiza.sdk.view.StatsForNerdsView
-            android:id="@id/stats_for_nerds"
+            android:id="@id/statsForNerds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/black_65"
@@ -31,14 +31,15 @@
             tools:visibility="visible" />
     </RelativeLayout>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivCover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_5"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        tools:visibility="visible" />
 
     <ProgressBar
         android:id="@id/pb"
@@ -48,40 +49,42 @@
         android:layout_centerInParent="true" />
 
     <LinearLayout
-        android:id="@id/debug_layout"
+        android:id="@id/layoutDebug"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/red"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@id/controls_root"
+            android:id="@id/layoutControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_msg"
+        android:id="@+id/rlMsg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_player_controller"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <ImageView
-            android:id="@+id/iv_msg"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivMsg"
             android:layout_width="@dimen/w_40"
             android:layout_height="@dimen/w_40"
             android:layout_centerInParent="true"
             android:contentDescription="@string/app_name"
             android:src="@drawable/err" />
 
-        <TextView
-            android:id="@id/tv_msg"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@id/tvMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_msg"
+            android:layout_below="@+id/ivMsg"
             android:layout_marginTop="@dimen/margin_5"
             android:gravity="center"
             android:padding="@dimen/padding_5"
@@ -90,4 +93,3 @@
             android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>
-
