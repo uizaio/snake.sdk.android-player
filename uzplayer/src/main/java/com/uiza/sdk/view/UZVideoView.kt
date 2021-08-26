@@ -338,7 +338,7 @@ class UZVideoView : RelativeLayout,
             ibPauseIcon = pv.findViewById(R.id.exo_pause)
             ibPlayIcon = pv.findViewById(R.id.exo_play)
             ibReplay = pv.findViewById(R.id.exo_replay)
-            ibRew = pv.findViewById(R.id.exo_rew)
+            ibRew = pv.findViewById(R.id.btRew)
             ibFfwd = pv.findViewById(R.id.exo_ffwd)
             ibBackScreen = pv.findViewById(R.id.btBackScreen)
             ibVolume = pv.findViewById(R.id.exo_volume)
