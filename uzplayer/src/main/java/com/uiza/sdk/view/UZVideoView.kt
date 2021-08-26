@@ -106,7 +106,7 @@ class UZVideoView : RelativeLayout,
     private var tvTitle: TextView? = null
     private var tvLiveStatus: TextView? = null
     private var tvLiveTime: TextView? = null
-    private var ibFullscreen: UZImageButton? = null
+    private var btFullscreen: UZImageButton? = null
     private var btPause: UZImageButton? = null
     private var btPlay: UZImageButton? = null
     private var btReplay: UZImageButton? = null
@@ -333,7 +333,7 @@ class UZVideoView : RelativeLayout,
             ivThumbnail = pv.findViewById(R.id.ivThumbnail)
             tvPosition = pv.findViewById(R.id.tvPosition)
             tvDuration = pv.findViewById(R.id.tvDuration)
-            ibFullscreen = pv.findViewById(R.id.ibFullscreen)
+            btFullscreen = pv.findViewById(R.id.btFullscreen)
             tvTitle = pv.findViewById(R.id.tvTitle)
             btPause = pv.findViewById(R.id.btPause)
             btPlay = pv.findViewById(R.id.btPlay)
@@ -790,7 +790,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.hideSystemUiFullScreen(pv)
                 }
                 isLandscape = true
-                ibFullscreen?.let {
+                btFullscreen?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
                 UZViewUtils.goneViews(ibPip)
@@ -799,7 +799,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.hideSystemUi(pv)
                 }
                 isLandscape = false
-                ibFullscreen?.let {
+                btFullscreen?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
@@ -818,7 +818,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override fun onClick(v: View) {
-        if (v === ibFullscreen) {
+        if (v === btFullscreen) {
             toggleFullscreen()
         } else if (v === ibBackScreen) {
             handleClickBackScreen()
@@ -1268,7 +1268,7 @@ class UZVideoView : RelativeLayout,
 
     private fun setEventForViews() {
         setClickAndFocusEventForViews(
-            ibFullscreen,
+            btFullscreen,
             ibBackScreen,
             ibVolume,
             ibSetting,
@@ -1634,7 +1634,7 @@ class UZVideoView : RelativeLayout,
             //TODO why set visible not work?
         }
         if (UZAppUtils.isTV(context)) {
-            UZViewUtils.goneViews(ibFullscreen)
+            UZViewUtils.goneViews(btFullscreen)
         }
     }
 

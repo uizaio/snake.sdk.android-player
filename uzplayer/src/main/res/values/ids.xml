@@ -20,7 +20,7 @@
     <item name="ibHearing" type="id" />
     <item name="btSetting" type="id" />
     <item name="ibSpeed" type="id" />
-    <item name="ibFullscreen" type="id" />
+    <item name="btFullscreen" type="id" />
     <item name="viewHeader" type="id" />
     <item name="viewDesc" type="id" />
     <item name="bkg" type="id" />
