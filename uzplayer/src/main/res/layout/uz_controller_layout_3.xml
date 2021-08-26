@@ -223,7 +223,7 @@
             </FrameLayout>
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@id/tvPosition"
+                android:id="@+id/tvPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layoutPreview"
