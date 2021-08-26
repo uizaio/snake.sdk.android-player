@@ -105,7 +105,6 @@ class UZVideoView : RelativeLayout,
     private var tvDuration: UZTextView? = null
     private var tvTitle: TextView? = null
     private var tvLiveStatus: TextView? = null
-    private var tvLiveView: TextView? = null
     private var tvLiveTime: TextView? = null
     private var ibFullscreen: UZImageButton? = null
     private var ibPauseIcon: UZImageButton? = null
@@ -353,7 +352,6 @@ class UZVideoView : RelativeLayout,
             ibSpeed = pv.findViewById(R.id.ibSpeed)
             rlLiveInfo = pv.findViewById(R.id.rlLiveInfo)
             tvLiveStatus = pv.findViewById(R.id.tvLiveStatus)
-            tvLiveView = pv.findViewById(R.id.tvLiveView)
             tvLiveTime = pv.findViewById(R.id.tvLiveTime)
             ivLiveTime = pv.findViewById(R.id.ivLiveTime)
 
@@ -1240,16 +1238,6 @@ class UZVideoView : RelativeLayout,
     val isLIVE: Boolean
         get() = playerManager != null && playerManager?.isLIVE == true
 
-    fun setLiveViewers(viewers: Int) {
-        if (!alwaysHideLiveViewers) {
-            if (viewers == 1) {
-                tvLiveView?.text = resources.getString(R.string.oneViewer)
-            } else {
-                tvLiveView?.text = resources.getString(R.string.numberOfViewers, viewers)
-            }
-        }
-    }
-
     var volume: Float
         get() = playerManager?.volume ?: -1F
         set(volume) {
@@ -1640,7 +1628,6 @@ class UZVideoView : RelativeLayout,
                     tvLiveStatus,
                     tvLiveTime,
                     ivLiveTime,
-                    tvLiveView,
                 )
             }
             UZViewUtils.goneViews(ibSpeed, tvDuration, ibRew, ibFfwd)
@@ -1650,7 +1637,6 @@ class UZVideoView : RelativeLayout,
                 rlLiveInfo,
                 tvLiveStatus,
                 tvLiveTime,
-                tvLiveView,
                 ivLiveTime,
             )
             UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, ibRew)

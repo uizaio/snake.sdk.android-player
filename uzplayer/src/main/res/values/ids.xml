@@ -34,7 +34,6 @@
     <item name="tvLiveStatus" type="id" />
     <item name="ivLiveTime" type="id" />
     <item name="tvLiveTime" type="id" />
-    <item name="tvLiveView" type="id" />
     <item name="rl_time_bar" type="id" />
     <item name="rlLiveInfo" type="id" />
     <item name="rl_chrome_cast" type="id" />

@@ -198,7 +198,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
                 playback.firstLinkPlay?.let {
                     val d = getLiveViewers(linkPlay = it,
                         onNext = Consumer { (views) ->
-                            uzVideoView.setLiveViewers(views)
+                            log("$views")
                         }, onError = Consumer { t: Throwable? ->
                             log("$t")
                         })

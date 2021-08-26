@@ -62,14 +62,6 @@
             android:textColor="@android:color/white"
             tools:ignore="RelativeOverlap" />
 
-        <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvLiveView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="1000Viewers"
-            android:textColor="@android:color/white" />
     </RelativeLayout>
 
     <LinearLayout

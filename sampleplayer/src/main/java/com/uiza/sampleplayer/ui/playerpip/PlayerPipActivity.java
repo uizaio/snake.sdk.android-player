@@ -161,7 +161,7 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         if (handler != null && playback != null && uzVideo !=null)
             handler.postDelayed(() -> {
                 Disposable d = UZApi.getLiveViewers(playback.getFirstLinkPlay(),
-                        res -> uzVideo.setLiveViewers(res.getViews()), Timber::e);
+                        res -> {});
                 if (d != null) {
                     disposables.add(d);
                 }
