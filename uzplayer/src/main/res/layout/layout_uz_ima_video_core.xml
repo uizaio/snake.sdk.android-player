@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/rootViewUZVideo"
+    android:id="@+id/rootViewUZVideo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="false">
@@ -16,14 +16,14 @@
             android:layout_height="wrap_content">
 
             <View
-                android:id="@id/bkg"
+                android:id="@+id/bkg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/black" />
         </RelativeLayout>
 
         <com.uiza.sdk.view.StatsForNerdsView
-            android:id="@id/statsForNerdsView"
+            android:id="@+id/statsForNerdsView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/black_65"
@@ -42,21 +42,21 @@
         tools:visibility="visible" />
 
     <ProgressBar
-        android:id="@id/pb"
+        android:id="@+id/pb"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="@dimen/w_20"
         android:layout_height="@dimen/w_20"
         android:layout_centerInParent="true" />
 
     <LinearLayout
-        android:id="@id/layoutDebug"
+        android:id="@+id/layoutDebug"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/red"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@id/layoutControls"
+            android:id="@+id/layoutControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
