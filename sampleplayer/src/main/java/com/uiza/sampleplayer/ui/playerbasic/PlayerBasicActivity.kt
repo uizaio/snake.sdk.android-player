@@ -40,12 +40,12 @@ class PlayerBasicActivity : AppCompatActivity() {
             }
 
             override fun onScreenRotate(isLandscape: Boolean) {
-                if (!isLandscape) {
-                    val w = UZViewUtils.screenWidth
-                    val h = w * 9 / 16
-                    uzVideoView.setFreeSize(false)
-                    uzVideoView.setSize(w, h)
-                }
+//                if (!isLandscape) {
+//                    val w = UZViewUtils.screenWidth
+//                    val h = w * 9 / 16
+//                    uzVideoView.setFreeSize(false)
+//                    uzVideoView.setSize(w, h)
+//                }
             }
 
             override fun onError(e: UZException) {
