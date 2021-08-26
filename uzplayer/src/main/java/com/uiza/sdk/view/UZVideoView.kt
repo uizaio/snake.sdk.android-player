@@ -107,7 +107,7 @@ class UZVideoView : RelativeLayout,
     private var tvLiveStatus: TextView? = null
     private var tvLiveTime: TextView? = null
     private var ibFullscreen: UZImageButton? = null
-    private var ibPauseIcon: UZImageButton? = null
+    private var btPause: UZImageButton? = null
     private var btPlay: UZImageButton? = null
     private var ibReplay: UZImageButton? = null
     private var ibRew: UZImageButton? = null
@@ -335,7 +335,7 @@ class UZVideoView : RelativeLayout,
             tvDuration = pv.findViewById(R.id.tvDuration)
             ibFullscreen = pv.findViewById(R.id.ibFullscreen)
             tvTitle = pv.findViewById(R.id.tvTitle)
-            ibPauseIcon = pv.findViewById(R.id.exo_pause)
+            btPause = pv.findViewById(R.id.btPause)
             btPlay = pv.findViewById(R.id.btPlay)
             ibReplay = pv.findViewById(R.id.exo_replay)
             ibRew = pv.findViewById(R.id.btRew)
@@ -540,7 +540,7 @@ class UZVideoView : RelativeLayout,
         }
 
         UZViewUtils.goneViews(btPlay)
-        ibPauseIcon?.let {
+        btPause?.let {
             UZViewUtils.visibleViews(it)
             it.requestFocus()
         }
@@ -554,7 +554,7 @@ class UZVideoView : RelativeLayout,
         } else {
             playerManager?.pause()
         }
-        UZViewUtils.goneViews(ibPauseIcon)
+        UZViewUtils.goneViews(btPause)
         keepScreenOn = false
         btPlay?.let {
             UZViewUtils.visibleViews(it)
@@ -853,7 +853,7 @@ class UZVideoView : RelativeLayout,
                     updateUIEndScreen()
                 }
             }
-        } else if (v === ibPauseIcon) {
+        } else if (v === btPause) {
             pause()
         } else if (v === btPlay) {
             resume()
@@ -1278,7 +1278,7 @@ class UZVideoView : RelativeLayout,
             ibFfwd,
             ibRew,
             btPlay,
-            ibPauseIcon,
+            btPause,
             ibReplay,
             ibSkipNext,
             ibSkipPrevious,
@@ -1301,7 +1301,7 @@ class UZVideoView : RelativeLayout,
     private fun updateUIButtonPlayPauseDependOnIsAutoStart() {
         if (isAutoStart) {
             UZViewUtils.goneViews(btPlay)
-            ibPauseIcon?.let { ib ->
+            btPause?.let { ib ->
                 UZViewUtils.visibleViews(ib)
                 if (!isSetFirstRequestFocusDone) {
                     ib.requestFocus() //set first request focus if using player for TV
@@ -1311,7 +1311,7 @@ class UZVideoView : RelativeLayout,
         } else {
             if (isPlaying) {
                 UZViewUtils.goneViews(btPlay)
-                ibPauseIcon?.let { ib ->
+                btPause?.let { ib ->
                     UZViewUtils.visibleViews(ib)
                     if (!isSetFirstRequestFocusDone) {
                         ib.requestFocus() //set first request focus if using player for TV
@@ -1326,7 +1326,7 @@ class UZVideoView : RelativeLayout,
                         isSetFirstRequestFocusDone = true
                     }
                 }
-                UZViewUtils.goneViews(ibPauseIcon)
+                UZViewUtils.goneViews(btPause)
             }
         }
     }
@@ -1354,8 +1354,8 @@ class UZVideoView : RelativeLayout,
             btPlay?.setRatioLand(7)
             btPlay?.setRatioPort(5)
 
-            ibPauseIcon?.setRatioLand(7)
-            ibPauseIcon?.setRatioPort(5)
+            btPause?.setRatioLand(7)
+            btPause?.setRatioPort(5)
 
             ibReplay?.setRatioLand(7)
             ibReplay?.setRatioPort(5)
@@ -1698,7 +1698,7 @@ class UZVideoView : RelativeLayout,
 
     private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
         if (isShowReplay) {
-            UZViewUtils.goneViews(btPlay, ibPauseIcon)
+            UZViewUtils.goneViews(btPlay, btPause)
             UZViewUtils.visibleViews(ibReplay)
             ibReplay?.requestFocus()
         } else {
@@ -2100,7 +2100,7 @@ class UZVideoView : RelativeLayout,
                 pm.pause()
                 volume = 0f
                 UZViewUtils.visibleViews(rlChromeCast, btPlay)
-                UZViewUtils.goneViews(ibPauseIcon)
+                UZViewUtils.goneViews(btPause)
                 //casting player luôn play first với volume not mute
                 //UizaData.getInstance().getCasty().setVolume(0.99);
                 playerView?.controllerShowTimeoutMs = 0
@@ -2108,7 +2108,7 @@ class UZVideoView : RelativeLayout,
                 pm.resume()
                 volume = 0.99f
                 UZViewUtils.goneViews(rlChromeCast, btPlay)
-                UZViewUtils.visibleViews(ibPauseIcon)
+                UZViewUtils.visibleViews(btPause)
                 //TODO iplm volume mute on/off o cast player
                 //khi quay lại exoplayer từ cast player thì mặc định sẽ bật lại âm thanh (dù cast player đang mute hay !mute)
                 playerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS

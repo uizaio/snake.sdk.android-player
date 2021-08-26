@@ -10,7 +10,7 @@
     <item name="ivThumbnail" type="id" />
     <item name="exo_volume" type="id" />
     <item name="btPlay" type="id" />
-    <item name="exo_pause" type="id" />
+    <item name="btPause" type="id" />
     <item name="btRew" type="id" />
     <item name="exo_replay" type="id" />
     <item name="ibSkipNext" type="id" />
