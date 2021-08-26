@@ -111,7 +111,7 @@ class UZVideoView : RelativeLayout,
     private var btPlay: UZImageButton? = null
     private var btReplay: UZImageButton? = null
     private var btRew: UZImageButton? = null
-    private var ibFfwd: UZImageButton? = null
+    private var btFfwd: UZImageButton? = null
     private var ibBackScreen: UZImageButton? = null
     private var ibVolume: UZImageButton? = null
     private var ibSetting: UZImageButton? = null
@@ -339,7 +339,7 @@ class UZVideoView : RelativeLayout,
             btPlay = pv.findViewById(R.id.btPlay)
             btReplay = pv.findViewById(R.id.btReplay)
             btRew = pv.findViewById(R.id.btRew)
-            ibFfwd = pv.findViewById(R.id.exo_ffwd)
+            btFfwd = pv.findViewById(R.id.btFfwd)
             ibBackScreen = pv.findViewById(R.id.btBackScreen)
             ibVolume = pv.findViewById(R.id.exo_volume)
             ibSetting = pv.findViewById(R.id.btSetting)
@@ -836,7 +836,7 @@ class UZVideoView : RelativeLayout,
             showTrackSelectionDialog(v, true)
         } else if (v === tvLiveStatus) {
             seekToEndLive()
-        } else if (v === ibFfwd) {
+        } else if (v === btFfwd) {
             if (isCastingChromecast) {
                 val casty = UZData.casty
                 casty?.player?.seekToForward(defaultSeekValue)
@@ -1154,12 +1154,12 @@ class UZVideoView : RelativeLayout,
 
     fun seekToForward(mls: Int) {
         setDefaultSeekValue(mls)
-        ibFfwd?.performClick()
+        btFfwd?.performClick()
     }
 
     fun seekToForward() {
         if (!isLIVE) {
-            ibFfwd?.performClick()
+            btFfwd?.performClick()
         }
     }
 
@@ -1275,7 +1275,7 @@ class UZVideoView : RelativeLayout,
             ibPlaylistFolder,
             ibHearing,
             ibPip,
-            ibFfwd,
+            btFfwd,
             btRew,
             btPlay,
             btPause,
@@ -1489,7 +1489,7 @@ class UZVideoView : RelativeLayout,
             return
         }
         btRew?.let { r ->
-            ibFfwd?.let { f ->
+            btFfwd?.let { f ->
                 if (currentMls == 0L) {
                     if (r.isSetSrcDrawableEnabled) {
                         r.setSrcDrawableDisabled()
@@ -1620,8 +1620,8 @@ class UZVideoView : RelativeLayout,
                     ivLiveTime,
                 )
             }
-            UZViewUtils.goneViews(ibSpeed, tvDuration, btRew, ibFfwd)
-            setUIVisible(visible = false, btRew, ibFfwd)
+            UZViewUtils.goneViews(ibSpeed, tvDuration, btRew, btFfwd)
+            setUIVisible(visible = false, btRew, btFfwd)
         } else {
             UZViewUtils.goneViews(
                 rlLiveInfo,
@@ -1629,8 +1629,8 @@ class UZVideoView : RelativeLayout,
                 tvLiveTime,
                 ivLiveTime,
             )
-            UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, btRew)
-            setUIVisible(visible = true, btRew, ibFfwd)
+            UZViewUtils.visibleViews(ibSpeed, tvDuration, btFfwd, btRew)
+            setUIVisible(visible = true, btRew, btFfwd)
             //TODO why set visible not work?
         }
         if (UZAppUtils.isTV(context)) {
