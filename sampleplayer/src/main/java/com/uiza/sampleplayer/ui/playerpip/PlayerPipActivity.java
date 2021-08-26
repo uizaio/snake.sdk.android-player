@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer;
+package com.uiza.sampleplayer.ui.playerpip;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.uiza.api.UZApi;
+import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
@@ -29,7 +30,7 @@ import timber.log.Timber;
 /**
  * Demo UZPlayer with Picture In Picture
  */
-public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCallback {
+public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCallback {
 
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
@@ -40,7 +41,7 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
     protected void onCreate(@Nullable Bundle savedState) {
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedState);
-        setContentView(R.layout.activity_pip_player);
+        setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPlayerCallback(this);

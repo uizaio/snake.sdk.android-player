@@ -20,13 +20,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PlayerActivity"
+            android:name=".ui.playerwithuzdragview.PlayerWithUZDragViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PipPlayerActivity"
+            android:name=".ui.playerpip.PlayerPipActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTask"
             android:parentActivityName=".MainActivity"
@@ -34,17 +34,17 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <activity
-            android:name=".CastPlayerActivity"
+            android:name=".ui.playercast.PlayerCastActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTask"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ErrorActivity"
+            android:name="com.uiza.sampleplayer.ui.common.error.ErrorActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="ErrorActivity" />
         <activity
-            android:name=".AnalyticActivity"
+            android:name="com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="AnalyticActivity" />
 

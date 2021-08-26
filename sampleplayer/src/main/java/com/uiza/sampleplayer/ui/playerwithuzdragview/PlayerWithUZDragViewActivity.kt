@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer
+package com.uiza.sampleplayer.ui.playerwithuzdragview
 
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.api.UZApi.getLiveViewers
+import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.UZPlayer
@@ -20,10 +21,10 @@ import com.uiza.sdk.view.UZDragView
 import com.uiza.sdk.view.UZPlayerView
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.activity_player_with_uz_drag_view.*
 import java.util.*
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -42,7 +43,7 @@ class PlayerActivity : AppCompatActivity() {
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
 //        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_custom)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        setContentView(R.layout.activity_player_with_uz_drag_view)
         handler = Handler(Looper.getMainLooper())
         setupViews()
     }

@@ -1,17 +1,16 @@
-package com.uiza.sampleplayer
+package com.uiza.sampleplayer.ui.common.error
 
 import android.os.Bundle
 import android.view.MenuItem
 import com.uiza.sampleplayer.R
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sdk.exceptions.ErrorConstant
-import kotlinx.android.synthetic.main.activity_error.*
+import kotlinx.android.synthetic.main.activity_common_error.*
 
 class ErrorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_error)
+        setContentView(R.layout.activity_common_error)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupViews()
     }

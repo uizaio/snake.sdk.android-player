@@ -1,17 +1,18 @@
-package com.uiza.sampleplayer
+package com.uiza.sampleplayer.ui.common.analytic
 
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.api.UZApi.getLiveViewers
+import com.uiza.sampleplayer.R
 import com.uiza.sdk.analytics.UZAnalytic
 import com.uiza.sdk.models.UZEventType
 import com.uiza.sdk.models.UZPlaybackInfo
 import com.uiza.sdk.models.UZTrackingData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import kotlinx.android.synthetic.main.activity_analytic.*
+import kotlinx.android.synthetic.main.activity_common_analytic.*
 import okhttp3.ResponseBody
 import java.util.*
 
@@ -31,7 +32,7 @@ class AnalyticActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_analytic)
+        setContentView(R.layout.activity_common_analytic)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupViews()
     }

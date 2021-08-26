@@ -4,6 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
+import com.uiza.sampleplayer.ui.common.error.ErrorActivity
+import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
+import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -24,13 +29,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViews() {
         btnPlayerWithUZDragView.setOnClickListener {
-            gotoActivity(PlayerActivity::class.java)
+            gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
         btnPipPlayer.setOnClickListener {
-            gotoActivity(PipPlayerActivity::class.java)
+            gotoActivity(PlayerPipActivity::class.java)
         }
         btnCastPlayer.setOnClickListener {
-            gotoActivity(CastPlayerActivity::class.java)
+            gotoActivity(PlayerCastActivity::class.java)
         }
         btnAnalytic.setOnClickListener {
             gotoActivity(AnalyticActivity::class.java)

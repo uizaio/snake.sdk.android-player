@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer;
+package com.uiza.sampleplayer.ui.playercast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.exceptions.UZException;
@@ -16,7 +17,7 @@ import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
 
-public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
+public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
 
@@ -25,7 +26,7 @@ public class CastPlayerActivity extends AppCompatActivity implements UZPlayerCal
         UZPlayer.setCasty(this);
         UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_1);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cast_player);
+        setContentView(R.layout.activity_player_cast);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         UZPlayer.getCasty().setUpMediaRouteButton(findViewById(R.id.media_route_button));
