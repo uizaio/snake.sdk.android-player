@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
+import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.exceptions.UZException
@@ -58,8 +59,7 @@ class PlayerBasicActivity : AppCompatActivity() {
     private fun onPlay() {
         val uzPlayback = UZPlayback()
         uzPlayback.poster = UZApplication.thumbnailUrl
-//        uzPlayback.addLinkPlay("https://hls.ted.com/talks/2639.m3u8?preroll=Thousands")
-        uzPlayback.addLinkPlay("https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8")
+        uzPlayback.addLinkPlay(Constant.LINK_PLAY_VOD)
         uzVideoView.play(uzPlayback)
     }
 
