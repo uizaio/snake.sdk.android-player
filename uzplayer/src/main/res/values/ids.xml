@@ -13,7 +13,7 @@
     <item name="btPause" type="id" />
     <item name="btRew" type="id" />
     <item name="btReplay" type="id" />
-    <item name="ibSkipNext" type="id" />
+    <item name="btSkipNext" type="id" />
     <item name="ibSkipPrevious" type="id" />
     <item name="exo_cc" type="id" />
     <item name="ibPlaylistFolder" type="id" />

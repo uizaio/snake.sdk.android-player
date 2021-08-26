@@ -119,7 +119,7 @@ class UZVideoView : RelativeLayout,
     private var ibHearing: UZImageButton? = null
     private var ibPip: UZImageButton? = null
     private var ibSkipPrevious: UZImageButton? = null
-    private var ibSkipNext: UZImageButton? = null
+    private var btSkipNext: UZImageButton? = null
     private var ibSpeed: UZImageButton? = null
     private var ivLiveTime: UZImageButton? = null
     override var playerView: UZPlayerView? = null
@@ -346,7 +346,7 @@ class UZVideoView : RelativeLayout,
             ibPlaylistFolder = pv.findViewById(R.id.ibPlaylistFolder)
             ibHearing = pv.findViewById(R.id.ibHearing)
             ibPip = pv.findViewById(R.id.ibPip)
-            ibSkipNext = pv.findViewById(R.id.ibSkipNext)
+            btSkipNext = pv.findViewById(R.id.btSkipNext)
             ibSkipPrevious = pv.findViewById(R.id.ibSkipPrevious)
             ibSpeed = pv.findViewById(R.id.ibSpeed)
             rlLiveInfo = pv.findViewById(R.id.rlLiveInfo)
@@ -859,7 +859,7 @@ class UZVideoView : RelativeLayout,
             resume()
         } else if (v === btReplay) {
             replay()
-        } else if (v === ibSkipNext) {
+        } else if (v === btSkipNext) {
             handleClickSkipNext()
         } else if (v === ibSkipPrevious) {
             handleClickSkipPrevious()
@@ -971,9 +971,9 @@ class UZVideoView : RelativeLayout,
         }
         pause()
         hideController()
-        UZViewUtils.setSrcDrawableEnabledForViews(ibSkipPrevious, ibSkipNext)
+        UZViewUtils.setSrcDrawableEnabledForViews(ibSkipPrevious, btSkipNext)
         //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(able = false, ibSkipPrevious, ibSkipNext)
+        UZViewUtils.setClickableForViews(able = false, ibSkipPrevious, btSkipNext)
         //end update UI for skip next and skip previous button
         UZData.setCurrentPositionOfPlayList(position)
         val playback = UZData.getPlayback()
@@ -1280,7 +1280,7 @@ class UZVideoView : RelativeLayout,
             btPlay,
             btPause,
             btReplay,
-            ibSkipNext,
+            btSkipNext,
             ibSkipPrevious,
             ibSpeed,
             tvLiveStatus
@@ -1711,7 +1711,7 @@ class UZVideoView : RelativeLayout,
         UZViewUtils.setVisibilityViews(
             visibility = visibilityOfPlaylistFolderController,
             ibPlaylistFolder,
-            ibSkipNext,
+            btSkipNext,
             ibSkipPrevious
         )
         setVisibilityOfPlayPauseReplay(false)
@@ -1977,7 +1977,7 @@ class UZVideoView : RelativeLayout,
         resizeContainerView()
 
         //enable from playPlaylistPosition() prevent double click
-        UZViewUtils.setClickableForViews(able = true, ibSkipPrevious, ibSkipNext)
+        UZViewUtils.setClickableForViews(able = true, ibSkipPrevious, btSkipNext)
 
         UZData.getPlayback()?.getLinkPlay(countTryLinkPlayError)?.let {
             playerCallback?.isInitResult(it)
