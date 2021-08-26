@@ -688,7 +688,7 @@ class UZVideoView : RelativeLayout,
 
     fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         positionPIPPlayer = currentPosition
-        isInPipMode = !isInPictureInPictureMode
+        isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             // Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.
             setUseController(useController = false)
@@ -727,9 +727,10 @@ class UZVideoView : RelativeLayout,
             return
         }
         activityIsPausing = false
-        if (ibPlayIcon == null || ibPlayIcon?.visibility != VISIBLE) {
-            playerManager?.resume()
-        }
+//        if (ibPlayIcon == null || ibPlayIcon?.visibility != VISIBLE) {
+//            playerManager?.resume()
+//        }
+        playerManager?.resume()
         if (positionPIPPlayer > 0L && isInPipMode) {
             seekTo(positionPIPPlayer)
         } else if (autoMoveToLiveEdge && isLIVE) {
@@ -799,14 +800,18 @@ class UZVideoView : RelativeLayout,
             resizeContainerView()
             val currentOrientation = resources.configuration.orientation
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                UZViewUtils.hideSystemUiFullScreen(pv)
+                if (!isInPipMode) {
+                    UZViewUtils.hideSystemUiFullScreen(pv)
+                }
                 isLandscape = true
                 ibFullscreen?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
                 UZViewUtils.goneViews(ibPip)
             } else {
-                UZViewUtils.hideSystemUi(pv)
+                if (!isInPipMode) {
+                    UZViewUtils.hideSystemUi(pv)
+                }
                 isLandscape = false
                 ibFullscreen?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
@@ -887,6 +892,10 @@ class UZVideoView : RelativeLayout,
     @TargetApi(Build.VERSION_CODES.N)
     fun enterPIPMode() {
         if (isPIPEnable) {
+            if (isLandscape) {
+                throw  IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
+            }
+            isInPipMode = true
             positionPIPPlayer = currentPosition
             setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -902,14 +911,14 @@ class UZVideoView : RelativeLayout,
                 }
             }
         }
-        postDelayed({
-            if (context is Activity) {
-                isPIPModeEnabled = (context as Activity).isInPictureInPictureMode
-            }
-            if (!isPIPModeEnabled) {
-                enterPIPMode()
-            }
-        }, 50)
+//        postDelayed({
+//            if (context is Activity) {
+//                isPIPModeEnabled = (context as Activity).isInPictureInPictureMode
+//            }
+//            if (!isPIPModeEnabled) {
+//                enterPIPMode()
+//            }
+//        }, 50)
     }
 
     var controllerShowTimeoutMs: Int

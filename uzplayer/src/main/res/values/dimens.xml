@@ -5,9 +5,6 @@
     <dimen name="txt_tiny">8sp</dimen>
     <dimen name="txt_small">11sp</dimen>
     <dimen name="txt_medium">16sp</dimen>
-
-    <dimen name="txt_16">15sp</dimen>
-
     <dimen name="w_1">1dp</dimen>
     <dimen name="w_15">15dp</dimen>
     <dimen name="w_20">20dp</dimen>
@@ -17,17 +14,14 @@
     <dimen name="w_50">50dp</dimen>
     <dimen name="w_113">113dp</dimen>
     <dimen name="w_200">200dp</dimen>
-
     <dimen name="video_frame_width">1dp</dimen>
     <dimen name="padding_3">3dp</dimen>
     <dimen name="padding_5">5dp</dimen>
     <dimen name="padding_10">10dp</dimen>
-
     <dimen name="margin_5">5dp</dimen>
     <dimen name="margin_10">10dp</dimen>
-
+    <dimen name="margin_55">55dp</dimen>
     <dimen name="margin_padding_medium">10dp</dimen>
-
     <dimen name="radius_medium">15dp</dimen>
 
 </resources>

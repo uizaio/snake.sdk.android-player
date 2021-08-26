@@ -89,7 +89,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_5"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/txt_16"
+            android:textSize="@dimen/txt_small"
             android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

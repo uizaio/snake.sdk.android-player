@@ -137,15 +137,22 @@ public class PipPlayerActivity extends AppCompatActivity implements UZPlayerCall
 
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
-        if (newConfig != null)
-            uzVideo.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        if (newConfig != null) {
+            uzVideo.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        }
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        uzVideo.enterPIPMode();
+        try {
+            if (!uzVideo.isLandscape()) {
+                uzVideo.enterPIPMode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getLiveViewsTimer(boolean firstRun) {
