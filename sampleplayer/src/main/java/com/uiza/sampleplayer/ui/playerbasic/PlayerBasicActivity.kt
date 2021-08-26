@@ -59,7 +59,7 @@ class PlayerBasicActivity : AppCompatActivity() {
     private fun onPlay() {
         val uzPlayback = UZPlayback()
         uzPlayback.poster = UZApplication.thumbnailUrl
-        uzPlayback.addLinkPlay(Constant.LINK_PLAY_VOD)
+        uzPlayback.addLinkPlay(Constant.LINK_PLAY_LIVE)
         uzVideoView.play(uzPlayback)
     }
 

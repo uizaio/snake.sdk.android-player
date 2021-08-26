@@ -38,7 +38,7 @@
             tools:ignore="RelativeOverlap" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvTitle"
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10"
@@ -46,10 +46,11 @@
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/txt_medium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="@string/app_name" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/ivLiveView"
+            android:id="@+id/ivLiveView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
