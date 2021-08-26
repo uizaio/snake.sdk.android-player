@@ -98,7 +98,7 @@ class UZVideoView : RelativeLayout,
     private var rlChromeCast: RelativeLayout? = null
     private var playerManager: UZPlayerManager? = null
     private var rlLiveInfo: RelativeLayout? = null
-    private var previewFrameLayout: FrameLayout? = null
+    private var layoutPreview: FrameLayout? = null
     private var timeBar: UZPreviewTimeBar? = null
     private var ivThumbnail: ImageView? = null
     private var tvPosition: UZTextView? = null
@@ -272,7 +272,7 @@ class UZVideoView : RelativeLayout,
                 }
             })
             timeBar = pv.findViewById(R.id.exo_progress)
-            previewFrameLayout = pv.findViewById(R.id.previewFrameLayout)
+            layoutPreview = pv.findViewById(R.id.layoutPreview)
 
             if (timeBar == null) {
                 pv.visibility = VISIBLE
@@ -1561,7 +1561,7 @@ class UZVideoView : RelativeLayout,
         } else {
             screenWidth / 5
         }
-        previewFrameLayout?.let { fl ->
+        layoutPreview?.let { fl ->
             val layoutParams = LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT

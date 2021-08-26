@@ -6,7 +6,7 @@
     <item name="tvTitle" type="id" />
     <item name="exo_cast" type="id" />
     <item name="ibPip" type="id" />
-    <item name="previewFrameLayout" type="id" />
+    <item name="layoutPreview" type="id" />
     <item name="ivThumbnail" type="id" />
     <item name="exo_volume" type="id" />
     <item name="btPlay" type="id" />

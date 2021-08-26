@@ -163,7 +163,7 @@
             tools:ignore="UselessParent">
 
             <FrameLayout
-                android:id="@id/previewFrameLayout"
+                android:id="@+id/layoutPreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/video_frame"
@@ -181,7 +181,7 @@
                 android:id="@+id/top_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/previewFrameLayout">
+                android:layout_below="@id/layoutPreview">
 
                 <com.uiza.sdk.widget.UZTextView
                     android:id="@id/tvPosition"

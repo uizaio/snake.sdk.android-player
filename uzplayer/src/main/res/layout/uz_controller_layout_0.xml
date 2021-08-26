@@ -78,7 +78,7 @@
             android:layout_marginTop="@dimen/margin_5">
 
             <FrameLayout
-                android:id="@id/previewFrameLayout"
+                android:id="@+id/layoutPreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/video_frame">
@@ -95,7 +95,7 @@
                 android:id="@id/tvPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/previewFrameLayout"
+                android:layout_below="@id/layoutPreview"
                 android:layout_marginStart="@dimen/margin_5"
                 android:includeFontPadding="false"
                 android:textColor="@android:color/white"
@@ -105,7 +105,7 @@
                 android:id="@id/tvDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/previewFrameLayout"
+                android:layout_below="@id/layoutPreview"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="bottom"
                 android:layout_marginEnd="@dimen/margin_5"
