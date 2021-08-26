@@ -1,10 +1,7 @@
 package com.uiza.sampleplayer.ui.playerbasic
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.UZApplication
@@ -17,10 +14,6 @@ import com.uiza.sdk.view.UZPlayerView
 import kotlinx.android.synthetic.main.activity_player_basic.*
 
 class PlayerBasicActivity : AppCompatActivity() {
-
-    private fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
 
     private fun log(msg: String) {
         Log.d(javaClass.simpleName, msg)

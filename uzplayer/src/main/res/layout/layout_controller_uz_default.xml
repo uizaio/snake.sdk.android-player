@@ -193,8 +193,8 @@
                 android:id="@id/previewFrameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@drawable/video_frame">
+                android:background="@drawable/video_frame"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@id/ivThumbnail"

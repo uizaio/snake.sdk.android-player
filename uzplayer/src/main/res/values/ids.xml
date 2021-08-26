@@ -27,7 +27,7 @@
     <item name="rootView" type="id" />
     <item name="root_view_controller" type="id" />
     <item name="rootViewUZVideo" type="id" />
-    <item name="player_view" type="id" />
+    <item name="playerView" type="id" />
     <item name="pb" type="id" />
     <item name="layoutDebug" type="id" />
     <item name="layoutControls" type="id" />
