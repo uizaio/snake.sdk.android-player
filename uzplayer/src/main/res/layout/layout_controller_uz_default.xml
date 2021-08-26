@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_player_controller"
-    android:elevation="4dp"
+    android:elevation="3dp"
     android:layoutDirection="ltr">
 
     <LinearLayout
@@ -29,9 +29,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingStart="@dimen/padding_5"
+            android:paddingStart="@dimen/margin_padding_medium"
             android:paddingTop="@dimen/padding_3"
-            android:paddingEnd="@dimen/padding_5"
+            android:paddingEnd="@dimen/margin_padding_medium"
             android:paddingBottom="@dimen/padding_3"
             android:text="@string/live"
             android:textColor="@android:color/white"
@@ -45,6 +45,7 @@
             android:layout_weight="1"
             android:singleLine="true"
             android:textColor="@android:color/white"
+            android:textSize="@dimen/txt_medium"
             android:textStyle="bold" />
 
         <com.uiza.sdk.widget.UZImageButton

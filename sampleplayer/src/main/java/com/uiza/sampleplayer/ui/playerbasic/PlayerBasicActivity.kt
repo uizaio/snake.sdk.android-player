@@ -58,7 +58,8 @@ class PlayerBasicActivity : AppCompatActivity() {
     private fun onPlay() {
         val uzPlayback = UZPlayback()
         uzPlayback.poster = UZApplication.thumbnailUrl
-        uzPlayback.addLinkPlay("https://hls.ted.com/talks/2639.m3u8?preroll=Thousands")
+//        uzPlayback.addLinkPlay("https://hls.ted.com/talks/2639.m3u8?preroll=Thousands")
+        uzPlayback.addLinkPlay("https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8")
         uzVideoView.play(uzPlayback)
     }
 
