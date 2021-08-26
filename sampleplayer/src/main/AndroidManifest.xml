@@ -20,6 +20,20 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.uiza.sampleplayer.ui.common.error.ErrorActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="ErrorActivity" />
+        <activity
+            android:name="com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="AnalyticActivity" />
+        <activity
+            android:name=".ui.playerbasic.PlayerBasicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerBasicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.playerwithuzdragview.PlayerWithUZDragViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerActivity"
@@ -39,14 +53,6 @@
             android:launchMode="singleTask"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.uiza.sampleplayer.ui.common.error.ErrorActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="ErrorActivity" />
-        <activity
-            android:name="com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="AnalyticActivity" />
 
         <meta-data
             android:name="uz_live_views_url"

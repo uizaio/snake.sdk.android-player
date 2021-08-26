@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
+import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
@@ -28,21 +29,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnPlayerWithUZDragView.setOnClickListener {
-            gotoActivity(PlayerWithUZDragViewActivity::class.java)
-        }
-        btnPipPlayer.setOnClickListener {
-            gotoActivity(PlayerPipActivity::class.java)
-        }
-        btnCastPlayer.setOnClickListener {
-            gotoActivity(PlayerCastActivity::class.java)
-        }
         btnAnalytic.setOnClickListener {
             gotoActivity(AnalyticActivity::class.java)
         }
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
+        btnPlayerBasic.setOnClickListener {
+            gotoActivity(PlayerBasicActivity::class.java)
+        }
+        btnPlayerCast.setOnClickListener {
+            gotoActivity(PlayerCastActivity::class.java)
+        }
+        btnPlayerPip.setOnClickListener {
+            gotoActivity(PlayerPipActivity::class.java)
+        }
+        btnPlayerWithUZDragView.setOnClickListener {
+            gotoActivity(PlayerWithUZDragViewActivity::class.java)
+        }
+
         txtVersion.text = String.format(
             Locale.getDefault(),
             "%s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE

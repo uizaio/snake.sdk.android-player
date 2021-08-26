@@ -31,16 +31,22 @@
             android:text="Error" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCastPlayer"
+            android:id="@+id/btnPlayerBasic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cast Player" />
+            android:text="Player basic" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPipPlayer"
+            android:id="@+id/btnPlayerCast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PIP Player(API >= 24 and Support PIP)" />
+            android:text="Player Cast" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerPip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player PIP (API >= 24 and Support PIP)" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerWithUZDragView"
