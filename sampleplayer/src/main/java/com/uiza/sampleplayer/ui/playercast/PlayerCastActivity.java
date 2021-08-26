@@ -35,7 +35,7 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
         etLinkPlay.setText(UZApplication.urls[0]);
-        findViewById(R.id.btn_play).setOnClickListener(view -> onPlay());
+        findViewById(R.id.btnPlay).setOnClickListener(view -> onPlay());
     }
 
     private void onPlay() {

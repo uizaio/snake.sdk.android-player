@@ -58,7 +58,7 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
 
 //        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
 
-        findViewById(R.id.btn_play).setOnClickListener(view -> onPlay());
+        findViewById(R.id.btnPlay).setOnClickListener(view -> onPlay());
         disposables = new CompositeDisposable();
         (new Handler()).postDelayed(this::onPlay, 100);
     }

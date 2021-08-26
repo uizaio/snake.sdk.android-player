@@ -6,7 +6,7 @@
     <View
         android:layout_width="64dp"
         android:layout_height="8dp"
+        android:layout_centerInParent="true"
         android:layout_margin="@dimen/padding_3"
-        android:background="@drawable/background_dragview"
-        android:layout_centerInParent="true" />
+        android:background="@drawable/background_dragview" />
 </RelativeLayout>
