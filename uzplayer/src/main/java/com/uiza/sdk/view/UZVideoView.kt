@@ -343,7 +343,7 @@ class UZVideoView : RelativeLayout,
             ibReplay = pv.findViewById(R.id.exo_replay)
             ibRew = pv.findViewById(R.id.exo_rew)
             ibFfwd = pv.findViewById(R.id.exo_ffwd)
-            ibBackScreen = pv.findViewById(R.id.exo_back_screen)
+            ibBackScreen = pv.findViewById(R.id.btBackScreen)
             ibVolume = pv.findViewById(R.id.exo_volume)
             ibSetting = pv.findViewById(R.id.exo_setting)
             ibPlaylistFolder = pv.findViewById(R.id.ibPlaylistFolder)
