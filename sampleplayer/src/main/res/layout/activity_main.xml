@@ -19,25 +19,6 @@
             tools:text="@string/app_name" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPlayerWithUZDragView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="Player (UZDragView)" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPipPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PIP Player(API >= 24 and Support PIP)" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCastPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cast Player" />
-
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAnalytic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +29,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Error" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCastPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cast Player" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPipPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PIP Player(API >= 24 and Support PIP)" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerWithUZDragView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player (UZDragView)" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
