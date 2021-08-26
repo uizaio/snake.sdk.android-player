@@ -225,7 +225,7 @@
                 android:textStyle="bold" />
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@id/tvDuration"
+                android:id="@+id/tvDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layoutPreview"
@@ -239,7 +239,7 @@
                 android:id="@id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvDuration"
+                android:layout_below="@+id/tvDuration"
                 style="@style/UZPreviewTimeBar" />
         </RelativeLayout>
 
