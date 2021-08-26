@@ -109,8 +109,8 @@ class UZVideoView : RelativeLayout,
     private var ibFullscreen: UZImageButton? = null
     private var btPause: UZImageButton? = null
     private var btPlay: UZImageButton? = null
-    private var ibReplay: UZImageButton? = null
-    private var ibRew: UZImageButton? = null
+    private var btReplay: UZImageButton? = null
+    private var btRew: UZImageButton? = null
     private var ibFfwd: UZImageButton? = null
     private var ibBackScreen: UZImageButton? = null
     private var ibVolume: UZImageButton? = null
@@ -337,8 +337,8 @@ class UZVideoView : RelativeLayout,
             tvTitle = pv.findViewById(R.id.tvTitle)
             btPause = pv.findViewById(R.id.btPause)
             btPlay = pv.findViewById(R.id.btPlay)
-            ibReplay = pv.findViewById(R.id.exo_replay)
-            ibRew = pv.findViewById(R.id.btRew)
+            btReplay = pv.findViewById(R.id.btReplay)
+            btRew = pv.findViewById(R.id.btRew)
             ibFfwd = pv.findViewById(R.id.exo_ffwd)
             ibBackScreen = pv.findViewById(R.id.btBackScreen)
             ibVolume = pv.findViewById(R.id.exo_volume)
@@ -360,7 +360,7 @@ class UZVideoView : RelativeLayout,
             //If auto start true, show button play and gone button pause
             UZViewUtils.goneViews(btPlay)
 
-            ibRew?.setSrcDrawableDisabled()
+            btRew?.setSrcDrawableDisabled()
 
             if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
                 UZViewUtils.goneViews(ibPip)
@@ -842,7 +842,7 @@ class UZVideoView : RelativeLayout,
                 casty?.player?.seekToForward(defaultSeekValue)
             }
             playerManager?.seekToForward(defaultSeekValue)
-        } else if (v === ibRew) {
+        } else if (v === btRew) {
             if (isCastingChromecast) {
                 val casty = UZData.casty
                 casty?.player?.seekToRewind(defaultSeekValue)
@@ -857,7 +857,7 @@ class UZVideoView : RelativeLayout,
             pause()
         } else if (v === btPlay) {
             resume()
-        } else if (v === ibReplay) {
+        } else if (v === btReplay) {
             replay()
         } else if (v === ibSkipNext) {
             handleClickSkipNext()
@@ -1165,11 +1165,11 @@ class UZVideoView : RelativeLayout,
 
     fun seekToBackward(mls: Int) {
         setDefaultSeekValue(mls)
-        ibRew?.performClick()
+        btRew?.performClick()
     }
 
     fun seekToBackward() {
-        ibRew?.performClick()
+        btRew?.performClick()
     }
 
     fun toggleShowHideController() {
@@ -1276,10 +1276,10 @@ class UZVideoView : RelativeLayout,
             ibHearing,
             ibPip,
             ibFfwd,
-            ibRew,
+            btRew,
             btPlay,
             btPause,
-            ibReplay,
+            btReplay,
             ibSkipNext,
             ibSkipPrevious,
             ibSpeed,
@@ -1357,8 +1357,8 @@ class UZVideoView : RelativeLayout,
             btPause?.setRatioLand(7)
             btPause?.setRatioPort(5)
 
-            ibReplay?.setRatioLand(7)
-            ibReplay?.setRatioPort(5)
+            btReplay?.setRatioLand(7)
+            btReplay?.setRatioPort(5)
         }
     }
 
@@ -1488,7 +1488,7 @@ class UZVideoView : RelativeLayout,
         if (isLIVE) {
             return
         }
-        ibRew?.let { r ->
+        btRew?.let { r ->
             ibFfwd?.let { f ->
                 if (currentMls == 0L) {
                     if (r.isSetSrcDrawableEnabled) {
@@ -1620,8 +1620,8 @@ class UZVideoView : RelativeLayout,
                     ivLiveTime,
                 )
             }
-            UZViewUtils.goneViews(ibSpeed, tvDuration, ibRew, ibFfwd)
-            setUIVisible(visible = false, ibRew, ibFfwd)
+            UZViewUtils.goneViews(ibSpeed, tvDuration, btRew, ibFfwd)
+            setUIVisible(visible = false, btRew, ibFfwd)
         } else {
             UZViewUtils.goneViews(
                 rlLiveInfo,
@@ -1629,8 +1629,8 @@ class UZVideoView : RelativeLayout,
                 tvLiveTime,
                 ivLiveTime,
             )
-            UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, ibRew)
-            setUIVisible(visible = true, ibRew, ibFfwd)
+            UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, btRew)
+            setUIVisible(visible = true, btRew, ibFfwd)
             //TODO why set visible not work?
         }
         if (UZAppUtils.isTV(context)) {
@@ -1699,11 +1699,11 @@ class UZVideoView : RelativeLayout,
     private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
         if (isShowReplay) {
             UZViewUtils.goneViews(btPlay, btPause)
-            UZViewUtils.visibleViews(ibReplay)
-            ibReplay?.requestFocus()
+            UZViewUtils.visibleViews(btReplay)
+            btReplay?.requestFocus()
         } else {
             updateUIButtonPlayPauseDependOnIsAutoStart()
-            UZViewUtils.goneViews(ibReplay)
+            UZViewUtils.goneViews(btReplay)
         }
     }
 
