@@ -17,7 +17,7 @@
     <item name="exo_cc" type="id" />
     <item name="ibPlaylistFolder" type="id" />
     <item name="ibHearing" type="id" />
-    <item name="exo_setting" type="id" />
+    <item name="btSetting" type="id" />
     <item name="ibSpeed" type="id" />
     <item name="ibFullscreen" type="id" />
     <item name="viewHeader" type="id" />
@@ -38,8 +38,6 @@
     <item name="rlLiveInfo" type="id" />
     <item name="rl_chrome_cast" type="id" />
     <item name="ibs_cast" type="id" />
-    <item name="rlEndScreen" type="id" />
-    <item name="tvEndScreenMsg" type="id" />
     <item name="tvPosition" type="id" />
     <item name="tvDuration" type="id" />
     <item name="headerView" type="id" />

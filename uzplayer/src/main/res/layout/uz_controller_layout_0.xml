@@ -197,7 +197,7 @@
                 android:layout_weight="1" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_setting"
+                android:id="@id/btSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -206,16 +206,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@id/rlEndScreen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvEndScreenMsg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
 </RelativeLayout>

@@ -122,7 +122,6 @@ class UZVideoView : RelativeLayout,
     private var ibSkipNext: UZImageButton? = null
     private var ibSpeed: UZImageButton? = null
     private var ivLiveTime: UZImageButton? = null
-    private var tvEndScreenMsg: TextView? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var timeBarAtBottom = false
@@ -343,7 +342,7 @@ class UZVideoView : RelativeLayout,
             ibFfwd = pv.findViewById(R.id.exo_ffwd)
             ibBackScreen = pv.findViewById(R.id.btBackScreen)
             ibVolume = pv.findViewById(R.id.exo_volume)
-            ibSetting = pv.findViewById(R.id.exo_setting)
+            ibSetting = pv.findViewById(R.id.btSetting)
             ibPlaylistFolder = pv.findViewById(R.id.ibPlaylistFolder)
             ibHearing = pv.findViewById(R.id.ibHearing)
             ibPip = pv.findViewById(R.id.ibPip)
@@ -374,15 +373,6 @@ class UZVideoView : RelativeLayout,
             }
 
             UZViewUtils.setFocusableViews(focusable = false, ivLiveTime)
-
-            val rlEndScreen = pv.findViewById<RelativeLayout>(R.id.rlEndScreen)
-            UZViewUtils.goneViews(rlEndScreen)
-
-            tvEndScreenMsg = pv.findViewById(R.id.tvEndScreenMsg)
-            tvEndScreenMsg?.let {
-                UZViewUtils.setTextShadow(textView = it, color = Color.WHITE)
-                it.setOnClickListener(this)
-            }
             setEventForViews()
             setVisibilityOfPlaylistFolderController(GONE)
         }
