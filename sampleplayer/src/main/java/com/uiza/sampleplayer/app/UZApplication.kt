@@ -22,7 +22,7 @@ class UZApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        UZPlayer.init(this, true)
+        UZPlayer.init(context = this, prodEnv = true)
         UZApi.init(
             context = this,
             sdkVersionName = UZPlayer.getVersionName(),
