@@ -181,7 +181,7 @@
                 android:id="@+id/rlTopProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layoutPreview">
+                android:layout_below="@+id/layoutPreview">
 
                 <com.uiza.sdk.widget.UZTextView
                     android:id="@+id/tvPosition"
@@ -223,7 +223,7 @@
                 style="@style/UZPreviewTimeBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rlTopProgress" />
+                android:layout_below="@+id/rlTopProgress" />
         </RelativeLayout>
 
     </LinearLayout>

@@ -28,7 +28,7 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@id/headerView"
+            android:id="@+id/headerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black">
@@ -40,7 +40,7 @@
         </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
-            android:id="@id/svBodyView"
+            android:id="@+id/svBodyView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">

@@ -8,14 +8,14 @@
     android:layoutDirection="ltr">
 
     <LinearLayout
-        android:id="@id/llTop"
+        android:id="@+id/llTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/btBackScreen"
+            android:id="@+id/btBackScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -23,7 +23,7 @@
             android:src="@drawable/ic_keyboard_arrow_left_white" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvTitle"
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10"
@@ -42,14 +42,14 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@id/rlLiveInfo"
+        android:id="@+id/rlLiveInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/llTop"
+        android:layout_below="@+id/llTop"
         android:visibility="visible">
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvLiveStatus"
+            android:id="@+id/tvLiveStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -63,17 +63,17 @@
             tools:ignore="RelativeOverlap" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/ivLiveTime"
+            android:id="@+id/ivLiveTime"
             android:layout_width="@dimen/w_15"
             android:layout_height="@dimen/w_15"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/tvLiveTime"
+            android:layout_toStartOf="@+id/tvLiveTime"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
             android:src="@drawable/ic_timer_white_24" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tvLiveTime"
+            android:id="@+id/tvLiveTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -113,7 +113,7 @@
                 android:id="@+id/tvPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layoutPreview"
+                android:layout_below="@+id/layoutPreview"
                 android:layout_marginStart="@dimen/margin_5"
                 android:includeFontPadding="false"
                 android:textColor="@android:color/white"
