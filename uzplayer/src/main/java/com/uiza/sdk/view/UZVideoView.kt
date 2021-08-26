@@ -123,7 +123,6 @@ class UZVideoView : RelativeLayout,
     private var ibSkipNext: UZImageButton? = null
     private var ibSpeed: UZImageButton? = null
     private var ivLiveTime: UZImageButton? = null
-    private var ivLiveView: UZImageButton? = null
     private var tvEndScreenMsg: TextView? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
@@ -356,7 +355,6 @@ class UZVideoView : RelativeLayout,
             tvLiveStatus = pv.findViewById(R.id.tvLiveStatus)
             tvLiveView = pv.findViewById(R.id.tvLiveView)
             tvLiveTime = pv.findViewById(R.id.tvLiveTime)
-            ivLiveView = pv.findViewById(R.id.ivLiveView)
             ivLiveTime = pv.findViewById(R.id.ivLiveTime)
 
             tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(0)
@@ -377,7 +375,7 @@ class UZVideoView : RelativeLayout,
                 layoutDebug.visibility = GONE
             }
 
-            UZViewUtils.setFocusableViews(focusable = false, ivLiveView, ivLiveTime)
+            UZViewUtils.setFocusableViews(focusable = false, ivLiveTime)
 
             val rlEndScreen = pv.findViewById<RelativeLayout>(R.id.rlEndScreen)
             UZViewUtils.goneViews(rlEndScreen)
@@ -1635,7 +1633,7 @@ class UZVideoView : RelativeLayout,
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
                 UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime)
-                UZViewUtils.goneViews(ivLiveTime, ivLiveView)
+                UZViewUtils.goneViews(ivLiveTime)
             } else {
                 UZViewUtils.visibleViews(
                     rlLiveInfo,
@@ -1643,7 +1641,6 @@ class UZVideoView : RelativeLayout,
                     tvLiveTime,
                     ivLiveTime,
                     tvLiveView,
-                    ivLiveView
                 )
             }
             UZViewUtils.goneViews(ibSpeed, tvDuration, ibRew, ibFfwd)
@@ -1655,7 +1652,6 @@ class UZVideoView : RelativeLayout,
                 tvLiveTime,
                 tvLiveView,
                 ivLiveTime,
-                ivLiveView
             )
             UZViewUtils.visibleViews(ibSpeed, tvDuration, ibFfwd, ibRew)
             setUIVisible(visible = true, ibRew, ibFfwd)

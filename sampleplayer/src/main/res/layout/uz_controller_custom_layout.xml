@@ -27,7 +27,7 @@
         android:orientation="horizontal">
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/btBackScreen"
+            android:id="@+id/btBackScreen"
             android:layout_width="@dimen/w_50"
             android:layout_height="@dimen/w_50"
             android:background="@android:color/transparent"
@@ -92,18 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_5"
-            android:layout_toStartOf="@id/ivLiveView"
             android:textColor="@android:color/white" />
-
-        <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/ivLiveView"
-            android:layout_width="@dimen/w_15"
-            android:layout_height="@dimen/w_15"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/tvLiveView"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_eyes_show_and_hide" />
 
         <com.uiza.sdk.widget.UZTextView
             android:id="@id/tvLiveView"
