@@ -135,7 +135,6 @@ class UZVideoView : RelativeLayout,
     private var isPIPModeEnabled = false
     private var positionPIPPlayer = 0L
     var isAutoSwitchItemPlaylistFolder = true
-    private var isAutoShowController = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
@@ -230,7 +229,6 @@ class UZVideoView : RelativeLayout,
                 layoutRootView.addView(it)
             }
 
-            controllerAutoShow = isAutoShowController
             findViews()
             resizeContainerView()
         }
@@ -375,7 +373,6 @@ class UZVideoView : RelativeLayout,
     var controllerAutoShow: Boolean
         get() = playerView?.controllerAutoShow ?: false
         set(isAutoShowController) {
-            this.isAutoShowController = isAutoShowController
             playerView?.controllerAutoShow = isAutoShowController
         }
 
