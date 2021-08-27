@@ -138,11 +138,10 @@ class UZVideoView : RelativeLayout,
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
-    private var activityIsPausing = false
     private var timestampOnStartPreview = 0L
-    private var isOnPreview = false
-    private var maxSeekLastDuration = 0L
-    var isLandscape = false
+    private var isOnPreviewTimeBar = false
+    private var maxSeekLastDurationTimeBar = 0L
+    private var isLandscape = false
     var isAlwaysPortraitScreen = false
     private var isHideOnTouch = true
     private var useController = true
@@ -291,10 +290,10 @@ class UZVideoView : RelativeLayout,
                             }
                             val seekLastDuration =
                                 System.currentTimeMillis() - timestampOnStartPreview
-                            if (maxSeekLastDuration < seekLastDuration) {
-                                maxSeekLastDuration = seekLastDuration
+                            if (maxSeekLastDurationTimeBar < seekLastDuration) {
+                                maxSeekLastDurationTimeBar = seekLastDuration
                             }
-                            isOnPreview = false
+                            isOnPreviewTimeBar = false
                             onStopPreview(progress)
                             onPreviewChangeListener?.onStopPreview(previewView, progress)
                         }
@@ -304,7 +303,7 @@ class UZVideoView : RelativeLayout,
                             progress: Int,
                             fromUser: Boolean
                         ) {
-                            isOnPreview = true
+                            isOnPreviewTimeBar = true
                             updateUIIbRewIconDependOnProgress(
                                 currentMls = progress.toLong(),
                                 isCalledFromUZTimeBarEvent = true
@@ -669,7 +668,6 @@ class UZVideoView : RelativeLayout,
         if (isCastingChromecast) {
             return
         }
-        activityIsPausing = false
 //        if (ibPlayIcon == null || ibPlayIcon?.visibility != VISIBLE) {
 //            playerManager?.resume()
 //        }
@@ -714,7 +712,6 @@ class UZVideoView : RelativeLayout,
     }
 
     fun onPauseView() {
-        activityIsPausing = true
         positionPIPPlayer = currentPosition
         SensorOrientationChangeNotifier.getInstance(context)?.remove(this)
 
@@ -1402,7 +1399,7 @@ class UZVideoView : RelativeLayout,
         if (isCalledFromUZTimeBarEvent) {
             setTextPosition(currentMls)
         } else {
-            if (!isOnPreview) {
+            if (!isOnPreviewTimeBar) {
                 //uzTimeBar is displaying
                 setTextPosition(currentMls)
             }
