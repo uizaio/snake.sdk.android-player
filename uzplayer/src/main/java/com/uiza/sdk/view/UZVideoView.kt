@@ -96,9 +96,10 @@ class UZVideoView : RelativeLayout,
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
+    private var playerManager: UZPlayerManager? = null
+
     private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
-    private var playerManager: UZPlayerManager? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
     private var ivThumbnailUZ: ImageView? = null
@@ -1874,8 +1875,8 @@ class UZVideoView : RelativeLayout,
                         pm.setPlayWhenReady(false)
                         val posterUrl = UZData.getPosterUrl()
                         if (!TextUtils.isEmpty(posterUrl))
-                            ivThumbnailUZ?.let {
-                                ImageUtils.loadThumbnail(imageView = it, imageUrl = posterUrl)
+                            ivThumbnailUZ?.let { iv ->
+                                ImageUtils.loadThumbnail(imageView = iv, imageUrl = posterUrl)
                             }
                     }
                 }
