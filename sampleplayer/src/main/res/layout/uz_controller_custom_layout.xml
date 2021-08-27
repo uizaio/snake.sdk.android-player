@@ -229,7 +229,7 @@
                 app:srcDisabled="@mipmap/ic_disable_2" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/ibPlaylistFolder"
+                android:id="@+id/btPlaylistFolder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -258,7 +258,7 @@
                 android:src="@drawable/ic_settings_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/exo_volume"
+                android:id="@+id/btVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"

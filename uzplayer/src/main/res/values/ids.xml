@@ -5,10 +5,10 @@
     <item name="btBackScreen" type="id" />
     <item name="tvTitle" type="id" />
     <item name="exo_cast" type="id" />
-    <item name="ibPip" type="id" />
+    <item name="btPip" type="id" />
     <item name="layoutPreview" type="id" />
     <item name="ivThumbnail" type="id" />
-    <item name="exo_volume" type="id" />
+    <item name="btVolume" type="id" />
     <item name="btPlay" type="id" />
     <item name="btPause" type="id" />
     <item name="btRew" type="id" />
@@ -16,8 +16,8 @@
     <item name="btSkipNext" type="id" />
     <item name="ibSkipPrevious" type="id" />
     <item name="exo_cc" type="id" />
-    <item name="ibPlaylistFolder" type="id" />
-    <item name="ibHearing" type="id" />
+    <item name="btPlaylistFolder" type="id" />
+    <item name="btHearing" type="id" />
     <item name="btSetting" type="id" />
     <item name="ibSpeed" type="id" />
     <item name="btFullscreen" type="id" />

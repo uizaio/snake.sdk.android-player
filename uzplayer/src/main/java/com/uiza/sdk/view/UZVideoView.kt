@@ -112,12 +112,12 @@ class UZVideoView : RelativeLayout,
     private var btReplay: UZImageButton? = null
     private var btRew: UZImageButton? = null
     private var btFfwd: UZImageButton? = null
-    private var ibBackScreen: UZImageButton? = null
-    private var ibVolume: UZImageButton? = null
-    private var ibSetting: UZImageButton? = null
-    private var ibPlaylistFolder: UZImageButton? = null
-    private var ibHearing: UZImageButton? = null
-    private var ibPip: UZImageButton? = null
+    private var btBackScreen: UZImageButton? = null
+    private var btVolume: UZImageButton? = null
+    private var btSetting: UZImageButton? = null
+    private var btPlaylistFolder: UZImageButton? = null
+    private var btHearing: UZImageButton? = null
+    private var btPip: UZImageButton? = null
     private var ibSkipPrevious: UZImageButton? = null
     private var btSkipNext: UZImageButton? = null
     private var ibSpeed: UZImageButton? = null
@@ -340,12 +340,12 @@ class UZVideoView : RelativeLayout,
             btReplay = pv.findViewById(R.id.btReplay)
             btRew = pv.findViewById(R.id.btRew)
             btFfwd = pv.findViewById(R.id.btFfwd)
-            ibBackScreen = pv.findViewById(R.id.btBackScreen)
-            ibVolume = pv.findViewById(R.id.exo_volume)
-            ibSetting = pv.findViewById(R.id.btSetting)
-            ibPlaylistFolder = pv.findViewById(R.id.ibPlaylistFolder)
-            ibHearing = pv.findViewById(R.id.ibHearing)
-            ibPip = pv.findViewById(R.id.ibPip)
+            btBackScreen = pv.findViewById(R.id.btBackScreen)
+            btVolume = pv.findViewById(R.id.btVolume)
+            btSetting = pv.findViewById(R.id.btSetting)
+            btPlaylistFolder = pv.findViewById(R.id.btPlaylistFolder)
+            btHearing = pv.findViewById(R.id.btHearing)
+            btPip = pv.findViewById(R.id.btPip)
             btSkipNext = pv.findViewById(R.id.btSkipNext)
             ibSkipPrevious = pv.findViewById(R.id.ibSkipPrevious)
             ibSpeed = pv.findViewById(R.id.ibSpeed)
@@ -363,7 +363,7 @@ class UZVideoView : RelativeLayout,
             btRew?.setSrcDrawableDisabled()
 
             if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
-                UZViewUtils.goneViews(ibPip)
+                UZViewUtils.goneViews(btPip)
             }
 
             if (BuildConfig.DEBUG) {
@@ -768,7 +768,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (ibPip != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
+        get() = (btPip != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
 
     fun onStopPreview(progress: Int) {
         if (!isCastingChromecast) {
@@ -793,7 +793,7 @@ class UZVideoView : RelativeLayout,
                 btFullscreen?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
-                UZViewUtils.goneViews(ibPip)
+                UZViewUtils.goneViews(btPip)
             } else {
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
@@ -803,7 +803,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
-                    UZViewUtils.visibleViews(ibPip)
+                    UZViewUtils.visibleViews(btPip)
                 }
             }
             setMarginPreviewTimeBar()
@@ -820,17 +820,17 @@ class UZVideoView : RelativeLayout,
     override fun onClick(v: View) {
         if (v === btFullscreen) {
             toggleFullscreen()
-        } else if (v === ibBackScreen) {
+        } else if (v === btBackScreen) {
             handleClickBackScreen()
-        } else if (v === ibVolume) {
+        } else if (v === btVolume) {
             handleClickBtVolume()
-        } else if (v === ibSetting) {
+        } else if (v === btSetting) {
             showSettingsDialog()
-        } else if (v === ibPlaylistFolder) {
+        } else if (v === btPlaylistFolder) {
             handleClickPlaylistFolder()
-        } else if (v === ibHearing) {
+        } else if (v === btHearing) {
             handleClickHearing()
-        } else if (v === ibPip) {
+        } else if (v === btPip) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
@@ -1127,7 +1127,7 @@ class UZVideoView : RelativeLayout,
             val casty = UZData.casty
             if (casty != null) {
                 val isMute = casty.toggleMuteVolume()
-                ibVolume?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
+                btVolume?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
             }
         }
         toggleVolumeMute()
@@ -1188,7 +1188,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun toggleVolume() {
-        ibVolume?.performClick()
+        btVolume?.performClick()
     }
 
     fun toggleFullscreen() {
@@ -1234,9 +1234,9 @@ class UZVideoView : RelativeLayout,
             playerManager?.let { pm ->
                 pm.volume = volume
                 if (pm.volume != 0f) {
-                    ibVolume?.setSrcDrawableEnabled()
+                    btVolume?.setSrcDrawableEnabled()
                 } else {
-                    ibVolume?.setSrcDrawableDisabledCanTouch()
+                    btVolume?.setSrcDrawableDisabledCanTouch()
                 }
             }
         }
@@ -1246,11 +1246,11 @@ class UZVideoView : RelativeLayout,
         playerManager?.let { pm ->
             if (pm.volume == 0f) {
                 volume = volumeToggle
-                ibVolume?.setSrcDrawableEnabled()
+                btVolume?.setSrcDrawableEnabled()
             } else {
                 volumeToggle = volume
                 volume = 0f
-                ibVolume?.setSrcDrawableDisabledCanTouch()
+                btVolume?.setSrcDrawableDisabledCanTouch()
             }
         }
     }
@@ -1269,12 +1269,12 @@ class UZVideoView : RelativeLayout,
     private fun setEventForViews() {
         setClickAndFocusEventForViews(
             btFullscreen,
-            ibBackScreen,
-            ibVolume,
-            ibSetting,
-            ibPlaylistFolder,
-            ibHearing,
-            ibPip,
+            btBackScreen,
+            btVolume,
+            btSetting,
+            btPlaylistFolder,
+            btHearing,
+            btPip,
             btFfwd,
             btRew,
             btPlay,
@@ -1603,10 +1603,10 @@ class UZVideoView : RelativeLayout,
 
     private fun updateUIDependOnLiveStream() {
         if (isCastingChromecast) {
-            UZViewUtils.goneViews(ibPip)
+            UZViewUtils.goneViews(btPip)
         } else if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide ibPictureInPictureIcon if device is TV
-            UZViewUtils.goneViews(ibPip)
+            UZViewUtils.goneViews(btPip)
         }
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
@@ -1710,7 +1710,7 @@ class UZVideoView : RelativeLayout,
     private fun setVisibilityOfPlaylistFolderController(visibilityOfPlaylistFolderController: Int) {
         UZViewUtils.setVisibilityViews(
             visibility = visibilityOfPlaylistFolderController,
-            ibPlaylistFolder,
+            btPlaylistFolder,
             btSkipNext,
             ibSkipPrevious
         )
