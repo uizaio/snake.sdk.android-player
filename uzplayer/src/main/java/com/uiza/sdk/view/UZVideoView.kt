@@ -75,6 +75,8 @@ import okhttp3.ResponseBody
 import java.util.*
 
 //TODO chi co the dung controller khi da load thanh cong link play
+//TODO life circle
+//TODO tracking
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
@@ -85,7 +87,6 @@ class UZVideoView : RelativeLayout,
         private const val HYPHEN = "-"
         private const val FAST_FORWARD_REWIND_INTERVAL = 10000L // 10s
         private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 8000 // 8s
-        private const val DEFAULT_VALUE_TRACKING_LOOP = 5000L // 5s
         const val DEFAULT_TARGET_DURATION_MLS = 2000L // 2s
         private const val ARG_VIDEO_POSITION = "ARG_VIDEO_POSITION"
     }
@@ -95,7 +96,6 @@ class UZVideoView : RelativeLayout,
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
-    private var mHandler = Handler(Looper.getMainLooper())
     private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
     private var playerManager: UZPlayerManager? = null
@@ -590,7 +590,6 @@ class UZVideoView : RelativeLayout,
             urlThumbnailsPreviewSeekBar = playback.poster
         )
         playerCallback?.isInitResult(linkPlay)
-        trackWatchingTimer(firstRun = true)
         initPlayerManager()
     }
 
@@ -1763,7 +1762,7 @@ class UZVideoView : RelativeLayout,
                 dialogPair.second.setAllowAdaptiveSelections(false)
                 dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
                     override fun onClick() {
-                        mHandler.postDelayed(
+                        Handler(Looper.getMainLooper()).postDelayed(
                             {
                                 if (dialogPair.first == null) {
                                     return@postDelayed
@@ -2136,39 +2135,6 @@ class UZVideoView : RelativeLayout,
 
     fun hideTextLiveStreamLatency() {
         statsForNerdsView.hideTextLiveStreamLatency()
-    }
-
-    private fun trackWatchingTimer(firstRun: Boolean) {
-        val pi = UZData.getPlaybackInfo()
-        if (pi == null) {
-            log("Do not track watching")
-        } else {
-            viewerSessionId?.let { vsi ->
-                val data = UZTrackingData(
-                    info = pi,
-                    viewerSessionId = vsi,
-                    type = UZEventType.WATCHING
-                )
-                mHandler.postDelayed(
-                    {
-                        if (isPlaying) {
-                            disposables.add(
-                                pushEvent(
-                                    data = data,
-                                    onNext = { res: ResponseBody? ->
-                                        log("send track watching: " + viewerSessionId + ", response " + res?.string())
-                                    }
-                                ) { error: Throwable? ->
-                                    error?.printStackTrace()
-                                    log("send track watching error: ${error?.toString()}")
-                                })
-                        }
-                        trackWatchingTimer(false)
-
-                    }, if (firstRun) 0 else DEFAULT_VALUE_TRACKING_LOOP
-                ) // 5s
-            }
-        }
     }
 
     override val title: String?
