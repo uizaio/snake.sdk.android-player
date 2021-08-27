@@ -244,7 +244,6 @@ object UZViewUtils {
     @JvmStatic
     fun resizeLayout(
         viewGroup: ViewGroup,
-        pixelAdded: Int,
         videoW: Int,
         videoH: Int,
         isFreeSize: Boolean
@@ -258,12 +257,12 @@ object UZViewUtils {
         } else { //portrait
             widthSurfaceView = screenWidth
             heightSurfaceView = if (videoW == 0 || videoH == 0) {
-                (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
+                (widthSurfaceView * Constants.RATIO_9_16).toInt()
             } else {
                 if (isFreeSize) {
-                    widthSurfaceView * videoH / videoW + pixelAdded
+                    widthSurfaceView * videoH / videoW
                 } else {
-                    (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
+                    (widthSurfaceView * Constants.RATIO_9_16).toInt()
                 }
             }
         }

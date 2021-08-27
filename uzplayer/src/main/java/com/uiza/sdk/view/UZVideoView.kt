@@ -121,7 +121,6 @@ class UZVideoView : RelativeLayout,
     override var playerView: UZPlayerView? = null
 
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
-    private var timeBarAtBottom = false
     private var uzChromeCast: UZChromeCast? = null
     override var isCastingChromecast = false
 
@@ -274,14 +273,11 @@ class UZVideoView : RelativeLayout,
             } else {
                 timeBarUZ?.let { tb ->
                     if (tb.tag == null) {
-                        timeBarAtBottom = false
                         pv.visibility = VISIBLE
                     } else {
                         if (tb.tag.toString() == resources.getString(R.string.use_bottom_uz_timebar)) {
-                            timeBarAtBottom = true
                             setMarginDependOnUZTimeBar(pv.videoSurfaceView)
                         } else {
-                            timeBarAtBottom = false
                             pv.visibility = VISIBLE
                         }
                     }
@@ -353,7 +349,7 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(btPlayUZ)
 
             btRewUZ?.setSrcDrawableDisabled()
-            11
+
             if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView || !isPIPModeEnabled) {
                 UZViewUtils.goneViews(btPipUZ)
             }
@@ -382,14 +378,6 @@ class UZVideoView : RelativeLayout,
         set(isAutoShowController) {
             this.isAutoShowController = isAutoShowController
             playerView?.controllerAutoShow = isAutoShowController
-        }
-
-    // Lay pixel dung cho custom UI like youtube, timeBar bottom of player controller
-    private val pixelAdded: Int
-        get() = if (timeBarAtBottom) {
-            heightTimeBar / 2
-        } else {
-            0
         }
 
     //return pixel
@@ -430,7 +418,6 @@ class UZVideoView : RelativeLayout,
     fun setSize(width: Int, height: Int) {
         UZViewUtils.resizeLayout(
             viewGroup = layoutRootView,
-            pixelAdded = pixelAdded,
             videoW = width,
             videoH = height,
             isFreeSize = isFreeSize
@@ -797,9 +784,6 @@ class UZVideoView : RelativeLayout,
             setMarginPreviewTimeBar()
             updateUISizeThumbnail()
             updateUIPositionOfProgressBar()
-            if (timeBarAtBottom) {
-                setMarginDependOnUZTimeBar(pv.videoSurfaceView)
-            }
             playerCallback?.onScreenRotate(isLandscape)
         }
     }
@@ -1911,9 +1895,6 @@ class UZVideoView : RelativeLayout,
         updateTvDuration()
         updateUIButtonPlayPauseDependOnIsAutoStart()
         updateUIDependOnLiveStream()
-        if (timeBarAtBottom) {
-            UZViewUtils.visibleViews(playerView)
-        }
         resizeContainerView()
 
         //enable from playPlaylistPosition() prevent double click
