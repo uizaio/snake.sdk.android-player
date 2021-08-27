@@ -10,7 +10,6 @@
     </style>
     <!--STOP CHROMECAST-->
 
-
     <style name="uiza_dialog_animation">
         <item name="android:windowEnterAnimation">@anim/slide_up_enter</item>
         <item name="android:windowExitAnimation">@anim/slide_down_exit</item>
