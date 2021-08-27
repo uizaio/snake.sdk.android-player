@@ -69,7 +69,7 @@ class AdapterPlaylistFolder(
     }
 
     class PlayListHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvDuration: TextView = view.findViewById(R.id.tvDuration)
+        val tvDuration: TextView = view.findViewById(R.id.tvDurationUZ)
         val tvDuration2: TextView = view.findViewById(R.id.tvDuration2)
         val ivCover: ImageView = view.findViewById(R.id.ivCover)
         val tvName: TextView = view.findViewById(R.id.tvName)

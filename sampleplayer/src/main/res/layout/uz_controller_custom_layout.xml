@@ -27,7 +27,7 @@
         android:orientation="horizontal">
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@+id/btBackScreen"
+            android:id="@+id/btBackScreenUZ"
             android:layout_width="@dimen/w_50"
             android:layout_height="@dimen/w_50"
             android:background="@android:color/transparent"
@@ -36,7 +36,7 @@
             app:srcCompat="@drawable/ic_arrow_down" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvTitleUZ"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10"
@@ -48,7 +48,7 @@
             app:useDefaultTV="false" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@+id/btFullscreen"
+            android:id="@+id/btFullscreenUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -117,7 +117,7 @@
                 android:background="@drawable/video_frame">
 
                 <ImageView
-                    android:id="@+id/ivThumbnail"
+                    android:id="@+id/ivThumbnailUZ"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/app_name" />
@@ -125,7 +125,7 @@
             </FrameLayout>
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@+id/tvPosition"
+                android:id="@+id/tvPositionUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layoutPreviewUZ"
@@ -135,7 +135,7 @@
                 android:textStyle="bold" />
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@+id/tvDuration"
+                android:id="@+id/tvDurationUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layoutPreviewUZ"
@@ -150,7 +150,7 @@
                 android:id="@+id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvDuration"
+                android:layout_below="@+id/tvDurationUZ"
                 app:ad_marker_color="@android:color/white"
                 app:buffered_color="@color/red"
                 app:played_ad_marker_color="@color/light_yellow"
@@ -167,7 +167,7 @@
             android:orientation="horizontal">
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btPlay"
+                android:id="@+id/btPlayUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -176,7 +176,7 @@
                 android:tint="@color/red" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btPause"
+                android:id="@+id/btPauseUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -185,7 +185,7 @@
                 android:tint="@color/deep_pink" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btReplay"
+                android:id="@+id/btReplayUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -193,7 +193,7 @@
                 android:src="@drawable/ic_replay_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btRew"
+                android:id="@+id/btRewUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -202,7 +202,7 @@
                 app:srcDisabled="@mipmap/ic_disabled_3" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btFfwd"
+                android:id="@+id/btFfwdUZ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"

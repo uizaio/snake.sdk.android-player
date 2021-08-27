@@ -100,19 +100,19 @@ class UZVideoView : RelativeLayout,
     private var rlLiveInfoUZ: RelativeLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
-    private var ivThumbnail: ImageView? = null
-    private var tvPosition: UZTextView? = null
-    private var tvDuration: UZTextView? = null
-    private var tvTitle: TextView? = null
+    private var ivThumbnailUZ: ImageView? = null
+    private var tvPositionUZ: UZTextView? = null
+    private var tvDurationUZ: UZTextView? = null
+    private var tvTitleUZ: TextView? = null
     private var tvLiveStatusUZ: TextView? = null
     private var tvLiveTimeUZ: TextView? = null
-    private var btFullscreen: UZImageButton? = null
-    private var btPause: UZImageButton? = null
-    private var btPlay: UZImageButton? = null
-    private var btReplay: UZImageButton? = null
-    private var btRew: UZImageButton? = null
-    private var btFfwd: UZImageButton? = null
-    private var btBackScreen: UZImageButton? = null
+    private var btFullscreenUZ: UZImageButton? = null
+    private var btPauseUZ: UZImageButton? = null
+    private var btPlayUZ: UZImageButton? = null
+    private var btReplayUZ: UZImageButton? = null
+    private var btRewUZ: UZImageButton? = null
+    private var btFfwdUZ: UZImageButton? = null
+    private var btBackScreenUZ: UZImageButton? = null
     private var btVolume: UZImageButton? = null
     private var btSetting: UZImageButton? = null
     private var btPlaylistFolder: UZImageButton? = null
@@ -330,17 +330,17 @@ class UZVideoView : RelativeLayout,
             }
 
             llTopUZ = pv.findViewById(R.id.llTopUZ)
-            ivThumbnail = pv.findViewById(R.id.ivThumbnail)
-            tvPosition = pv.findViewById(R.id.tvPosition)
-            tvDuration = pv.findViewById(R.id.tvDuration)
-            btFullscreen = pv.findViewById(R.id.btFullscreen)
-            tvTitle = pv.findViewById(R.id.tvTitle)
-            btPause = pv.findViewById(R.id.btPause)
-            btPlay = pv.findViewById(R.id.btPlay)
-            btReplay = pv.findViewById(R.id.btReplay)
-            btRew = pv.findViewById(R.id.btRew)
-            btFfwd = pv.findViewById(R.id.btFfwd)
-            btBackScreen = pv.findViewById(R.id.btBackScreen)
+            ivThumbnailUZ = pv.findViewById(R.id.ivThumbnailUZ)
+            tvPositionUZ = pv.findViewById(R.id.tvPositionUZ)
+            tvDurationUZ = pv.findViewById(R.id.tvDurationUZ)
+            btFullscreenUZ = pv.findViewById(R.id.btFullscreenUZ)
+            tvTitleUZ = pv.findViewById(R.id.tvTitleUZ)
+            btPauseUZ = pv.findViewById(R.id.btPauseUZ)
+            btPlayUZ = pv.findViewById(R.id.btPlayUZ)
+            btReplayUZ = pv.findViewById(R.id.btReplayUZ)
+            btRewUZ = pv.findViewById(R.id.btRewUZ)
+            btFfwdUZ = pv.findViewById(R.id.btFfwdUZ)
+            btBackScreenUZ = pv.findViewById(R.id.btBackScreenUZ)
             btVolume = pv.findViewById(R.id.btVolume)
             btSetting = pv.findViewById(R.id.btSetting)
             btPlaylistFolder = pv.findViewById(R.id.btPlaylistFolder)
@@ -354,13 +354,13 @@ class UZVideoView : RelativeLayout,
             tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
             ivLiveTimeUZ = pv.findViewById(R.id.ivLiveTimeUZ)
 
-            tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(0)
-            tvDuration?.text = "-:-"
+            tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
+            tvDurationUZ?.text = "-:-"
 
             //If auto start true, show button play and gone button pause
-            UZViewUtils.goneViews(btPlay)
+            UZViewUtils.goneViews(btPlayUZ)
 
-            btRew?.setSrcDrawableDisabled()
+            btRewUZ?.setSrcDrawableDisabled()
 
             if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
                 UZViewUtils.goneViews(btPip)
@@ -539,8 +539,8 @@ class UZVideoView : RelativeLayout,
             playerManager?.resume()
         }
 
-        UZViewUtils.goneViews(btPlay)
-        btPause?.let {
+        UZViewUtils.goneViews(btPlayUZ)
+        btPauseUZ?.let {
             UZViewUtils.visibleViews(it)
             it.requestFocus()
         }
@@ -554,9 +554,9 @@ class UZVideoView : RelativeLayout,
         } else {
             playerManager?.pause()
         }
-        UZViewUtils.goneViews(btPause)
+        UZViewUtils.goneViews(btPauseUZ)
         keepScreenOn = false
-        btPlay?.let {
+        btPlayUZ?.let {
             UZViewUtils.visibleViews(it)
             it.requestFocus()
         }
@@ -790,7 +790,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.hideSystemUiFullScreen(pv)
                 }
                 isLandscape = true
-                btFullscreen?.let {
+                btFullscreenUZ?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
                 UZViewUtils.goneViews(btPip)
@@ -799,7 +799,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.hideSystemUi(pv)
                 }
                 isLandscape = false
-                btFullscreen?.let {
+                btFullscreenUZ?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
@@ -818,9 +818,9 @@ class UZVideoView : RelativeLayout,
     }
 
     override fun onClick(v: View) {
-        if (v === btFullscreen) {
+        if (v === btFullscreenUZ) {
             toggleFullscreen()
-        } else if (v === btBackScreen) {
+        } else if (v === btBackScreenUZ) {
             handleClickBackScreen()
         } else if (v === btVolume) {
             handleClickBtVolume()
@@ -836,13 +836,13 @@ class UZVideoView : RelativeLayout,
             showTrackSelectionDialog(v, true)
         } else if (v === tvLiveStatusUZ) {
             seekToEndLive()
-        } else if (v === btFfwd) {
+        } else if (v === btFfwdUZ) {
             if (isCastingChromecast) {
                 val casty = UZData.casty
                 casty?.player?.seekToForward(defaultSeekValue)
             }
             playerManager?.seekToForward(defaultSeekValue)
-        } else if (v === btRew) {
+        } else if (v === btRewUZ) {
             if (isCastingChromecast) {
                 val casty = UZData.casty
                 casty?.player?.seekToRewind(defaultSeekValue)
@@ -853,11 +853,11 @@ class UZVideoView : RelativeLayout,
                     updateUIEndScreen()
                 }
             }
-        } else if (v === btPause) {
+        } else if (v === btPauseUZ) {
             pause()
-        } else if (v === btPlay) {
+        } else if (v === btPlayUZ) {
             resume()
-        } else if (v === btReplay) {
+        } else if (v === btReplayUZ) {
             replay()
         } else if (v === btSkipNext) {
             handleClickSkipNext()
@@ -1154,22 +1154,22 @@ class UZVideoView : RelativeLayout,
 
     fun seekToForward(mls: Int) {
         setDefaultSeekValue(mls)
-        btFfwd?.performClick()
+        btFfwdUZ?.performClick()
     }
 
     fun seekToForward() {
         if (!isLIVE) {
-            btFfwd?.performClick()
+            btFfwdUZ?.performClick()
         }
     }
 
     fun seekToBackward(mls: Int) {
         setDefaultSeekValue(mls)
-        btRew?.performClick()
+        btRewUZ?.performClick()
     }
 
     fun seekToBackward() {
-        btRew?.performClick()
+        btRewUZ?.performClick()
     }
 
     fun toggleShowHideController() {
@@ -1268,18 +1268,18 @@ class UZVideoView : RelativeLayout,
 
     private fun setEventForViews() {
         setClickAndFocusEventForViews(
-            btFullscreen,
-            btBackScreen,
+            btFullscreenUZ,
+            btBackScreenUZ,
             btVolume,
             btSetting,
             btPlaylistFolder,
             btHearing,
             btPip,
-            btFfwd,
-            btRew,
-            btPlay,
-            btPause,
-            btReplay,
+            btFfwdUZ,
+            btRewUZ,
+            btPlayUZ,
+            btPauseUZ,
+            btReplayUZ,
             btSkipNext,
             btSkipPrevious,
             btSpeedUZ,
@@ -1300,8 +1300,8 @@ class UZVideoView : RelativeLayout,
     //if not, gone button play and show button pause
     private fun updateUIButtonPlayPauseDependOnIsAutoStart() {
         if (isAutoStart) {
-            UZViewUtils.goneViews(btPlay)
-            btPause?.let { ib ->
+            UZViewUtils.goneViews(btPlayUZ)
+            btPauseUZ?.let { ib ->
                 UZViewUtils.visibleViews(ib)
                 if (!isSetFirstRequestFocusDone) {
                     ib.requestFocus() //set first request focus if using player for TV
@@ -1310,8 +1310,8 @@ class UZVideoView : RelativeLayout,
             }
         } else {
             if (isPlaying) {
-                UZViewUtils.goneViews(btPlay)
-                btPause?.let { ib ->
+                UZViewUtils.goneViews(btPlayUZ)
+                btPauseUZ?.let { ib ->
                     UZViewUtils.visibleViews(ib)
                     if (!isSetFirstRequestFocusDone) {
                         ib.requestFocus() //set first request focus if using player for TV
@@ -1319,14 +1319,14 @@ class UZVideoView : RelativeLayout,
                     }
                 }
             } else {
-                btPlay?.let { ib ->
+                btPlayUZ?.let { ib ->
                     UZViewUtils.visibleViews(ib)
                     if (!isSetFirstRequestFocusDone) {
                         ib.requestFocus() //set first request focus if using player for TV
                         isSetFirstRequestFocusDone = true
                     }
                 }
-                UZViewUtils.goneViews(btPause)
+                UZViewUtils.goneViews(btPauseUZ)
             }
         }
     }
@@ -1351,14 +1351,14 @@ class UZVideoView : RelativeLayout,
         val curSkinLayoutId = UZData.uzPlayerSkinLayoutId
         if (curSkinLayoutId == R.layout.uzplayer_skin_2 || curSkinLayoutId == R.layout.uzplayer_skin_3) {
 
-            btPlay?.setRatioLand(7)
-            btPlay?.setRatioPort(5)
+            btPlayUZ?.setRatioLand(7)
+            btPlayUZ?.setRatioPort(5)
 
-            btPause?.setRatioLand(7)
-            btPause?.setRatioPort(5)
+            btPauseUZ?.setRatioLand(7)
+            btPauseUZ?.setRatioPort(5)
 
-            btReplay?.setRatioLand(7)
-            btReplay?.setRatioPort(5)
+            btReplayUZ?.setRatioLand(7)
+            btReplayUZ?.setRatioPort(5)
         }
     }
 
@@ -1452,9 +1452,9 @@ class UZVideoView : RelativeLayout,
 
     private fun updateTvDuration() {
         if (isLIVE) {
-            tvDuration?.text = StringUtils.convertMlsecondsToHMmSs(mls = 0)
+            tvDurationUZ?.text = StringUtils.convertMlsecondsToHMmSs(mls = 0)
         } else {
-            tvDuration?.text = StringUtils.convertMlsecondsToHMmSs(mls = duration)
+            tvDurationUZ?.text = StringUtils.convertMlsecondsToHMmSs(mls = duration)
         }
     }
 
@@ -1462,13 +1462,13 @@ class UZVideoView : RelativeLayout,
         if (isLIVE) {
             val duration = duration
             val past = duration - currentMls
-            tvPosition?.text = String.format(
+            tvPositionUZ?.text = String.format(
                 "%s%s",
                 HYPHEN,
                 StringUtils.convertMlsecondsToHMmSs(past)
             )
         } else {
-            tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(currentMls)
+            tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(currentMls)
         }
     }
 
@@ -1488,8 +1488,8 @@ class UZVideoView : RelativeLayout,
         if (isLIVE) {
             return
         }
-        btRew?.let { r ->
-            btFfwd?.let { f ->
+        btRewUZ?.let { r ->
+            btFfwdUZ?.let { f ->
                 if (currentMls == 0L) {
                     if (r.isSetSrcDrawableEnabled) {
                         r.setSrcDrawableDisabled()
@@ -1594,7 +1594,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setTitle() {
-        tvTitle?.text = UZData.getEntityName()
+        tvTitleUZ?.text = UZData.getEntityName()
     }
 
     fun setAlwaysHideLiveViewers(hide: Boolean) {
@@ -1620,8 +1620,8 @@ class UZVideoView : RelativeLayout,
                     ivLiveTimeUZ,
                 )
             }
-            UZViewUtils.goneViews(btSpeedUZ, tvDuration, btRew, btFfwd)
-            setUIVisible(visible = false, btRew, btFfwd)
+            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
+            setUIVisible(visible = false, btRewUZ, btFfwdUZ)
         } else {
             UZViewUtils.goneViews(
                 rlLiveInfoUZ,
@@ -1629,12 +1629,12 @@ class UZVideoView : RelativeLayout,
                 tvLiveTimeUZ,
                 ivLiveTimeUZ,
             )
-            UZViewUtils.visibleViews(btSpeedUZ, tvDuration, btFfwd, btRew)
-            setUIVisible(visible = true, btRew, btFfwd)
+            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
+            setUIVisible(visible = true, btRewUZ, btFfwdUZ)
             //TODO why set visible not work?
         }
         if (UZAppUtils.isTV(context)) {
-            UZViewUtils.goneViews(btFullscreen)
+            UZViewUtils.goneViews(btFullscreenUZ)
         }
     }
 
@@ -1698,12 +1698,12 @@ class UZVideoView : RelativeLayout,
 
     private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
         if (isShowReplay) {
-            UZViewUtils.goneViews(btPlay, btPause)
-            UZViewUtils.visibleViews(btReplay)
-            btReplay?.requestFocus()
+            UZViewUtils.goneViews(btPlayUZ, btPauseUZ)
+            UZViewUtils.visibleViews(btReplayUZ)
+            btReplayUZ?.requestFocus()
         } else {
             updateUIButtonPlayPauseDependOnIsAutoStart()
-            UZViewUtils.goneViews(btReplay)
+            UZViewUtils.goneViews(btReplayUZ)
         }
     }
 
@@ -1922,7 +1922,7 @@ class UZVideoView : RelativeLayout,
                         pm.setPlayWhenReady(false)
                         val posterUrl = UZData.getPosterUrl()
                         if (!TextUtils.isEmpty(posterUrl))
-                            ivThumbnail?.let {
+                            ivThumbnailUZ?.let {
                                 ImageUtils.loadThumbnail(imageView = it, imageUrl = posterUrl)
                             }
                     }
@@ -2099,16 +2099,16 @@ class UZVideoView : RelativeLayout,
             if (isCastingChromecast) {
                 pm.pause()
                 volume = 0f
-                UZViewUtils.visibleViews(rlChromeCast, btPlay)
-                UZViewUtils.goneViews(btPause)
+                UZViewUtils.visibleViews(rlChromeCast, btPlayUZ)
+                UZViewUtils.goneViews(btPauseUZ)
                 //casting player luôn play first với volume not mute
                 //UizaData.getInstance().getCasty().setVolume(0.99);
                 playerView?.controllerShowTimeoutMs = 0
             } else {
                 pm.resume()
                 volume = 0.99f
-                UZViewUtils.goneViews(rlChromeCast, btPlay)
-                UZViewUtils.visibleViews(btPause)
+                UZViewUtils.goneViews(rlChromeCast, btPlayUZ)
+                UZViewUtils.visibleViews(btPauseUZ)
                 //TODO iplm volume mute on/off o cast player
                 //khi quay lại exoplayer từ cast player thì mặc định sẽ bật lại âm thanh (dù cast player đang mute hay !mute)
                 playerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
@@ -2166,10 +2166,10 @@ class UZVideoView : RelativeLayout,
             val timeToEndChunk = duration - currentMls
             if (timeToEndChunk <= targetDurationMls * 10) {
                 tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color_focus))
-                UZViewUtils.goneViews(tvPosition)
+                UZViewUtils.goneViews(tvPositionUZ)
             } else {
                 tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color))
-                UZViewUtils.visibleViews(tvPosition)
+                UZViewUtils.visibleViews(tvPositionUZ)
             }
         }
     }

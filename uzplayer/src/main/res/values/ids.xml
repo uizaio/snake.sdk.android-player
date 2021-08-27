@@ -2,17 +2,17 @@
 <resources>
     <item name="llTopUZ" type="id" />
     <item name="llBottom" type="id" />
-    <item name="btBackScreen" type="id" />
-    <item name="tvTitle" type="id" />
+    <item name="btBackScreenUZ" type="id" />
+    <item name="tvTitleUZ" type="id" />
     <item name="exo_cast" type="id" />
     <item name="btPip" type="id" />
     <item name="layoutPreviewUZ" type="id" />
-    <item name="ivThumbnail" type="id" />
+    <item name="ivThumbnailUZ" type="id" />
     <item name="btVolume" type="id" />
-    <item name="btPlay" type="id" />
-    <item name="btPause" type="id" />
-    <item name="btRew" type="id" />
-    <item name="btReplay" type="id" />
+    <item name="btPlayUZ" type="id" />
+    <item name="btPauseUZ" type="id" />
+    <item name="btRewUZ" type="id" />
+    <item name="btReplayUZ" type="id" />
     <item name="btSkipNext" type="id" />
     <item name="btSkipPrevious" type="id" />
     <item name="exo_cc" type="id" />
@@ -20,7 +20,7 @@
     <item name="btHearing" type="id" />
     <item name="btSetting" type="id" />
     <item name="btSpeedUZ" type="id" />
-    <item name="btFullscreen" type="id" />
+    <item name="btFullscreenUZ" type="id" />
     <item name="viewHeader" type="id" />
     <item name="viewDesc" type="id" />
     <item name="bkg" type="id" />
@@ -39,8 +39,8 @@
     <item name="rlLiveInfoUZ" type="id" />
     <item name="rl_chrome_cast" type="id" />
     <item name="ibs_cast" type="id" />
-    <item name="tvPosition" type="id" />
-    <item name="tvDuration" type="id" />
+    <item name="tvPositionUZ" type="id" />
+    <item name="tvDurationUZ" type="id" />
     <item name="headerView" type="id" />
     <item name="svBodyView" type="id" />
     <item name="statsForNerdsView" type="id" />
