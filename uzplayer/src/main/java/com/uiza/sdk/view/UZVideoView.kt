@@ -1127,7 +1127,7 @@ class UZVideoView : RelativeLayout,
             val casty = UZData.casty
             if (casty != null) {
                 val isMute = casty.toggleMuteVolume()
-                btVolumeUZ?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
+                btVolumeUZ?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24_uz else R.drawable.ic_volume_up_white_24_uz)
             }
         }
         toggleVolumeMute()

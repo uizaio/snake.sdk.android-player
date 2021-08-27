@@ -234,9 +234,9 @@ object UZViewUtils {
     fun setUIFullScreenIcon(imageButton: ImageButton, isFullScreen: Boolean) {
         imageButton.setImageResource(
             if (isFullScreen) {
-                R.drawable.ic_fullscreen_exit_white_48
+                R.drawable.ic_fullscreen_exit_white_48_uz
             } else {
-                R.drawable.ic_fullscreen_white_48
+                R.drawable.ic_fullscreen_white_48_uz
             }
         )
     }

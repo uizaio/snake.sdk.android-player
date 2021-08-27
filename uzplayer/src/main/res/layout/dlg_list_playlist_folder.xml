@@ -31,7 +31,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/app_name"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_close_black"
+            android:src="@drawable/ic_close_black_uz"
             android:tint="@color/grey" />
     </RelativeLayout>
 
