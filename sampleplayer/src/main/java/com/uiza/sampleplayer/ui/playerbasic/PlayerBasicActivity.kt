@@ -18,7 +18,6 @@ class PlayerBasicActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_basic)
         setupViews()
