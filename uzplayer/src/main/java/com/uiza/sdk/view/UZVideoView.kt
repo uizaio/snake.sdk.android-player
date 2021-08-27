@@ -73,6 +73,7 @@ import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import okhttp3.ResponseBody
 import java.util.*
 
+//TODO chi co the dung controller khi da load thanh cong link play
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
