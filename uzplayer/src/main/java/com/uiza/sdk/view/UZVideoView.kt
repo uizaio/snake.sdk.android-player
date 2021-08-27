@@ -34,7 +34,6 @@ import com.google.android.gms.cast.MediaTrack
 import com.uiza.sdk.BuildConfig
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
-import com.uiza.sdk.analytics.UZAnalytic.Companion.pushEvent
 import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView
 import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder
@@ -56,9 +55,7 @@ import com.uiza.sdk.listerner.UZBufferListener
 import com.uiza.sdk.listerner.UZChromeCastListener
 import com.uiza.sdk.listerner.UZProgressListener
 import com.uiza.sdk.listerner.UZTVFocusChangeListener
-import com.uiza.sdk.models.UZEventType
 import com.uiza.sdk.models.UZPlayback
-import com.uiza.sdk.models.UZTrackingData
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
 import com.uiza.sdk.utils.*
 import com.uiza.sdk.utils.ConvertUtils.getProgramDateTime
@@ -71,7 +68,6 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
-import okhttp3.ResponseBody
 import java.util.*
 
 //TODO chi co the dung controller khi da load thanh cong link play
@@ -122,7 +118,6 @@ class UZVideoView : RelativeLayout,
     private var btSkipPreviousUZ: UZImageButton? = null
     private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
-    private var ivLiveTimeUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var timeBarAtBottom = false
@@ -350,7 +345,6 @@ class UZVideoView : RelativeLayout,
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
             tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
             tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
-            ivLiveTimeUZ = pv.findViewById(R.id.ivLiveTimeUZ)
 
             tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDurationUZ?.text = "-:-"
@@ -370,7 +364,6 @@ class UZVideoView : RelativeLayout,
                 layoutDebug.visibility = GONE
             }
 
-            UZViewUtils.setFocusableViews(focusable = false, ivLiveTimeUZ)
             setEventForViews()
             setVisibilityOfPlaylistFolderController(GONE)
         }
@@ -1565,23 +1558,17 @@ class UZVideoView : RelativeLayout,
         }
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(tvLiveStatusUZ, tvLiveTimeUZ, ivLiveTimeUZ)
-                UZViewUtils.goneViews(ivLiveTimeUZ)
+                UZViewUtils.visibleViews(tvLiveStatusUZ, tvLiveTimeUZ)
             } else {
                 UZViewUtils.visibleViews(
                     tvLiveStatusUZ,
                     tvLiveTimeUZ,
-                    ivLiveTimeUZ,
                 )
             }
             UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
             setUIVisible(visible = false, btRewUZ, btFfwdUZ)
         } else {
-            UZViewUtils.goneViews(
-                tvLiveStatusUZ,
-                tvLiveTimeUZ,
-                ivLiveTimeUZ,
-            )
+            UZViewUtils.goneViews(tvLiveStatusUZ, tvLiveTimeUZ)
             UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
             setUIVisible(visible = true, btRewUZ, btFfwdUZ)
             //TODO why set visible not work?
