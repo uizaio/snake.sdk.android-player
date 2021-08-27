@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@id/casty_media_route_menu_item"
-        android:title="@string/casty"
+        android:id="@+id/casty_media_route_menu_item"
         android:icon="@drawable/ic_cast_black_24dp"
+        android:title="@string/casty"
         app:actionProviderClass="com.uiza.sdk.chromecast.CastOptionsProvider"
         app:showAsAction="always" />
 </menu>

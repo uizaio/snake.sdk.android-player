@@ -29,9 +29,8 @@ android {
 }
 
 dependencies {
-    //need for ima Ad https://stackoverflow.com/questions/31833479/didnt-find-class-com-google-android-gms-ads-identifier-advertisingidclient
-//    implementation 'com.google.android.gms:play-services-ads:19.0.1'
     implementation 'com.google.android.gms:play-services-cast-framework:18.1.0'
+
     // exoplayer
     api 'com.google.android.exoplayer:exoplayer:2.10.8'
     implementation 'com.google.android.exoplayer:extension-ima:2.10.8'
@@ -40,36 +39,36 @@ dependencies {
     implementation 'com.google.android.exoplayer:extension-mediasession:2.10.8'
 
     // android support lib
-    implementation 'androidx.cardview:cardview:1.0.0'
+//    implementation 'androidx.cardview:cardview:1.0.0'
     api 'androidx.mediarouter:mediarouter:1.1.0'
-    api 'com.google.android.material:material:1.1.0'
-    api 'com.jakewharton.timber:timber:4.7.1'//TODO remove
-    implementation 'org.greenrobot:eventbus:3.1.1'
-    api 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
-    api 'com.daimajia.androidanimations:library:2.3@aar'
+    api 'com.google.android.material:material:1.4.0'
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    api 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+//    api 'com.daimajia.androidanimations:library:2.4@aar'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.8.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.8.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-    api 'com.squareup.okhttp3:okhttp:3.14.9'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
+    api 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    api 'io.reactivex.rxjava2:rxjava:2.2.19'
+    api 'io.reactivex.rxjava2:rxjava:2.2.21'
 
     implementation 'joda-time:joda-time:2.10.5'
+
     // if you want to modify the version of these dependencies, check this link below
     // https://github.com/powermock/powermock/wiki/Mockito
-    testImplementation 'junit:junit:4.13'
-    testImplementation "org.mockito:mockito-core:2.23.0"
-    testImplementation "org.mockito:mockito-inline:2.23.0"
-    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
-    implementation "androidx.core:core-ktx:+"
+//    testImplementation 'junit:junit:4.13.2'
+//    testImplementation "org.mockito:mockito-core:2.28.2"
+//    testImplementation "org.mockito:mockito-inline:2.23.0"
+//    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+//    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
+    implementation "androidx.core:core-ktx:1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {

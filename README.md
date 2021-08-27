@@ -123,7 +123,7 @@ compileOptions {
 
 ```xml
     <com.uiza.sdk.view.UZVideoView
-      android:id="@id/uiza_video"
+      android:id="@+id/uizaVideo"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
 ```
@@ -264,8 +264,8 @@ But if you wanna change the player's skin when the player is playing, please you
 
 ***Note:***
 - You should not change the id of the view.
-Ex: `android:id="@id/player_view"`
-Do not change `android:id="@id/player_view_0"` or `android:id="@+id/player_view_0"` ...
+Ex: `android:id="@+id/player_view"`
+Do not change `android:id="@+id/player_view_0"` or `android:id="@+id/player_view_0"` ...
 
 ## Picture In Picture (PIP)
 

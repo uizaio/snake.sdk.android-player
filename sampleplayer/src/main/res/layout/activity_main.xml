@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/margin_padding_medium">
+    tools:ignore="HardcodedText">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txtVersion"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        tools:text="@string/app_name" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_padding_medium">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="Player (UZDragView)" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtVersion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="@string/app_name" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnPipPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="PIP Player(API >= 24 and Support PIP)" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAnalytic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Analytic" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnCastPlayer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cast Player" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Error" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_padding_medium"
-        android:layout_marginBottom="@dimen/margin_padding_medium"
-        android:background="@android:color/darker_gray" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerBasic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player basic" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnAnalytic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Analytic" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerCast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player Cast" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Error" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerPip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player PIP (API >= 24 and Support PIP)" />
 
-</LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerWithUZDragView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player (UZDragView)" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

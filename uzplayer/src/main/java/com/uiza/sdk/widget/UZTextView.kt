@@ -20,15 +20,15 @@ class UZTextView : AppCompatTextView {
     var textSizePortrait = -1F
         get() = if (field == -1F) 10F else field
 
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context) : super(context) {
         init(null, 0)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs, 0)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr

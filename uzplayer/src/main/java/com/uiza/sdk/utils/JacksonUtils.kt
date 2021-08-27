@@ -3,7 +3,6 @@ package com.uiza.sdk.utils
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import timber.log.Timber
 import java.io.IOException
 import java.io.Reader
 
@@ -42,7 +41,7 @@ object JacksonUtils {
         return try {
             mapper.readValue(json, classOfT)
         } catch (e: JsonProcessingException) {
-            Timber.e(e)
+            e.printStackTrace()
             null
         }
     }

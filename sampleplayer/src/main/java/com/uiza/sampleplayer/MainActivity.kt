@@ -3,9 +3,13 @@ package com.uiza.sampleplayer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatTextView
+import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
+import com.uiza.sampleplayer.ui.common.error.ErrorActivity
+import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
+import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
+import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -25,21 +29,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnPlayer.setOnClickListener {
-            gotoActivity(PlayerActivity::class.java)
-        }
-        btnPipPlayer.setOnClickListener {
-            gotoActivity(PipPlayerActivity::class.java)
-        }
-        btnCastPlayer.setOnClickListener {
-            gotoActivity(CastPlayerActivity::class.java)
-        }
         btnAnalytic.setOnClickListener {
             gotoActivity(AnalyticActivity::class.java)
         }
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
+        btnPlayerBasic.setOnClickListener {
+            gotoActivity(PlayerBasicActivity::class.java)
+        }
+        btnPlayerCast.setOnClickListener {
+            gotoActivity(PlayerCastActivity::class.java)
+        }
+        btnPlayerPip.setOnClickListener {
+            gotoActivity(PlayerPipActivity::class.java)
+        }
+        btnPlayerWithUZDragView.setOnClickListener {
+            gotoActivity(PlayerWithUZDragViewActivity::class.java)
+        }
+
         txtVersion.text = String.format(
             Locale.getDefault(),
             "%s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE

@@ -9,7 +9,7 @@
     app:elevation="4dp">
 
     <LinearLayout
-        android:id="@id/ll_top"
+        android:id="@+id/llTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,7 +17,7 @@
         android:orientation="horizontal">
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/exo_back_screen"
+            android:id="@+id/btBackScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -25,7 +25,7 @@
             android:src="@drawable/ic_keyboard_arrow_left_white" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_title"
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10"
@@ -35,7 +35,7 @@
             android:textStyle="bold" />
 
         <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/exo_fullscreen_toggle_icon"
+            android:id="@+id/btFullscreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -44,13 +44,13 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@id/rl_live_info"
+        android:id="@+id/rlLiveInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_top">
+        android:layout_below="@+id/llTop">
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_live"
+            android:id="@+id/tvLiveStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -62,47 +62,29 @@
             android:textColor="@android:color/white"
             tools:ignore="RelativeOverlap" />
 
-        <com.uiza.sdk.widget.UZImageButton
-            android:id="@id/iv_live_view"
-            android:layout_width="@dimen/w_15"
-            android:layout_height="@dimen/w_15"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/tv_live_view"
-            android:background="@android:color/transparent"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_eyes_show_and_hide" />
-
-        <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_live_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="1000Viewers"
-            android:textColor="@android:color/white" />
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@id/ll_bottom"
+        android:id="@+id/llBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@id/rl_time_bar"
+            android:id="@+id/rlTimeBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5">
 
             <FrameLayout
-                android:id="@id/preview_frame_layout"
+                android:id="@+id/layoutPreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/video_frame">
 
                 <ImageView
-                    android:id="@id/image_view_thumbnail"
+                    android:id="@+id/ivThumbnail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/description" />
@@ -110,20 +92,20 @@
             </FrameLayout>
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@id/uz_position"
+                android:id="@+id/tvPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/preview_frame_layout"
+                android:layout_below="@+id/layoutPreview"
                 android:layout_marginStart="@dimen/margin_5"
                 android:includeFontPadding="false"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
             <com.uiza.sdk.widget.UZTextView
-                android:id="@id/uz_duration"
+                android:id="@+id/tvDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/preview_frame_layout"
+                android:layout_below="@+id/layoutPreview"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="bottom"
                 android:layout_marginEnd="@dimen/margin_5"
@@ -132,11 +114,11 @@
                 android:textStyle="bold" />
 
             <com.uiza.sdk.widget.UZPreviewTimeBar
-                android:id="@id/exo_progress"
+                android:id="@+id/exo_progress"
                 style="@style/UZPreviewTimeBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/uz_duration" />
+                android:layout_below="@+id/tvDuration" />
         </RelativeLayout>
 
         <LinearLayout
@@ -146,7 +128,7 @@
             android:orientation="horizontal">
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_play"
+                android:id="@+id/btPlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -154,7 +136,7 @@
                 android:src="@drawable/ic_play_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_pause"
+                android:id="@+id/btPause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -162,7 +144,7 @@
                 android:src="@drawable/ic_pause_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_replay"
+                android:id="@+id/btReplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -170,7 +152,7 @@
                 android:src="@drawable/ic_replay_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_rew"
+                android:id="@+id/btRew"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -178,7 +160,7 @@
                 android:src="@drawable/ic_replay_10_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_ffwd"
+                android:id="@+id/btFfwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -186,7 +168,7 @@
                 android:src="@drawable/ic_forward_10_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_skip_previous"
+                android:id="@+id/ibSkipPrevious"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -194,7 +176,7 @@
                 android:src="@drawable/ic_skip_previous_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_skip_next"
+                android:id="@+id/btSkipNext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -202,7 +184,7 @@
                 android:src="@drawable/ic_skip_next_white" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_playlist_folder"
+                android:id="@+id/ibPlaylistFolder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -215,7 +197,7 @@
                 android:layout_weight="1" />
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@id/exo_setting"
+                android:id="@+id/btSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -224,16 +206,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@id/rl_end_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.uiza.sdk.widget.UZTextView
-            android:id="@id/tv_end_screen_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
 </RelativeLayout>
