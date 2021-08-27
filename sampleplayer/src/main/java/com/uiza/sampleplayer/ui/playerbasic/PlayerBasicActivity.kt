@@ -22,6 +22,7 @@ class PlayerBasicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
         setContentView(R.layout.activity_player_basic)
         setupViews()
     }
@@ -29,7 +30,8 @@ class PlayerBasicActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.setPlayerCallback(object : UZPlayerCallback {
             override fun playerViewCreated(playerView: UZPlayerView) {
-                uzVideoView.isAlwaysPortraitScreen = true;
+                uzVideoView.isAlwaysPortraitScreen = true
+                uzVideoView.setPIPModeEnabled(false)
             }
 
             override fun isInitResult(linkPlay: String) {

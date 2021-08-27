@@ -24,6 +24,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -135,7 +136,7 @@ class UZVideoView : RelativeLayout,
 
     private var autoMoveToLiveEdge = false
     private var isInPipMode = false
-    private var isPIPModeEnabled = true //Has the user disabled PIP mode in AppOpps?
+    private var isPIPModeEnabled = false
     private var positionPIPPlayer = 0L
     var isAutoSwitchItemPlaylistFolder = true
     private var isAutoShowController = false
@@ -357,8 +358,8 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(btPlayUZ)
 
             btRewUZ?.setSrcDrawableDisabled()
-
-            if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
+            11
+            if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView || !isPIPModeEnabled) {
                 UZViewUtils.goneViews(btPipUZ)
             }
 
@@ -888,14 +889,6 @@ class UZVideoView : RelativeLayout,
                 }
             }
         }
-//        postDelayed({
-//            if (context is Activity) {
-//                isPIPModeEnabled = (context as Activity).isInPictureInPictureMode
-//            }
-//            if (!isPIPModeEnabled) {
-//                enterPIPMode()
-//            }
-//        }, 50)
     }
 
     var controllerShowTimeoutMs: Int
@@ -2215,6 +2208,11 @@ class UZVideoView : RelativeLayout,
         } else if (firstViewHasFocus == null) {
             firstViewHasFocus = v
         }
+    }
+
+    fun setPIPModeEnabled(isPIPModeEnabled: Boolean) {
+        this.isPIPModeEnabled = isPIPModeEnabled;
+        btPipUZ?.isVisible = isPIPModeEnabled
     }
 
 }
