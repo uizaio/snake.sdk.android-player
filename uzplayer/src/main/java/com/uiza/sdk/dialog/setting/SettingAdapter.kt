@@ -30,10 +30,10 @@ class SettingAdapter(
             val inflater =
                 mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             if (getItemViewType(position) == 0) {
-                view = inflater.inflate(R.layout.uz_setting_list_item_toggle, null)
+                view = inflater.inflate(R.layout.view_setting_list_item_toggle_uz, null)
                 holder = ViewHolder0(view)
             } else {
-                view = inflater.inflate(R.layout.uz_setting_list_item, null)
+                view = inflater.inflate(R.layout.view_setting_list_item_uz, null)
                 holder = ViewHolder(view)
             }
             view.tag = holder
