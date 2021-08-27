@@ -150,7 +150,7 @@ class PreviewDelegate(
 
         // Create morph view
         morphView = View(frameLayout.context)
-        morphView?.setBackgroundResource(R.drawable.previewseekbar_morph)
+        morphView?.setBackgroundResource(R.drawable.previewseekbar_morph_uz)
 
         // Setup morph view
         val layoutParams = ViewGroup.LayoutParams(0, 0)

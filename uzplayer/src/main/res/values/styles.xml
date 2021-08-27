@@ -10,7 +10,6 @@
     </style>
     <!--STOP CHROMECAST-->
 
-
     <style name="uiza_dialog_animation">
         <item name="android:windowEnterAnimation">@anim/slide_up_enter</item>
         <item name="android:windowExitAnimation">@anim/slide_down_exit</item>
@@ -39,7 +38,7 @@
         <item name="played_ad_marker_color">@color/light_yellow</item>
         <item name="played_color">@color/red</item>
         <item name="bar_height">2dp</item>
-        <item name="previewFrameLayout">@+id/layoutPreview</item>
+        <item name="previewFrameLayout">@+id/layoutPreviewUZ</item>
         <item name="scrubber_color">@color/red</item>
         <item name="unplayed_color">@color/grey</item>
     </style>

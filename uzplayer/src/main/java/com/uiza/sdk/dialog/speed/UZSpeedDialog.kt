@@ -9,7 +9,7 @@ import android.view.View
 import android.view.Window
 import android.widget.CheckedTextView
 import com.uiza.sdk.R
-import kotlinx.android.synthetic.main.dlg_speed.*
+import kotlinx.android.synthetic.main.dlg_speed_uz.*
 
 class UZSpeedDialog(
     context: Context,
@@ -34,7 +34,7 @@ class UZSpeedDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dlg_speed)
+        setContentView(R.layout.dlg_speed_uz)
         setupViews()
     }
 

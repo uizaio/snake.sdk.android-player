@@ -25,7 +25,7 @@ class AdapterPlaylistFolder(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.row_playlist_folder, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.view_row_playlist_folder_uz, parent, false)
         return PlayListHolder(itemView)
     }
 
@@ -56,7 +56,7 @@ class AdapterPlaylistFolder(
         playListHolder.rootView.onFocusChangeListener =
             OnFocusChangeListener { _: View?, isFocus: Boolean ->
                 if (isFocus) {
-                    playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder)
+                    playListHolder.rootView.setBackgroundResource(R.drawable.background_item_playlist_folder_uz)
                 } else {
                     playListHolder.rootView.setBackgroundResource(0)
                 }
@@ -69,7 +69,7 @@ class AdapterPlaylistFolder(
     }
 
     class PlayListHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvDuration: TextView = view.findViewById(R.id.tvDuration)
+        val tvDuration: TextView = view.findViewById(R.id.tvDurationUZ)
         val tvDuration2: TextView = view.findViewById(R.id.tvDuration2)
         val ivCover: ImageView = view.findViewById(R.id.ivCover)
         val tvName: TextView = view.findViewById(R.id.tvName)

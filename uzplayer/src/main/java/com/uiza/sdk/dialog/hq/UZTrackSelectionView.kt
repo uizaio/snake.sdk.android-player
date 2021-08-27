@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.CheckedTextView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import androidx.annotation.AttrRes
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.RendererCapabilities
@@ -62,7 +61,7 @@ class UZTrackSelectionView @JvmOverloads constructor(
             val dialogInflater = LayoutInflater.from(builder.context)
 
             @SuppressLint("InflateParams")
-            val dialogView = dialogInflater.inflate(R.layout.uz_track_selection_dialog, null)
+            val dialogView = dialogInflater.inflate(R.layout.dlg_track_selection_uz, null)
             val uzTrackSelectionView: UZTrackSelectionView =
                 dialogView.findViewById(R.id.uzTrackSelectionView)
             uzTrackSelectionView.init(trackSelector = trackSelector, rendererIndex = rendererIndex)

@@ -148,7 +148,7 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         try {
-            if (!uzVideo.isLandscape()) {
+            if (!uzVideo.isLandscapeScreen()) {
                 uzVideo.enterPIPMode();
             }
         } catch (Exception e) {
@@ -158,10 +158,11 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
 
     private void getLiveViewsTimer(boolean firstRun) {
         final UZPlayback playback = UZPlayer.getCurrentPlayback();
-        if (handler != null && playback != null && uzVideo !=null)
+        if (handler != null && playback != null && uzVideo != null)
             handler.postDelayed(() -> {
                 Disposable d = UZApi.getLiveViewers(playback.getFirstLinkPlay(),
-                        res -> {});
+                        res -> {
+                        });
                 if (d != null) {
                     disposables.add(d);
                 }

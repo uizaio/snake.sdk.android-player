@@ -234,9 +234,9 @@ object UZViewUtils {
     fun setUIFullScreenIcon(imageButton: ImageButton, isFullScreen: Boolean) {
         imageButton.setImageResource(
             if (isFullScreen) {
-                R.drawable.ic_fullscreen_exit_white_48
+                R.drawable.ic_fullscreen_exit_white_48_uz
             } else {
-                R.drawable.ic_fullscreen_white_48
+                R.drawable.ic_fullscreen_white_48_uz
             }
         )
     }
@@ -244,8 +244,6 @@ object UZViewUtils {
     @JvmStatic
     fun resizeLayout(
         viewGroup: ViewGroup,
-        ivVideoCover: ImageView?,
-        pixelAdded: Int,
         videoW: Int,
         videoH: Int,
         isFreeSize: Boolean
@@ -259,12 +257,12 @@ object UZViewUtils {
         } else { //portrait
             widthSurfaceView = screenWidth
             heightSurfaceView = if (videoW == 0 || videoH == 0) {
-                (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
+                (widthSurfaceView * Constants.RATIO_9_16).toInt()
             } else {
                 if (isFreeSize) {
-                    widthSurfaceView * videoH / videoW + pixelAdded
+                    widthSurfaceView * videoH / videoW
                 } else {
-                    (widthSurfaceView * Constants.RATIO_9_16).toInt() + pixelAdded
+                    (widthSurfaceView * Constants.RATIO_9_16).toInt()
                 }
             }
         }
@@ -278,14 +276,9 @@ object UZViewUtils {
             it.layoutParams.height = heightSurfaceView
             it.requestLayout()
         }
-        ivVideoCover?.let {
-            it.layoutParams.width = widthSurfaceView
-            it.layoutParams.height = heightSurfaceView - pixelAdded
-            it.requestLayout()
-        }
         //edit size of imageview thumnail
         val flImgThumnailPreviewSeekbar =
-            viewGroup.findViewById<FrameLayout>(R.id.layoutPreview)
+            viewGroup.findViewById<FrameLayout>(R.id.layoutPreviewUZ)
         flImgThumnailPreviewSeekbar?.let {
             if (isFullScreen) {
                 it.layoutParams.width = widthSurfaceView / 4
@@ -324,7 +317,7 @@ object UZViewUtils {
         dialog.show()
         try {
             window.attributes.windowAnimations = R.style.uiza_dialog_animation
-            window.setBackgroundDrawableResource(R.drawable.background_dialog_uiza)
+            window.setBackgroundDrawableResource(R.drawable.background_dialog_uz)
             //set dialog position
             val wlp = window.attributes
             wlp.gravity = Gravity.BOTTOM
