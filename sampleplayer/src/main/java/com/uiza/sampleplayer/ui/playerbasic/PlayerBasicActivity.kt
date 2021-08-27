@@ -8,7 +8,10 @@ import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.UZPlayer
+import com.uiza.sdk.exceptions.UZException
+import com.uiza.sdk.interfaces.UZPlayerCallback
 import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.view.UZPlayerView
 import kotlinx.android.synthetic.main.activity_player_basic.*
 
 class PlayerBasicActivity : AppCompatActivity() {
@@ -24,7 +27,24 @@ class PlayerBasicActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        uzVideoView.setUseController(false)
+        uzVideoView.setPlayerCallback(object : UZPlayerCallback {
+            override fun playerViewCreated(playerView: UZPlayerView) {
+                uzVideoView.setUseController(false)
+            }
+
+            override fun isInitResult(linkPlay: String) {
+            }
+
+            override fun onTimeShiftChange(timeShiftOn: Boolean) {
+            }
+
+            override fun onScreenRotate(isLandscape: Boolean) {
+            }
+
+            override fun onError(e: UZException) {
+                e.printStackTrace()
+            }
+        })
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
