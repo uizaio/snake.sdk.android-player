@@ -143,7 +143,6 @@ class UZVideoView : RelativeLayout,
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
     var isAlwaysPortraitScreen = false
-    private var isHideOnTouch = true
     private var useController = true
     private var isOnPlayerEnded = false
     private var alwaysHideLiveViewers = false
@@ -872,7 +871,6 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setHideControllerOnTouch(isHide: Boolean) {
-        isHideOnTouch = isHide
         playerView?.controllerHideOnTouch = isHide
     }
 
@@ -1593,7 +1591,6 @@ class UZVideoView : RelativeLayout,
             } else {
                 setVisibilityOfPlayPauseReplay(false)
                 pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-                setHideControllerOnTouch(isHideOnTouch)
             }
         }
     }
@@ -2118,6 +2115,10 @@ class UZVideoView : RelativeLayout,
     fun setPIPModeEnabled(isPIPModeEnabled: Boolean) {
         this.isPIPModeEnabled = isPIPModeEnabled;
         btPipUZ?.isVisible = isPIPModeEnabled
+    }
+
+    fun isLandscapeScreen(): Boolean {
+        return isLandscape
     }
 
 }
