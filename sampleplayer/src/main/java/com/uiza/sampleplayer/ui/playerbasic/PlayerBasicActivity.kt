@@ -30,6 +30,7 @@ class PlayerBasicActivity : AppCompatActivity() {
         uzVideoView.setPlayerCallback(object : UZPlayerCallback {
             override fun playerViewCreated(playerView: UZPlayerView) {
                 uzVideoView.setUseController(false)
+                uzVideoView.isAlwaysPortraitScreen = true;
             }
 
             override fun isInitResult(linkPlay: String) {
