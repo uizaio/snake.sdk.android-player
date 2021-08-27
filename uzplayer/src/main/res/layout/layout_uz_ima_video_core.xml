@@ -31,16 +31,6 @@
             tools:visibility="visible" />
     </RelativeLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivCover"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_5"
-        android:contentDescription="@string/app_name"
-        android:scaleType="centerCrop"
-        android:visibility="invisible"
-        tools:visibility="visible" />
-
     <ProgressBar
         android:id="@+id/pb"
         style="?android:attr/progressBarStyleLarge"

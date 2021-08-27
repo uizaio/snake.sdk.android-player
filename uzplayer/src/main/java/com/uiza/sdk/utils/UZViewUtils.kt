@@ -244,7 +244,6 @@ object UZViewUtils {
     @JvmStatic
     fun resizeLayout(
         viewGroup: ViewGroup,
-        ivVideoCover: ImageView?,
         pixelAdded: Int,
         videoW: Int,
         videoH: Int,
@@ -276,11 +275,6 @@ object UZViewUtils {
         parentViewGroup?.let {
             it.layoutParams.width = widthSurfaceView
             it.layoutParams.height = heightSurfaceView
-            it.requestLayout()
-        }
-        ivVideoCover?.let {
-            it.layoutParams.width = widthSurfaceView
-            it.layoutParams.height = heightSurfaceView - pixelAdded
             it.requestLayout()
         }
         //edit size of imageview thumnail

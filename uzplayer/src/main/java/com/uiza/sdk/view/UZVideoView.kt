@@ -437,7 +437,6 @@ class UZVideoView : RelativeLayout,
     fun setSize(width: Int, height: Int) {
         UZViewUtils.resizeLayout(
             viewGroup = layoutRootView,
-            ivVideoCover = ivCover,
             pixelAdded = pixelAdded,
             videoW = width,
             videoH = height,
@@ -651,7 +650,6 @@ class UZVideoView : RelativeLayout,
     //neu co thi se play
     //khong co thi bao loi
     private fun handleErrorNoData() {
-        removeVideoCover(true)
         if (playerCallback != null) {
             UZData.isSettingPlayer = false
             handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
@@ -826,8 +824,7 @@ class UZVideoView : RelativeLayout,
             showSettingsDialog()
         } else if (v === btPlaylistFolderUZ) {
             handleClickPlaylistFolder()
-        }
-        else if (v === btPipUZ) {
+        } else if (v === btPipUZ) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
@@ -1050,7 +1047,6 @@ class UZVideoView : RelativeLayout,
                 }
 
                 if (!isFirstStateReady) {
-                    removeVideoCover(isFromHandleError = false)
                     isFirstStateReady = true
                 }
             }
@@ -1324,22 +1320,6 @@ class UZVideoView : RelativeLayout,
                 }
                 UZViewUtils.goneViews(btPauseUZ)
             }
-        }
-    }
-
-    private fun removeVideoCover(isFromHandleError: Boolean) {
-        if (!isFromHandleError) {
-            onStateReadyFirst()
-        }
-        if (ivCover.visibility != View.GONE) {
-            ivCover.visibility = View.GONE
-            ivCover.invalidate()
-            if (isLIVE) {
-                tvLiveTimeUZ?.text = HYPHEN
-            }
-        } else {
-            //goi change skin realtime thi no ko vao if nen ko update tvDuration dc
-            updateTvDuration()
         }
     }
 
