@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="llTop" type="id" />
+    <item name="llTopUZ" type="id" />
     <item name="llBottom" type="id" />
     <item name="btBackScreen" type="id" />
     <item name="tvTitle" type="id" />
     <item name="exo_cast" type="id" />
     <item name="btPip" type="id" />
-    <item name="layoutPreview" type="id" />
+    <item name="layoutPreviewUZ" type="id" />
     <item name="ivThumbnail" type="id" />
     <item name="btVolume" type="id" />
     <item name="btPlay" type="id" />
@@ -14,12 +14,12 @@
     <item name="btRew" type="id" />
     <item name="btReplay" type="id" />
     <item name="btSkipNext" type="id" />
-    <item name="ibSkipPrevious" type="id" />
+    <item name="btSkipPrevious" type="id" />
     <item name="exo_cc" type="id" />
     <item name="btPlaylistFolder" type="id" />
     <item name="btHearing" type="id" />
     <item name="btSetting" type="id" />
-    <item name="ibSpeed" type="id" />
+    <item name="btSpeedUZ" type="id" />
     <item name="btFullscreen" type="id" />
     <item name="viewHeader" type="id" />
     <item name="viewDesc" type="id" />
@@ -32,11 +32,11 @@
     <item name="pb" type="id" />
     <item name="layoutDebug" type="id" />
     <item name="layoutControls" type="id" />
-    <item name="tvLiveStatus" type="id" />
-    <item name="ivLiveTime" type="id" />
-    <item name="tvLiveTime" type="id" />
+    <item name="tvLiveStatusUZ" type="id" />
+    <item name="ivLiveTimeUZ" type="id" />
+    <item name="tvLiveTimeUZ" type="id" />
     <item name="rlTimeBar" type="id" />
-    <item name="rlLiveInfo" type="id" />
+    <item name="rlLiveInfoUZ" type="id" />
     <item name="rl_chrome_cast" type="id" />
     <item name="ibs_cast" type="id" />
     <item name="tvPosition" type="id" />

@@ -9,7 +9,7 @@
     android:layoutDirection="ltr">
 
     <LinearLayout
-        android:id="@+id/llTop"
+        android:id="@+id/llTopUZ"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -25,7 +25,7 @@
             android:src="@drawable/ic_arrow_down" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@+id/tvLiveStatus"
+            android:id="@+id/tvLiveStatusUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -88,7 +88,7 @@
             android:orientation="horizontal">
 
             <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/ibSkipPrevious"
+                android:id="@+id/btSkipPrevious"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -163,7 +163,7 @@
             tools:ignore="UselessParent">
 
             <FrameLayout
-                android:id="@+id/layoutPreview"
+                android:id="@+id/layoutPreviewUZ"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/video_frame"
@@ -181,7 +181,7 @@
                 android:id="@+id/rlTopProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layoutPreview">
+                android:layout_below="@+id/layoutPreviewUZ">
 
                 <com.uiza.sdk.widget.UZTextView
                     android:id="@+id/tvPosition"

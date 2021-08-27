@@ -94,18 +94,18 @@ class UZVideoView : RelativeLayout,
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
     private var mHandler = Handler(Looper.getMainLooper())
-    private var llTop: LinearLayout? = null
+    private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
     private var playerManager: UZPlayerManager? = null
-    private var rlLiveInfo: RelativeLayout? = null
-    private var layoutPreview: FrameLayout? = null
-    private var timeBar: UZPreviewTimeBar? = null
+    private var rlLiveInfoUZ: RelativeLayout? = null
+    private var layoutPreviewUZ: FrameLayout? = null
+    private var timeBarUZ: UZPreviewTimeBar? = null
     private var ivThumbnail: ImageView? = null
     private var tvPosition: UZTextView? = null
     private var tvDuration: UZTextView? = null
     private var tvTitle: TextView? = null
-    private var tvLiveStatus: TextView? = null
-    private var tvLiveTime: TextView? = null
+    private var tvLiveStatusUZ: TextView? = null
+    private var tvLiveTimeUZ: TextView? = null
     private var btFullscreen: UZImageButton? = null
     private var btPause: UZImageButton? = null
     private var btPlay: UZImageButton? = null
@@ -118,10 +118,10 @@ class UZVideoView : RelativeLayout,
     private var btPlaylistFolder: UZImageButton? = null
     private var btHearing: UZImageButton? = null
     private var btPip: UZImageButton? = null
-    private var ibSkipPrevious: UZImageButton? = null
+    private var btSkipPrevious: UZImageButton? = null
     private var btSkipNext: UZImageButton? = null
-    private var ibSpeed: UZImageButton? = null
-    private var ivLiveTime: UZImageButton? = null
+    private var btSpeedUZ: UZImageButton? = null
+    private var ivLiveTimeUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var timeBarAtBottom = false
@@ -271,13 +271,13 @@ class UZVideoView : RelativeLayout,
                     }
                 }
             })
-            timeBar = pv.findViewById(R.id.exo_progress)
-            layoutPreview = pv.findViewById(R.id.layoutPreview)
+            timeBarUZ = pv.findViewById(R.id.exo_progress)
+            layoutPreviewUZ = pv.findViewById(R.id.layoutPreviewUZ)
 
-            if (timeBar == null) {
+            if (timeBarUZ == null) {
                 pv.visibility = VISIBLE
             } else {
-                timeBar?.let { tb ->
+                timeBarUZ?.let { tb ->
                     if (tb.tag == null) {
                         timeBarAtBottom = false
                         pv.visibility = VISIBLE
@@ -329,7 +329,7 @@ class UZVideoView : RelativeLayout,
                 }
             }
 
-            llTop = pv.findViewById(R.id.llTop)
+            llTopUZ = pv.findViewById(R.id.llTopUZ)
             ivThumbnail = pv.findViewById(R.id.ivThumbnail)
             tvPosition = pv.findViewById(R.id.tvPosition)
             tvDuration = pv.findViewById(R.id.tvDuration)
@@ -347,12 +347,12 @@ class UZVideoView : RelativeLayout,
             btHearing = pv.findViewById(R.id.btHearing)
             btPip = pv.findViewById(R.id.btPip)
             btSkipNext = pv.findViewById(R.id.btSkipNext)
-            ibSkipPrevious = pv.findViewById(R.id.ibSkipPrevious)
-            ibSpeed = pv.findViewById(R.id.ibSpeed)
-            rlLiveInfo = pv.findViewById(R.id.rlLiveInfo)
-            tvLiveStatus = pv.findViewById(R.id.tvLiveStatus)
-            tvLiveTime = pv.findViewById(R.id.tvLiveTime)
-            ivLiveTime = pv.findViewById(R.id.ivLiveTime)
+            btSkipPrevious = pv.findViewById(R.id.btSkipPrevious)
+            btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
+            rlLiveInfoUZ = pv.findViewById(R.id.rlLiveInfoUZ)
+            tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
+            tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
+            ivLiveTimeUZ = pv.findViewById(R.id.ivLiveTimeUZ)
 
             tvPosition?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDuration?.text = "-:-"
@@ -372,7 +372,7 @@ class UZVideoView : RelativeLayout,
                 layoutDebug.visibility = GONE
             }
 
-            UZViewUtils.setFocusableViews(focusable = false, ivLiveTime)
+            UZViewUtils.setFocusableViews(focusable = false, ivLiveTimeUZ)
             setEventForViews()
             setVisibilityOfPlaylistFolderController(GONE)
         }
@@ -404,7 +404,7 @@ class UZVideoView : RelativeLayout,
     //return pixel
     private val heightTimeBar: Int
         get() {
-            timeBar?.let {
+            timeBarUZ?.let {
                 return UZViewUtils.heightOfView(it)
             }
             return 0
@@ -834,7 +834,7 @@ class UZVideoView : RelativeLayout,
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
-        } else if (v === tvLiveStatus) {
+        } else if (v === tvLiveStatusUZ) {
             seekToEndLive()
         } else if (v === btFfwd) {
             if (isCastingChromecast) {
@@ -861,9 +861,9 @@ class UZVideoView : RelativeLayout,
             replay()
         } else if (v === btSkipNext) {
             handleClickSkipNext()
-        } else if (v === ibSkipPrevious) {
+        } else if (v === btSkipPrevious) {
             handleClickSkipPrevious()
-        } else if (v === ibSpeed) {
+        } else if (v === btSpeedUZ) {
             showSpeed()
         }
         /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức,
@@ -971,9 +971,9 @@ class UZVideoView : RelativeLayout,
         }
         pause()
         hideController()
-        UZViewUtils.setSrcDrawableEnabledForViews(ibSkipPrevious, btSkipNext)
+        UZViewUtils.setSrcDrawableEnabledForViews(btSkipPrevious, btSkipNext)
         //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(able = false, ibSkipPrevious, btSkipNext)
+        UZViewUtils.setClickableForViews(able = false, btSkipPrevious, btSkipNext)
         //end update UI for skip next and skip previous button
         UZData.setCurrentPositionOfPlayList(position)
         val playback = UZData.getPlayback()
@@ -1046,7 +1046,7 @@ class UZVideoView : RelativeLayout,
                 if (playWhenReady) {
                     hideLayoutMsg()
                     resetCountTryLinkPlayError()
-                    timeBar?.hidePreview()
+                    timeBarUZ?.hidePreview()
                 }
                 if (context is Activity) {
                     (context as Activity).setResult(Activity.RESULT_OK)
@@ -1281,9 +1281,9 @@ class UZVideoView : RelativeLayout,
             btPause,
             btReplay,
             btSkipNext,
-            ibSkipPrevious,
-            ibSpeed,
-            tvLiveStatus
+            btSkipPrevious,
+            btSpeedUZ,
+            tvLiveStatusUZ
         )
     }
 
@@ -1339,7 +1339,7 @@ class UZVideoView : RelativeLayout,
             ivCover.visibility = View.GONE
             ivCover.invalidate()
             if (isLIVE) {
-                tvLiveTime?.text = HYPHEN
+                tvLiveTimeUZ?.text = HYPHEN
             }
         } else {
             //goi change skin realtime thi no ko vao if nen ko update tvDuration dc
@@ -1442,7 +1442,7 @@ class UZVideoView : RelativeLayout,
 
             override fun addUIChromeCast() {
                 uzChromeCast?.let {
-                    llTop?.addView(it.mediaRouteButton)
+                    llTopUZ?.addView(it.mediaRouteButton)
                 }
                 addUIChromecastLayer()
             }
@@ -1561,7 +1561,7 @@ class UZVideoView : RelativeLayout,
         } else {
             screenWidth / 5
         }
-        layoutPreview?.let { fl ->
+        layoutPreviewUZ?.let { fl ->
             val layoutParams = LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -1574,7 +1574,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setMarginPreviewTimeBar() {
-        timeBar?.let { tb ->
+        timeBarUZ?.let { tb ->
             if (isLandscape) {
                 UZViewUtils.setMarginDimen(view = tb, dpL = 5, dpT = 0, dpR = 5, dpB = 0)
             } else {
@@ -1584,7 +1584,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setMarginRlLiveInfo() {
-        rlLiveInfo?.let { rl ->
+        rlLiveInfoUZ?.let { rl ->
             if (isLandscape) {
                 UZViewUtils.setMarginDimen(view = rl, dpL = 50, dpT = 0, dpR = 50, dpB = 0)
             } else {
@@ -1610,26 +1610,26 @@ class UZVideoView : RelativeLayout,
         }
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(rlLiveInfo, tvLiveStatus, tvLiveTime, ivLiveTime)
-                UZViewUtils.goneViews(ivLiveTime)
+                UZViewUtils.visibleViews(rlLiveInfoUZ, tvLiveStatusUZ, tvLiveTimeUZ, ivLiveTimeUZ)
+                UZViewUtils.goneViews(ivLiveTimeUZ)
             } else {
                 UZViewUtils.visibleViews(
-                    rlLiveInfo,
-                    tvLiveStatus,
-                    tvLiveTime,
-                    ivLiveTime,
+                    rlLiveInfoUZ,
+                    tvLiveStatusUZ,
+                    tvLiveTimeUZ,
+                    ivLiveTimeUZ,
                 )
             }
-            UZViewUtils.goneViews(ibSpeed, tvDuration, btRew, btFfwd)
+            UZViewUtils.goneViews(btSpeedUZ, tvDuration, btRew, btFfwd)
             setUIVisible(visible = false, btRew, btFfwd)
         } else {
             UZViewUtils.goneViews(
-                rlLiveInfo,
-                tvLiveStatus,
-                tvLiveTime,
-                ivLiveTime,
+                rlLiveInfoUZ,
+                tvLiveStatusUZ,
+                tvLiveTimeUZ,
+                ivLiveTimeUZ,
             )
-            UZViewUtils.visibleViews(ibSpeed, tvDuration, btFfwd, btRew)
+            UZViewUtils.visibleViews(btSpeedUZ, tvDuration, btFfwd, btRew)
             setUIVisible(visible = true, btRew, btFfwd)
             //TODO why set visible not work?
         }
@@ -1712,7 +1712,7 @@ class UZVideoView : RelativeLayout,
             visibility = visibilityOfPlaylistFolderController,
             btPlaylistFolder,
             btSkipNext,
-            ibSkipPrevious
+            btSkipPrevious
         )
         setVisibilityOfPlayPauseReplay(false)
     }
@@ -1835,7 +1835,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setMarginDependOnUZTimeBar(view: View?) {
-        if (view == null || timeBar == null) {
+        if (view == null || timeBarUZ == null) {
             return
         }
         val tmpHeightTimeBar: Int
@@ -1913,7 +1913,7 @@ class UZVideoView : RelativeLayout,
 
         isFirstStateReady = false
 
-        timeBar?.let {
+        timeBarUZ?.let {
             val disable = TextUtils.isEmpty(urlThumbnailsPreviewSeekBar)
             it.isEnabled = !disable
             it.setPreviewLoader(object : PreviewLoader {
@@ -1977,7 +1977,7 @@ class UZVideoView : RelativeLayout,
         resizeContainerView()
 
         //enable from playPlaylistPosition() prevent double click
-        UZViewUtils.setClickableForViews(able = true, ibSkipPrevious, btSkipNext)
+        UZViewUtils.setClickableForViews(able = true, btSkipPrevious, btSkipNext)
 
         UZData.getPlayback()?.getLinkPlay(countTryLinkPlayError)?.let {
             playerCallback?.isInitResult(it)
@@ -1986,7 +1986,7 @@ class UZVideoView : RelativeLayout,
         if (isCastingChromecast) {
             replayChromeCast()
         }
-        timeBar?.hidePreview()
+        timeBarUZ?.hidePreview()
         UZData.isSettingPlayer = false
     }
 
@@ -1997,9 +1997,9 @@ class UZVideoView : RelativeLayout,
         playerManager?.let { pm ->
             if (pm.isTimeShiftSupport) {
                 if (pm.isTimeShiftOn) {
-                    UZViewUtils.visibleViews(timeBar)
+                    UZViewUtils.visibleViews(timeBarUZ)
                 } else {
-                    UZViewUtils.goneViews(timeBar)
+                    UZViewUtils.goneViews(timeBarUZ)
                 }
             }
         }
@@ -2148,12 +2148,12 @@ class UZVideoView : RelativeLayout,
 
             rl.setOnClickListener(this)
 
-            llTop?.let { ll ->
+            llTopUZ?.let { ll ->
                 if (ll.parent is RelativeLayout) {
                     (ll.parent as RelativeLayout).addView(rl, 0)
                 }
             }
-            rlLiveInfo?.let { rl ->
+            rlLiveInfoUZ?.let { rl ->
                 if (rl.parent is RelativeLayout) {
                     (rl.parent as RelativeLayout).addView(rl, 0)
                 }
@@ -2162,7 +2162,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun updateLiveStatus(currentMls: Long, duration: Long) {
-        tvLiveStatus?.let { tv ->
+        tvLiveStatusUZ?.let { tv ->
             val timeToEndChunk = duration - currentMls
             if (timeToEndChunk <= targetDurationMls * 10) {
                 tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color_focus))
