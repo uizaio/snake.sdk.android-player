@@ -66,7 +66,6 @@ import com.uiza.sdk.widget.UZTextView
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
@@ -146,16 +145,11 @@ class UZVideoView : RelativeLayout,
     private var isOnPlayerEnded = false
     private var alwaysHideLiveViewers = false
 
-    /*
-     **Change skin via skin id resources
-     * changeSkin(R.layout.uzplayer_skin_1);
-     */
     //TODO improve this func
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
-    private var firstViewHasFocus: View? = null
-
+    private var firstViewHasFocusTV: View? = null
     private var onPreviewChangeListener: OnPreviewChangeListener? = null
     private var playerCallback: UZPlayerCallback? = null
     private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
@@ -170,13 +164,12 @@ class UZVideoView : RelativeLayout,
         }
     var isFirstStateReady = false
 
+    //TODO
     private var isCalledFromConnectionEventBus = false
 
     //last current position lúc từ exoplayer switch sang cast player
     private var lastCurrentPosition = 0L
     private var isCastPlayerPlayingFirst = false
-    private var viewerSessionId: String? = null
-    private var disposables = CompositeDisposable()
     var isViewCreated = false
 
     constructor(context: Context) : super(context)
@@ -548,7 +541,6 @@ class UZVideoView : RelativeLayout,
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
         updateUIEndScreen()
-        viewerSessionId = UUID.randomUUID().toString()
         releasePlayerManager()
         showProgress()
         updateUIDependOnLiveStream()
@@ -607,15 +599,9 @@ class UZVideoView : RelativeLayout,
         checkToSetUpResource()
     }
 
-    //khi call api callAPIGetLinkPlay nhung json tra ve ko co data
-    //se co gang choi video da play gan nhat
-    //neu co thi se play
-    //khong co thi bao loi
     private fun handleErrorNoData() {
-        if (playerCallback != null) {
-            UZData.isSettingPlayer = false
-            handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
-        }
+        UZData.isSettingPlayer = false
+        handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
     }
 
     fun onBackPressed(): Boolean {
@@ -650,7 +636,6 @@ class UZVideoView : RelativeLayout,
             }
         }
         playerManager?.unregister()
-        disposables.dispose()
     }
 
     private fun releasePlayerStats() {
@@ -1463,9 +1448,9 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun handleFirstViewHasFocus() {
-        if (firstViewHasFocus != null) {
-            uzTVFocusChangeListener?.onFocusChange(view = firstViewHasFocus, isFocus = true)
-            firstViewHasFocus = null
+        if (firstViewHasFocusTV != null) {
+            uzTVFocusChangeListener?.onFocusChange(view = firstViewHasFocusTV, isFocus = true)
+            firstViewHasFocusTV = null
         }
     }
 
@@ -2104,8 +2089,8 @@ class UZVideoView : RelativeLayout,
     override fun onFocusChange(v: View?, hasFocus: Boolean) {
         if (uzTVFocusChangeListener != null) {
             uzTVFocusChangeListener?.onFocusChange(view = v, isFocus = hasFocus)
-        } else if (firstViewHasFocus == null) {
-            firstViewHasFocus = v
+        } else if (firstViewHasFocusTV == null) {
+            firstViewHasFocusTV = v
         }
     }
 
