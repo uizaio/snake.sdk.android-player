@@ -119,6 +119,7 @@ class UZVideoView : RelativeLayout,
     private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
+
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var timeBarAtBottom = false
     private var uzChromeCast: UZChromeCast? = null
@@ -160,7 +161,6 @@ class UZVideoView : RelativeLayout,
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
     private var firstViewHasFocus: View? = null
-
 
     private var onPreviewChangeListener: OnPreviewChangeListener? = null
     private var playerCallback: UZPlayerCallback? = null
@@ -221,7 +221,7 @@ class UZVideoView : RelativeLayout,
         if (inflater == null) {
             throw NullPointerException("Can not inflater view")
         } else {
-            playerView = inflater.inflate(skinId, null) as UZPlayerView
+            playerView = inflater.inflate(skinId, null) as UZPlayerView?
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
@@ -1124,11 +1124,11 @@ class UZVideoView : RelativeLayout,
         view?.performClick()
     }
 
-    fun setDefaultSeekValue(mls: Int) {
-        defaultSeekValue = mls.toLong()
+    fun setDefaultSeekValue(mls: Long) {
+        defaultSeekValue = mls
     }
 
-    fun seekToForward(mls: Int) {
+    fun seekToForward(mls: Long) {
         setDefaultSeekValue(mls)
         btFfwdUZ?.performClick()
     }
@@ -1139,7 +1139,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun seekToBackward(mls: Int) {
+    fun seekToBackward(mls: Long) {
         setDefaultSeekValue(mls)
         btRewUZ?.performClick()
     }
