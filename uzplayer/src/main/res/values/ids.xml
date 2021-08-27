@@ -5,20 +5,20 @@
     <item name="btBackScreenUZ" type="id" />
     <item name="tvTitleUZ" type="id" />
     <item name="exo_cast" type="id" />
-    <item name="btPip" type="id" />
+    <item name="btPipUZ" type="id" />
     <item name="layoutPreviewUZ" type="id" />
     <item name="ivThumbnailUZ" type="id" />
-    <item name="btVolume" type="id" />
+    <item name="btVolumeUZ" type="id" />
     <item name="btPlayUZ" type="id" />
     <item name="btPauseUZ" type="id" />
     <item name="btRewUZ" type="id" />
     <item name="btReplayUZ" type="id" />
-    <item name="btSkipNext" type="id" />
-    <item name="btSkipPrevious" type="id" />
+    <item name="btSkipNextUZ" type="id" />
+    <item name="btSkipPreviousUZ" type="id" />
     <item name="exo_cc" type="id" />
-    <item name="btPlaylistFolder" type="id" />
-    <item name="btHearing" type="id" />
-    <item name="btSetting" type="id" />
+    <item name="btPlaylistFolderUZ" type="id" />
+    <item name="btHearingUZ" type="id" />
+    <item name="btSettingUZ" type="id" />
     <item name="btSpeedUZ" type="id" />
     <item name="btFullscreenUZ" type="id" />
     <item name="viewHeader" type="id" />

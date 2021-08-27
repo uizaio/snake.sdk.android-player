@@ -113,13 +113,13 @@ class UZVideoView : RelativeLayout,
     private var btRewUZ: UZImageButton? = null
     private var btFfwdUZ: UZImageButton? = null
     private var btBackScreenUZ: UZImageButton? = null
-    private var btVolume: UZImageButton? = null
-    private var btSetting: UZImageButton? = null
-    private var btPlaylistFolder: UZImageButton? = null
-    private var btHearing: UZImageButton? = null
-    private var btPip: UZImageButton? = null
-    private var btSkipPrevious: UZImageButton? = null
-    private var btSkipNext: UZImageButton? = null
+    private var btVolumeUZ: UZImageButton? = null
+    private var btSettingUZ: UZImageButton? = null
+    private var btPlaylistFolderUZ: UZImageButton? = null
+    private var btHearingUZ: UZImageButton? = null
+    private var btPipUZ: UZImageButton? = null
+    private var btSkipPreviousUZ: UZImageButton? = null
+    private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     private var ivLiveTimeUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
@@ -341,13 +341,13 @@ class UZVideoView : RelativeLayout,
             btRewUZ = pv.findViewById(R.id.btRewUZ)
             btFfwdUZ = pv.findViewById(R.id.btFfwdUZ)
             btBackScreenUZ = pv.findViewById(R.id.btBackScreenUZ)
-            btVolume = pv.findViewById(R.id.btVolume)
-            btSetting = pv.findViewById(R.id.btSetting)
-            btPlaylistFolder = pv.findViewById(R.id.btPlaylistFolder)
-            btHearing = pv.findViewById(R.id.btHearing)
-            btPip = pv.findViewById(R.id.btPip)
-            btSkipNext = pv.findViewById(R.id.btSkipNext)
-            btSkipPrevious = pv.findViewById(R.id.btSkipPrevious)
+            btVolumeUZ = pv.findViewById(R.id.btVolumeUZ)
+            btSettingUZ = pv.findViewById(R.id.btSettingUZ)
+            btPlaylistFolderUZ = pv.findViewById(R.id.btPlaylistFolderUZ)
+            btHearingUZ = pv.findViewById(R.id.btHearingUZ)
+            btPipUZ = pv.findViewById(R.id.btPipUZ)
+            btSkipNextUZ = pv.findViewById(R.id.btSkipNextUZ)
+            btSkipPreviousUZ = pv.findViewById(R.id.btSkipPreviousUZ)
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
             rlLiveInfoUZ = pv.findViewById(R.id.rlLiveInfoUZ)
             tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
@@ -363,7 +363,7 @@ class UZVideoView : RelativeLayout,
             btRewUZ?.setSrcDrawableDisabled()
 
             if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView) {
-                UZViewUtils.goneViews(btPip)
+                UZViewUtils.goneViews(btPipUZ)
             }
 
             if (BuildConfig.DEBUG) {
@@ -768,7 +768,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (btPip != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
+        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
 
     fun onStopPreview(progress: Int) {
         if (!isCastingChromecast) {
@@ -793,7 +793,7 @@ class UZVideoView : RelativeLayout,
                 btFullscreenUZ?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
-                UZViewUtils.goneViews(btPip)
+                UZViewUtils.goneViews(btPipUZ)
             } else {
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
@@ -803,7 +803,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
-                    UZViewUtils.visibleViews(btPip)
+                    UZViewUtils.visibleViews(btPipUZ)
                 }
             }
             setMarginPreviewTimeBar()
@@ -822,15 +822,15 @@ class UZVideoView : RelativeLayout,
             toggleFullscreen()
         } else if (v === btBackScreenUZ) {
             handleClickBackScreen()
-        } else if (v === btVolume) {
+        } else if (v === btVolumeUZ) {
             handleClickBtVolume()
-        } else if (v === btSetting) {
+        } else if (v === btSettingUZ) {
             showSettingsDialog()
-        } else if (v === btPlaylistFolder) {
+        } else if (v === btPlaylistFolderUZ) {
             handleClickPlaylistFolder()
-        } else if (v === btHearing) {
+        } else if (v === btHearingUZ) {
             handleClickHearing()
-        } else if (v === btPip) {
+        } else if (v === btPipUZ) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
@@ -859,9 +859,9 @@ class UZVideoView : RelativeLayout,
             resume()
         } else if (v === btReplayUZ) {
             replay()
-        } else if (v === btSkipNext) {
+        } else if (v === btSkipNextUZ) {
             handleClickSkipNext()
-        } else if (v === btSkipPrevious) {
+        } else if (v === btSkipPreviousUZ) {
             handleClickSkipPrevious()
         } else if (v === btSpeedUZ) {
             showSpeed()
@@ -971,9 +971,9 @@ class UZVideoView : RelativeLayout,
         }
         pause()
         hideController()
-        UZViewUtils.setSrcDrawableEnabledForViews(btSkipPrevious, btSkipNext)
+        UZViewUtils.setSrcDrawableEnabledForViews(btSkipPreviousUZ, btSkipNextUZ)
         //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(able = false, btSkipPrevious, btSkipNext)
+        UZViewUtils.setClickableForViews(able = false, btSkipPreviousUZ, btSkipNextUZ)
         //end update UI for skip next and skip previous button
         UZData.setCurrentPositionOfPlayList(position)
         val playback = UZData.getPlayback()
@@ -1127,7 +1127,7 @@ class UZVideoView : RelativeLayout,
             val casty = UZData.casty
             if (casty != null) {
                 val isMute = casty.toggleMuteVolume()
-                btVolume?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
+                btVolumeUZ?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24 else R.drawable.ic_volume_up_white_24)
             }
         }
         toggleVolumeMute()
@@ -1188,7 +1188,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun toggleVolume() {
-        btVolume?.performClick()
+        btVolumeUZ?.performClick()
     }
 
     fun toggleFullscreen() {
@@ -1234,9 +1234,9 @@ class UZVideoView : RelativeLayout,
             playerManager?.let { pm ->
                 pm.volume = volume
                 if (pm.volume != 0f) {
-                    btVolume?.setSrcDrawableEnabled()
+                    btVolumeUZ?.setSrcDrawableEnabled()
                 } else {
-                    btVolume?.setSrcDrawableDisabledCanTouch()
+                    btVolumeUZ?.setSrcDrawableDisabledCanTouch()
                 }
             }
         }
@@ -1246,11 +1246,11 @@ class UZVideoView : RelativeLayout,
         playerManager?.let { pm ->
             if (pm.volume == 0f) {
                 volume = volumeToggle
-                btVolume?.setSrcDrawableEnabled()
+                btVolumeUZ?.setSrcDrawableEnabled()
             } else {
                 volumeToggle = volume
                 volume = 0f
-                btVolume?.setSrcDrawableDisabledCanTouch()
+                btVolumeUZ?.setSrcDrawableDisabledCanTouch()
             }
         }
     }
@@ -1270,18 +1270,18 @@ class UZVideoView : RelativeLayout,
         setClickAndFocusEventForViews(
             btFullscreenUZ,
             btBackScreenUZ,
-            btVolume,
-            btSetting,
-            btPlaylistFolder,
-            btHearing,
-            btPip,
+            btVolumeUZ,
+            btSettingUZ,
+            btPlaylistFolderUZ,
+            btHearingUZ,
+            btPipUZ,
             btFfwdUZ,
             btRewUZ,
             btPlayUZ,
             btPauseUZ,
             btReplayUZ,
-            btSkipNext,
-            btSkipPrevious,
+            btSkipNextUZ,
+            btSkipPreviousUZ,
             btSpeedUZ,
             tvLiveStatusUZ
         )
@@ -1603,10 +1603,10 @@ class UZVideoView : RelativeLayout,
 
     private fun updateUIDependOnLiveStream() {
         if (isCastingChromecast) {
-            UZViewUtils.goneViews(btPip)
+            UZViewUtils.goneViews(btPipUZ)
         } else if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide ibPictureInPictureIcon if device is TV
-            UZViewUtils.goneViews(btPip)
+            UZViewUtils.goneViews(btPipUZ)
         }
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
@@ -1710,9 +1710,9 @@ class UZVideoView : RelativeLayout,
     private fun setVisibilityOfPlaylistFolderController(visibilityOfPlaylistFolderController: Int) {
         UZViewUtils.setVisibilityViews(
             visibility = visibilityOfPlaylistFolderController,
-            btPlaylistFolder,
-            btSkipNext,
-            btSkipPrevious
+            btPlaylistFolderUZ,
+            btSkipNextUZ,
+            btSkipPreviousUZ
         )
         setVisibilityOfPlayPauseReplay(false)
     }
@@ -1977,7 +1977,7 @@ class UZVideoView : RelativeLayout,
         resizeContainerView()
 
         //enable from playPlaylistPosition() prevent double click
-        UZViewUtils.setClickableForViews(able = true, btSkipPrevious, btSkipNext)
+        UZViewUtils.setClickableForViews(able = true, btSkipPreviousUZ, btSkipNextUZ)
 
         UZData.getPlayback()?.getLinkPlay(countTryLinkPlayError)?.let {
             playerCallback?.isInitResult(it)
