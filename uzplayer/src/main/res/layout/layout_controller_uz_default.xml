@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_player_controller"
+    android:background="@drawable/background_player_controller_uz"
     android:elevation="3dp"
     android:layoutDirection="ltr">
 

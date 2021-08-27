@@ -324,7 +324,7 @@ object UZViewUtils {
         dialog.show()
         try {
             window.attributes.windowAnimations = R.style.uiza_dialog_animation
-            window.setBackgroundDrawableResource(R.drawable.background_dialog_uiza)
+            window.setBackgroundDrawableResource(R.drawable.background_dialog_uz)
             //set dialog position
             val wlp = window.attributes
             wlp.gravity = Gravity.BOTTOM

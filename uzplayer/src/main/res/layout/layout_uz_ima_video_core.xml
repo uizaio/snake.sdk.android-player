@@ -68,7 +68,7 @@
         android:id="@+id/rlMsg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_player_controller"
+        android:background="@drawable/background_player_controller_uz"
         android:visibility="gone"
         tools:visibility="visible">
 

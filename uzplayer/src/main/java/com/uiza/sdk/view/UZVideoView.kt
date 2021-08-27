@@ -1523,8 +1523,8 @@ class UZVideoView : RelativeLayout,
                 UZViewUtils.updateUIFocusChange(
                     view = view,
                     isFocus = isFocus,
-                    resHasFocus = R.drawable.bkg_tv_has_focus,
-                    resNoFocus = R.drawable.bkg_tv_no_focus
+                    resHasFocus = R.drawable.background_tv_has_focus_uz,
+                    resNoFocus = R.drawable.background_tv_no_focus_uz
                 )
                 view.clearColorFilter()
             }
@@ -1532,16 +1532,16 @@ class UZVideoView : RelativeLayout,
                 UZViewUtils.updateUIFocusChange(
                     view = view,
                     isFocus = isFocus,
-                    resHasFocus = R.drawable.bkg_tv_has_focus,
-                    resNoFocus = R.drawable.bkg_tv_no_focus
+                    resHasFocus = R.drawable.background_tv_has_focus_uz,
+                    resNoFocus = R.drawable.background_tv_no_focus_uz
                 )
             }
             is UZPreviewTimeBar -> {
                 UZViewUtils.updateUIFocusChange(
                     view = view,
                     isFocus = isFocus,
-                    resHasFocus = R.drawable.bkg_tv_has_focus_uz_timebar,
-                    resNoFocus = R.drawable.bkg_tv_no_focus_uz_timebar
+                    resHasFocus = R.drawable.background_tv_has_focus_uz_timebar,
+                    resNoFocus = R.drawable.background_tv_no_focus_uz_timebar
                 )
             }
         }
@@ -2132,7 +2132,7 @@ class UZVideoView : RelativeLayout,
 
             val ibsCast = UZImageButton(context)
             ibsCast.setBackgroundColor(Color.TRANSPARENT)
-            ibsCast.setImageResource(R.drawable.cast)
+            ibsCast.setImageResource(R.drawable.cast_uz)
             val ibsCastParams =
                 LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,

@@ -56,7 +56,7 @@ class AdapterPlaylistFolder(
         playListHolder.rootView.onFocusChangeListener =
             OnFocusChangeListener { _: View?, isFocus: Boolean ->
                 if (isFocus) {
-                    playListHolder.rootView.setBackgroundResource(R.drawable.bkg_item_playlist_folder)
+                    playListHolder.rootView.setBackgroundResource(R.drawable.background_item_playlist_folder_uz)
                 } else {
                     playListHolder.rootView.setBackgroundResource(0)
                 }
