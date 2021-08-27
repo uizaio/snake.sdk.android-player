@@ -97,7 +97,6 @@ class UZVideoView : RelativeLayout,
     private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
     private var playerManager: UZPlayerManager? = null
-    private var rlLiveInfoUZ: RelativeLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
     private var ivThumbnailUZ: ImageView? = null
@@ -241,7 +240,6 @@ class UZVideoView : RelativeLayout,
         }
         updateUIEachSkin()
         setMarginPreviewTimeBar()
-        setMarginRlLiveInfo()
         updateUISizeThumbnail()
         isViewCreated = true
 
@@ -347,7 +345,6 @@ class UZVideoView : RelativeLayout,
             btSkipNextUZ = pv.findViewById(R.id.btSkipNextUZ)
             btSkipPreviousUZ = pv.findViewById(R.id.btSkipPreviousUZ)
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
-            rlLiveInfoUZ = pv.findViewById(R.id.rlLiveInfoUZ)
             tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
             tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
             ivLiveTimeUZ = pv.findViewById(R.id.ivLiveTimeUZ)
@@ -803,7 +800,6 @@ class UZVideoView : RelativeLayout,
                 }
             }
             setMarginPreviewTimeBar()
-            setMarginRlLiveInfo()
             updateUISizeThumbnail()
             updateUIPositionOfProgressBar()
             if (timeBarAtBottom) {
@@ -1386,7 +1382,6 @@ class UZVideoView : RelativeLayout,
             updateUIEachSkin()
             updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
-            setMarginRlLiveInfo()
 
             //setup chromecast
             if (UZAppUtils.checkChromeCastAvailable()) {
@@ -1559,16 +1554,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun setMarginRlLiveInfo() {
-        rlLiveInfoUZ?.let { rl ->
-            if (isLandscape) {
-                UZViewUtils.setMarginDimen(view = rl, dpL = 50, dpT = 0, dpR = 50, dpB = 0)
-            } else {
-                UZViewUtils.setMarginDimen(view = rl, dpL = 5, dpT = 0, dpR = 5, dpB = 0)
-            }
-        }
-    }
-
     private fun setTitle() {
         tvTitleUZ?.text = UZData.getEntityName()
     }
@@ -1586,11 +1571,10 @@ class UZVideoView : RelativeLayout,
         }
         if (isLIVE) {
             if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(rlLiveInfoUZ, tvLiveStatusUZ, tvLiveTimeUZ, ivLiveTimeUZ)
+                UZViewUtils.visibleViews(tvLiveStatusUZ, tvLiveTimeUZ, ivLiveTimeUZ)
                 UZViewUtils.goneViews(ivLiveTimeUZ)
             } else {
                 UZViewUtils.visibleViews(
-                    rlLiveInfoUZ,
                     tvLiveStatusUZ,
                     tvLiveTimeUZ,
                     ivLiveTimeUZ,
@@ -1600,7 +1584,6 @@ class UZVideoView : RelativeLayout,
             setUIVisible(visible = false, btRewUZ, btFfwdUZ)
         } else {
             UZViewUtils.goneViews(
-                rlLiveInfoUZ,
                 tvLiveStatusUZ,
                 tvLiveTimeUZ,
                 ivLiveTimeUZ,
@@ -2127,11 +2110,6 @@ class UZVideoView : RelativeLayout,
             llTopUZ?.let { ll ->
                 if (ll.parent is RelativeLayout) {
                     (ll.parent as RelativeLayout).addView(rl, 0)
-                }
-            }
-            rlLiveInfoUZ?.let { rl ->
-                if (rl.parent is RelativeLayout) {
-                    (rl.parent as RelativeLayout).addView(rl, 0)
                 }
             }
         }
