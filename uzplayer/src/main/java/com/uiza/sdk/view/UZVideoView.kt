@@ -143,7 +143,6 @@ class UZVideoView : RelativeLayout,
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
     var isAlwaysPortraitScreen = false
-    private var useController = true
     private var isOnPlayerEnded = false
     private var alwaysHideLiveViewers = false
 
@@ -816,8 +815,7 @@ class UZVideoView : RelativeLayout,
         /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức,
         trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
         default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
-        if (useController && (rlMsg == null || rlMsg?.visibility != VISIBLE) && isPlayerControllerShowing
-        ) {
+        if (isUseController() && (rlMsg == null || rlMsg?.visibility != VISIBLE) && isPlayerControllerShowing) {
             showController()
         }
     }
@@ -878,11 +876,10 @@ class UZVideoView : RelativeLayout,
         get() = playerView?.controllerHideOnTouch ?: false
 
     fun isUseController(): Boolean {
-        return useController
+        return playerView?.useController ?: false
     }
 
     fun setUseController(useController: Boolean) {
-        this.useController = useController
         playerView?.useController = useController
     }
 
