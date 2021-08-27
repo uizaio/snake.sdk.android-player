@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.uiza.sdk.R
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZData
-import kotlinx.android.synthetic.main.dlg_list_playlist_folder.*
+import kotlinx.android.synthetic.main.dlg_list_playlist_folder_uz.*
 
 class UZPlaylistFolderDialog(
     private val mContext: Context,
@@ -26,7 +26,7 @@ class UZPlaylistFolderDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dlg_list_playlist_folder)
+        setContentView(R.layout.dlg_list_playlist_folder_uz)
 
         setupViews()
     }

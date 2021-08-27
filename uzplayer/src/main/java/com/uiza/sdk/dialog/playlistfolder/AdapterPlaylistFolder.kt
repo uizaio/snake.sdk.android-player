@@ -25,7 +25,7 @@ class AdapterPlaylistFolder(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.row_playlist_folder, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.view_row_playlist_folder_uz, parent, false)
         return PlayListHolder(itemView)
     }
 

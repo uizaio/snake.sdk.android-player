@@ -1725,7 +1725,7 @@ class UZVideoView : RelativeLayout,
         val builder = AlertDialog.Builder(context)
         val inflater = LayoutInflater.from(context)
         if (inflater != null) {
-            builder.setCustomTitle(inflater.inflate(R.layout.custom_header_dragview, null))
+            builder.setCustomTitle(inflater.inflate(R.layout.view_header_dragview_uz, null))
         }
         val actionCount = layoutControls.childCount
         if (actionCount < 1) {
