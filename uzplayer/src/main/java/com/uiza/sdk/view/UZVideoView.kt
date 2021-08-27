@@ -138,8 +138,7 @@ class UZVideoView : RelativeLayout,
     private var isAutoShowController = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
-    private var isSetFirstRequestFocusDone = false
-    private var countTryLinkPlayError = 0
+    private var isSetFirstRequestFocusDoneForTV = false
     private var activityIsPausing = false
     private var timestampOnStartPreview = 0L
     private var isOnPreview = false
@@ -557,7 +556,6 @@ class UZVideoView : RelativeLayout,
         updateUIEndScreen()
         viewerSessionId = UUID.randomUUID().toString()
         releasePlayerManager()
-        resetCountTryLinkPlayError()
         showProgress()
         updateUIDependOnLiveStream()
         val linkPlay = playback.firstLinkPlay
@@ -603,22 +601,13 @@ class UZVideoView : RelativeLayout,
 
     protected fun tryNextLinkPlay() {
         if (isLIVE) {
-            // try to play 5 times
-            UZData.getPlayback()?.let { playBack ->
-                if (countTryLinkPlayError >= playBack.size) {
-                    return
-                }
-            }
-            // if entity is livestreaming, dont try to next link play
             playerManager?.let {
                 it.initWithoutReset()
                 it.setRunnable()
             }
-            countTryLinkPlayError++
             isFirstStateReady = false
             return
         }
-        countTryLinkPlayError++
         isFirstStateReady = false
         releasePlayerManager()
         checkToSetUpResource()
@@ -633,10 +622,6 @@ class UZVideoView : RelativeLayout,
             UZData.isSettingPlayer = false
             handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
         }
-    }
-
-    protected fun resetCountTryLinkPlayError() {
-        countTryLinkPlayError = 0
     }
 
     fun onBackPressed(): Boolean {
@@ -1006,7 +991,6 @@ class UZVideoView : RelativeLayout,
                 updateTimeBarWithTimeShiftStatus()
                 if (playWhenReady) {
                     hideLayoutMsg()
-                    resetCountTryLinkPlayError()
                     timeBarUZ?.hidePreview()
                 }
                 if (context is Activity) {
@@ -1064,7 +1048,7 @@ class UZVideoView : RelativeLayout,
         //TODO Chỗ này đáng lẽ chỉ clear value của tracking khi đảm bảo rằng seekTo(0) true
         val result = playerManager?.seekTo(0)
         if (result == true) {
-            isSetFirstRequestFocusDone = false
+            isSetFirstRequestFocusDoneForTV = false
             isOnPlayerEnded = false
             updateUIEndScreen()
             handlePlayPlayListFolderUI()
@@ -1262,9 +1246,9 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(btPlayUZ)
             btPauseUZ?.let { ib ->
                 UZViewUtils.visibleViews(ib)
-                if (!isSetFirstRequestFocusDone) {
+                if (!isSetFirstRequestFocusDoneForTV) {
                     ib.requestFocus() //set first request focus if using player for TV
-                    isSetFirstRequestFocusDone = true
+                    isSetFirstRequestFocusDoneForTV = true
                 }
             }
         } else {
@@ -1272,17 +1256,17 @@ class UZVideoView : RelativeLayout,
                 UZViewUtils.goneViews(btPlayUZ)
                 btPauseUZ?.let { ib ->
                     UZViewUtils.visibleViews(ib)
-                    if (!isSetFirstRequestFocusDone) {
+                    if (!isSetFirstRequestFocusDoneForTV) {
                         ib.requestFocus() //set first request focus if using player for TV
-                        isSetFirstRequestFocusDone = true
+                        isSetFirstRequestFocusDoneForTV = true
                     }
                 }
             } else {
                 btPlayUZ?.let { ib ->
                     UZViewUtils.visibleViews(ib)
-                    if (!isSetFirstRequestFocusDone) {
+                    if (!isSetFirstRequestFocusDoneForTV) {
                         ib.requestFocus() //set first request focus if using player for TV
-                        isSetFirstRequestFocusDone = true
+                        isSetFirstRequestFocusDoneForTV = true
                     }
                 }
                 UZViewUtils.goneViews(btPauseUZ)
@@ -1802,16 +1786,8 @@ class UZVideoView : RelativeLayout,
                 handleErrorNoData()
                 return
             }
-            if (countTryLinkPlayError >= listLinkPlay.size) {
-                if (ConnectivityUtils.isConnected(context)) {
-                    handleError(ErrorUtils.exceptionTryAllLinkPlay())
-                } else {
-                    handleError(ErrorUtils.exceptionNoConnection())
-                }
-                return
-            }
-            val linkPlay = listLinkPlay[countTryLinkPlayError]
-            if (linkPlay.isEmpty()) {
+            val linkPlay = listLinkPlay.firstOrNull()
+            if (linkPlay.isNullOrEmpty()) {
                 handleError(ErrorUtils.exceptionNoLinkPlay())
                 return
             }
@@ -1900,7 +1876,7 @@ class UZVideoView : RelativeLayout,
         //enable from playPlaylistPosition() prevent double click
         UZViewUtils.setClickableForViews(able = true, btSkipPreviousUZ, btSkipNextUZ)
 
-        UZData.getPlayback()?.getLinkPlay(countTryLinkPlayError)?.let {
+        UZData.getPlayback()?.getLinkPlays()?.firstOrNull()?.let {
             playerCallback?.isInitResult(it)
         }
 
