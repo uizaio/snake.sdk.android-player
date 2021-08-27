@@ -40,22 +40,19 @@
             android:id="@+id/btnPlayerCast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player Cast"
-            android:visibility="gone" />
+            android:text="Player Cast" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerPip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player PIP (API >= 24 and Support PIP)"
-            android:visibility="gone" />
+            android:text="Player PIP (API >= 24 and Support PIP)" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerWithUZDragView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Player (UZDragView)"
-            android:visibility="gone" />
+            android:text="Player (UZDragView)" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

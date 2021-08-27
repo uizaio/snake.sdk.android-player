@@ -116,7 +116,6 @@ class UZVideoView : RelativeLayout,
     private var btVolumeUZ: UZImageButton? = null
     private var btSettingUZ: UZImageButton? = null
     private var btPlaylistFolderUZ: UZImageButton? = null
-    private var btHearingUZ: UZImageButton? = null
     private var btPipUZ: UZImageButton? = null
     private var btSkipPreviousUZ: UZImageButton? = null
     private var btSkipNextUZ: UZImageButton? = null
@@ -344,7 +343,6 @@ class UZVideoView : RelativeLayout,
             btVolumeUZ = pv.findViewById(R.id.btVolumeUZ)
             btSettingUZ = pv.findViewById(R.id.btSettingUZ)
             btPlaylistFolderUZ = pv.findViewById(R.id.btPlaylistFolderUZ)
-            btHearingUZ = pv.findViewById(R.id.btHearingUZ)
             btPipUZ = pv.findViewById(R.id.btPipUZ)
             btSkipNextUZ = pv.findViewById(R.id.btSkipNextUZ)
             btSkipPreviousUZ = pv.findViewById(R.id.btSkipPreviousUZ)
@@ -828,9 +826,8 @@ class UZVideoView : RelativeLayout,
             showSettingsDialog()
         } else if (v === btPlaylistFolderUZ) {
             handleClickPlaylistFolder()
-        } else if (v === btHearingUZ) {
-            handleClickHearing()
-        } else if (v === btPipUZ) {
+        }
+        else if (v === btPipUZ) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
@@ -1273,7 +1270,6 @@ class UZVideoView : RelativeLayout,
             btVolumeUZ,
             btSettingUZ,
             btPlaylistFolderUZ,
-            btHearingUZ,
             btPipUZ,
             btFfwdUZ,
             btRewUZ,
