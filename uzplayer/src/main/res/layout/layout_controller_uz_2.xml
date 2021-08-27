@@ -74,17 +74,17 @@
             android:src="@drawable/ic_fullscreen_white_48_uz" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rlLiveInfoUZ"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llTopUZ">
+        android:layout_below="@+id/llTopUZ"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <com.uiza.sdk.widget.UZTextView
             android:id="@+id/tvLiveStatusUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:background="@drawable/background_live_uz"
             android:gravity="center"
             android:paddingStart="@dimen/padding_5"
@@ -99,8 +99,6 @@
             android:id="@+id/ivLiveTimeUZ"
             android:layout_width="@dimen/w_15"
             android:layout_height="@dimen/w_15"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/tvLiveTimeUZ"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
             android:src="@drawable/ic_timer_white_24_uz" />
@@ -109,81 +107,73 @@
             android:id="@+id/tvLiveTimeUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/margin_5"
             android:textColor="@android:color/white" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btSkipPreviousUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_skip_previous_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btSkipPreviousUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_skip_previous_white_uz" />
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btRewUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_replay_10_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btRewUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_replay_10_white_uz" />
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btPlayUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_play_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btPlayUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_play_white_uz" />
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btPauseUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pause_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btPauseUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_pause_white_uz" />
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btReplayUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_replay_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btReplayUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_replay_white_uz" />
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btFfwdUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_forward_10_white_uz" />
 
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btFfwdUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_forward_10_white_uz" />
-
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btSkipNextUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_skip_next_white_uz" />
-        </LinearLayout>
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btSkipNextUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_skip_next_white_uz" />
     </LinearLayout>
 
     <LinearLayout
@@ -237,10 +227,10 @@
 
             <com.uiza.sdk.widget.UZPreviewTimeBar
                 android:id="@+id/exo_progress"
+                style="@style/UZPreviewTimeBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvDurationUZ"
-                style="@style/UZPreviewTimeBar" />
+                android:layout_below="@+id/tvDurationUZ" />
         </RelativeLayout>
 
     </LinearLayout>

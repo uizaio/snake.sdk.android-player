@@ -40,7 +40,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         UZPlayer.setUseWithUZDragView(true)
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_1)
+        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_2)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_with_uz_drag_view)
         handler = Handler(Looper.getMainLooper())
