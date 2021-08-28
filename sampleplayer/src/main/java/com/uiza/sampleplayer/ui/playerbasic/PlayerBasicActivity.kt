@@ -26,7 +26,7 @@ class PlayerBasicActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            uzVideoView.isAlwaysPortraitScreen = true
+            uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)
             uzVideoView.setUseController(true)
         }
@@ -48,7 +48,7 @@ class PlayerBasicActivity : AppCompatActivity() {
             Toast.makeText(this, "Link play is empty", Toast.LENGTH_SHORT).show()
             return
         }
-        if (uzVideoView.isViewCreated) {
+        if (uzVideoView.isViewCreated()) {
             val uzPlayback = UZPlayback()
             uzPlayback.poster = UZApplication.thumbnailUrl
             uzPlayback.addLinkPlay(link)

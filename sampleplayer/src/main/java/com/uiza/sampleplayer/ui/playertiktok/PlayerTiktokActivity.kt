@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
@@ -25,10 +26,11 @@ class PlayerTiktokActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            uzVideoView.isAlwaysPortraitScreen = true
+            uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
+            uzVideoView.setAutoReplay(true)
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
@@ -44,7 +46,7 @@ class PlayerTiktokActivity : AppCompatActivity() {
             Toast.makeText(this, "Link play is empty", Toast.LENGTH_SHORT).show()
             return
         }
-        if (uzVideoView.isViewCreated) {
+        if (uzVideoView.isViewCreated()) {
             val uzPlayback = UZPlayback()
             uzPlayback.poster = UZApplication.thumbnailUrl
             uzPlayback.addLinkPlay(link)

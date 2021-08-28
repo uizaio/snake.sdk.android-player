@@ -91,7 +91,6 @@ class UZVideoView : RelativeLayout,
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
     private var playerManager: UZPlayerManager? = null
-
     private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
@@ -117,7 +116,6 @@ class UZVideoView : RelativeLayout,
     private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
-
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var uzChromeCast: UZChromeCast? = null
     override var isCastingChromecast = false
@@ -132,7 +130,8 @@ class UZVideoView : RelativeLayout,
     private var isInPipMode = false
     private var isPIPModeEnabled = false
     private var positionPIPPlayer = 0L
-    var isAutoSwitchItemPlaylistFolder = true
+    private var isAutoSwitchItemPlaylistFolder = true
+    private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
@@ -140,7 +139,7 @@ class UZVideoView : RelativeLayout,
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
-    var isAlwaysPortraitScreen = false
+    private var isAlwaysPortraitScreen = false
     private var isOnPlayerEnded = false
     private var alwaysHideLiveViewers = false
 
@@ -160,7 +159,7 @@ class UZVideoView : RelativeLayout,
                 throw NoClassDefFoundError(ErrorConstant.ERR_506)
             }
         }
-    var isFirstStateReady = false
+    private var isFirstStateReady = false
 
     //TODO
     private var isCalledFromConnectionEventBus = false
@@ -168,7 +167,7 @@ class UZVideoView : RelativeLayout,
     //last current position lúc từ exoplayer switch sang cast player
     private var lastCurrentPosition = 0L
     private var isCastPlayerPlayingFirst = false
-    var isViewCreated = false
+    private var isViewCreated = false
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
@@ -176,6 +175,7 @@ class UZVideoView : RelativeLayout,
     var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
+    var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -938,11 +938,15 @@ class UZVideoView : RelativeLayout,
         if (isPlaying) {
             keepScreenOn = false
             isOnPlayerEnded = true
-            if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
-                hideController()
-                autoSwitchNextVideo()
+            if (isAutoReplay) {
+                replay()
             } else {
-                updateUIEndScreen()
+                if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
+                    hideController()
+                    autoSwitchNextVideo()
+                } else {
+                    updateUIEndScreen()
+                }
             }
         }
         hideProgress()
@@ -973,6 +977,7 @@ class UZVideoView : RelativeLayout,
                 }
             }
         }
+        onPlayerStateChanged?.invoke(playWhenReady, playbackState)
     }
 
     private fun autoSwitchNextVideo() {
@@ -2096,4 +2101,20 @@ class UZVideoView : RelativeLayout,
         return isLandscape
     }
 
+    fun setAutoReplay(isAutoReplay: Boolean) {
+        this.isAutoReplay = isAutoReplay
+        this.isAutoSwitchItemPlaylistFolder = false
+    }
+
+    fun isAutoReplay(): Boolean {
+        return this.isAutoReplay
+    }
+
+    fun setAlwaysPortraitScreen(isAlwaysPortraitScreen: Boolean) {
+        this.isAlwaysPortraitScreen = isAlwaysPortraitScreen
+    }
+
+    fun isViewCreated(): Boolean {
+        return this.isViewCreated
+    }
 }
