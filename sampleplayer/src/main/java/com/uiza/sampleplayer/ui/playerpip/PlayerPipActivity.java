@@ -70,19 +70,12 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     }
 
     @Override
-    public void playerViewCreated(UZPlayerView playerView) {
-        playerView.setControllerStateCallback(visible -> {
-            // nothing to do
-        });
-    }
-
-    @Override
-    public void isInitResult(String linkPlay) {
+    public void isInitResult(@NonNull String linkPlay) {
         getLiveViewsTimer(true);
     }
 
     @Override
-    public void onError(UZException e) {
+    public void onError(@NonNull UZException e) {
         Timber.e(e);
     }
 

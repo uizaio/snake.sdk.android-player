@@ -113,11 +113,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
     }
 
     @Override
-    public void playerViewCreated(@NonNull UZPlayerView playerView) {
-
-    }
-
-    @Override
     public void onTimeShiftChange(boolean timeShiftOn) {
 
     }

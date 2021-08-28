@@ -6,7 +6,8 @@ import com.uiza.sdk.view.UZPlayerView
 interface UZPlayerCallback {
     //when video init done with result
     //isInitSuccess onStateReadyFirst
-    fun playerViewCreated(playerView: UZPlayerView) {}
+//    fun playerViewCreated(playerView: UZPlayerView) {}
+
     fun isInitResult(linkPlay: String) {}
 
     //when skin is changed

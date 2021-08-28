@@ -172,6 +172,8 @@ class UZVideoView : RelativeLayout,
     private var isCastPlayerPlayingFirst = false
     var isViewCreated = false
 
+    var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -228,7 +230,7 @@ class UZVideoView : RelativeLayout,
         isViewCreated = true
 
         playerView?.let {
-            playerCallback?.playerViewCreated(it)
+            onPlayerViewCreated?.invoke(it)
         }
     }
 
