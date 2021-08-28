@@ -174,6 +174,7 @@ class UZVideoView : RelativeLayout,
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
+    var onSkinChange: (() -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -1324,7 +1325,7 @@ class UZVideoView : RelativeLayout,
             setTitle()
             checkToSetUpResource()
             updateUISizeThumbnail()
-            playerCallback?.onSkinChange()
+            onSkinChange?.invoke()
 
             return true
         }

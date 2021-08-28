@@ -53,11 +53,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
     }
 
     @Override
-    public void onSkinChange() {
-
-    }
-
-    @Override
     public void onScreenRotate(boolean isLandscape) {
         if (!isLandscape) {
             int w = UZViewUtils.getScreenWidth();

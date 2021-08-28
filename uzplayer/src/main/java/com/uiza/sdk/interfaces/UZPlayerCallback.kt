@@ -11,7 +11,7 @@ interface UZPlayerCallback {
 //    fun isInitResult(linkPlay: String) {}
 
     //when skin is changed
-    fun onSkinChange() {}
+//    fun onSkinChange() {}
     fun onTimeShiftChange(timeShiftOn: Boolean) {}
 
     //when screen rotate
