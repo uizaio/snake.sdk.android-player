@@ -1,43 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:ignore="HardcodedText">
 
     <com.uiza.sdk.view.UZVideoView
         android:id="@+id/uzVideoView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayVOD"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="VOD" />
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Live" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btPlayVOD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VOD" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/etLinkPlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter link play here" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etLinkPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter link play here" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_padding_medium"
-        android:text="Play" />
-</LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btPlayLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_padding_medium"
+            android:text="Play" />
+    </LinearLayout>
+</RelativeLayout>

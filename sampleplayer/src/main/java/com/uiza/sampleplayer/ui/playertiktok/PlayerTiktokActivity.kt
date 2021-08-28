@@ -25,15 +25,10 @@ class PlayerTiktokActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAlwaysPortraitScreen = true
-            uzVideoView.setPIPModeEnabled(false)
-            uzVideoView.setUseController(true)
+            uzVideoView.setUseController(false)
         }
         btPlayVOD.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_VOD)
-            btPlayLink.performClick()
-        }
-        btPlayLive.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_LIVE)
+            etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
             btPlayLink.performClick()
         }
         btPlayLink.setOnClickListener {
