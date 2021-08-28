@@ -18,5 +18,5 @@ interface UZPlayerCallback {
 //    fun onScreenRotate(isLandscape: Boolean) {}
 
     //when UZVideoView had an error
-    fun onError(e: UZException) {}
+//    fun onError(e: UZException) {}
 }

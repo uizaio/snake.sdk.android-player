@@ -91,11 +91,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     }
 
     @Override
-    public void onError(@NonNull UZException e) {
-        Timber.e(e);
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         uzVideo.onSaveInstanceState(outState);

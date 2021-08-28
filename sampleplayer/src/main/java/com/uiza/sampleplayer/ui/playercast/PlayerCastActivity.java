@@ -68,11 +68,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
     }
 
     @Override
-    public void onError(UZException e) {
-        Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onSingleTapConfirmed(float x, float y) {
         uzVideo.toggleShowHideController();
     }

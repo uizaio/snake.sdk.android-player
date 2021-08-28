@@ -177,6 +177,7 @@ class UZVideoView : RelativeLayout,
     var onSkinChange: (() -> Unit)? = null
     var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
+    var onError: ((e: UZException) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -438,7 +439,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun notifyError(exception: UZException) {
-        playerCallback?.onError(exception)
+        onError?.invoke(exception)
     }
 
     private fun handlePlayPlayListFolderUI() {
