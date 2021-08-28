@@ -31,6 +31,8 @@ class PlayerTiktokActivity : AppCompatActivity() {
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
+
+            btPlayVOD.performClick()
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
