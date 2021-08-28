@@ -169,8 +169,4 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
 
     }
 
-    @Override
-    public void onTimeShiftChange(boolean timeShiftOn) {
-
-    }
 }

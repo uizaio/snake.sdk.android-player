@@ -12,7 +12,7 @@ interface UZPlayerCallback {
 
     //when skin is changed
 //    fun onSkinChange() {}
-    fun onTimeShiftChange(timeShiftOn: Boolean) {}
+//    fun onTimeShiftChange(timeShiftOn: Boolean) {}
 
     //when screen rotate
     fun onScreenRotate(isLandscape: Boolean) {}

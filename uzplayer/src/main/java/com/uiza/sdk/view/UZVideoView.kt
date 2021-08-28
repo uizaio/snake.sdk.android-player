@@ -175,6 +175,7 @@ class UZVideoView : RelativeLayout,
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
     var onSkinChange: (() -> Unit)? = null
+    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -1654,7 +1655,7 @@ class UZVideoView : RelativeLayout,
                                 dlg?.dismiss()
                                 val sw = pm.switchTimeShift(isChecked)
                                 if (sw) {
-                                    playerCallback?.onTimeShiftChange(pm.isTimeShiftOn)
+                                    onTimeShiftChange?.invoke(pm.isTimeShiftOn)
                                 }
                                 return sw
                             }

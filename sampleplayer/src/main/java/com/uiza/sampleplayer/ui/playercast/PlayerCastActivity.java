@@ -101,9 +101,4 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
-    @Override
-    public void onTimeShiftChange(boolean timeShiftOn) {
-
-    }
 }
