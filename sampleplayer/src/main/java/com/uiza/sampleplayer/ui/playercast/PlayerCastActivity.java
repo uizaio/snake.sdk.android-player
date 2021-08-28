@@ -53,11 +53,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
     }
 
     @Override
-    public void isInitResult(String linkPlay) {
-
-    }
-
-    @Override
     public void onSkinChange() {
 
     }

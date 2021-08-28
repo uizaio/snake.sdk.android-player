@@ -69,10 +69,11 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         uzVideo.play(playback);
     }
 
-    @Override
-    public void isInitResult(@NonNull String linkPlay) {
-        getLiveViewsTimer(true);
-    }
+    //TODO
+//    @Override
+//    public void isInitResult(@NonNull String linkPlay) {
+//        getLiveViewsTimer(true);
+//    }
 
     @Override
     public void onError(@NonNull UZException e) {

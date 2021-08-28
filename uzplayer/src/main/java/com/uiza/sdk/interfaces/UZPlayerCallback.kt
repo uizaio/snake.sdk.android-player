@@ -8,7 +8,7 @@ interface UZPlayerCallback {
     //isInitSuccess onStateReadyFirst
 //    fun playerViewCreated(playerView: UZPlayerView) {}
 
-    fun isInitResult(linkPlay: String) {}
+//    fun isInitResult(linkPlay: String) {}
 
     //when skin is changed
     fun onSkinChange() {}

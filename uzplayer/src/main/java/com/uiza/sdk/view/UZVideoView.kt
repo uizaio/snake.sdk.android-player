@@ -173,6 +173,7 @@ class UZVideoView : RelativeLayout,
     var isViewCreated = false
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+    var onIsInitResult: ((linkPlay: String) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -556,7 +557,7 @@ class UZVideoView : RelativeLayout,
             urlIMAAd = UZData.urlIMAAd,
             urlThumbnailsPreviewSeekBar = playback.poster
         )
-        playerCallback?.isInitResult(linkPlay)
+        onIsInitResult?.invoke(linkPlay)
         initPlayerManager()
     }
 
@@ -1771,7 +1772,7 @@ class UZVideoView : RelativeLayout,
                 urlIMAAd = if (isCalledFromChangeSkin) null else UZData.urlIMAAd,
                 urlThumbnailsPreviewSeekBar = playback.poster
             )
-            playerCallback?.isInitResult(linkPlay)
+            onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
         }
     }
@@ -1852,7 +1853,7 @@ class UZVideoView : RelativeLayout,
         UZViewUtils.setClickableForViews(able = true, btSkipPreviousUZ, btSkipNextUZ)
 
         UZData.getPlayback()?.getLinkPlays()?.firstOrNull()?.let {
-            playerCallback?.isInitResult(it)
+            onIsInitResult?.invoke(it)
         }
 
         if (isCastingChromecast) {
