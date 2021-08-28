@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="#55ff0000"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
@@ -26,7 +27,9 @@
             android:id="@+id/etLinkPlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter link play here" />
+            android:background="@color/white"
+            android:hint="Enter link play here"
+            android:padding="@dimen/margin_padding_medium" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btPlayLink"
