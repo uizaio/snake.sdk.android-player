@@ -25,6 +25,8 @@ import com.uiza.sdk.view.UZVideoView;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 /**
@@ -45,6 +47,13 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPlayerCallback(this);
+        uzVideo.setOnIsInitResult(new Function1<String, Unit>() {
+            @Override
+            public Unit invoke(String s) {
+                getLiveViewsTimer(true);
+                return null;
+            }
+        });
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
         UZPlayback playbackInfo = null;
@@ -68,12 +77,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         playback.addLinkPlay(etLinkPlay.getText().toString());
         uzVideo.play(playback);
     }
-
-    //TODO
-//    @Override
-//    public void isInitResult(@NonNull String linkPlay) {
-//        getLiveViewsTimer(true);
-//    }
 
     @Override
     public void onError(@NonNull UZException e) {
