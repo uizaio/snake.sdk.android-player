@@ -54,6 +54,18 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
                 return null;
             }
         });
+        uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isLandscape) {
+                if (!isLandscape) {
+                    int w = UZViewUtils.getScreenWidth();
+                    int h = w * 9 / 16;
+                    uzVideo.setFreeSize(false);
+                    uzVideo.setSize(w, h);
+                }
+                return null;
+            }
+        });
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
         UZPlayback playbackInfo = null;
@@ -93,16 +105,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         uzVideo.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onScreenRotate(boolean isLandscape) {
-        if (!isLandscape) {
-            int w = UZViewUtils.getScreenWidth();
-            int h = w * 9 / 16;
-            uzVideo.setFreeSize(false);
-            uzVideo.setSize(w, h);
-        }
     }
 
     @Override

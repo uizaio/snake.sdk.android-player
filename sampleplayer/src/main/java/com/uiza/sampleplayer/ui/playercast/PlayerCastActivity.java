@@ -17,6 +17,9 @@ import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
 public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
@@ -31,6 +34,18 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         etLinkPlay = findViewById(R.id.etLinkPlay);
         UZPlayer.getCasty().setUpMediaRouteButton(findViewById(R.id.media_route_button));
         uzVideo.setPlayerCallback(this);
+        uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isLandscape) {
+                if (!isLandscape) {
+                    int w = UZViewUtils.getScreenWidth();
+                    int h = w * 9 / 16;
+                    uzVideo.setFreeSize(false);
+                    uzVideo.setSize(w, h);
+                }
+                return null;
+            }
+        });
         uzVideo.getPlayerView().setOnSingleTap(this);
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
@@ -50,16 +65,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         super.onCreateOptionsMenu(menu);
         UZPlayer.getCasty().addMediaRouteMenuItem(menu);
         return true;
-    }
-
-    @Override
-    public void onScreenRotate(boolean isLandscape) {
-        if (!isLandscape) {
-            int w = UZViewUtils.getScreenWidth();
-            int h = w * 9 / 16;
-            uzVideo.setFreeSize(false);
-            uzVideo.setSize(w, h);
-        }
     }
 
     @Override

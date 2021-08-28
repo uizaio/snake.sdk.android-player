@@ -176,6 +176,7 @@ class UZVideoView : RelativeLayout,
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
     var onSkinChange: (() -> Unit)? = null
     var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
+    var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -751,7 +752,7 @@ class UZVideoView : RelativeLayout,
             setMarginPreviewTimeBar()
             updateUISizeThumbnail()
             updateUIPositionOfProgressBar()
-            playerCallback?.onScreenRotate(isLandscape)
+            onScreenRotate?.invoke(isLandscape)
         }
     }
 

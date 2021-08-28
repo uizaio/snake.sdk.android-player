@@ -15,7 +15,7 @@ interface UZPlayerCallback {
 //    fun onTimeShiftChange(timeShiftOn: Boolean) {}
 
     //when screen rotate
-    fun onScreenRotate(isLandscape: Boolean) {}
+//    fun onScreenRotate(isLandscape: Boolean) {}
 
     //when UZVideoView had an error
     fun onError(e: UZException) {}
