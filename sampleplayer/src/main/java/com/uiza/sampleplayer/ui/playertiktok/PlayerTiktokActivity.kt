@@ -8,6 +8,7 @@ import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.activity_player_tiktok.*
 
 class PlayerTiktokActivity : AppCompatActivity() {
@@ -26,6 +27,8 @@ class PlayerTiktokActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAlwaysPortraitScreen = true
             uzVideoView.setUseController(false)
+            uzVideoView.setFreeSize(true)
+            uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
