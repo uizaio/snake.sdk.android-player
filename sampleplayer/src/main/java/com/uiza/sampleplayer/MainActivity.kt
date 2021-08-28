@@ -9,6 +9,7 @@ import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -43,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
+        }
+        btnPlayerTiktok.setOnClickListener {
+            gotoActivity(PlayerTiktokActivity::class.java)
         }
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)

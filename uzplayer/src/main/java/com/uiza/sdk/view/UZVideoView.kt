@@ -264,15 +264,7 @@ class UZVideoView : RelativeLayout,
                 pv.visibility = VISIBLE
             } else {
                 timeBarUZ?.let { tb ->
-                    if (tb.tag == null) {
-                        pv.visibility = VISIBLE
-                    } else {
-                        if (tb.tag.toString() == resources.getString(R.string.use_bottom_uz_timebar)) {
-                            setMarginDependOnUZTimeBar(pv.videoSurfaceView)
-                        } else {
-                            pv.visibility = VISIBLE
-                        }
-                    }
+                    pv.visibility = VISIBLE
                     tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
                         override fun onStartPreview(previewView: PreviewView?, progress: Int) {
                             timestampOnStartPreview = System.currentTimeMillis()
