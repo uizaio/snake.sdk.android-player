@@ -16,23 +16,19 @@ import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
-import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-import timber.log.Timber;
 
 /**
  * Demo UZPlayer with Picture In Picture
  */
-public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCallback {
+public class PlayerPipActivity extends AppCompatActivity {
 
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
@@ -46,7 +42,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
-        uzVideo.setPlayerCallback(this);
         uzVideo.setOnIsInitResult(new Function1<String, Unit>() {
             @Override
             public Unit invoke(String s) {

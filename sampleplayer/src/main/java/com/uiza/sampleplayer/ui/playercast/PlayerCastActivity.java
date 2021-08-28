@@ -1,17 +1,14 @@
 package com.uiza.sampleplayer.ui.playercast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZPlayerView;
@@ -20,7 +17,7 @@ import com.uiza.sdk.view.UZVideoView;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
+public class PlayerCastActivity extends AppCompatActivity implements UZPlayerView.OnSingleTap {
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
 
@@ -33,7 +30,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         UZPlayer.getCasty().setUpMediaRouteButton(findViewById(R.id.media_route_button));
-        uzVideo.setPlayerCallback(this);
         uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
             @Override
             public Unit invoke(Boolean isLandscape) {

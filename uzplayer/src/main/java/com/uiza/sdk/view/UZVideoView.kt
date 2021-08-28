@@ -50,7 +50,6 @@ import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.interfaces.DebugCallback
 import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.interfaces.UZManagerObserver
-import com.uiza.sdk.interfaces.UZPlayerCallback
 import com.uiza.sdk.listerner.UZBufferListener
 import com.uiza.sdk.listerner.UZChromeCastListener
 import com.uiza.sdk.listerner.UZProgressListener
@@ -151,7 +150,6 @@ class UZVideoView : RelativeLayout,
     private var isCalledFromChangeSkin = false
     private var firstViewHasFocusTV: View? = null
     private var onPreviewChangeListener: OnPreviewChangeListener? = null
-    private var playerCallback: UZPlayerCallback? = null
     private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
@@ -1741,10 +1739,6 @@ class UZVideoView : RelativeLayout,
 
     fun showProgress() {
         pb.visibility = View.VISIBLE
-    }
-
-    fun setPlayerCallback(callback: UZPlayerCallback?) {
-        playerCallback = callback
     }
 
     fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
