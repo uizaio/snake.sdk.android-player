@@ -20,11 +20,7 @@ class PlayerTiktokSlideActivity : AppCompatActivity() {
 
     private fun setupViews() {
         addData()
-        viewPager.adapter =
-            VerticalAdapter(
-                supportFragmentManager,
-                stringList
-            )
+        viewPager.adapter = VerticalAdapter(supportFragmentManager, stringList)
     }
 
     private fun addData() {
