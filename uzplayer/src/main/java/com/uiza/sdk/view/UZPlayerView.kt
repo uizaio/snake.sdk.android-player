@@ -10,7 +10,6 @@ import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.uiza.sdk.utils.UZData.isSettingPlayer
 import kotlin.math.abs
 
 //I want to to show playback controls only when onTouch event is fired.
@@ -84,15 +83,11 @@ class UZPlayerView @JvmOverloads constructor(
     }
 
     override fun showController() {
-        if (!isSettingPlayer) {
-            super.showController()
-        }
+        super.showController()
     }
 
     override fun hideController() {
-        if (!isSettingPlayer) {
-            super.hideController()
-        }
+        super.hideController()
     }
 
     fun setOnTouchEvent(onTouchEvent: OnTouchEvent?) {

@@ -52,9 +52,6 @@ class UZPlaylistFolderDialog(
             currentPositionOfDataList,
             object : CallbackPlaylistFolder {
                 override fun onClickItem(playback: UZPlayback, position: Int) {
-                    if (UZData.isSettingPlayer) {
-                        return
-                    }
                     dismiss()
                     callbackPlaylistFolder?.onClickItem(playback, position)
                 }

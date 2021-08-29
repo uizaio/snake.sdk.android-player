@@ -37,6 +37,12 @@
             android:text="Player basic" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player List" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerPip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

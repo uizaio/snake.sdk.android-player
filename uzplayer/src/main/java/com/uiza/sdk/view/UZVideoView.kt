@@ -413,7 +413,6 @@ class UZVideoView : RelativeLayout,
         }
         uzException.printStackTrace()
         notifyError(uzException)
-        UZData.isSettingPlayer = false
     }
 
     private fun notifyError(exception: UZException) {
@@ -574,7 +573,6 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun handleErrorNoData() {
-        UZData.isSettingPlayer = false
         handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
     }
 
@@ -602,7 +600,6 @@ class UZVideoView : RelativeLayout,
     fun onDestroyView() {
         releasePlayerStats()
         releasePlayerManager()
-        UZData.isSettingPlayer = false
         if (isPIPEnable) {
             if (context is Activity) {
                 (context as Activity).finishAndRemoveTask()
