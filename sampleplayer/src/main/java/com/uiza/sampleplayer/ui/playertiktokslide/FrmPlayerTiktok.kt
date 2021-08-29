@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
@@ -56,6 +57,7 @@ class FrmPlayerTiktok : Fragment() {
             uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
             uzVideoView.setAutoReplay(true)
             onPlay(linkPlay)
         }
