@@ -12,23 +12,23 @@ class FrmPlayerTiktok : Fragment() {
 
     companion object {
 
-        private const val TEXT = "text"
+        private const val LINK_PLAY = "LINK_PLAY"
 
-        fun newInstance(data: String): FrmPlayerTiktok {
+        fun newInstance(linkPlay: String): FrmPlayerTiktok {
             val fragment = FrmPlayerTiktok()
-            val bundle = Bundle(1)
-            bundle.putString(TEXT, data)
+            val bundle = Bundle()
+            bundle.putString(LINK_PLAY, linkPlay)
             fragment.arguments = bundle
             return fragment
         }
     }
 
-    var text: String? = null
+    var linkPlay: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        text = arguments?.getString(TEXT) ?: ""
+        linkPlay = arguments?.getString(LINK_PLAY) ?: ""
     }
 
     override fun onCreateView(
@@ -39,7 +39,7 @@ class FrmPlayerTiktok : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tv.text = text
+        tv.text = linkPlay
     }
 
 }

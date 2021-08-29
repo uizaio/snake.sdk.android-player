@@ -6,11 +6,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.uiza.sampleplayer.R
+import com.uiza.sampleplayer.app.Constant
 import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
 import java.util.*
 
 class PlayerTiktokSlideActivity : AppCompatActivity() {
-    private val stringList: MutableList<String> = ArrayList()
+    private val stringList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +25,13 @@ class PlayerTiktokSlideActivity : AppCompatActivity() {
     }
 
     private fun addData() {
-        for (i in 0..7) {
-            stringList.add(i.toString())
-        }
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_1)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_2)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_3)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_4)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_5)
+        stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_6)
     }
 
     class VerticalAdapter(
