@@ -24,13 +24,9 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaMetadata
-import com.google.android.gms.cast.MediaTrack
 import com.uiza.sdk.BuildConfig
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
@@ -51,7 +47,6 @@ import com.uiza.sdk.interfaces.DebugCallback
 import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.interfaces.UZManagerObserver
 import com.uiza.sdk.listerner.UZBufferListener
-import com.uiza.sdk.listerner.UZChromeCastListener
 import com.uiza.sdk.listerner.UZProgressListener
 import com.uiza.sdk.listerner.UZTVFocusChangeListener
 import com.uiza.sdk.models.UZPlayback
@@ -117,8 +112,6 @@ class UZVideoView : RelativeLayout,
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
-    private var uzChromeCast: UZChromeCast? = null
-    override var isCastingChromecast = false
 
     override var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
         set(isAutoStart) {
@@ -203,9 +196,6 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun onCreateView() {
-        if (UZAppUtils.checkChromeCastAvailable()) {
-            setupChromeCast()
-        }
         inflate(context, R.layout.layout_uz_ima_video_core, this)
 
         val skinId = UZData.uzPlayerSkinLayoutId
@@ -276,10 +266,6 @@ class UZVideoView : RelativeLayout,
                         }
 
                         override fun onStopPreview(previewView: PreviewView?, progress: Int) {
-                            if (isCastingChromecast) {
-                                val casty = UZData.casty
-                                casty?.player?.seek(progress.toLong())
-                            }
                             val seekLastDuration =
                                 System.currentTimeMillis() - timestampOnStartPreview
                             if (maxSeekLastDurationTimeBar < seekLastDuration) {
@@ -496,13 +482,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun resume() {
-        if (isCastingChromecast) {
-            val casty = UZData.casty
-            casty?.player?.play()
-        } else {
-            playerManager?.resume()
-        }
-
+        playerManager?.resume()
         UZViewUtils.goneViews(btPlayUZ)
         btPauseUZ?.let {
             UZViewUtils.visibleViews(it)
@@ -512,12 +492,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun pause() {
-        if (isCastingChromecast) {
-            val casty = UZData.casty
-            casty?.player?.pause()
-        } else {
-            playerManager?.pause()
-        }
+        playerManager?.pause()
         UZViewUtils.goneViews(btPauseUZ)
         keepScreenOn = false
         btPlayUZ?.let {
@@ -630,7 +605,6 @@ class UZVideoView : RelativeLayout,
         releasePlayerStats()
         releasePlayerManager()
         UZData.isSettingPlayer = false
-        isCastingChromecast = false
         isCastPlayerPlayingFirst = false
         if (isPIPEnable) {
             if (context is Activity) {
@@ -650,12 +624,6 @@ class UZVideoView : RelativeLayout,
 
     fun onResumeView() {
         SensorOrientationChangeNotifier.getInstance(context)?.addListener(this)
-        if (isCastingChromecast) {
-            return
-        }
-//        if (ibPlayIcon == null || ibPlayIcon?.visibility != VISIBLE) {
-//            playerManager?.resume()
-//        }
         playerManager?.resume()
         if (positionPIPPlayer > 0L && isInPipMode) {
             seekTo(positionPIPPlayer)
@@ -663,8 +631,6 @@ class UZVideoView : RelativeLayout,
             // try to move to the edge of livestream video
             seekToLiveEdge()
         }
-        //Makes sure that the media controls pop up on resuming and when going between PIP and non-PIP states.
-//        setUseController(true)
     }
 
     val isPlaying: Boolean
@@ -707,15 +673,13 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView && isPIPModeEnabled)
+        get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView && isPIPModeEnabled)
 
     fun onStopPreview(progress: Int) {
-        if (!isCastingChromecast) {
-            playerManager?.seekTo(progress.toLong())
-            playerManager?.resume()
-            isOnPlayerEnded = false
-            updateUIEndScreen()
-        }
+        playerManager?.seekTo(progress.toLong())
+        playerManager?.resume()
+        isOnPlayerEnded = false
+        updateUIEndScreen()
     }
 
     public override fun onConfigurationChanged(newConfig: Configuration) {
@@ -770,21 +734,12 @@ class UZVideoView : RelativeLayout,
         } else if (v === tvLiveStatusUZ) {
             seekToEndLive()
         } else if (v === btFfwdUZ) {
-            if (isCastingChromecast) {
-                val casty = UZData.casty
-                casty?.player?.seekToForward(defaultSeekValue)
-            }
             playerManager?.seekToForward(defaultSeekValue)
         } else if (v === btRewUZ) {
-            if (isCastingChromecast) {
-                val casty = UZData.casty
-                casty?.player?.seekToRewind(defaultSeekValue)
-            } else if (playerManager != null) {
-                playerManager?.seekToBackward(defaultSeekValue)
-                if (isPlaying) {
-                    isOnPlayerEnded = false
-                    updateUIEndScreen()
-                }
+            playerManager?.seekToBackward(defaultSeekValue)
+            if (isPlaying) {
+                isOnPlayerEnded = false
+                updateUIEndScreen()
             }
         } else if (v === btPauseUZ) {
             pause()
@@ -850,10 +805,7 @@ class UZVideoView : RelativeLayout,
         if (isPlayerControllerAlwayVisible) {
             return
         }
-        //do not hide if is casting chromecast
-        if (!isCastingChromecast) {
-            playerView?.hideController()
-        }
+        playerView?.hideController()
     }
 
     fun setHideControllerOnTouch(isHide: Boolean) {
@@ -1035,27 +987,11 @@ class UZVideoView : RelativeLayout,
             updateUIEndScreen()
             handlePlayPlayListFolderUI()
         }
-        if (isCastingChromecast) {
-            replayChromeCast()
-        }
-    }
-
-    private fun replayChromeCast() {
-        lastCurrentPosition = 0
-        handleConnectedChromecast()
-        showController()
     }
 
     /*Nếu đang casting thì button này sẽ handle volume on/off ở cast player
      * Ngược lại, sẽ handle volume on/off ở exo player*/
     private fun handleClickBtVolume() {
-        if (isCastingChromecast) {
-            val casty = UZData.casty
-            if (casty != null) {
-                val isMute = casty.toggleMuteVolume()
-                btVolumeUZ?.setImageResource(if (isMute) R.drawable.ic_volume_off_white_24_uz else R.drawable.ic_volume_up_white_24_uz)
-            }
-        }
         toggleVolumeMute()
     }
 
@@ -1320,10 +1256,6 @@ class UZVideoView : RelativeLayout,
             updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
 
-            //setup chromecast
-            if (UZAppUtils.checkChromeCastAvailable()) {
-                setupChromeCast()
-            }
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
             setTitle()
@@ -1334,28 +1266,6 @@ class UZVideoView : RelativeLayout,
             return true
         }
         return false
-    }
-
-    private fun setupChromeCast() {
-        uzChromeCast = UZChromeCast()
-        uzChromeCast?.setUZChromeCastListener(object : UZChromeCastListener {
-            override fun onConnected() {
-                lastCurrentPosition = currentPosition
-                handleConnectedChromecast()
-            }
-
-            override fun onDisconnected() {
-                handleDisconnectedChromecast()
-            }
-
-            override fun addUIChromeCast() {
-                uzChromeCast?.let {
-                    llTopUZ?.addView(it.mediaRouteButton)
-                }
-                addUIChromecastLayer()
-            }
-        })
-        uzChromeCast?.setupChromeCast(context)
     }
 
     private fun updateTvDuration() {
@@ -1500,9 +1410,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun updateUIDependOnLiveStream() {
-        if (isCastingChromecast) {
-            UZViewUtils.goneViews(btPipUZ)
-        } else if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
+        if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide ibPictureInPictureIcon if device is TV
             UZViewUtils.goneViews(btPipUZ)
         }
@@ -1844,26 +1752,6 @@ class UZVideoView : RelativeLayout,
         })
     }
 
-    private fun onStateReadyFirst() {
-        updateTvDuration()
-        updateUIButtonPlayPauseDependOnIsAutoStart()
-        updateUIDependOnLiveStream()
-        resizeContainerView()
-
-        //enable from playPlaylistPosition() prevent double click
-        UZViewUtils.setClickableForViews(able = true, btSkipPreviousUZ, btSkipNextUZ)
-
-        UZData.getPlayback()?.getLinkPlays()?.firstOrNull()?.let {
-            onIsInitResult?.invoke(it)
-        }
-
-        if (isCastingChromecast) {
-            replayChromeCast()
-        }
-        timeBarUZ?.hidePreview()
-        UZData.isSettingPlayer = false
-    }
-
     /**
      * When isLive = true, if not time shift then hide timber
      */
@@ -1903,92 +1791,6 @@ class UZVideoView : RelativeLayout,
     //            resume();
     //        }
     //    }
-
-    private fun handleConnectedChromecast() {
-        isCastingChromecast = true
-        isCastPlayerPlayingFirst = false
-        playChromecast()
-        updateUIChromecast()
-    }
-
-    private fun handleDisconnectedChromecast() {
-        isCastingChromecast = false
-        isCastPlayerPlayingFirst = false
-        updateUIChromecast()
-    }
-
-    private fun playChromecast() {
-        if (UZData.getPlayback() == null || playerManager == null || playerManager?.getPlayer() == null) {
-            return
-        }
-        playerManager?.let { pm ->
-            showProgress()
-            val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-
-            //        movieMetadata.putString(MediaMetadata.KEY_SUBTITLE, UizaData.getInstance().getPlayback().getDescription());
-//        movieMetadata.putString(MediaMetadata.KEY_TITLE, UizaData.getInstance().getPlayback().getEntityName());
-//        movieMetadata.addImage(new WebImage(Uri.parse(UizaData.getInstance().getPlayback().getThumbnail())));
-            // NOTE: The receiver app (on TV) should Satisfy CORS requirements
-            // https://developers.google.com/cast/docs/android_sender/media_tracks#satisfy_cors_requirements
-
-            val mediaTrackList = ArrayList<MediaTrack>()
-            val duration = duration
-            if (duration < 0) {
-                log("invalid duration -> cannot play chromecast")
-                return
-            }
-            val mediaInfo = MediaInfo.Builder(pm.linkPlay)
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setContentType("videos/mp4")
-                .setMetadata(movieMetadata)
-                .setMediaTracks(mediaTrackList)
-                .setStreamDuration(duration)
-                .build()
-
-            //play chromecast without screen control
-            val casty = UZData.casty
-            if (casty != null) {
-                casty.player.loadMediaAndPlayInBackground(mediaInfo, true, lastCurrentPosition)
-                casty.player.remoteMediaClient.addProgressListener({ currentPosition: Long, _: Long ->
-                    if (currentPosition >= lastCurrentPosition && !isCastPlayerPlayingFirst) {
-                        hideProgress()
-                        isCastPlayerPlayingFirst = true
-                    }
-                    if (currentPosition > 0) {
-                        pm.seekTo(currentPosition)
-                    }
-                }, 1000)
-            }
-        }
-    }
-
-    /* khi click vào biểu tượng casting
-     * thì sẽ pause local player và bắt đầu loading lên cast player
-     * khi disconnect thì local player sẽ resume*/
-    private fun updateUIChromecast() {
-        if (playerManager == null || rlChromeCast == null || UZAppUtils.isTV(context)) {
-            return
-        }
-        playerManager?.let { pm ->
-            if (isCastingChromecast) {
-                pm.pause()
-                volume = 0f
-                UZViewUtils.visibleViews(rlChromeCast, btPlayUZ)
-                UZViewUtils.goneViews(btPauseUZ)
-                //casting player luôn play first với volume not mute
-                //UizaData.getInstance().getCasty().setVolume(0.99);
-                playerView?.controllerShowTimeoutMs = 0
-            } else {
-                pm.resume()
-                volume = 0.99f
-                UZViewUtils.goneViews(rlChromeCast, btPlayUZ)
-                UZViewUtils.visibleViews(btPauseUZ)
-                //TODO iplm volume mute on/off o cast player
-                //khi quay lại exoplayer từ cast player thì mặc định sẽ bật lại âm thanh (dù cast player đang mute hay !mute)
-                playerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-            }
-        }
-    }
 
     // ===== Stats For Nerds =====
     private fun initStatsForNerds() {

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
-import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity
@@ -39,9 +38,6 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
-        }
-        btnPlayerCast.setOnClickListener {
-            gotoActivity(PlayerCastActivity::class.java)
         }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)

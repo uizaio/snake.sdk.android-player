@@ -11,8 +11,6 @@ interface UZManagerObserver {
     val isPIPEnable: Boolean
     val playerView: UZPlayerView?
 
-    // options
-    val isCastingChromecast: Boolean
     val isAutoStart: Boolean
     val adPlayerCallback: UZAdPlayerCallback?
 

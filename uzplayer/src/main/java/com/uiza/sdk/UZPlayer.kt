@@ -1,13 +1,11 @@
 package com.uiza.sdk
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.os.SystemClock
 import android.provider.Settings
 import androidx.annotation.LayoutRes
 import com.uiza.sdk.analytics.UZAnalytic.Companion.init
-import com.uiza.sdk.chromecast.Casty
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.Constants
 import com.uiza.sdk.utils.UZAppUtils
@@ -58,29 +56,6 @@ class UZPlayer {
             setUZPlayerSkinLayoutId(skinLayoutId)
             elapsedTime = SystemClock.elapsedRealtime()
         }
-
-        /**
-         * set Casty
-         *
-         * @param activity: Activity
-         */
-        @JvmStatic
-        fun setCasty(activity: Activity) {
-            if (UZAppUtils.isTV(activity)) {
-                return
-            }
-            if (!UZAppUtils.checkChromeCastAvailable()) {
-                throw NoClassDefFoundError("Chromecast library is missing")
-            }
-            UZData.casty = Casty.create(activity)
-        }
-
-        /**
-         * @return Casty
-         */
-        @JvmStatic
-        val casty: Casty?
-            get() = UZData.casty
 
         /**
          * set Player Skin layout_id
