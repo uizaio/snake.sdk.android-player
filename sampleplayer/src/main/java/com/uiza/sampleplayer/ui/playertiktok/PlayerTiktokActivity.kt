@@ -14,10 +14,6 @@ import kotlinx.android.synthetic.main.activity_player_tiktok.*
 
 class PlayerTiktokActivity : AppCompatActivity() {
 
-    private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_tiktok)
