@@ -86,7 +86,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
@@ -212,7 +212,7 @@ class UZVideoView : RelativeLayout,
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
 
         if (inflater == null) {
-            log("onCreateView cannot inflater view")
+//            log("onCreateView cannot inflater view")
             throw NullPointerException("Cannot inflater view")
         } else {
             playerView = inflater.inflate(skinId, null) as UZPlayerView?
@@ -234,9 +234,9 @@ class UZVideoView : RelativeLayout,
         updateUISizeThumbnail()
         isViewCreated = true
 
-        log("onCreateView isViewCreated $isViewCreated")
+//        log("onCreateView isViewCreated $isViewCreated")
         playerView?.let {
-            log("onCreateView invoke")
+//            log("onCreateView invoke")
             onPlayerViewCreated?.invoke(it)
         }
     }
@@ -338,7 +338,7 @@ class UZVideoView : RelativeLayout,
 
             btRewUZ?.setSrcDrawableDisabled()
 
-            if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView || !isPIPModeEnabled) {
+            if (!isPIPEnable) {
                 UZViewUtils.goneViews(btPipUZ)
             }
 
@@ -631,7 +631,7 @@ class UZVideoView : RelativeLayout,
         UZData.isSettingPlayer = false
         isCastingChromecast = false
         isCastPlayerPlayingFirst = false
-        if (UZAppUtils.hasSupportPIP(context)) {
+        if (isPIPEnable) {
             if (context is Activity) {
                 (context as Activity).finishAndRemoveTask()
             }
@@ -706,7 +706,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
+        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView && isPIPModeEnabled)
 
     fun onStopPreview(progress: Int) {
         if (!isCastingChromecast) {

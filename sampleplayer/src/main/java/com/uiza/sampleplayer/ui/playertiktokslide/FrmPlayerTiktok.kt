@@ -29,7 +29,7 @@ class FrmPlayerTiktok : Fragment() {
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     var linkPlay: String? = null
@@ -49,7 +49,6 @@ class FrmPlayerTiktok : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        log("onViewCreated linkPlay $linkPlay")
         tvLinkPlay.text = linkPlay
 
         if (uzVideoView.isViewCreated()) {
@@ -58,8 +57,6 @@ class FrmPlayerTiktok : Fragment() {
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
-
-            onPlay(linkPlay)
         }
     }
 
@@ -83,11 +80,13 @@ class FrmPlayerTiktok : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        uzVideoView.onResumeView()
+        log("onResume linkPlay $linkPlay")
+        onPlay(linkPlay)
+//        uzVideoView.onResumeView()
     }
 
     override fun onPause() {
         super.onPause()
-        uzVideoView.onPauseView()
+//        uzVideoView.onPauseView()
     }
 }
