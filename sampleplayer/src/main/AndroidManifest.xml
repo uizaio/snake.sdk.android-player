@@ -24,10 +24,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="ErrorActivity" />
         <activity
-            android:name="com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="AnalyticActivity" />
-        <activity
             android:name=".ui.playerbasic.PlayerBasicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerBasicActivity"

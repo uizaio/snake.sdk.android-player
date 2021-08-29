@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
@@ -30,9 +29,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnAnalytic.setOnClickListener {
-            gotoActivity(AnalyticActivity::class.java)
-        }
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
