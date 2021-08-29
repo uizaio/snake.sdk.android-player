@@ -29,7 +29,7 @@ class FrmPlayerTiktok : Fragment() {
     }
 
     private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
+        Log.d("loitpp" + javaClass.simpleName, msg)
     }
 
     var linkPlay: String? = null
@@ -48,11 +48,11 @@ class FrmPlayerTiktok : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        log("onViewCreated linkPlay $linkPlay")
 
+        log("onViewCreated linkPlay $linkPlay")
         tvLinkPlay.text = linkPlay
-        uzVideoView.onPlayerViewCreated = {
-            log("onPlayerViewCreated")
+
+        if (uzVideoView.isViewCreated()) {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)

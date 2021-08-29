@@ -86,7 +86,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
+        Log.d("loitpp" + javaClass.simpleName, msg)
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
@@ -196,6 +196,7 @@ class UZVideoView : RelativeLayout,
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+//        log("onAttachedToWindow isViewCreated $isViewCreated")
         if (!isViewCreated) {
             onCreateView()
         }
@@ -211,7 +212,8 @@ class UZVideoView : RelativeLayout,
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
 
         if (inflater == null) {
-            throw NullPointerException("Can not inflater view")
+            log("onCreateView cannot inflater view")
+            throw NullPointerException("Cannot inflater view")
         } else {
             playerView = inflater.inflate(skinId, null) as UZPlayerView?
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
@@ -232,7 +234,9 @@ class UZVideoView : RelativeLayout,
         updateUISizeThumbnail()
         isViewCreated = true
 
+        log("onCreateView isViewCreated $isViewCreated")
         playerView?.let {
+            log("onCreateView invoke")
             onPlayerViewCreated?.invoke(it)
         }
     }
