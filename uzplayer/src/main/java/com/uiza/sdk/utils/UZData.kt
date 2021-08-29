@@ -13,7 +13,6 @@ object UZData {
     private var playList: ArrayList<UZPlayback>? = null
     private var playbackInfo: UZPlaybackInfo? = null
     private var currentPositionOfPlayList = 0
-    var useUZDragView = false
     var isSettingPlayer = false
 
     fun getPlayback(): UZPlayback? {

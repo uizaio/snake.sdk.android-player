@@ -674,7 +674,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView && isPIPModeEnabled)
+        get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && playerView?.isUseUZDragView() == false && isPIPModeEnabled)
 
     fun onStopPreview(progress: Int) {
         playerManager?.seekTo(progress.toLong())
@@ -1225,8 +1225,8 @@ class UZVideoView : RelativeLayout,
         if (playerManager == null) {
             return false
         }
-        require(!UZData.useUZDragView) {
-            { resources.getString(R.string.error_change_skin_with_uzdragview) }
+        if (playerView?.isUseUZDragView() == true) {
+            throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
         }
         if (playerManager?.isPlayingAd == true) {
             notifyError(ErrorUtils.exceptionChangeSkin())
@@ -1928,5 +1928,9 @@ class UZVideoView : RelativeLayout,
 
     fun isViewCreated(): Boolean {
         return this.isViewCreated
+    }
+
+    fun setUseUZDragView(useUZDragView: Boolean) {
+        playerView?.setUseUZDragView(useUZDragView)
     }
 }

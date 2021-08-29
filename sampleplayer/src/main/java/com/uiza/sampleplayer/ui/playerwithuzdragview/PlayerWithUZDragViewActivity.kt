@@ -35,7 +35,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        UZPlayer.setUseWithUZDragView(true)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_with_uz_drag_view)
         handler = Handler(Looper.getMainLooper())
@@ -64,6 +63,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
                     uzDragView.setVisibilityChange(visible)
                 }
             })
+            uzVideoView.setUseUZDragView(true)
         }
         uzVideoView.onIsInitResult = {
             uzDragView.setInitResult(true)
@@ -143,7 +143,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         uzVideoView.onDestroyView()
-        UZPlayer.setUseWithUZDragView(false)
         compositeDisposable.dispose()
         handler = null
         super.onDestroy()
