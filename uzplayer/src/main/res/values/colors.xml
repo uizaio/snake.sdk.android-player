@@ -2,6 +2,7 @@
 <resources>
     <color name="primaryColor">#0a0f20</color>
     <color name="colorPrimary">#0b0e0f</color>
+    <color name="black">#000000</color>
     <color name="black_35">#44000000</color>
     <color name="black_65">#A6000000</color>
     <color name="black_85">#D9000000</color>
