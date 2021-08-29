@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.UZApplication
+import com.uiza.sampleplayer.model.DataVideo
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.fragment_player_tiktok.*
@@ -21,10 +22,10 @@ class FrmPlayerTiktok : Fragment() {
 
         private const val DATA = "DATA"
 
-        fun newInstance(data: Data): FrmPlayerTiktok {
+        fun newInstance(dataVideo: DataVideo): FrmPlayerTiktok {
             val fragment = FrmPlayerTiktok()
             val bundle = Bundle()
-            bundle.putSerializable(DATA, data)
+            bundle.putSerializable(DATA, dataVideo)
             fragment.arguments = bundle
             return fragment
         }
@@ -34,12 +35,12 @@ class FrmPlayerTiktok : Fragment() {
         Log.d(javaClass.simpleName, msg)
     }
 
-    var data: Data? = null
+    private var dataVideo: DataVideo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        data = arguments?.getSerializable(DATA) as Data?
+        dataVideo = arguments?.getSerializable(DATA) as DataVideo?
     }
 
     override fun onCreateView(
@@ -52,7 +53,8 @@ class FrmPlayerTiktok : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvLinkPlay.text = "linkPlay ${data?.linkPlay}\nisPortraitVideo: ${data?.isPortraitVideo}"
+        tvLinkPlay.text =
+            "linkPlay ${dataVideo?.linkPlay}\nisPortraitVideo: ${dataVideo?.isPortraitVideo}"
 
         if (uzVideoView.isViewCreated()) {
             uzVideoView.setAlwaysPortraitScreen(true)
@@ -60,12 +62,12 @@ class FrmPlayerTiktok : Fragment() {
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
-            if (data?.isPortraitVideo == true) {
+            if (dataVideo?.isPortraitVideo == true) {
                 uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
             } else {
                 uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             }
-            onPlay(data?.linkPlay)
+            onPlay(dataVideo?.linkPlay)
         }
     }
 

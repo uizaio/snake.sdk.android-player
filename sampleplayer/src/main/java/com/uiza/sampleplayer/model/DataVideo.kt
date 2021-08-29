@@ -1,10 +1,10 @@
-package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
+package com.uiza.sampleplayer.model
 
 import androidx.annotation.Keep
 import java.io.Serializable
 
 @Keep
-data class Data(
+data class DataVideo(
     var linkPlay: String = "",
     var isPortraitVideo: Boolean = false
 ) : Serializable
