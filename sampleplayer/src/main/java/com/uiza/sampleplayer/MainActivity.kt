@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
-        btnPlayerWithRecyclerView.setOnClickListener {
+        btnPlayerRecyclerView.setOnClickListener {
             //TODO
         }
 
