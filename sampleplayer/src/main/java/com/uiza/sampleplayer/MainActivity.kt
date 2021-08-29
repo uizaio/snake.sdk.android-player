@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
+        btnPlayerWithRecyclerView.setOnClickListener {
+            //TODO
+        }
 
         txtVersion.text = String.format(
             Locale.getDefault(),
