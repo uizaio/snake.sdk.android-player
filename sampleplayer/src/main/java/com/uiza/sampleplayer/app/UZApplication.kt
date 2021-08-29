@@ -20,7 +20,7 @@ class UZApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        UZPlayer.init(context = this, prodEnv = true)
+        UZPlayer.init()
     }
 
 }
