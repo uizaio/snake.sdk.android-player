@@ -46,9 +46,9 @@ import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.interfaces.DebugCallback
 import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.interfaces.UZManagerObserver
-import com.uiza.sdk.listerner.UZBufferListener
-import com.uiza.sdk.listerner.UZProgressListener
-import com.uiza.sdk.listerner.UZTVFocusChangeListener
+import com.uiza.sdk.interfaces.UZBufferListener
+import com.uiza.sdk.interfaces.UZProgressListener
+import com.uiza.sdk.interfaces.UZTVFocusChangeListener
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
 import com.uiza.sdk.utils.*

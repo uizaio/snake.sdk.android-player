@@ -1,4 +1,4 @@
-package com.uiza.sdk.listerner
+package com.uiza.sdk.interfaces
 
 interface UZProgressListener {
     fun onAdProgress(s: Int, duration: Int, percent: Int) {}
