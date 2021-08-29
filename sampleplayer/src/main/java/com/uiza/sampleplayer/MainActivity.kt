@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
+        btnPlayerAd.setOnClickListener {
+            //TODO
+        }
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
         }

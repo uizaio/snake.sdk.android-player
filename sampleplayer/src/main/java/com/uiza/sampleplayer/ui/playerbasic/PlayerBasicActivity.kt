@@ -24,7 +24,6 @@ class PlayerBasicActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            uzVideoView.urlIMAAd = getString(R.string.ad_tag_url_test)
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)
             uzVideoView.setUseController(true)

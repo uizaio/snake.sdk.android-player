@@ -25,6 +25,12 @@
             android:text="Error" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerAd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player Ad" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerBasic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
