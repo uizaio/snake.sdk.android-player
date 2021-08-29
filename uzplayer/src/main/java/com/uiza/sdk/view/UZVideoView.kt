@@ -613,6 +613,7 @@ class UZVideoView : RelativeLayout,
         return false
     }
 
+    private var isUSeControllerRestorePip = false
     fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         positionPIPPlayer = currentPosition
         isInPipMode = isInPictureInPictureMode
@@ -621,7 +622,7 @@ class UZVideoView : RelativeLayout,
             setUseController(useController = false)
         } else {
             // Restore the full-screen UI.
-            setUseController(useController = true)
+            setUseController(useController = isUSeControllerRestorePip)
         }
     }
 
@@ -663,7 +664,7 @@ class UZVideoView : RelativeLayout,
             seekToLiveEdge()
         }
         //Makes sure that the media controls pop up on resuming and when going between PIP and non-PIP states.
-        setUseController(true)
+//        setUseController(true)
     }
 
     val isPlaying: Boolean
@@ -814,7 +815,8 @@ class UZVideoView : RelativeLayout,
             }
             isInPipMode = true
             positionPIPPlayer = currentPosition
-            setUseController(false)
+            isUSeControllerRestorePip = isUseController()
+//            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
                 val aspectRatio = Rational(videoWidth, videoHeight)
@@ -2097,8 +2099,12 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setPIPModeEnabled(isPIPModeEnabled: Boolean) {
-        this.isPIPModeEnabled = isPIPModeEnabled;
-        btPipUZ?.isVisible = isPIPModeEnabled
+        this.isPIPModeEnabled = isPIPModeEnabled
+        if (isPIPEnable) {
+            btPipUZ?.visibility = View.VISIBLE
+        } else {
+            btPipUZ?.visibility = View.GONE
+        }
     }
 
     fun isLandscapeScreen(): Boolean {

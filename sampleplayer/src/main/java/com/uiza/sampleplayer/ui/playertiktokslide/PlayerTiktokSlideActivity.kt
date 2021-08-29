@@ -28,6 +28,7 @@ class PlayerTiktokSlideActivity : AppCompatActivity() {
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT)
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_1)
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_2)
+        stringList.add(Constant.LINK_PLAY_VOD)
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_3)
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_4)
         stringList.add(Constant.LINK_PLAY_VOD_PORTRAIT_5)

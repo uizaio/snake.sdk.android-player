@@ -57,6 +57,7 @@ class FrmPlayerTiktok : Fragment() {
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
+            onPlay(linkPlay)
         }
     }
 
@@ -70,6 +71,7 @@ class FrmPlayerTiktok : Fragment() {
             uzPlayback.poster = UZApplication.thumbnailUrl
             uzPlayback.addLinkPlay(link)
             uzVideoView.play(uzPlayback)
+            uzVideoView.pause()
         }
     }
 
@@ -81,12 +83,11 @@ class FrmPlayerTiktok : Fragment() {
     override fun onResume() {
         super.onResume()
         log("onResume linkPlay $linkPlay")
-        onPlay(linkPlay)
-//        uzVideoView.onResumeView()
+        uzVideoView.onResumeView()
     }
 
     override fun onPause() {
         super.onPause()
-//        uzVideoView.onPauseView()
+        uzVideoView.onPauseView()
     }
 }

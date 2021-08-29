@@ -42,6 +42,7 @@ public class PlayerPipActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
+        uzVideo.setPIPModeEnabled(true);
         uzVideo.setOnIsInitResult(new Function1<String, Unit>() {
             @Override
             public Unit invoke(String s) {
