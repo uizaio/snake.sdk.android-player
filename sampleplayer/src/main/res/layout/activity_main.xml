@@ -49,6 +49,18 @@
             android:text="Player PIP (API >= 24 and Support PIP)" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerTiktok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player tiktok" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerTiktokSlide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player tiktok Slide" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerWithUZDragView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

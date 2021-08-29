@@ -1,23 +1,23 @@
 package com.uiza.sampleplayer.ui.playercast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
 
-public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCallback, UZPlayerView.OnSingleTap {
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+
+public class PlayerCastActivity extends AppCompatActivity implements UZPlayerView.OnSingleTap {
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
 
@@ -30,7 +30,18 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         UZPlayer.getCasty().setUpMediaRouteButton(findViewById(R.id.media_route_button));
-        uzVideo.setPlayerCallback(this);
+        uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isLandscape) {
+                if (!isLandscape) {
+                    int w = UZViewUtils.getScreenWidth();
+                    int h = w * 9 / 16;
+                    uzVideo.setFreeSize(false);
+                    uzVideo.setSize(w, h);
+                }
+                return null;
+            }
+        });
         uzVideo.getPlayerView().setOnSingleTap(this);
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
@@ -50,31 +61,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
         super.onCreateOptionsMenu(menu);
         UZPlayer.getCasty().addMediaRouteMenuItem(menu);
         return true;
-    }
-
-    @Override
-    public void isInitResult(String linkPlay) {
-
-    }
-
-    @Override
-    public void onSkinChange() {
-
-    }
-
-    @Override
-    public void onScreenRotate(boolean isLandscape) {
-        if (!isLandscape) {
-            int w = UZViewUtils.getScreenWidth();
-            int h = w * 9 / 16;
-            uzVideo.setFreeSize(false);
-            uzVideo.setSize(w, h);
-        }
-    }
-
-    @Override
-    public void onError(UZException e) {
-        Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -109,16 +95,6 @@ public class PlayerCastActivity extends AppCompatActivity implements UZPlayerCal
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    @Override
-    public void playerViewCreated(@NonNull UZPlayerView playerView) {
-
-    }
-
-    @Override
-    public void onTimeShiftChange(boolean timeShiftOn) {
 
     }
 }

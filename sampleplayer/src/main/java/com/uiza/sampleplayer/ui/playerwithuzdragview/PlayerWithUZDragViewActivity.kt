@@ -14,7 +14,6 @@ import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.exceptions.UZException
-import com.uiza.sdk.interfaces.UZPlayerCallback
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import com.uiza.sdk.view.UZDragView
@@ -62,44 +61,27 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
             }
         })
         uzDragView.setScreenRotate(false)
-        uzVideoView.setPlayerCallback(object : UZPlayerCallback {
-            override fun playerViewCreated(playerView: UZPlayerView) {
-                uzVideoView.playerView?.setControllerStateCallback(object :
-                    UZPlayerView.ControllerStateCallback {
-                    override fun onVisibilityChange(visible: Boolean) {
-                        uzDragView.setVisibilityChange(visible)
-                    }
-                })
-            }
-
-            override fun isInitResult(linkPlay: String) {
-                log("LinkPlay $linkPlay")
-                uzDragView.setInitResult(true)
-                getLiveViewsTimer(firstRun = true)
-            }
-
-            override fun onTimeShiftChange(timeShiftOn: Boolean) {
-                runOnUiThread {
-                    showToast("TimeShiftOn: $timeShiftOn")
+        uzVideoView.onPlayerViewCreated = {
+            uzVideoView.playerView?.setControllerStateCallback(object :
+                UZPlayerView.ControllerStateCallback {
+                override fun onVisibilityChange(visible: Boolean) {
+                    uzDragView.setVisibilityChange(visible)
                 }
+            })
+        }
+        uzVideoView.onIsInitResult = {
+            uzDragView.setInitResult(true)
+            getLiveViewsTimer(firstRun = true)
+        }
+        uzVideoView.onScreenRotate = { isLandscape ->
+            if (!isLandscape) {
+                val w = UZViewUtils.screenWidth
+                val h = w * 9 / 16
+                uzVideoView.setFreeSize(false)
+                uzVideoView.setSize(w, h)
             }
-
-            override fun onScreenRotate(isLandscape: Boolean) {
-                if (!isLandscape) {
-                    val w = UZViewUtils.screenWidth
-                    val h = w * 9 / 16
-                    uzVideoView.setFreeSize(false)
-                    uzVideoView.setSize(w, h)
-                }
-                uzDragView.setScreenRotate(isLandscape)
-            }
-
-            override fun onError(e: UZException) {
-                runOnUiThread {
-                    showToast("$e")
-                }
-            }
-        })
+            uzDragView.setScreenRotate(isLandscape)
+        }
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
         var playbackInfo: UZPlayback? = null

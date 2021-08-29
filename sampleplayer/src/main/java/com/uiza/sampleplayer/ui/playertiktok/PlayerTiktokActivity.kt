@@ -1,41 +1,37 @@
-package com.uiza.sampleplayer.ui.playerbasic
+package com.uiza.sampleplayer.ui.playertiktok
 
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
-import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.models.UZPlayback
-import kotlinx.android.synthetic.main.activity_player_basic.*
+import com.uiza.sdk.utils.UZViewUtils
+import kotlinx.android.synthetic.main.activity_player_tiktok.*
 
-class PlayerBasicActivity : AppCompatActivity() {
-
-    private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
-    }
+class PlayerTiktokActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
-        setContentView(R.layout.activity_player_basic)
+        setContentView(R.layout.activity_player_tiktok)
         setupViews()
     }
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
-            uzVideoView.setPIPModeEnabled(false)
-            uzVideoView.setUseController(true)
+            uzVideoView.setUseController(false)
+            uzVideoView.setFreeSize(true)
+            uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
+            uzVideoView.setAutoReplay(true)
+
+            btPlayVOD.performClick()
         }
         btPlayVOD.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_VOD)
-            btPlayLink.performClick()
-        }
-        btPlayLive.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_LIVE)
+            etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
             btPlayLink.performClick()
         }
         btPlayLink.setOnClickListener {

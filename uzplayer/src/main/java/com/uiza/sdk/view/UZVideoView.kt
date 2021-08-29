@@ -50,7 +50,6 @@ import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.interfaces.DebugCallback
 import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.interfaces.UZManagerObserver
-import com.uiza.sdk.interfaces.UZPlayerCallback
 import com.uiza.sdk.listerner.UZBufferListener
 import com.uiza.sdk.listerner.UZChromeCastListener
 import com.uiza.sdk.listerner.UZProgressListener
@@ -92,7 +91,6 @@ class UZVideoView : RelativeLayout,
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
     private var playerManager: UZPlayerManager? = null
-
     private var llTopUZ: LinearLayout? = null
     private var rlChromeCast: RelativeLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
@@ -118,7 +116,6 @@ class UZVideoView : RelativeLayout,
     private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
-
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var uzChromeCast: UZChromeCast? = null
     override var isCastingChromecast = false
@@ -133,7 +130,8 @@ class UZVideoView : RelativeLayout,
     private var isInPipMode = false
     private var isPIPModeEnabled = false
     private var positionPIPPlayer = 0L
-    var isAutoSwitchItemPlaylistFolder = true
+    private var isAutoSwitchItemPlaylistFolder = true
+    private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
@@ -141,7 +139,7 @@ class UZVideoView : RelativeLayout,
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
-    var isAlwaysPortraitScreen = false
+    private var isAlwaysPortraitScreen = false
     private var isOnPlayerEnded = false
     private var alwaysHideLiveViewers = false
 
@@ -151,7 +149,6 @@ class UZVideoView : RelativeLayout,
     private var isCalledFromChangeSkin = false
     private var firstViewHasFocusTV: View? = null
     private var onPreviewChangeListener: OnPreviewChangeListener? = null
-    private var playerCallback: UZPlayerCallback? = null
     private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
@@ -162,7 +159,7 @@ class UZVideoView : RelativeLayout,
                 throw NoClassDefFoundError(ErrorConstant.ERR_506)
             }
         }
-    var isFirstStateReady = false
+    private var isFirstStateReady = false
 
     //TODO
     private var isCalledFromConnectionEventBus = false
@@ -170,7 +167,15 @@ class UZVideoView : RelativeLayout,
     //last current position lúc từ exoplayer switch sang cast player
     private var lastCurrentPosition = 0L
     private var isCastPlayerPlayingFirst = false
-    var isViewCreated = false
+    private var isViewCreated = false
+
+    var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+    var onIsInitResult: ((linkPlay: String) -> Unit)? = null
+    var onSkinChange: (() -> Unit)? = null
+    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
+    var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
+    var onError: ((e: UZException) -> Unit)? = null
+    var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -191,6 +196,7 @@ class UZVideoView : RelativeLayout,
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+//        log("onAttachedToWindow isViewCreated $isViewCreated")
         if (!isViewCreated) {
             onCreateView()
         }
@@ -206,7 +212,8 @@ class UZVideoView : RelativeLayout,
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
 
         if (inflater == null) {
-            throw NullPointerException("Can not inflater view")
+//            log("onCreateView cannot inflater view")
+            throw NullPointerException("Cannot inflater view")
         } else {
             playerView = inflater.inflate(skinId, null) as UZPlayerView?
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
@@ -227,8 +234,10 @@ class UZVideoView : RelativeLayout,
         updateUISizeThumbnail()
         isViewCreated = true
 
+//        log("onCreateView isViewCreated $isViewCreated")
         playerView?.let {
-            playerCallback?.playerViewCreated(it)
+//            log("onCreateView invoke")
+            onPlayerViewCreated?.invoke(it)
         }
     }
 
@@ -259,15 +268,7 @@ class UZVideoView : RelativeLayout,
                 pv.visibility = VISIBLE
             } else {
                 timeBarUZ?.let { tb ->
-                    if (tb.tag == null) {
-                        pv.visibility = VISIBLE
-                    } else {
-                        if (tb.tag.toString() == resources.getString(R.string.use_bottom_uz_timebar)) {
-                            setMarginDependOnUZTimeBar(pv.videoSurfaceView)
-                        } else {
-                            pv.visibility = VISIBLE
-                        }
-                    }
+                    pv.visibility = VISIBLE
                     tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
                         override fun onStartPreview(previewView: PreviewView?, progress: Int) {
                             timestampOnStartPreview = System.currentTimeMillis()
@@ -337,7 +338,7 @@ class UZVideoView : RelativeLayout,
 
             btRewUZ?.setSrcDrawableDisabled()
 
-            if (!UZAppUtils.hasSupportPIP(context) || UZData.useUZDragView || !isPIPModeEnabled) {
+            if (!isPIPEnable) {
                 UZViewUtils.goneViews(btPipUZ)
             }
 
@@ -432,7 +433,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun notifyError(exception: UZException) {
-        playerCallback?.onError(exception)
+        onError?.invoke(exception)
     }
 
     private fun handlePlayPlayListFolderUI() {
@@ -554,7 +555,7 @@ class UZVideoView : RelativeLayout,
             urlIMAAd = UZData.urlIMAAd,
             urlThumbnailsPreviewSeekBar = playback.poster
         )
-        playerCallback?.isInitResult(linkPlay)
+        onIsInitResult?.invoke(linkPlay)
         initPlayerManager()
     }
 
@@ -612,6 +613,7 @@ class UZVideoView : RelativeLayout,
         return false
     }
 
+    private var isUSeControllerRestorePip = false
     fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         positionPIPPlayer = currentPosition
         isInPipMode = isInPictureInPictureMode
@@ -620,7 +622,7 @@ class UZVideoView : RelativeLayout,
             setUseController(useController = false)
         } else {
             // Restore the full-screen UI.
-            setUseController(useController = true)
+            setUseController(useController = isUSeControllerRestorePip)
         }
     }
 
@@ -630,7 +632,7 @@ class UZVideoView : RelativeLayout,
         UZData.isSettingPlayer = false
         isCastingChromecast = false
         isCastPlayerPlayingFirst = false
-        if (UZAppUtils.hasSupportPIP(context)) {
+        if (isPIPEnable) {
             if (context is Activity) {
                 (context as Activity).finishAndRemoveTask()
             }
@@ -662,7 +664,7 @@ class UZVideoView : RelativeLayout,
             seekToLiveEdge()
         }
         //Makes sure that the media controls pop up on resuming and when going between PIP and non-PIP states.
-        setUseController(true)
+//        setUseController(true)
     }
 
     val isPlaying: Boolean
@@ -705,7 +707,7 @@ class UZVideoView : RelativeLayout,
     }
 
     override val isPIPEnable: Boolean
-        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView)
+        get() = (btPipUZ != null && !isCastingChromecast && UZAppUtils.hasSupportPIP(context = context) && !UZData.useUZDragView && isPIPModeEnabled)
 
     fun onStopPreview(progress: Int) {
         if (!isCastingChromecast) {
@@ -746,7 +748,7 @@ class UZVideoView : RelativeLayout,
             setMarginPreviewTimeBar()
             updateUISizeThumbnail()
             updateUIPositionOfProgressBar()
-            playerCallback?.onScreenRotate(isLandscape)
+            onScreenRotate?.invoke(isLandscape)
         }
     }
 
@@ -813,7 +815,8 @@ class UZVideoView : RelativeLayout,
             }
             isInPipMode = true
             positionPIPPlayer = currentPosition
-            setUseController(false)
+            isUSeControllerRestorePip = isUseController()
+//            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
                 val aspectRatio = Rational(videoWidth, videoHeight)
@@ -941,11 +944,15 @@ class UZVideoView : RelativeLayout,
         if (isPlaying) {
             keepScreenOn = false
             isOnPlayerEnded = true
-            if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
-                hideController()
-                autoSwitchNextVideo()
+            if (isAutoReplay) {
+                replay()
             } else {
-                updateUIEndScreen()
+                if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
+                    hideController()
+                    autoSwitchNextVideo()
+                } else {
+                    updateUIEndScreen()
+                }
             }
         }
         hideProgress()
@@ -976,6 +983,7 @@ class UZVideoView : RelativeLayout,
                 }
             }
         }
+        onPlayerStateChanged?.invoke(playWhenReady, playbackState)
     }
 
     private fun autoSwitchNextVideo() {
@@ -1321,7 +1329,7 @@ class UZVideoView : RelativeLayout,
             setTitle()
             checkToSetUpResource()
             updateUISizeThumbnail()
-            playerCallback?.onSkinChange()
+            onSkinChange?.invoke()
 
             return true
         }
@@ -1650,7 +1658,7 @@ class UZVideoView : RelativeLayout,
                                 dlg?.dismiss()
                                 val sw = pm.switchTimeShift(isChecked)
                                 if (sw) {
-                                    playerCallback?.onTimeShiftChange(pm.isTimeShiftOn)
+                                    onTimeShiftChange?.invoke(pm.isTimeShiftOn)
                                 }
                                 return sw
                             }
@@ -1736,10 +1744,6 @@ class UZVideoView : RelativeLayout,
         pb.visibility = View.VISIBLE
     }
 
-    fun setPlayerCallback(callback: UZPlayerCallback?) {
-        playerCallback = callback
-    }
-
     fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
         this.uzTVFocusChangeListener = uzTVFocusChangeListener
         handleFirstViewHasFocus()
@@ -1769,7 +1773,7 @@ class UZVideoView : RelativeLayout,
                 urlIMAAd = if (isCalledFromChangeSkin) null else UZData.urlIMAAd,
                 urlThumbnailsPreviewSeekBar = playback.poster
             )
-            playerCallback?.isInitResult(linkPlay)
+            onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
         }
     }
@@ -1850,7 +1854,7 @@ class UZVideoView : RelativeLayout,
         UZViewUtils.setClickableForViews(able = true, btSkipPreviousUZ, btSkipNextUZ)
 
         UZData.getPlayback()?.getLinkPlays()?.firstOrNull()?.let {
-            playerCallback?.isInitResult(it)
+            onIsInitResult?.invoke(it)
         }
 
         if (isCastingChromecast) {
@@ -2095,12 +2099,32 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setPIPModeEnabled(isPIPModeEnabled: Boolean) {
-        this.isPIPModeEnabled = isPIPModeEnabled;
-        btPipUZ?.isVisible = isPIPModeEnabled
+        this.isPIPModeEnabled = isPIPModeEnabled
+        if (isPIPEnable) {
+            btPipUZ?.visibility = View.VISIBLE
+        } else {
+            btPipUZ?.visibility = View.GONE
+        }
     }
 
     fun isLandscapeScreen(): Boolean {
         return isLandscape
     }
 
+    fun setAutoReplay(isAutoReplay: Boolean) {
+        this.isAutoReplay = isAutoReplay
+        this.isAutoSwitchItemPlaylistFolder = false
+    }
+
+    fun isAutoReplay(): Boolean {
+        return this.isAutoReplay
+    }
+
+    fun setAlwaysPortraitScreen(isAlwaysPortraitScreen: Boolean) {
+        this.isAlwaysPortraitScreen = isAlwaysPortraitScreen
+    }
+
+    fun isViewCreated(): Boolean {
+        return this.isViewCreated
+    }
 }

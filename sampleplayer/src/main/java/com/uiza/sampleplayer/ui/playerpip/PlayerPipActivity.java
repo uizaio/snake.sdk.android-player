@@ -16,21 +16,19 @@ import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
 import com.uiza.sdk.UZPlayer;
-import com.uiza.sdk.exceptions.UZException;
-import com.uiza.sdk.interfaces.UZPlayerCallback;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
-import com.uiza.sdk.view.UZPlayerView;
 import com.uiza.sdk.view.UZVideoView;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import timber.log.Timber;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Demo UZPlayer with Picture In Picture
  */
-public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCallback {
+public class PlayerPipActivity extends AppCompatActivity {
 
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
@@ -44,7 +42,26 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
         setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
-        uzVideo.setPlayerCallback(this);
+        uzVideo.setPIPModeEnabled(true);
+        uzVideo.setOnIsInitResult(new Function1<String, Unit>() {
+            @Override
+            public Unit invoke(String s) {
+                getLiveViewsTimer(true);
+                return null;
+            }
+        });
+        uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
+            @Override
+            public Unit invoke(Boolean isLandscape) {
+                if (!isLandscape) {
+                    int w = UZViewUtils.getScreenWidth();
+                    int h = w * 9 / 16;
+                    uzVideo.setFreeSize(false);
+                    uzVideo.setSize(w, h);
+                }
+                return null;
+            }
+        });
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
         UZPlayback playbackInfo = null;
@@ -70,23 +87,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     }
 
     @Override
-    public void playerViewCreated(UZPlayerView playerView) {
-        playerView.setControllerStateCallback(visible -> {
-            // nothing to do
-        });
-    }
-
-    @Override
-    public void isInitResult(String linkPlay) {
-        getLiveViewsTimer(true);
-    }
-
-    @Override
-    public void onError(UZException e) {
-        Timber.e(e);
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         uzVideo.onSaveInstanceState(outState);
@@ -96,16 +96,6 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         uzVideo.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onScreenRotate(boolean isLandscape) {
-        if (!isLandscape) {
-            int w = UZViewUtils.getScreenWidth();
-            int h = w * 9 / 16;
-            uzVideo.setFreeSize(false);
-            uzVideo.setSize(w, h);
-        }
     }
 
     @Override
@@ -175,13 +165,4 @@ public class PlayerPipActivity extends AppCompatActivity implements UZPlayerCall
 
     }
 
-    @Override
-    public void onSkinChange() {
-
-    }
-
-    @Override
-    public void onTimeShiftChange(boolean timeShiftOn) {
-
-    }
 }
