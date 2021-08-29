@@ -66,6 +66,7 @@ import java.util.*
 //TODO chi co the dung controller khi da load thanh cong link play
 //TODO life circle
 //TODO tracking
+//TODO skin
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
@@ -161,6 +162,7 @@ class UZVideoView : RelativeLayout,
     private var lastCurrentPosition = 0L
     private var isCastPlayerPlayingFirst = false
     private var isViewCreated = false
+    private var skinId = R.layout.uzplayer_skin_default
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
@@ -198,7 +200,6 @@ class UZVideoView : RelativeLayout,
     private fun onCreateView() {
         inflate(context, R.layout.layout_uz_ima_video_core, this)
 
-        val skinId = UZData.uzPlayerSkinLayoutId
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
 
         if (inflater == null) {
@@ -1193,8 +1194,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun updateUIEachSkin() {
-        val curSkinLayoutId = UZData.uzPlayerSkinLayoutId
-        if (curSkinLayoutId == R.layout.uzplayer_skin_2 || curSkinLayoutId == R.layout.uzplayer_skin_3) {
+        if (skinId == R.layout.uzplayer_skin_2 || skinId == R.layout.uzplayer_skin_3) {
 
             btPlayUZ?.setRatioLand(7)
             btPlayUZ?.setRatioPort(5)
@@ -1232,7 +1232,7 @@ class UZVideoView : RelativeLayout,
             notifyError(ErrorUtils.exceptionChangeSkin())
             return false
         }
-        UZData.uzPlayerSkinLayoutId = skinId
+        this.skinId = skinId
         isRefreshFromChangeSkin = true
         isCalledFromChangeSkin = true
 

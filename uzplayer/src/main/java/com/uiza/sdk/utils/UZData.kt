@@ -1,7 +1,5 @@
 package com.uiza.sdk.utils
 
-import androidx.annotation.LayoutRes
-import com.uiza.sdk.R
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.models.UZPlaybackInfo
 import com.uiza.sdk.utils.StringUtils.parserInfo
@@ -10,10 +8,6 @@ import java.util.*
 object UZData {
 
     private val logTag = javaClass.simpleName
-
-    @LayoutRes
-    var uzPlayerSkinLayoutId: Int = R.layout.uzplayer_skin_1 //id of layout xml
-
     private var playback: UZPlayback? = null
     var urlIMAAd = ""
     private var playList: ArrayList<UZPlayback>? = null

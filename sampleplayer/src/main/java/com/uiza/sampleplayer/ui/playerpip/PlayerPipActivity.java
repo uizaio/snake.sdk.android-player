@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
-import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZVideoView;
@@ -35,7 +34,6 @@ public class PlayerPipActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedState);
         setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
