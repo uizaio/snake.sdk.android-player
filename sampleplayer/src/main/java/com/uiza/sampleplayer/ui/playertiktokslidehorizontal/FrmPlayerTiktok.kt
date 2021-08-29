@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer.ui.playertiktokslide
+package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
 
 import android.annotation.SuppressLint
 import android.os.Bundle

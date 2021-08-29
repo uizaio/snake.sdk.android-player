@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer.ui.playertiktokslide
+package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -7,15 +7,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
+import kotlinx.android.synthetic.main.activity_player_tiktok_slide_horizontal.*
 import java.util.*
 
-class PlayerTiktokSlideActivity : AppCompatActivity() {
+class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
     private val listData = ArrayList<Data>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_tiktok_slide)
+        setContentView(R.layout.activity_player_tiktok_slide_horizontal)
         setupViews()
     }
 
