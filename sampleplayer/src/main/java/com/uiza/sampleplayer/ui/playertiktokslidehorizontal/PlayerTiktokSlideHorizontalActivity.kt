@@ -3,8 +3,9 @@ package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.model.DataVideo
@@ -22,7 +23,21 @@ class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
 
     private fun setupViews() {
         addData()
-        viewPager.adapter = VerticalAdapter(supportFragmentManager, listDataVideo)
+        viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+        setUpViewPager()
+
+        btSwitchOrientation.setOnClickListener {
+            if (viewPager.orientation == ViewPager2.ORIENTATION_VERTICAL) {
+                viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            } else {
+                viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+            }
+        }
+    }
+
+    private fun setUpViewPager() {
+        val adapter = VerticalAdapter(this, listDataVideo)
+        viewPager.adapter = adapter
     }
 
     private fun addData() {
@@ -36,16 +51,17 @@ class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
         listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_6, true))
     }
 
-    class VerticalAdapter(
-        fm: FragmentManager,
+    private inner class VerticalAdapter(
+        fragmentActivity: FragmentActivity,
         private val stringList: List<DataVideo>
-    ) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    ) :
+        FragmentStateAdapter(fragmentActivity) {
 
-        override fun getItem(position: Int): Fragment {
+        override fun createFragment(position: Int): Fragment {
             return FrmPlayerTiktok.newInstance(stringList[position])
         }
 
-        override fun getCount(): Int {
+        override fun getItemCount(): Int {
             return stringList.size
         }
     }

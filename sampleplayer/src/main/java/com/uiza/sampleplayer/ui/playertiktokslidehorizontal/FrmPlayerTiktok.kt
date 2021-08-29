@@ -52,11 +52,12 @@ class FrmPlayerTiktok : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        log("onViewCreated $dataVideo")
 
         tvLinkPlay.text =
             "linkPlay ${dataVideo?.linkPlay}\nisPortraitVideo: ${dataVideo?.isPortraitVideo}"
 
-        if (uzVideoView.isViewCreated()) {
+        uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)
@@ -82,21 +83,25 @@ class FrmPlayerTiktok : Fragment() {
             uzPlayback.addLinkPlay(link)
             uzVideoView.play(uzPlayback)
             uzVideoView.pause()
+            log("onPlay")
         }
     }
 
     override fun onDestroyView() {
         uzVideoView.onDestroyView()
+        log("onDestroyView")
         super.onDestroyView()
     }
 
     override fun onResume() {
         super.onResume()
+        log("onResume")
         uzVideoView.onResumeView()
     }
 
     override fun onPause() {
         super.onPause()
+        log("onPause")
         uzVideoView.onPauseView()
     }
 }
