@@ -88,7 +88,6 @@ class UZVideoView : RelativeLayout,
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
     private var playerManager: UZPlayerManager? = null
     private var llTopUZ: LinearLayout? = null
-    private var rlChromeCast: RelativeLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
     private var ivThumbnailUZ: ImageView? = null
@@ -158,11 +157,9 @@ class UZVideoView : RelativeLayout,
     //TODO
     private var isCalledFromConnectionEventBus = false
 
-    //last current position lúc từ exoplayer switch sang cast player
-    private var lastCurrentPosition = 0L
-    private var isCastPlayerPlayingFirst = false
     private var isViewCreated = false
     private var skinId = R.layout.uzplayer_skin_default
+    var urlIMAAd: String? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
@@ -528,7 +525,7 @@ class UZVideoView : RelativeLayout,
         }
         initDataSource(
             linkPlay = linkPlay,
-            urlIMAAd = UZData.urlIMAAd,
+            urlIMAAd = urlIMAAd,
             urlThumbnailsPreviewSeekBar = playback.poster
         )
         onIsInitResult?.invoke(linkPlay)
@@ -606,7 +603,6 @@ class UZVideoView : RelativeLayout,
         releasePlayerStats()
         releasePlayerManager()
         UZData.isSettingPlayer = false
-        isCastPlayerPlayingFirst = false
         if (isPIPEnable) {
             if (context is Activity) {
                 (context as Activity).finishAndRemoveTask()
@@ -990,8 +986,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    /*Nếu đang casting thì button này sẽ handle volume on/off ở cast player
-     * Ngược lại, sẽ handle volume on/off ở exo player*/
     private fun handleClickBtVolume() {
         toggleVolumeMute()
     }
@@ -1678,7 +1672,7 @@ class UZVideoView : RelativeLayout,
             }
             initDataSource(
                 linkPlay = linkPlay,
-                urlIMAAd = if (isCalledFromChangeSkin) null else UZData.urlIMAAd,
+                urlIMAAd = if (isCalledFromChangeSkin) null else urlIMAAd,
                 urlThumbnailsPreviewSeekBar = playback.poster
             )
             onIsInitResult?.invoke(linkPlay)
@@ -1795,41 +1789,6 @@ class UZVideoView : RelativeLayout,
     // ===== Stats For Nerds =====
     private fun initStatsForNerds() {
         player?.addAnalyticsListener(statsForNerdsView)
-    }
-
-    private fun addUIChromecastLayer() {
-        rlChromeCast = RelativeLayout(context)
-        val rlChromeCastParams =
-            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        rlChromeCast?.let { rl ->
-            rl.layoutParams = rlChromeCastParams
-            rl.visibility = View.GONE
-            rl.setBackgroundColor(Color.BLACK)
-
-            val ibsCast = UZImageButton(context)
-            ibsCast.setBackgroundColor(Color.TRANSPARENT)
-            ibsCast.setImageResource(R.drawable.cast_uz)
-            val ibsCastParams =
-                LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            ibsCastParams.addRule(CENTER_IN_PARENT, TRUE)
-            ibsCast.layoutParams = ibsCastParams
-            ibsCast.setRatioPort(5)
-            ibsCast.setRatioLand(5)
-            ibsCast.scaleType = ImageView.ScaleType.FIT_CENTER
-            ibsCast.setColorFilter(Color.WHITE)
-            rl.addView(ibsCast)
-
-            rl.setOnClickListener(this)
-
-            llTopUZ?.let { ll ->
-                if (ll.parent is RelativeLayout) {
-                    (ll.parent as RelativeLayout).addView(rl, 0)
-                }
-            }
-        }
     }
 
     private fun updateLiveStatus(currentMls: Long, duration: Long) {

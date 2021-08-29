@@ -1,17 +1,11 @@
 package com.uiza.sdk.utils
 
 import com.uiza.sdk.models.UZPlayback
-import com.uiza.sdk.models.UZPlaybackInfo
-import com.uiza.sdk.utils.StringUtils.parserInfo
 import java.util.*
 
 object UZData {
-
-    private val logTag = javaClass.simpleName
     private var playback: UZPlayback? = null
-    var urlIMAAd = ""
     private var playList: ArrayList<UZPlayback>? = null
-    private var playbackInfo: UZPlaybackInfo? = null
     private var currentPositionOfPlayList = 0
     var isSettingPlayer = false
 
@@ -23,22 +17,12 @@ object UZData {
         return playback?.poster
     }
 
-    fun getPlaybackInfo(): UZPlaybackInfo? {
-        return playbackInfo
-    }
-
     fun setPlayback(playback: UZPlayback?) {
         this.playback = playback
-        val firstLinkPlay = playback?.firstLinkPlay
-        if (firstLinkPlay != null) {
-            playbackInfo = parserInfo(linkPlay = firstLinkPlay)
-        }
     }
 
     fun clear() {
         playback = null
-        playbackInfo = null
-        urlIMAAd = ""
     }
 
     fun getEntityId(): String? {
@@ -78,10 +62,6 @@ object UZData {
         playList?.let { list ->
             val currentPlayback = list[currentPositionOfPlayList]
             playback = currentPlayback
-            val firstLinkPlay = playback?.firstLinkPlay
-            if (firstLinkPlay != null) {
-                playbackInfo = parserInfo(firstLinkPlay)
-            }
         }
     }
 
