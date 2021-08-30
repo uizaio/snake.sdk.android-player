@@ -3,6 +3,7 @@ package com.uiza.sampleplayer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
@@ -29,6 +30,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
+        btnPlayerAd.visibility = View.GONE
+        btnPlayerAdvanced.visibility = View.GONE
+        btnPlayerCast.visibility = View.GONE
+        btnPlayerFragment.visibility = View.GONE
+        btnPlayerList.visibility = View.GONE
+        btnPlayerPip.visibility = View.GONE
+        btnPlayerRecyclerView.visibility = View.GONE
+        btnPlayerTiktok.visibility = View.GONE
+        btnPlayerTiktokSlide.visibility = View.GONE
+        btnPlayerWithUZDragView.visibility = View.GONE
+        btnPlayerYoutube.visibility = View.GONE
+
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }

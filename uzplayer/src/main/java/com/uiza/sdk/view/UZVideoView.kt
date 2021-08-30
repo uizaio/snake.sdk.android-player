@@ -16,10 +16,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
 import android.util.Rational
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.OnFocusChangeListener
-import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
@@ -43,12 +41,7 @@ import com.uiza.sdk.dialog.speed.UZSpeedDialog
 import com.uiza.sdk.exceptions.ErrorConstant
 import com.uiza.sdk.exceptions.ErrorUtils
 import com.uiza.sdk.exceptions.UZException
-import com.uiza.sdk.interfaces.DebugCallback
-import com.uiza.sdk.interfaces.UZAdPlayerCallback
-import com.uiza.sdk.interfaces.UZManagerObserver
-import com.uiza.sdk.interfaces.UZBufferListener
-import com.uiza.sdk.interfaces.UZProgressListener
-import com.uiza.sdk.interfaces.UZTVFocusChangeListener
+import com.uiza.sdk.interfaces.*
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
 import com.uiza.sdk.utils.*
@@ -62,6 +55,7 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
+
 
 //TODO chi co the dung controller khi da load thanh cong link play
 //TODO life circle
@@ -211,6 +205,32 @@ class UZVideoView : RelativeLayout,
             playerView?.let {
                 it.layoutParams = layoutParams
                 it.visibility = GONE
+
+                if (it.getVideoSurfaceView() is SurfaceView) {
+                    (it.getVideoSurfaceView() as SurfaceView).holder.addCallback(object :
+                        SurfaceHolder.Callback2 {
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {}
+                        override fun surfaceCreated(holder: SurfaceHolder) {}
+                        override fun surfaceChanged(
+                            holder: SurfaceHolder,
+                            format: Int,
+                            width: Int,
+                            height: Int
+                        ) {
+                        }
+
+                        override fun surfaceDestroyed(holder: SurfaceHolder) {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (context is Activity) {
+                                        (context as Activity).finishAndRemoveTask()
+                                    }
+                                }
+                            }
+                        }
+                    })
+                }
+
                 layoutRootView.addView(it)
             }
 
@@ -768,10 +788,27 @@ class UZVideoView : RelativeLayout,
 //            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
-                val aspectRatio = Rational(videoWidth, videoHeight)
-                params.setAspectRatio(aspectRatio)
-                if (context is Activity) {
-                    (context as Activity).enterPictureInPictureMode(params.build())
+                try {
+                    val aspectRatio = Rational(videoWidth, videoHeight)
+                    params.setAspectRatio(aspectRatio)
+                    if (context is Activity) {
+                        (context as Activity).enterPictureInPictureMode(params.build())
+                    }
+                } catch (e: Exception) {
+                    val w: Int
+                    val h: Int
+                    if (videoWidth > videoHeight) {
+                        w = 1280
+                        h = 720
+                    } else {
+                        w = 720
+                        h = 1280
+                    }
+                    val aspectRatio = Rational(w, h)
+                    params.setAspectRatio(aspectRatio)
+                    if (context is Activity) {
+                        (context as Activity).enterPictureInPictureMode(params.build())
+                    }
                 }
             } else {
                 if (context is Activity) {
