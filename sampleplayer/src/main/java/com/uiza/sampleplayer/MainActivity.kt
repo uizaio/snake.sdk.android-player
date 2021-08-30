@@ -54,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
         }
+        btnPlayerPreviewSeekbar.setOnClickListener {
+
+        }
         btnPlayerTiktok.setOnClickListener {
             gotoActivity(PlayerTiktokActivity::class.java)
         }
