@@ -14,8 +14,6 @@ import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivit
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-//TODO skin
-//TODO player review timebar
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +44,6 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(ErrorActivity::class.java)
         }
         btnPlayerAd.setOnClickListener {
-            //TODO
         }
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
@@ -55,6 +52,9 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(PlayerPipActivity::class.java)
         }
         btnPlayerPreviewSeekbar.setOnClickListener {
+
+        }
+        btnPlayerSkin.setOnClickListener {
 
         }
         btnPlayerTiktok.setOnClickListener {
@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
         btnPlayerRecyclerView.setOnClickListener {
-            //TODO
         }
 
         txtVersion.text = String.format(

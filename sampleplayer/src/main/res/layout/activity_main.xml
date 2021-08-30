@@ -79,6 +79,12 @@
             android:text="Player in RecyclerView" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerSkin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player skin" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerTiktok"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
