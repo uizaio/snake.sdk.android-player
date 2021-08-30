@@ -11,7 +11,6 @@ import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.*
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
@@ -56,6 +55,7 @@ import java.util.*
 
 //TODO chi co the dung controller khi da load thanh cong link play
 //TODO skin
+//TODO stats overlap
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
@@ -490,7 +490,7 @@ class UZVideoView : RelativeLayout,
         initDataSource(
             linkPlay = linkPlay,
             urlIMAAd = urlIMAAd,
-            urlThumbnailsPreviewSeekBar = uzPlayback?.poster
+            poster = uzPlayback?.poster
         )
         onIsInitResult?.invoke(linkPlay)
         initPlayerManager()
@@ -1491,19 +1491,6 @@ class UZVideoView : RelativeLayout,
         rootViewUZVideo.setBackgroundColor(color)
     }
 
-    fun setMarginDependOnUZTimeBar(view: View?) {
-        if (view == null || timeBarUZ == null) {
-            return
-        }
-        val tmpHeightTimeBar: Int
-        if (isLandscape) {
-            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = 0)
-        } else {
-            tmpHeightTimeBar = heightTimeBar
-            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = tmpHeightTimeBar / 2)
-        }
-    }
-
     fun hideProgress() {
         pb.visibility = View.GONE
     }
@@ -1533,7 +1520,7 @@ class UZVideoView : RelativeLayout,
             initDataSource(
                 linkPlay = linkPlay,
                 urlIMAAd = if (isCalledFromChangeSkin) null else urlIMAAd,
-                urlThumbnailsPreviewSeekBar = uzPlayback?.poster
+                poster = uzPlayback?.poster
             )
             onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
@@ -1543,7 +1530,7 @@ class UZVideoView : RelativeLayout,
     private fun initDataSource(
         linkPlay: String,
         urlIMAAd: String?,
-        urlThumbnailsPreviewSeekBar: String?
+        poster: String?
     ) {
         playerManager = UZPlayerManager.Builder(context)
             .withPlayUrl(linkPlay)
@@ -1553,19 +1540,16 @@ class UZVideoView : RelativeLayout,
         isFirstStateReady = false
 
         timeBarUZ?.let {
-            val disable = TextUtils.isEmpty(urlThumbnailsPreviewSeekBar)
-            it.isEnabled = !disable
+            it.setEnabledPreview(!poster.isNullOrEmpty())
             it.setPreviewLoader(object : PreviewLoader {
                 override fun loadPreview(currentPosition: Long, max: Long) {
                     playerManager?.let { pm ->
                         pm.setPlayWhenReady(false)
                         ivThumbnailUZ?.let { iv ->
-                            if (!disable) {
-                                ImageUtils.loadThumbnail(
-                                    imageView = iv,
-                                    imageUrl = urlThumbnailsPreviewSeekBar
-                                )
-                            }
+                            ImageUtils.loadThumbnail(
+                                imageView = iv,
+                                imageUrl = poster
+                            )
                         }
                     }
                 }

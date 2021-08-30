@@ -26,7 +26,7 @@ class PreviewDelegate(
     private var startTouch = false
     var isSetup = false
         private set
-    private var enabled = false
+    private var enabledPreview = false
     private val alwaysHide = false
 
     init {
@@ -99,8 +99,8 @@ class PreviewDelegate(
         }
     }
 
-    fun setEnabled(enabled: Boolean) {
-        this.enabled = enabled
+    fun setEnabledPreview(enabledPreview: Boolean) {
+        this.enabledPreview = enabledPreview
     }
 
     fun setPreviewColorTint(@ColorInt color: Int) {
@@ -131,7 +131,7 @@ class PreviewDelegate(
     }
 
     override fun onPreview(previewView: PreviewView?, progress: Int, fromUser: Boolean) {
-        if (isSetup && enabled) {
+        if (isSetup && enabledPreview) {
             animator?.move()
             if (!isShowing && !startTouch && fromUser) {
                 show()
