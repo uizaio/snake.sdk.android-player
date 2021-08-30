@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 //TODO skin
+//TODO player review timebar
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

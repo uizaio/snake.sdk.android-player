@@ -29,6 +29,7 @@ import com.uiza.sdk.utils.UZAppUtils;
 public final class UZPlayerManager extends AbstractPlayerManager {
 
     private String urlIMAAd;
+    private String title;
     private ImaAdsLoader adsLoader = null;
     private boolean isOnAdEnded;
     private UZAdPlayerCallback adPlayerCallback;
@@ -39,6 +40,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
         private final Context context;
         private String playUrl;
         private String imaAdUrl;
+        private String title;
         private String drmScheme;
 
         public Builder(Context context) {
@@ -61,13 +63,14 @@ public final class UZPlayerManager extends AbstractPlayerManager {
         }
 
         public UZPlayerManager build() {
-            return new UZPlayerManager(context, playUrl, imaAdUrl, drmScheme);
+            return new UZPlayerManager(context, playUrl, imaAdUrl, title, drmScheme);
         }
     }
 
-    private UZPlayerManager(@NonNull Context context, String linkPlay, String urlIMAAd, String drmSchema) {
+    private UZPlayerManager(@NonNull Context context, String linkPlay, String urlIMAAd, String title, String drmSchema) {
         super(context, linkPlay, drmSchema);
         this.urlIMAAd = urlIMAAd;
+        this.title = title;
         setRunnable();
     }
 
@@ -167,7 +170,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
         if (context instanceof Activity)
             MediaControllerCompat.setMediaController((Activity) context, mediaSession.getController());
         MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, managerObserver.getTitle())
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .build();
         mediaSession.setMetadata(metadata);
         mediaSession.setActive(true);

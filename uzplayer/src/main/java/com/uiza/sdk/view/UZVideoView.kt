@@ -147,6 +147,7 @@ class UZVideoView : RelativeLayout,
     private var isViewCreated = false
     private var skinId = R.layout.uzplayer_skin_default
     var urlIMAAd: String? = null
+    var uzPlayback: UZPlayback? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
@@ -435,13 +436,13 @@ class UZVideoView : RelativeLayout,
         playerManager?.seekTo(positionMs)
     }
 
-    fun play(playback: UZPlayback): Boolean {
+    fun play(uzPlayback: UZPlayback): Boolean {
         if (!ConnectivityUtils.isConnected(context)) {
             notifyError(ErrorUtils.exceptionNoConnection())
             return false
         }
-        UZData.setPlayback(playback = playback)
-        initPlayback(playback = playback)
+        this.uzPlayback = uzPlayback
+        initPlayback()
         return true
     }
 
@@ -471,7 +472,10 @@ class UZVideoView : RelativeLayout,
     val videoHeight: Int
         get() = playerManager?.videoHeight ?: 0
 
-    private fun initPlayback(playback: UZPlayback) {
+    private fun initPlayback() {
+        if (uzPlayback == null) {
+            return
+        }
         isCalledFromChangeSkin = false
         hideLayoutMsg()
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
@@ -480,7 +484,7 @@ class UZVideoView : RelativeLayout,
         releasePlayerManager()
         showProgress()
         updateUIDependOnLiveStream()
-        val linkPlay = playback.linkPlay
+        val linkPlay = uzPlayback?.linkPlay
         if (linkPlay.isNullOrEmpty()) {
             handleError(ErrorUtils.exceptionNoLinkPlay())
             return
@@ -488,7 +492,7 @@ class UZVideoView : RelativeLayout,
         initDataSource(
             linkPlay = linkPlay,
             urlIMAAd = urlIMAAd,
-            urlThumbnailsPreviewSeekBar = playback.poster
+            urlThumbnailsPreviewSeekBar = uzPlayback?.poster
         )
         onIsInitResult?.invoke(linkPlay)
         initPlayerManager()
@@ -1270,7 +1274,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setTitle() {
-        tvTitleUZ?.text = UZData.getEntityName()
+        tvTitleUZ?.text = uzPlayback?.name ?: ""
     }
 
     fun setAlwaysHideLiveViewers(hide: Boolean) {
@@ -1520,11 +1524,10 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun checkToSetUpResource() {
-        val playback = UZData.getPlayback()
-        if (playback == null) {
+        if (uzPlayback == null) {
             handleError(ErrorUtils.exceptionSetup())
         } else {
-            val linkPlay = playback.linkPlay
+            val linkPlay = uzPlayback?.linkPlay
             if (linkPlay.isNullOrEmpty()) {
                 handleErrorNoData()
                 return
@@ -1532,7 +1535,7 @@ class UZVideoView : RelativeLayout,
             initDataSource(
                 linkPlay = linkPlay,
                 urlIMAAd = if (isCalledFromChangeSkin) null else urlIMAAd,
-                urlThumbnailsPreviewSeekBar = playback.poster
+                urlThumbnailsPreviewSeekBar = uzPlayback?.poster
             )
             onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
@@ -1681,9 +1684,6 @@ class UZVideoView : RelativeLayout,
     fun hideTextLiveStreamLatency() {
         statsForNerdsView.hideTextLiveStreamLatency()
     }
-
-    override val title: String?
-        get() = null
 
     override fun onOrientationChange(orientation: Int) {
         //270 land trai
