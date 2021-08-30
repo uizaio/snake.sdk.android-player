@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
         btnPlayerList.visibility = View.GONE
         btnPlayerPip.visibility = View.GONE
         btnPlayerRecyclerView.visibility = View.GONE
-        btnPlayerTiktok.visibility = View.GONE
-        btnPlayerTiktokSlide.visibility = View.GONE
         btnPlayerWithUZDragView.visibility = View.GONE
         btnPlayerYoutube.visibility = View.GONE
 
