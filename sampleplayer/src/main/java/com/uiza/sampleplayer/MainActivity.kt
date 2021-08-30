@@ -3,11 +3,10 @@ package com.uiza.sampleplayer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.uiza.sampleplayer.ui.common.analytic.AnalyticActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
-import com.uiza.sampleplayer.ui.playercast.PlayerCastActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity
@@ -31,17 +30,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnAnalytic.setOnClickListener {
-            gotoActivity(AnalyticActivity::class.java)
-        }
+        btnPlayerAd.visibility = View.GONE
+        btnPlayerAdvanced.visibility = View.GONE
+        btnPlayerCast.visibility = View.GONE
+        btnPlayerFragment.visibility = View.GONE
+        btnPlayerList.visibility = View.GONE
+        btnPlayerPip.visibility = View.GONE
+        btnPlayerRecyclerView.visibility = View.GONE
+        btnPlayerTiktok.visibility = View.GONE
+        btnPlayerTiktokSlide.visibility = View.GONE
+        btnPlayerWithUZDragView.visibility = View.GONE
+        btnPlayerYoutube.visibility = View.GONE
+
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
+        btnPlayerAd.setOnClickListener {
+            //TODO
+        }
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
-        }
-        btnPlayerCast.setOnClickListener {
-            gotoActivity(PlayerCastActivity::class.java)
         }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
@@ -54,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
+        }
+        btnPlayerRecyclerView.setOnClickListener {
+            //TODO
         }
 
         txtVersion.text = String.format(

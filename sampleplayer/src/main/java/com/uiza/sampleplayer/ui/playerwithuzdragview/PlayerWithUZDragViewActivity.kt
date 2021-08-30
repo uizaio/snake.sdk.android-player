@@ -8,18 +8,15 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.uiza.api.UZApi.getLiveViewers
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.UZPlayer
-import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import com.uiza.sdk.view.UZDragView
 import com.uiza.sdk.view.UZPlayerView
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_player_with_uz_drag_view.*
 import java.util.*
 
@@ -38,8 +35,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        UZPlayer.setUseWithUZDragView(true)
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_with_uz_drag_view)
         handler = Handler(Looper.getMainLooper())
@@ -68,10 +63,10 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
                     uzDragView.setVisibilityChange(visible)
                 }
             })
+            uzVideoView.setUseUZDragView(true)
         }
         uzVideoView.onIsInitResult = {
             uzDragView.setInitResult(true)
-            getLiveViewsTimer(firstRun = true)
         }
         uzVideoView.onScreenRotate = { isLandscape ->
             if (!isLandscape) {
@@ -148,7 +143,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         uzVideoView.onDestroyView()
-        UZPlayer.setUseWithUZDragView(false)
         compositeDisposable.dispose()
         handler = null
         super.onDestroy()
@@ -169,26 +163,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (!uzVideoView.onBackPressed()) {
             super.onBackPressed()
-        }
-    }
-
-    private fun getLiveViewsTimer(firstRun: Boolean) {
-        val playback = UZPlayer.currentPlayback
-        if (playback != null) {
-            handler?.postDelayed({
-                playback.firstLinkPlay?.let {
-                    val d = getLiveViewers(linkPlay = it,
-                        onNext = Consumer { (views) ->
-                            log("$views")
-                        }, onError = Consumer { t: Throwable? ->
-                            log("$t")
-                        })
-                    d?.let {
-                        compositeDisposable.add(it)
-                    }
-                    getLiveViewsTimer(false)
-                }
-            }, if (firstRun) 0 else 5000L)
         }
     }
 

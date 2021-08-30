@@ -1,4 +1,4 @@
-package com.uiza.sdk.listerner
+package com.uiza.sdk.interfaces
 
 interface UZChromeCastListener {
     fun onConnected() {}

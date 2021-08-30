@@ -1,30 +1,12 @@
 package com.uiza.sdk.utils
 
-import android.content.pm.ResolveInfo
-import androidx.annotation.LayoutRes
-import com.uiza.sdk.R
-import com.uiza.sdk.chromecast.Casty
 import com.uiza.sdk.models.UZPlayback
-import com.uiza.sdk.models.UZPlaybackInfo
-import com.uiza.sdk.utils.StringUtils.parserInfo
 import java.util.*
 
 object UZData {
-
-    private val logTag = javaClass.simpleName
-
-    @LayoutRes
-    var uzPlayerSkinLayoutId: Int = R.layout.uzplayer_skin_1 //id of layout xml
-
-    var casty: Casty? = null
     private var playback: UZPlayback? = null
-    var urlIMAAd = ""
     private var playList: ArrayList<UZPlayback>? = null
-    private var playbackInfo: UZPlaybackInfo? = null
     private var currentPositionOfPlayList = 0
-    var useUZDragView = false
-    var resolveInfoList: List<ResolveInfo>? = null
-    var isSettingPlayer = false
 
     fun getPlayback(): UZPlayback? {
         return playback
@@ -34,22 +16,12 @@ object UZData {
         return playback?.poster
     }
 
-    fun getPlaybackInfo(): UZPlaybackInfo? {
-        return playbackInfo
-    }
-
     fun setPlayback(playback: UZPlayback?) {
         this.playback = playback
-        val firstLinkPlay = playback?.firstLinkPlay
-        if (firstLinkPlay != null) {
-            playbackInfo = parserInfo(linkPlay = firstLinkPlay)
-        }
     }
 
     fun clear() {
         playback = null
-        playbackInfo = null
-        urlIMAAd = ""
     }
 
     fun getEntityId(): String? {
@@ -89,10 +61,6 @@ object UZData {
         playList?.let { list ->
             val currentPlayback = list[currentPositionOfPlayList]
             playback = currentPlayback
-            val firstLinkPlay = playback?.firstLinkPlay
-            if (firstLinkPlay != null) {
-                playbackInfo = parserInfo(firstLinkPlay)
-            }
         }
     }
 

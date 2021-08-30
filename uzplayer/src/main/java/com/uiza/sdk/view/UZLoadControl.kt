@@ -3,7 +3,7 @@ package com.uiza.sdk.view
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.upstream.DefaultAllocator
-import com.uiza.sdk.listerner.UZBufferListener
+import com.uiza.sdk.interfaces.UZBufferListener
 
 internal class UZLoadControl private constructor(
     private val bufferCallback: UZBufferListener?

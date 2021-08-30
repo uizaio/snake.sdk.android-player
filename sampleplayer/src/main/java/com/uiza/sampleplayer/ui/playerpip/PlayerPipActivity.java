@@ -11,17 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.uiza.api.UZApi;
 import com.uiza.sampleplayer.R;
 import com.uiza.sampleplayer.app.Constant;
 import com.uiza.sampleplayer.app.UZApplication;
-import com.uiza.sdk.UZPlayer;
 import com.uiza.sdk.models.UZPlayback;
 import com.uiza.sdk.utils.UZViewUtils;
 import com.uiza.sdk.view.UZVideoView;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -37,19 +34,11 @@ public class PlayerPipActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedState) {
-        UZPlayer.setUZPlayerSkinLayoutId(R.layout.uzplayer_skin_default);
         super.onCreate(savedState);
         setContentView(R.layout.activity_player_pip);
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPIPModeEnabled(true);
-        uzVideo.setOnIsInitResult(new Function1<String, Unit>() {
-            @Override
-            public Unit invoke(String s) {
-                getLiveViewsTimer(true);
-                return null;
-            }
-        });
         uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
             @Override
             public Unit invoke(Boolean isLandscape) {
@@ -144,20 +133,6 @@ public class PlayerPipActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void getLiveViewsTimer(boolean firstRun) {
-        final UZPlayback playback = UZPlayer.getCurrentPlayback();
-        if (handler != null && playback != null && uzVideo != null)
-            handler.postDelayed(() -> {
-                Disposable d = UZApi.getLiveViewers(playback.getFirstLinkPlay(),
-                        res -> {
-                        });
-                if (d != null) {
-                    disposables.add(d);
-                }
-                getLiveViewsTimer(false);
-            }, firstRun ? 0 : 5000);
     }
 
     @Override

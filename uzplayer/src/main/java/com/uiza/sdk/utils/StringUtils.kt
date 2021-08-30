@@ -5,8 +5,6 @@ import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.Base64
-import com.uiza.sdk.models.UZPlaybackInfo
-import com.uiza.sdk.utils.JacksonUtils.fromJson
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
@@ -129,17 +127,6 @@ object StringUtils {
                 fromIndex + 4
             )
             return String(Base64.decode(cm, Base64.DEFAULT))
-        }
-        return null
-    }
-
-    @JvmStatic
-    fun parserInfo(linkPlay: String): UZPlaybackInfo? {
-        try {
-            val json = parserJsonInfo(linkPlay)
-            if (json != null) return fromJson(json = json, classOfT = UZPlaybackInfo::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
         return null
     }

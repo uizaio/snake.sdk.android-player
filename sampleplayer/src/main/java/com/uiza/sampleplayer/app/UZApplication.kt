@@ -1,8 +1,6 @@
 package com.uiza.sampleplayer.app
 
 import androidx.multidex.MultiDexApplication
-import com.uiza.api.UZApi
-import com.uiza.api.UZEnvironment
 import com.uiza.sdk.UZPlayer
 
 class UZApplication : MultiDexApplication() {
@@ -22,12 +20,7 @@ class UZApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        UZPlayer.init(context = this, prodEnv = true)
-        UZApi.init(
-            context = this,
-            sdkVersionName = UZPlayer.getVersionName(),
-            environment = UZEnvironment.PRODUCTION
-        )
+        UZPlayer.init()
     }
 
 }

@@ -10,8 +10,6 @@ import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.uiza.sdk.utils.UZData.isSettingPlayer
-import com.uiza.sdk.utils.UZData.useUZDragView
 import kotlin.math.abs
 
 //I want to to show playback controls only when onTouch event is fired.
@@ -42,6 +40,7 @@ class UZPlayerView @JvmOverloads constructor(
 
     // Variable to save current state
     private var isDoubleTap = false
+    private var useUZDragView = false
 
     /**
      * Default time window in which the double tap is active
@@ -84,15 +83,11 @@ class UZPlayerView @JvmOverloads constructor(
     }
 
     override fun showController() {
-        if (!isSettingPlayer) {
-            super.showController()
-        }
+        super.showController()
     }
 
     override fun hideController() {
-        if (!isSettingPlayer) {
-            super.hideController()
-        }
+        super.hideController()
     }
 
     fun setOnTouchEvent(onTouchEvent: OnTouchEvent?) {
@@ -294,5 +289,13 @@ class UZPlayerView @JvmOverloads constructor(
             }
             return true
         }
+    }
+
+    fun setUseUZDragView(useUZDragView: Boolean) {
+        this.useUZDragView = useUZDragView
+    }
+
+    fun isUseUZDragView(): Boolean {
+        return useUZDragView
     }
 }
