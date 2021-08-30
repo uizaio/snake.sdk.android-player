@@ -55,8 +55,6 @@ import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
 //TODO chi co the dung controller khi da load thanh cong link play
-//TODO life circle
-//TODO tracking
 //TODO skin
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
