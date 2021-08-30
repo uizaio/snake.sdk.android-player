@@ -1,67 +1,54 @@
-package com.uiza.sdk.utils;
+package com.uiza.sdk.utils
 
-import android.graphics.Bitmap;
+import android.graphics.Bitmap
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import java.nio.ByteBuffer
+import java.security.MessageDigest
 
-import androidx.annotation.NonNull;
+class GlideThumbnailTransformation(position: Long) : BitmapTransformation() {
 
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-
-public class GlideThumbnailTransformation extends BitmapTransformation {
-
-    private static final int MAX_LINES = 7;
-    private static final int MAX_COLUMNS = 7;
-    private static final int THUMBNAILS_EACH = 5000; // milliseconds
-
-    private int x;
-    private int y;
-
-    public GlideThumbnailTransformation(long position) {
-        int square = (int) position / THUMBNAILS_EACH;
-        y = square / MAX_LINES;
-        x = square % MAX_COLUMNS;
+    companion object {
+        private const val MAX_LINES = 7
+        private const val MAX_COLUMNS = 7
+        private const val THUMBNAILS_EACH = 5000 // milliseconds
     }
 
-    private int getX() {
-        return x;
+    private val x: Int
+    private val y: Int
+
+    init {
+        val square = position.toInt() / THUMBNAILS_EACH
+        y = square / MAX_LINES
+        x = square % MAX_COLUMNS
     }
 
-    private int getY() {
-        return y;
+    override fun transform(
+        pool: BitmapPool,
+        toTransform: Bitmap,
+        outWidth: Int,
+        outHeight: Int
+    ): Bitmap {
+        val width = toTransform.width / MAX_COLUMNS
+        val height = toTransform.height / MAX_LINES
+        return Bitmap.createBitmap(toTransform, x * width, y * height, width, height)
     }
 
-    @Override
-    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform,
-                               int outWidth, int outHeight) {
-        int width = toTransform.getWidth() / MAX_COLUMNS;
-        int height = toTransform.getHeight() / MAX_LINES;
-        return Bitmap.createBitmap(toTransform, x * width, y * height, width, height);
+    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+        val data = ByteBuffer.allocate(8).putInt(x).putInt(y).array()
+        messageDigest.update(data)
     }
 
-    @Override
-    public void updateDiskCacheKey(MessageDigest messageDigest) {
-        byte[] data = ByteBuffer.allocate(8).putInt(x).putInt(y).array();
-        messageDigest.update(data);
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as GlideThumbnailTransformation
+        return if (x != that.x) false else y == that.y
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        GlideThumbnailTransformation that = (GlideThumbnailTransformation) o;
-
-        if (x != that.x) return false;
-        return y == that.y;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
-        return result;
+    override fun hashCode(): Int {
+        var result = x
+        result = 31 * result + y
+        return result
     }
 }
