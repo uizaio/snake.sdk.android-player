@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_basic.*
 
