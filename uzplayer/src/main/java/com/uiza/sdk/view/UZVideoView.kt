@@ -30,8 +30,6 @@ import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
 import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView
-import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder
-import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog
 import com.uiza.sdk.dialog.setting.OnToggleChangeListener
 import com.uiza.sdk.dialog.setting.SettingAdapter
 import com.uiza.sdk.dialog.setting.SettingItem
@@ -55,7 +53,6 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
-
 
 //TODO chi co the dung controller khi da load thanh cong link play
 //TODO life circle
@@ -99,10 +96,7 @@ class UZVideoView : RelativeLayout,
     private var btBackScreenUZ: UZImageButton? = null
     private var btVolumeUZ: UZImageButton? = null
     private var btSettingUZ: UZImageButton? = null
-    private var btPlaylistFolderUZ: UZImageButton? = null
     private var btPipUZ: UZImageButton? = null
-    private var btSkipPreviousUZ: UZImageButton? = null
-    private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
@@ -117,7 +111,6 @@ class UZVideoView : RelativeLayout,
     private var isInPipMode = false
     private var isPIPModeEnabled = false
     private var positionPIPPlayer = 0L
-    private var isAutoSwitchItemPlaylistFolder = true
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
@@ -326,10 +319,7 @@ class UZVideoView : RelativeLayout,
             btBackScreenUZ = pv.findViewById(R.id.btBackScreenUZ)
             btVolumeUZ = pv.findViewById(R.id.btVolumeUZ)
             btSettingUZ = pv.findViewById(R.id.btSettingUZ)
-            btPlaylistFolderUZ = pv.findViewById(R.id.btPlaylistFolderUZ)
             btPipUZ = pv.findViewById(R.id.btPipUZ)
-            btSkipNextUZ = pv.findViewById(R.id.btSkipNextUZ)
-            btSkipPreviousUZ = pv.findViewById(R.id.btSkipPreviousUZ)
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
             tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
             tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
@@ -353,7 +343,6 @@ class UZVideoView : RelativeLayout,
             }
 
             setEventForViews()
-            setVisibilityOfPlaylistFolderController(GONE)
         }
     }
 
@@ -439,36 +428,11 @@ class UZVideoView : RelativeLayout,
         onError?.invoke(exception)
     }
 
-    private fun handlePlayPlayListFolderUI() {
-        setVisibilityOfPlaylistFolderController(
-            if (isPlayPlaylistFolder) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        )
-    }
-
     val player: SimpleExoPlayer?
         get() = playerManager?.getPlayer()
 
     fun seekTo(positionMs: Long) {
         playerManager?.seekTo(positionMs)
-    }
-
-
-    fun play(): Boolean {
-        val playback = UZData.getPlayback()
-        if (playback == null) {
-            log("ErrorConstant.ERR_14")
-            return false
-        }
-        if (!ConnectivityUtils.isConnected(context)) {
-            log("ErrorConstant.ERR_0")
-            return false
-        }
-        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
-        return true
     }
 
     fun play(playback: UZPlayback): Boolean {
@@ -477,24 +441,7 @@ class UZVideoView : RelativeLayout,
             return false
         }
         UZData.setPlayback(playback = playback)
-        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
-        return true
-    }
-
-    fun play(playlist: ArrayList<UZPlayback>): Boolean {
-        // TODO: Check how to get subtitle of a custom link play, because we have no idea about entityId or appId
-        if (!ConnectivityUtils.isConnected(context)) {
-            handleError(uzException = ErrorUtils.exceptionNoConnection())
-            return false
-        }
-        if (playlist.isEmpty()) {
-            handleError(uzException = ErrorUtils.exceptionPlaylistFolderItemFirst())
-            return false
-        } else {
-            UZData.clearDataForPlaylistFolder()
-            UZData.setPlayList(playlist = playlist)
-            playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList())
-        }
+        initPlayback(playback = playback)
         return true
     }
 
@@ -524,12 +471,8 @@ class UZVideoView : RelativeLayout,
     val videoHeight: Int
         get() = playerManager?.videoHeight ?: 0
 
-    private fun initPlayback(playback: UZPlayback, isClearDataPlaylistFolder: Boolean) {
-        if (isClearDataPlaylistFolder) {
-            UZData.clearDataForPlaylistFolder()
-        }
+    private fun initPlayback(playback: UZPlayback) {
         isCalledFromChangeSkin = false
-        handlePlayPlayListFolderUI()
         hideLayoutMsg()
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
@@ -739,8 +682,6 @@ class UZVideoView : RelativeLayout,
             handleClickBtVolume()
         } else if (v === btSettingUZ) {
             showSettingsDialog()
-        } else if (v === btPlaylistFolderUZ) {
-            handleClickPlaylistFolder()
         } else if (v === btPipUZ) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
@@ -761,10 +702,6 @@ class UZVideoView : RelativeLayout,
             resume()
         } else if (v === btReplayUZ) {
             replay()
-        } else if (v === btSkipNextUZ) {
-            handleClickSkipNext()
-        } else if (v === btSkipPreviousUZ) {
-            handleClickSkipPrevious()
         } else if (v === btSpeedUZ) {
             showSpeed()
         }
@@ -854,42 +791,6 @@ class UZVideoView : RelativeLayout,
         playerView?.useController = useController
     }
 
-    protected val isPlayPlaylistFolder: Boolean
-        get() = !(UZData.getPlayList().isNullOrEmpty())
-
-    private fun playPlaylistPosition(position: Int) {
-        if (!isPlayPlaylistFolder) {
-            log("playPlaylistPosition error: incorrect position")
-            return
-        }
-        log("playPlaylistPosition position: $position")
-        if (position < 0) {
-            log("This is the first item")
-            notifyError(ErrorUtils.exceptionPlaylistFolderItemFirst())
-            return
-        }
-        UZData.getPlayList()?.let {
-            if (position > it.size - 1) {
-                log("This is the last item")
-                notifyError(ErrorUtils.exceptionPlaylistFolderItemLast())
-                return
-            }
-        }
-        pause()
-        hideController()
-        UZViewUtils.setSrcDrawableEnabledForViews(btSkipPreviousUZ, btSkipNextUZ)
-        //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(able = false, btSkipPreviousUZ, btSkipNextUZ)
-        //end update UI for skip next and skip previous button
-        UZData.setCurrentPositionOfPlayList(position)
-        val playback = UZData.getPlayback()
-        if (playback == null || !playback.canPlay()) {
-            notifyError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
-        initPlayback(playback = playback, isClearDataPlaylistFolder = false)
-    }
-
     override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
         if (manifest is HlsManifest) {
             val playlist = manifest.mediaPlaylist
@@ -930,12 +831,7 @@ class UZVideoView : RelativeLayout,
             if (isAutoReplay) {
                 replay()
             } else {
-                if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
-                    hideController()
-                    autoSwitchNextVideo()
-                } else {
-                    updateUIEndScreen()
-                }
+                updateUIEndScreen()
             }
         }
         hideProgress()
@@ -969,54 +865,15 @@ class UZVideoView : RelativeLayout,
         onPlayerStateChanged?.invoke(playWhenReady, playbackState)
     }
 
-    private fun autoSwitchNextVideo() {
-        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() + 1)
-    }
-
-    private fun autoSwitchPreviousLinkVideo() {
-        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() - 1)
-    }
-
-    private fun handleClickPlaylistFolder() {
-        UZData.getPlayList()?.let { playList ->
-            val uzPlaylistFolderDlg = UZPlaylistFolderDialog(
-                mContext = context,
-                playList = playList,
-                currentPositionOfDataList = UZData.getCurrentPositionOfPlayList(),
-                callbackPlaylistFolder = object : CallbackPlaylistFolder {
-                    override fun onDismiss() {}
-                    override fun onFocusChange(playback: UZPlayback, position: Int) {}
-                    override fun onClickItem(playback: UZPlayback, position: Int) {
-                        playPlaylistPosition(position)
-                    }
-                })
-            UZViewUtils.showDialog(uzPlaylistFolderDlg)
-        }
-    }
-
-    private fun handleClickSkipNext() {
-        isOnPlayerEnded = false
-        updateUIEndScreen()
-        autoSwitchNextVideo()
-    }
-
-    private fun handleClickSkipPrevious() {
-        isOnPlayerEnded = false
-        updateUIEndScreen()
-        autoSwitchPreviousLinkVideo()
-    }
-
     fun replay() {
         if (playerManager == null) {
             return
         }
-        //TODO Chỗ này đáng lẽ chỉ clear value của tracking khi đảm bảo rằng seekTo(0) true
         val result = playerManager?.seekTo(0)
         if (result == true) {
             isSetFirstRequestFocusDoneForTV = false
             isOnPlayerEnded = false
             updateUIEndScreen()
-            handlePlayPlayListFolderUI()
         }
     }
 
@@ -1102,20 +959,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    /**
-     * Bo video hien tai va choi tiep theo mot video trong playlist/folder
-     */
-    fun skipNextVideo() {
-        handleClickSkipNext()
-    }
-
-    /**
-     * Bo video hien tai va choi lui lai mot video trong playlist/folder
-     */
-    fun skipPreviousVideo() {
-        handleClickSkipPrevious()
-    }
-
     val isLIVE: Boolean
         get() = playerManager != null && playerManager?.isLIVE == true
 
@@ -1163,15 +1006,12 @@ class UZVideoView : RelativeLayout,
             btBackScreenUZ,
             btVolumeUZ,
             btSettingUZ,
-            btPlaylistFolderUZ,
             btPipUZ,
             btFfwdUZ,
             btRewUZ,
             btPlayUZ,
             btPauseUZ,
             btReplayUZ,
-            btSkipNextUZ,
-            btSkipPreviousUZ,
             btSpeedUZ,
             tvLiveStatusUZ
         )
@@ -1530,16 +1370,6 @@ class UZVideoView : RelativeLayout,
             updateUIButtonPlayPauseDependOnIsAutoStart()
             UZViewUtils.goneViews(btReplayUZ)
         }
-    }
-
-    private fun setVisibilityOfPlaylistFolderController(visibilityOfPlaylistFolderController: Int) {
-        UZViewUtils.setVisibilityViews(
-            visibility = visibilityOfPlaylistFolderController,
-            btPlaylistFolderUZ,
-            btSkipNextUZ,
-            btSkipPreviousUZ
-        )
-        setVisibilityOfPlayPauseReplay(false)
     }
 
     var dlg: Dialog? = null
@@ -1908,7 +1738,6 @@ class UZVideoView : RelativeLayout,
 
     fun setAutoReplay(isAutoReplay: Boolean) {
         this.isAutoReplay = isAutoReplay
-        this.isAutoSwitchItemPlaylistFolder = false
     }
 
     fun isAutoReplay(): Boolean {
