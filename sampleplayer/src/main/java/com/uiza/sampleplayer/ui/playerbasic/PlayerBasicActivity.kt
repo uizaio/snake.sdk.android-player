@@ -1,7 +1,6 @@
 package com.uiza.sampleplayer.ui.playerbasic
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
@@ -11,10 +10,6 @@ import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_basic.*
 
 class PlayerBasicActivity : AppCompatActivity() {
-
-    private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +32,7 @@ class PlayerBasicActivity : AppCompatActivity() {
             btPlayLink.performClick()
         }
         btPlayLink.setOnClickListener {
-            onPlay(etLinkPlay.text.toString())
+            onPlay(etLinkPlay.text.toString().trim())
         }
     }
 
@@ -48,8 +43,8 @@ class PlayerBasicActivity : AppCompatActivity() {
         }
         if (uzVideoView.isViewCreated()) {
             val uzPlayback = UZPlayback()
+            uzPlayback.linkPlay = link
             uzPlayback.poster = UZApplication.thumbnailUrl
-            uzPlayback.addLinkPlay(link)
             uzVideoView.play(uzPlayback)
         }
     }

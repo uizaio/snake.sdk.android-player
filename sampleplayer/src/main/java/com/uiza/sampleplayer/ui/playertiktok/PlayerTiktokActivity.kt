@@ -47,7 +47,7 @@ class PlayerTiktokActivity : AppCompatActivity() {
         if (uzVideoView.isViewCreated()) {
             val uzPlayback = UZPlayback()
             uzPlayback.poster = UZApplication.thumbnailUrl
-            uzPlayback.addLinkPlay(link)
+            uzPlayback.linkPlay = link
             uzVideoView.play(uzPlayback)
         }
     }

@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
-import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
@@ -78,21 +77,15 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         }
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
-        var playbackInfo: UZPlayback? = null
+        val playbackInfo: UZPlayback? = null
         if (intent == null) {
             hsvBottom.visibility = View.VISIBLE
             etLinkPlay.visibility = View.VISIBLE
             initPlaylist()
         } else {
-            playbackInfo = intent.getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO)
-            if (playbackInfo == null) {
-                hsvBottom.visibility = View.VISIBLE
-                etLinkPlay.visibility = View.VISIBLE
-                initPlaylist()
-            } else {
-                hsvBottom.visibility = View.GONE
-                etLinkPlay.visibility = View.GONE
-            }
+            hsvBottom.visibility = View.VISIBLE
+            etLinkPlay.visibility = View.VISIBLE
+            initPlaylist()
         }
         bt0.setOnClickListener {
             updateView(index = 0)
@@ -124,7 +117,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     private fun initPlaylist() {
         for (url in UZApplication.urls) {
             val playback = UZPlayback()
-            playback.addLinkPlay(url)
+            playback.linkPlay = url
             playlist.add(playback)
         }
     }
@@ -132,7 +125,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     private fun onPlay() {
         val uzPlayback = UZPlayback()
         uzPlayback.poster = UZApplication.thumbnailUrl
-        uzPlayback.addLinkPlay(etLinkPlay.text.toString().trim())
+        uzPlayback.linkPlay = etLinkPlay.text.toString().trim()
         uzVideoView.play(uzPlayback)
     }
 

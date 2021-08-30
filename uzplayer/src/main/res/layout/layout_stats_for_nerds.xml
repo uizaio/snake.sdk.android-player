@@ -101,18 +101,6 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvResolution"
-            android:layout_toStartOf="@+id/tvEntityId"
-            android:gravity="end"
-            android:text="@string/stat_entity_id"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txt_tiny"
-            tools:text="Video Entity ID" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvEntityId"
             android:layout_toStartOf="@+id/tvHost"
             android:gravity="end"
             android:text="@string/stat_host"
@@ -265,26 +253,10 @@
             tools:text="806x453 / 1280x720" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvEntityId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvResolution"
-            android:layout_marginStart="@dimen/margin_10"
-            android:layout_toStartOf="@+id/btnClose"
-            android:layout_toEndOf="@+id/view_center"
-            android:ellipsize="end"
-            android:gravity="bottom"
-            android:maxLines="1"
-            android:text="@string/default_stats_1"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/txt_tiny"
-            tools:text="c62a5409-0e8a-4b11-8e0d-c58c43d81b60" />
-
-        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvHost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvEntityId"
+            android:layout_below="@+id/tvViewPortFrame"
             android:layout_marginStart="@dimen/margin_10"
             android:layout_toStartOf="@+id/btnClose"
             android:layout_toEndOf="@+id/view_center"

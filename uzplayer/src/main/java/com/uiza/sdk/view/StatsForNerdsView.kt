@@ -23,7 +23,6 @@ import com.uiza.sdk.observers.OnAudioVolumeChangedListener
 import com.uiza.sdk.utils.Constants
 import com.uiza.sdk.utils.StringUtils.doubleFormatted
 import com.uiza.sdk.utils.StringUtils.humanReadableByteCount
-import com.uiza.sdk.utils.UZData
 import com.uiza.sdk.utils.UZViewUtils.goneViews
 import com.uiza.sdk.utils.UZViewUtils.visibleViews
 import kotlinx.android.synthetic.main.layout_stats_for_nerds.view.*
@@ -80,7 +79,6 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
         depictVersionInfo()
         depictDeviceInfo()
         depictViewPortFrameInfo()
-        depictVideoInfo()
         volumeObserver?.let {
             post {
                 tvVolume.text = String.format(
@@ -279,25 +277,6 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
         )
     }
 
-    private fun depictVideoInfo() {
-        setEntityInfo(UZData.getEntityId())
-        setTextHost(UZData.getHost())
-    }
-
-    /**
-     * Depict Entity id
-     *
-     * @param value should be formatted like below
-     * EX: c62a5409-0e8a-4b11-8e0d-c58c43d81b60
-     */
-    fun setEntityInfo(value: String?) {
-        if (TextUtils.isEmpty(value)) {
-            tvEntityId.text = "--"
-        } else {
-            tvEntityId.text = value
-        }
-    }
-
     /**
      * Depict Buffer health
      *
@@ -368,7 +347,7 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: SDK Version / Player Version / API Version
      */
-    fun setTextVersion(value: String?) {
+    private fun setTextVersion(value: String?) {
         tvVersion.text = value
     }
 

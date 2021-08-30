@@ -480,7 +480,7 @@ class UZVideoView : RelativeLayout,
         releasePlayerManager()
         showProgress()
         updateUIDependOnLiveStream()
-        val linkPlay = playback.firstLinkPlay
+        val linkPlay = playback.linkPlay
         if (linkPlay.isNullOrEmpty()) {
             handleError(ErrorUtils.exceptionNoLinkPlay())
             return
@@ -1524,14 +1524,9 @@ class UZVideoView : RelativeLayout,
         if (playback == null) {
             handleError(ErrorUtils.exceptionSetup())
         } else {
-            val listLinkPlay = playback.getLinkPlays()
-            if (listLinkPlay.isEmpty()) {
-                handleErrorNoData()
-                return
-            }
-            val linkPlay = listLinkPlay.firstOrNull()
+            val linkPlay = playback.linkPlay
             if (linkPlay.isNullOrEmpty()) {
-                handleError(ErrorUtils.exceptionNoLinkPlay())
+                handleErrorNoData()
                 return
             }
             initDataSource(
@@ -1563,11 +1558,14 @@ class UZVideoView : RelativeLayout,
                 override fun loadPreview(currentPosition: Long, max: Long) {
                     playerManager?.let { pm ->
                         pm.setPlayWhenReady(false)
-                        val posterUrl = UZData.getPosterUrl()
-                        if (!TextUtils.isEmpty(posterUrl))
-                            ivThumbnailUZ?.let { iv ->
-                                ImageUtils.loadThumbnail(imageView = iv, imageUrl = posterUrl)
+                        ivThumbnailUZ?.let { iv ->
+                            if (!disable) {
+                                ImageUtils.loadThumbnail(
+                                    imageView = iv,
+                                    imageUrl = urlThumbnailsPreviewSeekBar
+                                )
                             }
+                        }
                     }
                 }
             })
