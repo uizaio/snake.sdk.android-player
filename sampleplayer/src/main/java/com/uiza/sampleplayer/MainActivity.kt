@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity
 import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity
 import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(PlayerPipActivity::class.java)
         }
         btnPlayerPreviewSeekbar.setOnClickListener {
-
+            gotoActivity(PlayerPreviewSeekbarActivity::class.java)
         }
         btnPlayerSkin.setOnClickListener {
 

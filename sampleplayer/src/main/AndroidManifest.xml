@@ -44,6 +44,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <activity
+            android:name=".ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerBasicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.playertiktok.PlayerTiktokActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerTiktokActivity"

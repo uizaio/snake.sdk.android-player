@@ -21,6 +21,8 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -1548,7 +1550,8 @@ class UZVideoView : RelativeLayout,
                         ivThumbnailUZ?.let { iv ->
                             ImageUtils.loadThumbnail(
                                 imageView = iv,
-                                imageUrl = poster
+                                imageUrl = poster,
+                                currentPosition = currentPosition,
                             )
                         }
                     }
