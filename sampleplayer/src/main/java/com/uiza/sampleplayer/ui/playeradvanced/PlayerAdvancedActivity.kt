@@ -83,6 +83,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onFirstStateReady = { isFirstStateReady ->
             log("onFirstStateReady isFirstStateReady $isFirstStateReady")
             uzVideoView.controllerShowTimeoutMs = 15_000 //15s
+            uzVideoView.setDefaultSeekValue(15_000)//15s
         }
         uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
             when (playbackState) {
