@@ -179,6 +179,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btPause.setOnClickListener {
             uzVideoView.pause()
         }
+        btTogglePlayPause.setOnClickListener {
+            uzVideoView.togglePlayPause()
+        }
         btReplay.setOnClickListener {
             uzVideoView.replay()
         }
