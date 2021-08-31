@@ -85,8 +85,6 @@ class UZVideoView : RelativeLayout,
     private var tvPositionUZ: UZTextView? = null
     private var tvDurationUZ: UZTextView? = null
     private var tvTitleUZ: TextView? = null
-    private var tvLiveStatusUZ: TextView? = null
-    private var tvLiveTimeUZ: TextView? = null
     private var btFullscreenUZ: UZImageButton? = null
     private var btPauseUZ: UZImageButton? = null
     private var btPlayUZ: UZImageButton? = null
@@ -120,7 +118,6 @@ class UZVideoView : RelativeLayout,
     private var isLandscape = false
     private var isAlwaysPortraitScreen = false
     private var isOnPlayerEnded = false
-    private var alwaysHideLiveViewers = false
 
     //TODO improve this func
     private var isRefreshFromChangeSkin = false
@@ -198,8 +195,8 @@ class UZVideoView : RelativeLayout,
                 it.layoutParams = layoutParams
                 it.visibility = GONE
 
-                if (it.getVideoSurfaceView() is SurfaceView) {
-                    (it.getVideoSurfaceView() as SurfaceView).holder.addCallback(object :
+                if (it.videoSurfaceView is SurfaceView) {
+                    (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
                         SurfaceHolder.Callback2 {
                         override fun surfaceRedrawNeeded(holder: SurfaceHolder) {}
                         override fun surfaceCreated(holder: SurfaceHolder) {}
@@ -320,8 +317,6 @@ class UZVideoView : RelativeLayout,
             btSettingUZ = pv.findViewById(R.id.btSettingUZ)
             btPipUZ = pv.findViewById(R.id.btPipUZ)
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
-            tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
-            tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
 
             tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDurationUZ?.text = "-:-"
@@ -688,8 +683,6 @@ class UZVideoView : RelativeLayout,
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
-        } else if (v === tvLiveStatusUZ) {
-            seekToEndLive()
         } else if (v === btFfwdUZ) {
             playerManager?.seekToForward(defaultSeekValue)
         } else if (v === btRewUZ) {
@@ -1015,7 +1008,6 @@ class UZVideoView : RelativeLayout,
             btPauseUZ,
             btReplayUZ,
             btSpeedUZ,
-            tvLiveStatusUZ
         )
     }
 
@@ -1270,28 +1262,15 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun setAlwaysHideLiveViewers(hide: Boolean) {
-        alwaysHideLiveViewers = hide
-    }
-
     private fun updateUIDependOnLiveStream() {
         if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide button pip if device is TV
             UZViewUtils.goneViews(btPipUZ)
         }
         if (isLIVE) {
-            if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(tvLiveStatusUZ, tvLiveTimeUZ)
-            } else {
-                UZViewUtils.visibleViews(
-                    tvLiveStatusUZ,
-                    tvLiveTimeUZ,
-                )
-            }
             UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
             setUIVisible(visible = false, btRewUZ, btFfwdUZ)
         } else {
-            UZViewUtils.goneViews(tvLiveStatusUZ, tvLiveTimeUZ)
             UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
             setUIVisible(visible = true, btRewUZ, btFfwdUZ)
         }
@@ -1572,7 +1551,7 @@ class UZVideoView : RelativeLayout,
                 }
                 if (isLIVE) {
                     post {
-                        updateLiveStatus(currentMls = currentMls, duration = duration)
+                        //TODO
                     }
                 }
             }
@@ -1632,26 +1611,6 @@ class UZVideoView : RelativeLayout,
     // ===== Stats For Nerds =====
     private fun initStatsForNerds() {
         player?.addAnalyticsListener(statsForNerdsView)
-    }
-
-    private fun updateLiveStatus(currentMls: Long, duration: Long) {
-        tvLiveStatusUZ?.let { tv ->
-            val timeToEndChunk = duration - currentMls
-            if (timeToEndChunk <= targetDurationMls * 10) {
-                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color_focus))
-                UZViewUtils.goneViews(tvPositionUZ)
-            } else {
-                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color))
-                UZViewUtils.visibleViews(tvPositionUZ)
-            }
-        }
-    }
-
-    private fun seekToEndLive() {
-        val timeToEndChunk = duration - currentPosition
-        if (timeToEndChunk > targetDurationMls * 10) {
-            seekToLiveEdge()
-        }
     }
 
     fun updateLiveStreamLatency(latency: Long) {

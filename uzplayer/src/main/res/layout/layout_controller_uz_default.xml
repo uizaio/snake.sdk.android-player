@@ -25,19 +25,6 @@
             android:src="@drawable/ic_arrow_down_uz" />
 
         <com.uiza.sdk.widget.UZTextView
-            android:id="@+id/tvLiveStatusUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingStart="@dimen/margin_padding_medium"
-            android:paddingTop="@dimen/padding_3"
-            android:paddingEnd="@dimen/margin_padding_medium"
-            android:paddingBottom="@dimen/padding_3"
-            android:text="@string/live"
-            android:textColor="@android:color/white"
-            tools:ignore="RelativeOverlap" />
-
-        <com.uiza.sdk.widget.UZTextView
             android:id="@+id/tvTitleUZ"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
