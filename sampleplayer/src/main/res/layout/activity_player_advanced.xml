@@ -40,6 +40,11 @@
         android:layout_height="wrap_content"
         android:text="Play" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scroll horizontal for more actions" />
+
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -132,6 +137,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Click Audio" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToForward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToForward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToForward7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToForward 7s" />
         </LinearLayout>
     </HorizontalScrollView>
 

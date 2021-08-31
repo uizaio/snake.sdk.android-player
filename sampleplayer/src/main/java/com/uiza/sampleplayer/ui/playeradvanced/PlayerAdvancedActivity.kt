@@ -209,6 +209,12 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btClickAudio.setOnClickListener {
             uzVideoView.clickAudio()
         }
+        btSeekToForward.setOnClickListener {
+            uzVideoView.seekToForward()
+        }
+        btSeekToForward7.setOnClickListener {
+            uzVideoView.seekToForward(7_000)
+        }
     }
 
     private fun logInformation() {
