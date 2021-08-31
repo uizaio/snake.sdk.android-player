@@ -168,6 +168,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isLandscapeScreen ${uzVideoView.isLandscapeScreen()}")
         log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
         log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
+        log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
+        log("heightTimeBar ${uzVideoView.heightTimeBar}")
     }
 
     private fun onPlay(link: String) {

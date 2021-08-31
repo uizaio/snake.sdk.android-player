@@ -406,7 +406,7 @@ class UZVideoView : RelativeLayout,
         }
 
     //return pixel
-    private val heightTimeBar: Int
+    val heightTimeBar: Int
         get() {
             timeBarUZ?.let {
                 return UZViewUtils.heightOfView(it)
