@@ -59,6 +59,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onScreenRotate = { isLandscape: Boolean ->
             log("onScreenRotate isLandscape $isLandscape")
         }
+        uzVideoView.onError = {
+            Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
+        }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
