@@ -1201,14 +1201,14 @@ class UZVideoView : RelativeLayout,
                 //uzTimeBar is displaying
                 setTextPosition(currentMls)
             }
-            return
+//            return
         }
         if (isLIVE) {
             return
         }
         btRewUZ?.let { r ->
             btFfwdUZ?.let { f ->
-                if (currentMls == 0L) {
+                if (currentMls <= 0L) {
                     if (r.isSetSrcDrawableEnabled) {
                         r.setSrcDrawableDisabled()
                     }
