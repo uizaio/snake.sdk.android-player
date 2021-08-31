@@ -1130,7 +1130,6 @@ class UZVideoView : RelativeLayout,
 
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
-            setTitle()
             checkToSetUpResource()
             updateUISizeThumbnail()
             onSkinChange?.invoke()
@@ -1273,17 +1272,13 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun setTitle() {
-        tvTitleUZ?.text = uzPlayback?.name ?: ""
-    }
-
     fun setAlwaysHideLiveViewers(hide: Boolean) {
         alwaysHideLiveViewers = hide
     }
 
     private fun updateUIDependOnLiveStream() {
         if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
-            //only hide ibPictureInPictureIcon if device is TV
+            //only hide button pip if device is TV
             UZViewUtils.goneViews(btPipUZ)
         }
         if (isLIVE) {
@@ -1301,8 +1296,8 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(tvLiveStatusUZ, tvLiveTimeUZ)
             UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
             setUIVisible(visible = true, btRewUZ, btFfwdUZ)
-            //TODO why set visible not work?
         }
+        tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
             UZViewUtils.goneViews(btFullscreenUZ)
         }

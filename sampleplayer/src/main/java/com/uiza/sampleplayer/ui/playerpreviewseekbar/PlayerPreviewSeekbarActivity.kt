@@ -29,11 +29,11 @@ class PlayerPreviewSeekbarActivity : AppCompatActivity() {
 
     private fun onPlay() {
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback()
-            uzPlayback.linkPlay =
-                "https://bitdash-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
-            uzPlayback.poster =
-                "https://bitdash-a.akamaihd.net/content/MI201109210084_1/thumbnails/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.jpg"
+            val uzPlayback = UZPlayback(
+                linkPlay = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd",
+                poster = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/thumbnails/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.jpg",
+                name = "This is name of video"
+            )
             uzVideoView.play(uzPlayback)
         }
     }
