@@ -41,8 +41,7 @@ class PlayerBasicActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback()
-            uzPlayback.linkPlay = link
+            val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }
     }
