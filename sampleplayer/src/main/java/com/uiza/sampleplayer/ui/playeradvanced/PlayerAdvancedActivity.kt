@@ -177,6 +177,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btToggleStatsForNerds.setOnClickListener {
             uzVideoView.toggleStatsForNerds()
         }
+        btBackScreen.setOnClickListener {
+            uzVideoView.clickBackScreen()
+        }
     }
 
     private fun logInformation() {

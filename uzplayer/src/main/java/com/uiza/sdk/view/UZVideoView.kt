@@ -250,7 +250,7 @@ class UZVideoView : RelativeLayout,
         }
         updateUIEachSkin()
         setMarginPreviewTimeBar()
-        updateUISizeThumbnail()
+        updateUISizeThumbnailTimeBar()
         isViewCreated = true
 
 //        log("onCreateView isViewCreated $isViewCreated")
@@ -700,7 +700,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
                 UZViewUtils.goneViews(btPipUZ)
-            } else {
+            } else {//portrait screen
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
                 }
@@ -713,7 +713,7 @@ class UZVideoView : RelativeLayout,
                 }
             }
             setMarginPreviewTimeBar()
-            updateUISizeThumbnail()
+            updateUISizeThumbnailTimeBar()
             updateUIPositionOfProgressBar()
             onScreenRotate?.invoke(isLandscape)
         }
@@ -723,7 +723,7 @@ class UZVideoView : RelativeLayout,
         if (v === btFullscreenUZ) {
             toggleFullscreen()
         } else if (v === btBackScreenUZ) {
-            handleClickBackScreen()
+            clickBackScreen()
         } else if (v === btVolumeUZ) {
             handleClickBtVolume()
         } else if (v === btSettingUZ) {
@@ -918,7 +918,7 @@ class UZVideoView : RelativeLayout,
         toggleVolumeMute()
     }
 
-    private fun handleClickBackScreen() {
+     fun clickBackScreen() {
         if (isLandscape) {
             toggleFullscreen()
         } else {
@@ -1162,7 +1162,7 @@ class UZVideoView : RelativeLayout,
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
             checkToSetUpResource()
-            updateUISizeThumbnail()
+            updateUISizeThumbnailTimeBar()
             onSkinChange?.invoke()
 
             return true
@@ -1267,7 +1267,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun updateUISizeThumbnail() {
+    private fun updateUISizeThumbnailTimeBar() {
         val screenWidth = UZViewUtils.screenWidth
         val widthIv = if (isLandscape) {
             screenWidth / 4
