@@ -183,6 +183,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("heightTimeBar ${uzVideoView.heightTimeBar}")
         log("videoProfileW ${uzVideoView.videoProfileW}")
         log("videoProfileH ${uzVideoView.videoProfileH}")
+        log("videoWidth ${uzVideoView.videoWidth}")
+        log("videoHeight ${uzVideoView.videoHeight}")
     }
 
     private fun onPlay(link: String) {
