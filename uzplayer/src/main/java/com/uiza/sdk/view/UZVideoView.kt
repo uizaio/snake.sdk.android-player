@@ -164,6 +164,7 @@ class UZVideoView : RelativeLayout,
 
     private var orb: Orb? = null
 
+    private var isAdEnded: Boolean? = null
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
             field = callback
@@ -1552,8 +1553,14 @@ class UZVideoView : RelativeLayout,
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
-            override fun onAdEnded() {}
-            override fun onAdProgress(s: Int, duration: Int, percent: Int) {}
+            override fun onAdEnded() {
+                isAdEnded = true
+            }
+
+            override fun onAdProgress(s: Int, duration: Int, percent: Int) {
+                isAdEnded = false
+            }
+
             override fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {
                 post {
                     updateUIIbRewIconDependOnProgress(
@@ -1561,7 +1568,9 @@ class UZVideoView : RelativeLayout,
                         isCalledFromUZTimeBarEvent = false
                     )
                 }
-                onVideoProgress?.invoke(currentMls, s, duration, percent)
+                if (isAdEnded == true) {
+                    onVideoProgress?.invoke(currentMls, s, duration, percent)
+                }
             }
         })
         playerManager?.setDebugCallback(object : DebugCallback {
