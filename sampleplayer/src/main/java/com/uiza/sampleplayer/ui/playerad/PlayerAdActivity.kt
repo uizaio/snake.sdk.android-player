@@ -22,20 +22,15 @@ class PlayerAdActivity : AppCompatActivity() {
             uzVideoView.setPIPModeEnabled(false)
             uzVideoView.setUseController(true)
         }
-        btPlayVOD.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_VOD)
-            btPlayLink.performClick()
-        }
-        btPlayLive.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_LIVE)
-            btPlayLink.performClick()
-        }
-        btPlayLink.setOnClickListener {
-            onPlay(etLinkPlay.text.toString().trim())
+        btAdSingleInlineLinear.setOnClickListener {
+            onPlay(
+                link = Constant.LINK_PLAY_VOD,
+                urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
+            )
         }
     }
 
-    private fun onPlay(link: String) {
+    private fun onPlay(link: String, urlIMAAd: String) {
         if (link.isEmpty()) {
             Toast.makeText(this, "Link play is empty", Toast.LENGTH_SHORT).show()
             return
@@ -43,7 +38,7 @@ class PlayerAdActivity : AppCompatActivity() {
         if (uzVideoView.isViewCreated()) {
             val uzPlayback = UZPlayback(
                 linkPlay = link,
-                urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
+                urlIMAAd = urlIMAAd
             )
             uzVideoView.play(uzPlayback)
         }

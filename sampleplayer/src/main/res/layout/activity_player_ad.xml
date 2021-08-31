@@ -11,33 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayVOD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="VOD" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Live" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btAdSingleInlineLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_medium"
+                android:text="Single Inline Linear" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/etLinkPlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter link play here" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_padding_medium"
-        android:text="Play" />
 </LinearLayout>
