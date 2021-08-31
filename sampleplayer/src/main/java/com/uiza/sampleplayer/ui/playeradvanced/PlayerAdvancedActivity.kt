@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_player_advanced.*
 class PlayerAdvancedActivity : AppCompatActivity() {
 
     private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
+        Log.d("loitpp" + javaClass.simpleName, msg)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +43,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
     private fun logInformation() {
         log("isAutoReplay ${uzVideoView.isAutoReplay()}")
+        log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
     }
 
     private fun onPlay(link: String) {
@@ -53,6 +54,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         if (uzVideoView.isViewCreated()) {
             uzVideoView.isAutoStart = true//default is true
             uzVideoView.setAutoReplay(true)//default is false
+            uzVideoView.setPlayerControllerAlwaysVisible()
 
             val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)

@@ -1733,4 +1733,8 @@ class UZVideoView : RelativeLayout,
     fun setUseUZDragView(useUZDragView: Boolean) {
         playerView?.setUseUZDragView(useUZDragView)
     }
+
+    fun isPlayerControllerAlwayVisible(): Boolean {
+        return isPlayerControllerAlwayVisible
+    }
 }
