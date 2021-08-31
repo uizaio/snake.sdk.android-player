@@ -183,6 +183,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btToggleVolumeMute.setOnClickListener {
             uzVideoView.toggleVolumeMute()
         }
+        btShowSettingsDialog.setOnClickListener {
+            uzVideoView.showSettingsDialog()
+        }
     }
 
     private fun logInformation() {

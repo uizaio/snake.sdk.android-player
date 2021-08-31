@@ -914,7 +914,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-     fun clickBackScreen() {
+    fun clickBackScreen() {
         if (isLandscape) {
             toggleFullscreen()
         } else {
@@ -1374,7 +1374,7 @@ class UZVideoView : RelativeLayout,
 
 
     @SuppressLint("InflateParams")
-    private fun showSettingsDialog() {
+    fun showSettingsDialog() {
         val builder = AlertDialog.Builder(context)
         val inflater = LayoutInflater.from(context)
         if (inflater != null) {
