@@ -157,6 +157,9 @@ class UZVideoView : RelativeLayout,
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
+    var onBufferProgress: ((bufferedPosition: Long, bufferedPercentage: Int, duration: Long) -> Unit)? =
+        null
+
     private var orb: Orb? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
@@ -1306,12 +1309,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun setUIVisible(visible: Boolean, vararg views: UZImageButton?) {
-        for (v in views) {
-            v?.setUIVisible(visible)
-        }
-    }
-
     protected fun updateUIButtonVisibilities() {
         if (context == null) {
             return
@@ -1366,7 +1363,6 @@ class UZVideoView : RelativeLayout,
     }
 
     var dlg: Dialog? = null
-
 
     @SuppressLint("InflateParams")
     fun showSettingsDialog() {
@@ -1482,11 +1478,11 @@ class UZVideoView : RelativeLayout,
         rootViewUZVideo.setBackgroundColor(color)
     }
 
-    fun hideProgress() {
+    private fun hideProgress() {
         pb.visibility = View.GONE
     }
 
-    fun showProgress() {
+    private fun showProgress() {
         pb.visibility = View.VISIBLE
     }
 
@@ -1550,6 +1546,7 @@ class UZVideoView : RelativeLayout,
                 bufferedPercentage: Int,
                 duration: Long
             ) {
+                onBufferProgress?.invoke(bufferedPosition, bufferedPercentage, duration)
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
@@ -1561,11 +1558,6 @@ class UZVideoView : RelativeLayout,
                         currentMls = currentMls,
                         isCalledFromUZTimeBarEvent = false
                     )
-                }
-                if (isLIVE) {
-                    post {
-                        //TODO
-                    }
                 }
             }
         })

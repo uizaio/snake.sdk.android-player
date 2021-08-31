@@ -144,6 +144,10 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 toast("onCurrentWindowDynamic !isLIVE")
             }
         }
+        uzVideoView.onBufferProgress =
+            { bufferedPosition: Long, bufferedPercentage: Int, duration: Long ->
+                log("onBufferProgress bufferedPosition $bufferedPosition, bufferedPercentage $bufferedPercentage, duration $duration")
+            }
         uzVideoView.onSurfaceRedrawNeeded = {
             log("onSurfaceRedrawNeeded")
         }
