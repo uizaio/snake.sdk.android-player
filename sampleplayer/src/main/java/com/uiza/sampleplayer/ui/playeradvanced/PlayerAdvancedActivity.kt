@@ -219,6 +219,12 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btClickAudio.setOnClickListener {
             uzVideoView.clickAudio()
         }
+        btClickQuality.setOnClickListener {
+            uzVideoView.clickQuality()
+        }
+        btClickCaptions.setOnClickListener {
+            uzVideoView.clickCaptions()
+        }
         btSeekToForward.setOnClickListener {
             uzVideoView.seekToForward()
         }

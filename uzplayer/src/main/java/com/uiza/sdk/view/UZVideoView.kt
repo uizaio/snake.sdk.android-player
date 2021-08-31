@@ -935,6 +935,16 @@ class UZVideoView : RelativeLayout,
         view?.performClick()
     }
 
+    fun clickQuality() {
+        val view = DebugUtils.getVideoButton(layoutControls)
+        view?.performClick()
+    }
+
+    fun clickCaptions() {
+        val view = DebugUtils.getCaptionsButton(layoutControls)
+        view?.performClick()
+    }
+
     fun setDefaultSeekValue(mls: Long) {
         defaultSeekValue = mls
     }
