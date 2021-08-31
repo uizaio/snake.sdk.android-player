@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
+import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
@@ -109,13 +110,13 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     private fun updateView(index: Int) {
         etLinkPlay.visibility = View.VISIBLE
-        etLinkPlay.setText(UZApplication.urls[index])
+        etLinkPlay.setText(Constant.urls[index])
         setLastCursorEditText(etLinkPlay)
         onPlay()
     }
 
     private fun initPlaylist() {
-        for (url in UZApplication.urls) {
+        for (url in Constant.urls) {
             val playback = UZPlayback()
             playback.linkPlay = url
             playlist.add(playback)

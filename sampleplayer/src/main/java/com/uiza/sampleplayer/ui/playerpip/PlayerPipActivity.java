@@ -60,7 +60,7 @@ public class PlayerPipActivity extends AppCompatActivity {
         if (playbackInfo != null)
             etLinkPlay.setText(playbackInfo.getLinkPlay());
         else
-            etLinkPlay.setText(UZApplication.urls[0]);
+            etLinkPlay.setText(Constant.urls[0]);
 
 //        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
 

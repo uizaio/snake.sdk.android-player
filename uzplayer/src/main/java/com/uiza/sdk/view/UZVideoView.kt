@@ -146,7 +146,6 @@ class UZVideoView : RelativeLayout,
 
     private var isViewCreated = false
     private var skinId = R.layout.uzplayer_skin_default
-    var urlIMAAd: String? = null
     var uzPlayback: UZPlayback? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
@@ -491,7 +490,7 @@ class UZVideoView : RelativeLayout,
         }
         initDataSource(
             linkPlay = linkPlay,
-            urlIMAAd = urlIMAAd,
+            urlIMAAd = uzPlayback?.urlIMAAd,
             poster = uzPlayback?.poster
         )
         onIsInitResult?.invoke(linkPlay)
@@ -1516,7 +1515,7 @@ class UZVideoView : RelativeLayout,
             }
             initDataSource(
                 linkPlay = linkPlay,
-                urlIMAAd = if (isCalledFromChangeSkin) null else urlIMAAd,
+                urlIMAAd = if (isCalledFromChangeSkin) null else uzPlayback?.urlIMAAd,
                 poster = uzPlayback?.poster
             )
             onIsInitResult?.invoke(linkPlay)

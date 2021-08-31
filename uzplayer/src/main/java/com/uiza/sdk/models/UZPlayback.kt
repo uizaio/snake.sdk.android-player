@@ -7,6 +7,7 @@ import java.io.Serializable
 data class UZPlayback(
     var name: String? = null,
     var linkPlay: String? = null,
+    var urlIMAAd: String? = null,
     var poster: String? = null,
     var isPortraitVideo: Boolean? = null,
 ) : Serializable
