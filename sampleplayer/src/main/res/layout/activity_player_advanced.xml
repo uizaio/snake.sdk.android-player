@@ -38,6 +38,17 @@
         android:id="@+id/btPlayLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_padding_medium"
         android:text="Play" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btSeekTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seek to 16s" />
+    </LinearLayout>
 </LinearLayout>

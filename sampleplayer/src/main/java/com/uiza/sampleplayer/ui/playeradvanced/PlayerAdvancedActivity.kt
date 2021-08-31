@@ -162,6 +162,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btPlayLink.setOnClickListener {
             onPlay(etLinkPlay.text.toString().trim())
         }
+        btSeekTo.setOnClickListener {
+            uzVideoView.seekTo(16_000)
+        }
     }
 
     private fun logInformation() {
