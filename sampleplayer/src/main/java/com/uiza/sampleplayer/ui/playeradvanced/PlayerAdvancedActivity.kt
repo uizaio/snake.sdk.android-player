@@ -165,6 +165,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btSeekTo.setOnClickListener {
             uzVideoView.seekTo(16_000)
         }
+        btSeekToLiveEdge.setOnClickListener {
+            uzVideoView.seekToLiveEdge()
+        }
         btResume.setOnClickListener {
             uzVideoView.resume()
         }

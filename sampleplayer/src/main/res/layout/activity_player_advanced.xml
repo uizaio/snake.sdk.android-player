@@ -56,6 +56,12 @@
                 android:text="Seek to 16s" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToLiveEdge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seek To Live Edge" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btResume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
