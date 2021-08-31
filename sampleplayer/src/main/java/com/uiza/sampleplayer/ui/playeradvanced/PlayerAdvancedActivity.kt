@@ -35,7 +35,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.setUseController(true)
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
-
+            uzVideoView.setEnableDoubleTapToSeek(true)//default is false
             logInformation()
         }
         uzVideoView.onIsInitResult = { linkPlay ->

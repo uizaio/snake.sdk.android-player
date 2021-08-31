@@ -117,6 +117,7 @@ class UZVideoView : RelativeLayout,
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
     private var isAlwaysPortraitScreen = false
+    private var isEnableDoubleTapToSeek = false
     private var isOnPlayerEnded = false
 
     //TODO improve this func
@@ -290,11 +291,13 @@ class UZVideoView : RelativeLayout,
                 override fun onDoubleTapProgressDown(posX: Float, posY: Float) {}
                 override fun onDoubleTapStarted(posX: Float, posY: Float) {}
                 override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
-                    val halfScreen = UZViewUtils.screenWidth / 2.0f
-                    if (posX - 60.0f > halfScreen) {
-                        seekToForward()
-                    } else if (posX + 60.0f < halfScreen) {
-                        seekToBackward()
+                    if (isEnableDoubleTapToSeek) {
+                        val halfScreen = UZViewUtils.screenWidth / 2.0f
+                        if (posX - 60.0f > halfScreen) {
+                            seekToForward()
+                        } else if (posX + 60.0f < halfScreen) {
+                            seekToBackward()
+                        }
                     }
                 }
             })
@@ -1685,5 +1688,13 @@ class UZVideoView : RelativeLayout,
     fun retry() {
         player?.retry()
         playerManager?.setPlayWhenReady(true)
+    }
+
+    fun isEnableDoubleTapToSeek(): Boolean {
+        return isEnableDoubleTapToSeek
+    }
+
+    fun setEnableDoubleTapToSeek(isEnableDoubleTapToSeek: Boolean) {
+        this.isEnableDoubleTapToSeek = isEnableDoubleTapToSeek
     }
 }
