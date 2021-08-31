@@ -50,7 +50,15 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onNetworkChange = { isConnected ->
             log("onNetworkChange isConnected $isConnected")
         }
-
+        uzVideoView.onSkinChange = {
+            log("onSkinChange")
+        }
+        uzVideoView.onTimeShiftChange = { timeShiftOn: Boolean ->
+            log("onTimeShiftChange timeShiftOn $timeShiftOn")
+        }
+        uzVideoView.onScreenRotate = { isLandscape: Boolean ->
+            log("onScreenRotate isLandscape $isLandscape")
+        }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
