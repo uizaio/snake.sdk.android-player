@@ -16,7 +16,6 @@ import android.util.Log
 import android.util.Pair
 import android.util.Rational
 import android.view.*
-import android.view.View.OnFocusChangeListener
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
@@ -58,8 +57,7 @@ import java.util.*
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
-    View.OnClickListener,
-    OnFocusChangeListener {
+    View.OnClickListener {
 
     companion object {
         private const val HYPHEN = "-"
@@ -122,11 +120,6 @@ class UZVideoView : RelativeLayout,
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
-
-    private var firstViewHasFocusTV: View? = null
-
-
-    private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
@@ -304,7 +297,6 @@ class UZVideoView : RelativeLayout,
                         }
 
                     })
-                    tb.onFocusChangeListener = this
                 }
             }
 
@@ -1003,6 +995,12 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setEventForViews() {
+        fun setClickAndFocusEventForViews(vararg views: View?) {
+            for (v in views) {
+                v?.setOnClickListener(this)
+            }
+        }
+
         setClickAndFocusEventForViews(
             btFullscreenUZ,
             btBackScreenUZ,
@@ -1016,15 +1014,6 @@ class UZVideoView : RelativeLayout,
             btReplayUZ,
             btSpeedUZ,
         )
-    }
-
-    private fun setClickAndFocusEventForViews(vararg views: View?) {
-        for (v in views) {
-            v?.let {
-                it.setOnClickListener(this)
-                it.onFocusChangeListener = this
-            }
-        }
     }
 
     //If auto start true, show button play and gone button pause
@@ -1230,13 +1219,6 @@ class UZVideoView : RelativeLayout,
                     resNoFocus = R.drawable.background_tv_no_focus_uz_timebar
                 )
             }
-        }
-    }
-
-    private fun handleFirstViewHasFocus() {
-        if (firstViewHasFocusTV != null) {
-            uzTVFocusChangeListener?.onFocusChange(view = firstViewHasFocusTV, isFocus = true)
-            firstViewHasFocusTV = null
         }
     }
 
@@ -1480,11 +1462,6 @@ class UZVideoView : RelativeLayout,
         pb.visibility = View.VISIBLE
     }
 
-    fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
-        this.uzTVFocusChangeListener = uzTVFocusChangeListener
-        handleFirstViewHasFocus()
-    }
-
     private fun checkToSetUpResource() {
         if (uzPlayback == null) {
             handleError(ErrorUtils.exceptionSetup())
@@ -1650,14 +1627,6 @@ class UZVideoView : RelativeLayout,
                     }
                 }
             }
-        }
-    }
-
-    override fun onFocusChange(v: View?, hasFocus: Boolean) {
-        if (uzTVFocusChangeListener != null) {
-            uzTVFocusChangeListener?.onFocusChange(view = v, isFocus = hasFocus)
-        } else if (firstViewHasFocusTV == null) {
-            firstViewHasFocusTV = v
         }
     }
 
