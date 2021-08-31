@@ -216,6 +216,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isPlaying ${uzVideoView.isPlaying}")
         log("isPIPEnable ${uzVideoView.isPIPEnable}")
         log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
+        log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
     }
 
     private fun onPlay(link: String) {
