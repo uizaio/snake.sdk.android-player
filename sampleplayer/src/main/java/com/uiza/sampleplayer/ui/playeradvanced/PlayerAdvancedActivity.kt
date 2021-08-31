@@ -43,6 +43,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             //will be called if you play a video has poster in UZPlayer
             log("onPreviewTimeBar progress $progress, fromUser $fromUser")
         }
+        uzVideoView.onNetworkChange = { isConnected ->
+            log("onNetworkChange isConnected $isConnected")
+        }
 
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

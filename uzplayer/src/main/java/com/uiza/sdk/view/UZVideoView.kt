@@ -19,6 +19,9 @@ import android.view.*
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
+import com.ezralazuardy.orb.Orb
+import com.ezralazuardy.orb.OrbHelper
+import com.ezralazuardy.orb.OrbListener
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -122,8 +125,6 @@ class UZVideoView : RelativeLayout,
     private var isCalledFromChangeSkin = false
     private var isFirstStateReady = false
 
-    //TODO
-    private var isCalledFromConnectionEventBus = false
     private var isViewCreated = false
     private var skinId = R.layout.uzplayer_skin_default
     var uzPlayback: UZPlayback? = null
@@ -140,6 +141,8 @@ class UZVideoView : RelativeLayout,
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
     var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
         null
+    var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
+    private var orb: Orb? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
@@ -178,9 +181,7 @@ class UZVideoView : RelativeLayout,
 
     private fun onCreateView() {
         inflate(context, R.layout.layout_uz_ima_video_core, this)
-
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-
         if (inflater == null) {
 //            log("onCreateView cannot inflater view")
             throw NullPointerException("Cannot inflater view")
@@ -235,6 +236,33 @@ class UZVideoView : RelativeLayout,
 //            log("onCreateView invoke")
             onPlayerViewCreated?.invoke(it)
         }
+
+        createOrb()
+    }
+
+    private fun createOrb() {
+        val observer = OrbHelper.orbObserver {
+            handleNetworkChange(it.connected)
+        }
+        orb = Orb.with(context).setListener(object : OrbListener {
+            override fun onOrbActive() {
+//                log("onOrbActive")
+            }
+
+            override fun onOrbInactive() {
+//                log("onOrbInactive")
+            }
+
+            override fun onOrbObserve() {
+//                log("onOrbObserve")
+            }
+
+            override fun onOrbStop() {
+//                log("onOrbStop")
+            }
+
+        }).observe(observer)
+        orb?.observe(observer)
     }
 
     private fun findViews() {
@@ -497,10 +525,6 @@ class UZVideoView : RelativeLayout,
                 isRefreshFromChangeSkin = false
                 currentPositionBeforeChangeSkin = 0
             }
-            if (isCalledFromConnectionEventBus) {
-                pm.setRunnable()
-                isCalledFromConnectionEventBus = false
-            }
             initStatsForNerds()
         }
     }
@@ -564,6 +588,7 @@ class UZVideoView : RelativeLayout,
             }
         }
         playerManager?.unregister()
+        orb?.stop()
     }
 
     private fun releasePlayerStats() {
@@ -1562,30 +1587,19 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    //TODO
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    public void onNetworkEvent(ConnectEvent event) {
-    //        if (event == null || playerManager == null) return;
-    //        if (!event.isConnected()) {
-    //            notifyError(ErrorUtils.exceptionNoConnection());
-    //        } else {
-    //            if (playerManager.getExoPlaybackException() == null) {
-    //                hideController();
-    //                hideLayoutMsg();
-    //            } else {
-    //                isCalledFromConnectionEventBus = true;
-    //                playerManager.setResumeIfConnectionError();
-    //                if (!activityIsPausing) {
-    //                    playerManager.register(this);
-    //                    if (isCalledFromConnectionEventBus) {
-    //                        playerManager.setRunnable();
-    //                        isCalledFromConnectionEventBus = false;
-    //                    }
-    //                }
-    //            }
-    //            resume();
-    //        }
-    //    }
+    private fun handleNetworkChange(isConnected: Boolean) {
+        if (isConnected) {
+            if (playerManager?.exoPlaybackException == null) {
+                hideController()
+                hideLayoutMsg()
+            } else {
+                retry()
+            }
+        } else {
+            notifyError(ErrorUtils.exceptionNoConnection())
+        }
+        onNetworkChange?.invoke(isConnected)
+    }
 
     // ===== Stats For Nerds =====
     private fun initStatsForNerds() {
@@ -1668,5 +1682,10 @@ class UZVideoView : RelativeLayout,
 
     fun isPlayerControllerAlwayVisible(): Boolean {
         return isPlayerControllerAlwayVisible
+    }
+
+    fun retry() {
+        player?.retry()
+        playerManager?.setPlayWhenReady(true)
     }
 }

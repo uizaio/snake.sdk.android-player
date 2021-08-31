@@ -70,6 +70,9 @@ dependencies {
 //    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //https://github.com/ezralazuardy/orb
+    implementation 'com.github.ezralazuardy:orb:0.0.3'
 }
 repositories {
     mavenCentral()

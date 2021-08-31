@@ -54,6 +54,8 @@
             tools:visibility="visible" />
     </LinearLayout>
 
+
+<!--    TODO delete-->
     <RelativeLayout
         android:id="@+id/rlMsg"
         android:layout_width="match_parent"
