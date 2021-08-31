@@ -199,6 +199,12 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btSetSpeed.setOnClickListener {
             uzVideoView.setSpeed(2f)
         }
+        btShowController.setOnClickListener {
+            uzVideoView.showController()
+        }
+        btHideController.setOnClickListener {
+            uzVideoView.hideController()
+        }
     }
 
     private fun logInformation() {

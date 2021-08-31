@@ -114,6 +114,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Set speed x2" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btShowController"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show Controller" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btHideController"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hide Controller" />
         </LinearLayout>
     </HorizontalScrollView>
 
