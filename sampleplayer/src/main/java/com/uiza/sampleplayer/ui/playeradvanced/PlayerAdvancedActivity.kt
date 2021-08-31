@@ -90,6 +90,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 }
                 Player.STATE_READY -> {
                     log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_READY")
+                    logInformation()
                 }
                 Player.STATE_ENDED -> {
                     log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_ENDED")
@@ -120,6 +121,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             override fun onEnded() {
                 log("adPlayerCallback onEnded")
                 toast("onCurrentWindowDynamic isLIVE ${uzVideoView.isLIVE}")
+                logInformation()
             }
 
             override fun onError() {
@@ -170,6 +172,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
         log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
         log("heightTimeBar ${uzVideoView.heightTimeBar}")
+        log("videoProfileW ${uzVideoView.videoProfileW}")
+        log("videoProfileH ${uzVideoView.videoProfileH}")
     }
 
     private fun onPlay(link: String) {
