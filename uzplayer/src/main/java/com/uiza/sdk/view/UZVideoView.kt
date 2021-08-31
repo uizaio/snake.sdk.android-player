@@ -1586,7 +1586,7 @@ class UZVideoView : RelativeLayout,
     }
 
     /**
-     * When isLive = true, if not time shift then hide timber
+     * When isLive = true, if not time shift then hide timebar
      */
     private fun updateTimeBarWithTimeShiftStatus() {
         playerManager?.let { pm ->
@@ -1618,7 +1618,7 @@ class UZVideoView : RelativeLayout,
         player?.addAnalyticsListener(statsForNerdsView)
     }
 
-    fun updateLiveStreamLatency(latency: Long) {
+    private fun updateLiveStreamLatency(latency: Long) {
         statsForNerdsView.showTextLiveStreamLatency()
         statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency))
     }

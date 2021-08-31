@@ -234,6 +234,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btToggleFullscreen.setOnClickListener {
             uzVideoView.toggleFullscreen()
         }
+        btRetry.setOnClickListener {
+            uzVideoView.retry()
+        }
     }
 
     private fun logInformation() {
