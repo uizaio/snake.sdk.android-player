@@ -77,7 +77,9 @@ class UZVideoView : RelativeLayout,
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
+    private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var playerManager: UZPlayerManager? = null
+
     private var llTopUZ: LinearLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
@@ -99,7 +101,6 @@ class UZVideoView : RelativeLayout,
     private var btPipUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
-    private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
 
     override var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
         set(isAutoStart) {
