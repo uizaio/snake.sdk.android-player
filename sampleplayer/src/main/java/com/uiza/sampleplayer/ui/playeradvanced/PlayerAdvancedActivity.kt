@@ -24,12 +24,16 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
+            log("onPlayerViewCreated")
             uzVideoView.isAutoStart = true//default is true
             uzVideoView.setUseController(true)
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
 
             logInformation()
+        }
+        uzVideoView.onIsInitResult = { linkPlay ->
+            log("onIsInitResult linkPlay $linkPlay")
         }
         uzVideoView.onStartPreviewTimeBar = { _: PreviewView?, progress: Int ->
             //will be called if you play a video has poster in UZPlayer
