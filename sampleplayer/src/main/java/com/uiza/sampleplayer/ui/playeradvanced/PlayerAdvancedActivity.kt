@@ -257,6 +257,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
         log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
         log("isUseController ${uzVideoView.isUseController()}")
+        log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
     }
 
     private fun onPlay(link: String) {
