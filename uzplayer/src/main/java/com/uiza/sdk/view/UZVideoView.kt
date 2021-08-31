@@ -120,21 +120,10 @@ class UZVideoView : RelativeLayout,
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
-
-    override var adPlayerCallback: UZAdPlayerCallback? = null
-        set(callback) {
-            field = callback
-            if (UZAppUtils.isAdsDependencyAvailable) {
-                playerManager?.setAdPlayerCallback(callback)
-            } else {
-                throw NoClassDefFoundError(ErrorConstant.ERR_506)
-            }
-        }
     private var isFirstStateReady = false
 
     //TODO
     private var isCalledFromConnectionEventBus = false
-
     private var isViewCreated = false
     private var skinId = R.layout.uzplayer_skin_default
     var uzPlayback: UZPlayback? = null
@@ -151,6 +140,16 @@ class UZVideoView : RelativeLayout,
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
     var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
         null
+
+    override var adPlayerCallback: UZAdPlayerCallback? = null
+        set(callback) {
+            field = callback
+            if (UZAppUtils.isAdsDependencyAvailable) {
+                playerManager?.setAdPlayerCallback(callback)
+            } else {
+                throw NoClassDefFoundError(ErrorConstant.ERR_506)
+            }
+        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
