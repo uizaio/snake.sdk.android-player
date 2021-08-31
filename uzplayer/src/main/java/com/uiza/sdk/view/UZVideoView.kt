@@ -106,6 +106,7 @@ class UZVideoView : RelativeLayout,
     private var autoMoveToLiveEdge = false
     private var isInPipMode = false
     private var isPIPModeEnabled = false
+    private var isUSeControllerRestorePip = false
     private var positionPIPPlayer = 0L
     private var isAutoReplay = false
     private var isFreeSize = false
@@ -568,20 +569,17 @@ class UZVideoView : RelativeLayout,
 
     protected fun tryNextLinkPlay() {
         if (isLIVE) {
-            playerManager?.let {
-                it.initWithoutReset()
-                it.setRunnable()
-            }
+//            playerManager?.let {
+//                it.initWithoutReset()
+//                it.setRunnable()
+//            }
+            retry()
             isFirstStateReady = false
             return
         }
         isFirstStateReady = false
         releasePlayerManager()
         checkToSetUpResource()
-    }
-
-    private fun handleErrorNoData() {
-        handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
     }
 
     fun onBackPressed(): Boolean {
@@ -592,8 +590,7 @@ class UZVideoView : RelativeLayout,
         return false
     }
 
-    private var isUSeControllerRestorePip = false
-    fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+    fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
         positionPIPPlayer = currentPosition
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
@@ -1505,7 +1502,7 @@ class UZVideoView : RelativeLayout,
         } else {
             val linkPlay = uzPlayback?.linkPlay
             if (linkPlay.isNullOrEmpty()) {
-                handleErrorNoData()
+                handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
                 return
             }
             initDataSource(
