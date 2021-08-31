@@ -189,6 +189,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btShowSettingsDialog.setOnClickListener {
             uzVideoView.showSettingsDialog()
         }
+        btShowSpeed.setOnClickListener {
+            uzVideoView.showSpeed()
+        }
     }
 
     private fun logInformation() {
