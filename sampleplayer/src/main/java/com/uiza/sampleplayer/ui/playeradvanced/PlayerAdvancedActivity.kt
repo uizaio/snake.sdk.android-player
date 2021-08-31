@@ -68,6 +68,18 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onError = {
             toast(it.toString())
         }
+        uzVideoView.onDoubleTapFinished = {
+            log("onDoubleTapFinished")
+        }
+        uzVideoView.onDoubleTapProgressDown = { posX: Float, posY: Float ->
+            log("onDoubleTapProgressDown $posX $posY")
+        }
+        uzVideoView.onDoubleTapStarted = { posX: Float, posY: Float ->
+            log("onDoubleTapStarted $posX $posY")
+        }
+        uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
+            log("onDoubleTapProgressUp $posX $posY")
+        }
         uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
             when (playbackState) {
                 Player.STATE_IDLE -> {

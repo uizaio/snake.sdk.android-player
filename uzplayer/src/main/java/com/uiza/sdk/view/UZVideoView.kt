@@ -150,6 +150,11 @@ class UZVideoView : RelativeLayout,
         null
     var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
 
+    var onDoubleTapFinished: (() -> Unit)? = null
+    var onDoubleTapProgressDown: ((posX: Float, posY: Float) -> Unit)? = null
+    var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
+    var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
+
     private var orb: Orb? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
@@ -287,9 +292,18 @@ class UZVideoView : RelativeLayout,
 
         playerView?.let { pv ->
             pv.setOnDoubleTap(object : OnDoubleTap {
-                override fun onDoubleTapFinished() {}
-                override fun onDoubleTapProgressDown(posX: Float, posY: Float) {}
-                override fun onDoubleTapStarted(posX: Float, posY: Float) {}
+                override fun onDoubleTapFinished() {
+                    onDoubleTapFinished?.invoke()
+                }
+
+                override fun onDoubleTapProgressDown(posX: Float, posY: Float) {
+                    onDoubleTapProgressDown?.invoke(posX, posY)
+                }
+
+                override fun onDoubleTapStarted(posX: Float, posY: Float) {
+                    onDoubleTapStarted?.invoke(posX, posY)
+                }
+
                 override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
                     if (isEnableDoubleTapToSeek) {
                         val halfScreen = UZViewUtils.screenWidth / 2.0f
@@ -299,6 +313,7 @@ class UZVideoView : RelativeLayout,
                             seekToBackward()
                         }
                     }
+                    onDoubleTapProgressUp?.invoke(posX, posY)
                 }
             })
             timeBarUZ = pv.findViewById(R.id.exo_progress)
