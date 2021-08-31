@@ -923,7 +923,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun handleClickHearing() {
+    fun clickAudio() {
         val view = DebugUtils.getAudioButton(layoutControls)
         view?.performClick()
     }
@@ -1623,7 +1623,7 @@ class UZVideoView : RelativeLayout,
         statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency))
     }
 
-    fun hideTextLiveStreamLatency() {
+    private fun hideTextLiveStreamLatency() {
         statsForNerdsView.hideTextLiveStreamLatency()
     }
 

@@ -205,6 +205,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btHideController.setOnClickListener {
             uzVideoView.hideController()
         }
+        btClickAudio.setOnClickListener {
+            uzVideoView.clickAudio()
+        }
     }
 
     private fun logInformation() {
