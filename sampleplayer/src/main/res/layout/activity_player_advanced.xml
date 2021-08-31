@@ -40,15 +40,33 @@
         android:layout_height="wrap_content"
         android:text="Play" />
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btSeekTo"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seek to 16s" />
-    </LinearLayout>
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seek to 16s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btResume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resume" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
 </LinearLayout>
