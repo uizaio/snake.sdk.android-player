@@ -215,6 +215,12 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btSeekToForward7.setOnClickListener {
             uzVideoView.seekToForward(7_000)
         }
+        btSeekToBackward.setOnClickListener {
+            uzVideoView.seekToBackward()
+        }
+        btSeekToBackward7.setOnClickListener {
+            uzVideoView.seekToBackward(7_000)
+        }
     }
 
     private fun logInformation() {

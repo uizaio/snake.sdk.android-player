@@ -43,6 +43,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_padding_medium"
         android:text="Scroll horizontal for more actions" />
 
     <HorizontalScrollView
@@ -149,6 +150,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SeekToForward 7s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToBackward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToBackward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToBackward7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToBackward 7s" />
         </LinearLayout>
     </HorizontalScrollView>
 
