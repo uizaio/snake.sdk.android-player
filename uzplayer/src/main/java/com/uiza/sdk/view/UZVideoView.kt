@@ -458,7 +458,7 @@ class UZVideoView : RelativeLayout,
 
     fun setPlayerControllerAlwaysVisible() {
         controllerAutoShow = true
-        setHideControllerOnTouch(false)
+        setControllerHideOnTouch(false)
         controllerShowTimeoutMs = 0
         isPlayerControllerAlwayVisible = true
     }
@@ -813,8 +813,8 @@ class UZVideoView : RelativeLayout,
         playerView?.hideController()
     }
 
-    fun setHideControllerOnTouch(isHide: Boolean) {
-        playerView?.controllerHideOnTouch = isHide
+    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        playerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 
     val controllerHideOnTouch: Boolean
