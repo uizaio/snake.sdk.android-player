@@ -22,7 +22,6 @@ import androidx.annotation.RequiresApi
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
-import com.google.ads.interactivemedia.v3.internal.on
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -144,6 +143,12 @@ class UZVideoView : RelativeLayout,
         null
     var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
     var onCurrentWindowDynamic: ((isLIVE: Boolean) -> Unit)? = null
+    var onSurfaceRedrawNeeded: ((holder: SurfaceHolder) -> Unit)? = null
+    var onSurfaceCreated: ((holder: SurfaceHolder) -> Unit)? = null
+    var onSurfaceChanged: ((holder: SurfaceHolder, format: Int, width: Int, height: Int) -> Unit)? =
+        null
+    var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
+
     private var orb: Orb? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
@@ -200,14 +205,21 @@ class UZVideoView : RelativeLayout,
                 if (it.videoSurfaceView is SurfaceView) {
                     (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
                         SurfaceHolder.Callback2 {
-                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {}
-                        override fun surfaceCreated(holder: SurfaceHolder) {}
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
+
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            onSurfaceCreated?.invoke(holder)
+                        }
+
                         override fun surfaceChanged(
                             holder: SurfaceHolder,
                             format: Int,
                             width: Int,
                             height: Int
                         ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
                         }
 
                         override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -218,6 +230,7 @@ class UZVideoView : RelativeLayout,
                                     }
                                 }
                             }
+                            onSurfaceDestroyed?.invoke(holder)
                         }
                     })
                 }

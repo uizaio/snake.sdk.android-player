@@ -2,6 +2,7 @@ package com.uiza.sampleplayer.ui.playeradvanced
 
 import android.os.Bundle
 import android.util.Log
+import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Player
@@ -123,6 +124,18 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             } else {
                 toast("onCurrentWindowDynamic !isLIVE")
             }
+        }
+        uzVideoView.onSurfaceRedrawNeeded = {
+            log("onSurfaceRedrawNeeded")
+        }
+        uzVideoView.onSurfaceCreated = {
+            log("onSurfaceCreated")
+        }
+        uzVideoView.onSurfaceChanged = { _: SurfaceHolder, format: Int, width: Int, height: Int ->
+            log("onSurfaceChanged format $format, width $width, height $height")
+        }
+        uzVideoView.onSurfaceDestroyed = {
+            log("onSurfaceDestroyed")
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
