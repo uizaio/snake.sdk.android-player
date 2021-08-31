@@ -1,9 +1,11 @@
 package com.uiza.sampleplayer.ui.playeradvanced
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
@@ -61,6 +63,22 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         uzVideoView.onError = {
             Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
+        }
+        uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
+            when (playbackState) {
+                Player.STATE_IDLE -> {
+                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_IDLE")
+                }
+                Player.STATE_BUFFERING -> {
+                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_BUFFERING")
+                }
+                Player.STATE_READY -> {
+                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_READY")
+                }
+                Player.STATE_ENDED -> {
+                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_ENDED")
+                }
+            }
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
