@@ -8,4 +8,5 @@ data class UZPlayback(
     var name: String? = null,
     var linkPlay: String? = null,
     var poster: String? = null,
+    var isPortraitVideo: Boolean? = null,
 ) : Serializable

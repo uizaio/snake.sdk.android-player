@@ -123,10 +123,13 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
     }
 
     private fun onPlay() {
-        val uzPlayback = UZPlayback()
-        uzPlayback.poster = UZApplication.thumbnailUrl
-        uzPlayback.linkPlay = etLinkPlay.text.toString().trim()
-        uzVideoView.play(uzPlayback)
+        val linkPlay = etLinkPlay.text.toString().trim()
+        if (linkPlay.isEmpty()) {
+            Toast.makeText(this, "Empty link play", Toast.LENGTH_SHORT).show()
+        } else {
+            val uzPlayback = UZPlayback(linkPlay = linkPlay)
+            uzVideoView.play(uzPlayback)
+        }
     }
 
     public override fun onDestroy() {

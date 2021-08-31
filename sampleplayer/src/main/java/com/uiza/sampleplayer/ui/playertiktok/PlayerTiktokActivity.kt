@@ -1,13 +1,10 @@
 package com.uiza.sampleplayer.ui.playertiktok
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.activity_player_tiktok.*
@@ -45,9 +42,7 @@ class PlayerTiktokActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback()
-            uzPlayback.poster = UZApplication.thumbnailUrl
-            uzPlayback.linkPlay = link
+            val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }
     }
