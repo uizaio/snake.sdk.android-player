@@ -967,10 +967,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun toggleVolume() {
-        btVolumeUZ?.performClick()
-    }
-
     fun toggleFullscreen() {
         if (context is Activity) {
             UZViewUtils.toggleScreenOrientation(activity = (context as Activity))

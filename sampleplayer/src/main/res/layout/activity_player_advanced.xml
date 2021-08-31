@@ -168,6 +168,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SeekToBackward 7s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btToggleFullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle Fullscreen" />
         </LinearLayout>
     </HorizontalScrollView>
 

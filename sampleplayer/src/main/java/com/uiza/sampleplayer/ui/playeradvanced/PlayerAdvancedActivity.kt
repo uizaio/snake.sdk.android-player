@@ -224,6 +224,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btSeekToBackward7.setOnClickListener {
             uzVideoView.seekToBackward(7_000)
         }
+        btToggleFullscreen.setOnClickListener {
+            uzVideoView.toggleFullscreen()
+        }
     }
 
     private fun logInformation() {
