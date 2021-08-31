@@ -21,8 +21,6 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -116,7 +114,7 @@ class UZVideoView : RelativeLayout,
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
-    private var timestampOnStartPreview = 0L
+    private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
@@ -273,13 +271,13 @@ class UZVideoView : RelativeLayout,
                     pv.visibility = VISIBLE
                     tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
                         override fun onStartPreview(previewView: PreviewView?, progress: Int) {
-                            timestampOnStartPreview = System.currentTimeMillis()
+                            timestampOnStartPreviewTimeBar = System.currentTimeMillis()
                             onPreviewChangeListener?.onStartPreview(previewView, progress)
                         }
 
                         override fun onStopPreview(previewView: PreviewView?, progress: Int) {
                             val seekLastDuration =
-                                System.currentTimeMillis() - timestampOnStartPreview
+                                System.currentTimeMillis() - timestampOnStartPreviewTimeBar
                             if (maxSeekLastDurationTimeBar < seekLastDuration) {
                                 maxSeekLastDurationTimeBar = seekLastDuration
                             }
@@ -1724,6 +1722,10 @@ class UZVideoView : RelativeLayout,
 
     fun setAlwaysPortraitScreen(isAlwaysPortraitScreen: Boolean) {
         this.isAlwaysPortraitScreen = isAlwaysPortraitScreen
+    }
+
+    fun isAlwaysPortraitScreen(): Boolean {
+        return isAlwaysPortraitScreen
     }
 
     fun isViewCreated(): Boolean {

@@ -44,6 +44,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     private fun logInformation() {
         log("isAutoReplay ${uzVideoView.isAutoReplay()}")
         log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
+        log("isLandscapeScreen ${uzVideoView.isLandscapeScreen()}")
+        log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
     }
 
     private fun onPlay(link: String) {
@@ -54,7 +56,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         if (uzVideoView.isViewCreated()) {
             uzVideoView.isAutoStart = true//default is true
             uzVideoView.setAutoReplay(true)//default is false
-            uzVideoView.setPlayerControllerAlwaysVisible()
+//            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
 
             val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
