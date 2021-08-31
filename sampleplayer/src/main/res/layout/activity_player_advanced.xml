@@ -74,6 +74,12 @@
                 android:text="Pause" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btReplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Replay" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btToggleStatsForNerds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
