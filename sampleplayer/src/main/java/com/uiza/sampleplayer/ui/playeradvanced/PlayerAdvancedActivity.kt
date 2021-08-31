@@ -80,6 +80,10 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
             log("onDoubleTapProgressUp $posX $posY")
         }
+        uzVideoView.onFirstStateReady = { isFirstStateReady ->
+            log("onFirstStateReady isFirstStateReady $isFirstStateReady")
+            uzVideoView.controllerShowTimeoutMs = 15_000 //15s
+        }
         uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
             when (playbackState) {
                 Player.STATE_IDLE -> {
@@ -211,6 +215,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("videoHeight ${uzVideoView.videoHeight}")
         log("isPlaying ${uzVideoView.isPlaying}")
         log("isPIPEnable ${uzVideoView.isPIPEnable}")
+        log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
     }
 
     private fun onPlay(link: String) {

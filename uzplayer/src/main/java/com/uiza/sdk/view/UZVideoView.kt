@@ -64,7 +64,7 @@ class UZVideoView : RelativeLayout,
     companion object {
         private const val HYPHEN = "-"
         private const val FAST_FORWARD_REWIND_INTERVAL = 10000L // 10s
-        private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 8000 // 8s
+        private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 5000 // 5s
         const val DEFAULT_TARGET_DURATION_MLS = 2000L // 2s
         private const val ARG_VIDEO_POSITION = "ARG_VIDEO_POSITION"
     }
@@ -138,6 +138,7 @@ class UZVideoView : RelativeLayout,
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
     var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
+    var onFirstStateReady: ((isFirstStateReady: Boolean) -> Unit)? = null
 
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
@@ -574,10 +575,10 @@ class UZVideoView : RelativeLayout,
 //                it.setRunnable()
 //            }
             retry()
-            isFirstStateReady = false
+            setFirstStateReady(false)
             return
         }
-        isFirstStateReady = false
+        setFirstStateReady(false)
         releasePlayerManager()
         checkToSetUpResource()
     }
@@ -796,9 +797,7 @@ class UZVideoView : RelativeLayout,
     var controllerShowTimeoutMs: Int
         get() = playerView?.controllerShowTimeoutMs ?: -1
         set(controllerShowTimeoutMs) {
-            post {
-                playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
-            }
+            playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
         }
     val isPlayerControllerShowing: Boolean
         get() = playerView?.isControllerVisible ?: false
@@ -895,7 +894,7 @@ class UZVideoView : RelativeLayout,
                 }
 
                 if (!isFirstStateReady) {
-                    isFirstStateReady = true
+                    setFirstStateReady(true)
                 }
             }
         }
@@ -1514,6 +1513,11 @@ class UZVideoView : RelativeLayout,
         }
     }
 
+    private fun setFirstStateReady(isFirstStateReady: Boolean) {
+        this.isFirstStateReady = isFirstStateReady
+        onFirstStateReady?.invoke(isFirstStateReady)
+    }
+
     private fun initDataSource(
         linkPlay: String,
         urlIMAAd: String?,
@@ -1524,7 +1528,7 @@ class UZVideoView : RelativeLayout,
             .withIMAAdUrl(urlIMAAd)
             .build()
 
-        isFirstStateReady = false
+        setFirstStateReady(false)
 
         timeBarUZ?.let {
             it.setEnabledPreview(!poster.isNullOrEmpty())
