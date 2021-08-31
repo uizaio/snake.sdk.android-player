@@ -590,7 +590,10 @@ class UZVideoView : RelativeLayout,
         return false
     }
 
-    fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+    fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration?
+    ) {
         positionPIPPlayer = currentPosition
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
@@ -675,7 +678,7 @@ class UZVideoView : RelativeLayout,
     override val isPIPEnable: Boolean
         get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && playerView?.isUseUZDragView() == false && isPIPModeEnabled)
 
-    fun onStopPreview(progress: Int) {
+    private fun onStopPreview(progress: Int) {
         playerManager?.seekTo(progress.toLong())
         playerManager?.resume()
         isOnPlayerEnded = false
