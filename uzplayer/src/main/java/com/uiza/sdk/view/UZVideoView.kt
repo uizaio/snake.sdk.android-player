@@ -725,7 +725,7 @@ class UZVideoView : RelativeLayout,
         } else if (v === btBackScreenUZ) {
             clickBackScreen()
         } else if (v === btVolumeUZ) {
-            handleClickBtVolume()
+            toggleVolumeMute()
         } else if (v === btSettingUZ) {
             showSettingsDialog()
         } else if (v === btPipUZ) {
@@ -912,10 +912,6 @@ class UZVideoView : RelativeLayout,
             isOnPlayerEnded = false
             updateUIEndScreen()
         }
-    }
-
-    private fun handleClickBtVolume() {
-        toggleVolumeMute()
     }
 
      fun clickBackScreen() {

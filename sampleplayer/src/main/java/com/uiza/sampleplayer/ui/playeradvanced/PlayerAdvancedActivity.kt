@@ -180,6 +180,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btBackScreen.setOnClickListener {
             uzVideoView.clickBackScreen()
         }
+        btToggleVolumeMute.setOnClickListener {
+            uzVideoView.toggleVolumeMute()
+        }
     }
 
     private fun logInformation() {
