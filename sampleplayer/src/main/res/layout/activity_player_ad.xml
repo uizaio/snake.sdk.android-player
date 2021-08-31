@@ -24,8 +24,13 @@
                 android:id="@+id/btAdSingleInlineLinear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_padding_medium"
                 android:text="Single Inline Linear" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btAdSingleSkippableInline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Single Skippable Inline" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
