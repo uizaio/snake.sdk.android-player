@@ -192,6 +192,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("videoWidth ${uzVideoView.videoWidth}")
         log("videoHeight ${uzVideoView.videoHeight}")
         log("isPlaying ${uzVideoView.isPlaying}")
+        log("isPIPEnable ${uzVideoView.isPIPEnable}")
     }
 
     private fun onPlay(link: String) {
