@@ -56,7 +56,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity"
+            android:name=".ui.playertiktokslide.PlayerTiktokSlideActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerTiktokSlideHorizontalActivity"
             android:screenOrientation="portrait"

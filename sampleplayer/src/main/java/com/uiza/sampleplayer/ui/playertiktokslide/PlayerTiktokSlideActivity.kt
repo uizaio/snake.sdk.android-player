@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
+package com.uiza.sampleplayer.ui.playertiktokslide
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,15 +9,15 @@ import androidx.viewpager2.widget.ViewPager2
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.model.DataVideo
-import kotlinx.android.synthetic.main.activity_player_tiktok_slide_horizontal.*
+import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
 import java.util.*
 
-class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
+class PlayerTiktokSlideActivity : AppCompatActivity() {
     private val listDataVideo = ArrayList<DataVideo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_tiktok_slide_horizontal)
+        setContentView(R.layout.activity_player_tiktok_slide)
         setupViews()
     }
 
