@@ -534,7 +534,7 @@ class UZVideoView : RelativeLayout,
         updateUIEndScreen()
         releasePlayerManager()
         showProgress()
-        updateUIDependOnLiveStream()
+//        updateUIDependOnLiveStream()
 
         initDataSource(
             linkPlay = linkPlay,
@@ -895,6 +895,7 @@ class UZVideoView : RelativeLayout,
 
                 if (!isFirstStateReady) {
                     setFirstStateReady(true)
+                    updateUIDependOnLiveStream()
                 }
             }
         }
@@ -1147,7 +1148,7 @@ class UZVideoView : RelativeLayout,
 
             resizeContainerView()
             updateUIEachSkin()
-            updateUIDependOnLiveStream()
+//            updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
@@ -1293,12 +1294,11 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(btPipUZ)
         }
         onCurrentWindowDynamic?.invoke(isLIVE)
+        log("updateUIDependOnLiveStream isLIVE $isLIVE")
         if (isLIVE) {
-            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
-            setUIVisible(visible = false, btRewUZ, btFfwdUZ)
+            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
         } else {
-            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
-            setUIVisible(visible = true, btRewUZ, btFfwdUZ)
+            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btFfwdUZ, btRewUZ)
         }
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
