@@ -25,7 +25,6 @@ import com.ezralazuardy.orb.OrbListener
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.uiza.sdk.BuildConfig
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
 import com.uiza.sdk.dialog.hq.UZItem
@@ -119,6 +118,7 @@ class UZVideoView : RelativeLayout,
     private var isAlwaysPortraitScreen = false
     private var isEnableDoubleTapToSeek = false
     private var isOnPlayerEnded = false
+    private var isShowLayoutDebug = false
 
     //TODO improve this func
     private var isRefreshFromChangeSkin = false
@@ -385,12 +385,6 @@ class UZVideoView : RelativeLayout,
 
             if (!isPIPEnable) {
                 UZViewUtils.goneViews(btPipUZ)
-            }
-
-            if (BuildConfig.DEBUG) {
-                layoutDebug.visibility = VISIBLE
-            } else {
-                layoutDebug.visibility = GONE
             }
 
             setEventForViews()
@@ -1711,5 +1705,18 @@ class UZVideoView : RelativeLayout,
 
     fun setEnableDoubleTapToSeek(isEnableDoubleTapToSeek: Boolean) {
         this.isEnableDoubleTapToSeek = isEnableDoubleTapToSeek
+    }
+
+    fun setShowLayoutDebug(isShowLayoutDebug: Boolean) {
+        this.isShowLayoutDebug = isShowLayoutDebug
+        if (isShowLayoutDebug) {
+            layoutDebug.visibility = VISIBLE
+        } else {
+            layoutDebug.visibility = GONE
+        }
+    }
+
+    fun isShowLayoutDebug(): Boolean {
+        return this.isShowLayoutDebug
     }
 }

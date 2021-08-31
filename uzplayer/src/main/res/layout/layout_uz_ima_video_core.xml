@@ -42,15 +42,14 @@
         android:id="@+id/layoutDebug"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/red"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/layoutControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:orientation="horizontal" />
     </LinearLayout>
 </RelativeLayout>
