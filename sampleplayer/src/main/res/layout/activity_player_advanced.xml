@@ -108,6 +108,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Show Speed" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSetSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set speed x2" />
         </LinearLayout>
     </HorizontalScrollView>
 
