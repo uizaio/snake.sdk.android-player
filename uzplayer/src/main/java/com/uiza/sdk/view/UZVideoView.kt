@@ -281,8 +281,6 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun findViews() {
-        rlMsg.setOnClickListener(this)
-        UZViewUtils.setTextShadow(textView = tvMsg, color = Color.BLACK)
         UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
         updateUIPositionOfProgressBar()
 
@@ -511,7 +509,6 @@ class UZVideoView : RelativeLayout,
             return
         }
         isCalledFromChangeSkin = false
-        hideLayoutMsg()
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
         updateUIEndScreen()
@@ -738,12 +735,6 @@ class UZVideoView : RelativeLayout,
         } else if (v === btSpeedUZ) {
             showSpeed()
         }
-        /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức,
-        trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
-        default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
-        if (isUseController() && (rlMsg == null || rlMsg?.visibility != VISIBLE) && isPlayerControllerShowing) {
-            showController()
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -883,7 +874,6 @@ class UZVideoView : RelativeLayout,
                 updateTvDuration()
                 updateTimeBarWithTimeShiftStatus()
                 if (playWhenReady) {
-                    hideLayoutMsg()
                     timeBarUZ?.hidePreview()
                 }
                 if (context is Activity) {
@@ -1345,15 +1335,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun showLayoutMsg() {
-        hideController()
-        UZViewUtils.visibleViews(rlMsg)
-    }
-
-    fun hideLayoutMsg() {
-        UZViewUtils.goneViews(rlMsg)
-    }
-
     private fun updateUIEndScreen() {
         playerView?.let { pv ->
             if (isOnPlayerEnded) {
@@ -1609,7 +1590,6 @@ class UZVideoView : RelativeLayout,
         if (isConnected) {
             if (playerManager?.exoPlaybackException == null) {
                 hideController()
-                hideLayoutMsg()
             } else {
                 retry()
             }
