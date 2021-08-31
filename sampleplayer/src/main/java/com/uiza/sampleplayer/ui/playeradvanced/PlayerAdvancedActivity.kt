@@ -224,6 +224,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
         log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
         log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
+        log("isUseController ${uzVideoView.isUseController()}")
     }
 
     private fun onPlay(link: String) {
