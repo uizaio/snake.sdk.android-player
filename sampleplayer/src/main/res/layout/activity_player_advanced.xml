@@ -66,6 +66,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pause" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btToggleStatsForNerds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle StatsForNerds" />
         </LinearLayout>
     </HorizontalScrollView>
 

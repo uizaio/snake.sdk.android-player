@@ -171,6 +171,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btPause.setOnClickListener {
             uzVideoView.pause()
         }
+        btToggleStatsForNerds.setOnClickListener {
+            uzVideoView.toggleStatsForNerds()
+        }
     }
 
     private fun logInformation() {

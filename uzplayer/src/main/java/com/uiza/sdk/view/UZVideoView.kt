@@ -518,6 +518,12 @@ class UZVideoView : RelativeLayout,
 
     private fun initPlayback() {
         if (uzPlayback == null) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
+            return
+        }
+        val linkPlay = uzPlayback?.linkPlay
+        if (linkPlay.isNullOrEmpty()) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
             return
         }
         isCalledFromChangeSkin = false
@@ -527,11 +533,7 @@ class UZVideoView : RelativeLayout,
         releasePlayerManager()
         showProgress()
         updateUIDependOnLiveStream()
-        val linkPlay = uzPlayback?.linkPlay
-        if (linkPlay.isNullOrEmpty()) {
-            handleError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
+
         initDataSource(
             linkPlay = linkPlay,
             urlIMAAd = uzPlayback?.urlIMAAd,
