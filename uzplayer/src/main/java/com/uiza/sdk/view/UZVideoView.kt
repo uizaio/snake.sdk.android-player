@@ -159,6 +159,8 @@ class UZVideoView : RelativeLayout,
 
     var onBufferProgress: ((bufferedPosition: Long, bufferedPercentage: Int, duration: Long) -> Unit)? =
         null
+    var onVideoProgress: ((currentMls: Long, s: Int, duration: Long, percent: Int) -> Unit)? =
+        null
 
     private var orb: Orb? = null
 
@@ -1559,6 +1561,7 @@ class UZVideoView : RelativeLayout,
                         isCalledFromUZTimeBarEvent = false
                     )
                 }
+                onVideoProgress?.invoke(currentMls, s, duration, percent)
             }
         })
         playerManager?.setDebugCallback(object : DebugCallback {

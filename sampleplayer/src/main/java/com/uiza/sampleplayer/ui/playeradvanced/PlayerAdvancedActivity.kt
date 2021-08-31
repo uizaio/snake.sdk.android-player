@@ -148,6 +148,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             { bufferedPosition: Long, bufferedPercentage: Int, duration: Long ->
                 log("onBufferProgress bufferedPosition $bufferedPosition, bufferedPercentage $bufferedPercentage, duration $duration")
             }
+        uzVideoView.onVideoProgress = { currentMls: Long, s: Int, duration: Long, percent: Int ->
+            log("onVideoProgress currentMls $currentMls, s $s, duration $duration, percent $percent")
+        }
         uzVideoView.onSurfaceRedrawNeeded = {
             log("onSurfaceRedrawNeeded")
         }
