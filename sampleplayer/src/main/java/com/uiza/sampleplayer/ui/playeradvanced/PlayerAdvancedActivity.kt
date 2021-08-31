@@ -1,6 +1,5 @@
 package com.uiza.sampleplayer.ui.playeradvanced
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -8,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
+import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
@@ -80,6 +80,39 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 }
             }
         }
+        uzVideoView.adPlayerCallback = object : UZAdPlayerCallback {
+            override fun onPlay() {
+                log("adPlayerCallback onPlay")
+            }
+
+            override fun onVolumeChanged(i: Int) {
+                log("adPlayerCallback onVolumeChanged $i")
+            }
+
+            override fun onPause() {
+                log("adPlayerCallback onPause")
+            }
+
+            override fun onLoaded() {
+                log("adPlayerCallback onLoaded")
+            }
+
+            override fun onResume() {
+                log("adPlayerCallback onResume")
+            }
+
+            override fun onEnded() {
+                log("adPlayerCallback onEnded")
+            }
+
+            override fun onError() {
+                log("adPlayerCallback onError")
+            }
+
+            override fun onBuffering() {
+                log("adPlayerCallback onBuffering")
+            }
+        }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
@@ -106,7 +139,10 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback(linkPlay = link)
+            val uzPlayback = UZPlayback(
+                linkPlay = link,
+                urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
+            )
             uzVideoView.play(uzPlayback)
             logInformation()
         }
