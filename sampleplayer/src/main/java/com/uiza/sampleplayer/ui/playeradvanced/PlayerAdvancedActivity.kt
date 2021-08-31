@@ -13,6 +13,9 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
 
 class PlayerAdvancedActivity : AppCompatActivity() {
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
 
     private fun log(msg: String) {
         Log.d("loitpp" + javaClass.simpleName, msg)
@@ -62,7 +65,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("onScreenRotate isLandscape $isLandscape")
         }
         uzVideoView.onError = {
-            Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
+            toast(it.toString())
         }
         uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
             when (playbackState) {
@@ -103,6 +106,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
             override fun onEnded() {
                 log("adPlayerCallback onEnded")
+                toast("onCurrentWindowDynamic isLIVE ${uzVideoView.isLIVE}")
             }
 
             override fun onError() {
@@ -111,6 +115,13 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
             override fun onBuffering() {
                 log("adPlayerCallback onBuffering")
+            }
+        }
+        uzVideoView.onCurrentWindowDynamic = { isLIVE ->
+            if (isLIVE) {
+                toast("onCurrentWindowDynamic isLIVE")
+            } else {
+                toast("onCurrentWindowDynamic !isLIVE")
             }
         }
         btPlayVOD.setOnClickListener {

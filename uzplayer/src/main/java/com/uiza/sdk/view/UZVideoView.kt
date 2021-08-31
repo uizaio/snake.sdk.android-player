@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
+import com.google.ads.interactivemedia.v3.internal.on
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -142,6 +143,7 @@ class UZVideoView : RelativeLayout,
     var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
         null
     var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
+    var onCurrentWindowDynamic: ((isLIVE: Boolean) -> Unit)? = null
     private var orb: Orb? = null
 
     override var adPlayerCallback: UZAdPlayerCallback? = null
@@ -978,7 +980,9 @@ class UZVideoView : RelativeLayout,
     }
 
     val isLIVE: Boolean
-        get() = playerManager != null && playerManager?.isLIVE == true
+        get() {
+            return playerManager != null && playerManager?.isLIVE == true
+        }
 
     var volume: Float
         get() = playerManager?.volume ?: -1F
@@ -1280,6 +1284,7 @@ class UZVideoView : RelativeLayout,
             //only hide button pip if device is TV
             UZViewUtils.goneViews(btPipUZ)
         }
+        onCurrentWindowDynamic?.invoke(isLIVE)
         if (isLIVE) {
             UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
             setUIVisible(visible = false, btRewUZ, btFfwdUZ)
