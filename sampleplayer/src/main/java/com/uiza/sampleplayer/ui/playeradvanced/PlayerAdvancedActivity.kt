@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
 
 class PlayerAdvancedActivity : AppCompatActivity() {
@@ -23,10 +24,26 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            uzVideoView.setAlwaysPortraitScreen(true)
-            uzVideoView.setPIPModeEnabled(false)
+            uzVideoView.isAutoStart = true//default is true
             uzVideoView.setUseController(true)
+            uzVideoView.setAutoReplay(true)//default is false
+//            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
+
+            logInformation()
         }
+        uzVideoView.onStartPreviewTimeBar = { _: PreviewView?, progress: Int ->
+            //will be called if you play a video has poster in UZPlayer
+            log("onStartPreviewTimeBar progress $progress")
+        }
+        uzVideoView.onStopPreviewTimeBar = { _: PreviewView?, progress: Int ->
+            //will be called if you play a video has poster in UZPlayer
+            log("onStopPreviewTimeBar progress $progress")
+        }
+        uzVideoView.onPreviewTimeBar = { _: PreviewView?, progress: Int, fromUser: Boolean ->
+            //will be called if you play a video has poster in UZPlayer
+            log("onPreviewTimeBar progress $progress, fromUser $fromUser")
+        }
+
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
@@ -38,7 +55,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btPlayLink.setOnClickListener {
             onPlay(etLinkPlay.text.toString().trim())
         }
-        logInformation()
     }
 
     private fun logInformation() {
@@ -54,13 +70,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            uzVideoView.isAutoStart = true//default is true
-            uzVideoView.setAutoReplay(true)//default is false
-//            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
-
             val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
-
             logInformation()
         }
     }

@@ -20,7 +20,6 @@ import android.view.View.OnFocusChangeListener
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -123,9 +122,12 @@ class UZVideoView : RelativeLayout,
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
+
     private var firstViewHasFocusTV: View? = null
-    private var onPreviewChangeListener: OnPreviewChangeListener? = null
+
+
     private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
+
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
             field = callback
@@ -151,6 +153,11 @@ class UZVideoView : RelativeLayout,
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
     var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
+
+    var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
+        null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -269,7 +276,7 @@ class UZVideoView : RelativeLayout,
                     tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
                         override fun onStartPreview(previewView: PreviewView?, progress: Int) {
                             timestampOnStartPreviewTimeBar = System.currentTimeMillis()
-                            onPreviewChangeListener?.onStartPreview(previewView, progress)
+                            onStartPreviewTimeBar?.invoke(previewView, progress)
                         }
 
                         override fun onStopPreview(previewView: PreviewView?, progress: Int) {
@@ -280,7 +287,7 @@ class UZVideoView : RelativeLayout,
                             }
                             isOnPreviewTimeBar = false
                             onStopPreview(progress)
-                            onPreviewChangeListener?.onStopPreview(previewView, progress)
+                            onStopPreviewTimeBar?.invoke(previewView, progress)
                         }
 
                         override fun onPreview(
@@ -293,7 +300,7 @@ class UZVideoView : RelativeLayout,
                                 currentMls = progress.toLong(),
                                 isCalledFromUZTimeBarEvent = true
                             )
-                            onPreviewChangeListener?.onPreview(previewView, progress, fromUser)
+                            onPreviewTimeBar?.invoke(previewView, progress, fromUser)
                         }
 
                     })
@@ -1476,10 +1483,6 @@ class UZVideoView : RelativeLayout,
     fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
         this.uzTVFocusChangeListener = uzTVFocusChangeListener
         handleFirstViewHasFocus()
-    }
-
-    fun setOnPreviewChangeListener(onPreviewChangeListener: OnPreviewChangeListener?) {
-        this.onPreviewChangeListener = onPreviewChangeListener
     }
 
     private fun checkToSetUpResource() {
