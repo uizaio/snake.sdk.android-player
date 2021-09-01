@@ -10,7 +10,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
@@ -1455,8 +1457,29 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun getListTrackVideo(){
+    fun getListTrackVideo(): List<UZItem>? {
+        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
+        mappedTrackInfo?.let {
+            val title = "AAAAAAAA"
+            val rendererIndex = 0
+            val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
+                UZTrackSelectionView.getDialog(
+                    context = context,
+                    title = title,
+                    trackSelector = playerManager?.trackSelector,
+                    rendererIndex = rendererIndex
+                )
+            dialogPair.second.setShowDisableOption(false)
+            dialogPair.second.setAllowAdaptiveSelections(false)
+            dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
+                override fun onClick() {
+                    dialogPair.first?.cancel()
+                }
+            })
+            return dialogPair.second.uZItemList
+        }
 
+        return null
     }
 
     private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
