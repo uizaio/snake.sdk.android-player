@@ -1278,7 +1278,7 @@ class UZVideoView : RelativeLayout,
     private fun updateUISizeThumbnailTimeBar() {
         val screenWidth = UZViewUtils.screenWidth
         val widthIv = if (isLandscape) {
-            screenWidth / 4
+            screenWidth / 5
         } else {
             screenWidth / 5
         }
