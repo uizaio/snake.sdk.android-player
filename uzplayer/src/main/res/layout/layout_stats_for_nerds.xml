@@ -6,12 +6,13 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/margin_padding_small"
             tools:background="@color/black_65">
@@ -70,103 +71,48 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="Viewport/Frames: 806x453*2.00 / 0 dropped of 184" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_current_optimal_res"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Current / Optimal Res" />
+                tools:text="Viewport / Frames: 806x453*2.00 / 0 dropped of 184" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvResolution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_2"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="806x453 / 1280x720" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_host"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Host" />
+                tools:text="Current / Optimal Res:806x453 / 1280x720" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvHost"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="https://com.uiza.io" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_sdk_player_api_version"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="SDK / Player / API Version" />
+                tools:text="Host: https://com.uiza.io" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
-                android:text="@string/default_stats_3"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="--- / --- / --" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_os_device_info"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Device Info" />
+                tools:text="SDK / Player / API Version" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvDeviceInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
                 android:maxLines="2"
-                android:text="@string/default_stats_2"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="Nexus 5 / Android 8.0" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textLiveStreamLatencyTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_live_stream_latency"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Live stream latency" />
+                tools:text="Device Info: Nexus 5 / Android 8.0" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLiveStreamLatency"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="1000" />
+                tools:text="Live stream latency: 1000" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
