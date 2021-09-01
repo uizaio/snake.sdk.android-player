@@ -368,7 +368,7 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * Ex: video/avc 1280x720@30
      */
     fun setTextVideoFormat(value: String?) {
-        tvVideoFormat.text = value
+        tvVideoFormat.text = "Video format: $value"
     }
 
     /**
