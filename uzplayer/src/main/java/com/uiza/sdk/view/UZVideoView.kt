@@ -54,7 +54,6 @@ import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
 //TODO skin
-//TODO stats overlap
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
