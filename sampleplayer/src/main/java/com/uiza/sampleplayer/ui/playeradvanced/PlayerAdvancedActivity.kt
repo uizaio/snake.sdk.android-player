@@ -19,7 +19,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

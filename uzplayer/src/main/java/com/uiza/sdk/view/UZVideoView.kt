@@ -1468,8 +1468,8 @@ class UZVideoView : RelativeLayout,
                         trackSelector = playerManager?.trackSelector,
                         rendererIndex = rendererIndex
                     )
-                dialogPair.second.setShowDisableOption(false)
-                dialogPair.second.setAllowAdaptiveSelections(false)
+                dialogPair.second.setShowDisableOption(true)
+                dialogPair.second.setAllowAdaptiveSelections(true)
                 dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
                     override fun onClick() {
                         Handler(Looper.getMainLooper()).postDelayed(

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
+import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
 import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(ErrorActivity::class.java)
         }
         btnPlayerAd.setOnClickListener {
-//            gotoActivity(PlayerAdActivity::class.java)
+            gotoActivity(PlayerAdActivity::class.java)
         }
         btnPlayerAdvanced.setOnClickListener {
             gotoActivity(PlayerAdvancedActivity::class.java)
