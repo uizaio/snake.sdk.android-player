@@ -1,10 +1,8 @@
 package com.uiza.sampleplayer.ui.playerpreviewseekbar
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
-import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_preview_seekbar.*
 
@@ -20,6 +18,8 @@ class PlayerPreviewSeekbarActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)
+        }
+        uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
         btPlayLink.setOnClickListener {

@@ -20,6 +20,8 @@ class PlayerBasicActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)
+        }
+        uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
         btPlayVOD.setOnClickListener {

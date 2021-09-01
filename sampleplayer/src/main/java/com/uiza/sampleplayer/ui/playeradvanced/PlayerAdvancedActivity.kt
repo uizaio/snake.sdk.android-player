@@ -37,8 +37,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.setEnableDoubleTapToSeek(true)//default is false
             logInformation()
         }
-        uzVideoView.onFirstStateReady = { isFirstStateReady ->
-            log("onFirstStateReady isFirstStateReady $isFirstStateReady")
+        uzVideoView.onFirstStateReady = {
+            log("onFirstStateReady isFirstStateReady")
             uzVideoView.controllerShowTimeoutMs = 15_000 //15s
             uzVideoView.setDefaultSeekValue(15_000)//15s
             uzVideoView.setUseController(true)

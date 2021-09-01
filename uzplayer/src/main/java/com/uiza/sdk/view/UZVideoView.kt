@@ -137,7 +137,7 @@ class UZVideoView : RelativeLayout,
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
     var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
-    var onFirstStateReady: ((isFirstStateReady: Boolean) -> Unit)? = null
+    var onFirstStateReady: (() -> Unit)? = null
 
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
@@ -1527,7 +1527,7 @@ class UZVideoView : RelativeLayout,
     private fun setFirstStateReady(isFirstStateReady: Boolean) {
         this.isFirstStateReady = isFirstStateReady
         if (this.isFirstStateReady) {
-            onFirstStateReady?.invoke(isFirstStateReady)
+            onFirstStateReady?.invoke()
         }
     }
 

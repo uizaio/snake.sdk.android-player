@@ -20,7 +20,6 @@ class PlayerTiktokActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
-            uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
