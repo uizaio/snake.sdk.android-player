@@ -205,6 +205,12 @@
                 android:layout_height="wrap_content"
                 android:text="Get list track audio" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btGetListTrackCaptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get list track captions" />
+
         </LinearLayout>
     </HorizontalScrollView>
 

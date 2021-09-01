@@ -261,6 +261,15 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log(msg)
             toast(msg)
         }
+        btGetListTrackCaptions.setOnClickListener {
+            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 2)
+            var msg = ""
+            list?.forEach {
+                msg += "${it.description} ~ ${it.format.toString()}\n"
+            }
+            log(msg)
+            toast(msg)
+        }
     }
 
     private fun logInformation() {
