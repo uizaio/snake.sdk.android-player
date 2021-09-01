@@ -1,5 +1,6 @@
 package com.uiza.sdk.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
@@ -367,6 +368,7 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: video/avc 1280x720@30
      */
+    @SuppressLint("SetTextI18n")
     fun setTextVideoFormat(value: String?) {
         tvVideoFormat.text = "Video format: $value"
     }
@@ -377,8 +379,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: audio/mp4a-latm 48000Hz
      */
+    @SuppressLint("SetTextI18n")
     fun setTextAudioFormat(value: String?) {
-        tvAudioFormat.text = value
+        tvAudioFormat.text = "Audio format: $value"
     }
 
     /**

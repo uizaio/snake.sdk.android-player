@@ -25,23 +25,12 @@
                 tools:text="Video format: video/avc 1280x720@30" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/audio_format"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Audio Format" />
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvAudioFormat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="audio/mp4a-latm 48000Hz" />
+                tools:text="Audio Format: audio/mp4a-latm 48000Hz" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
