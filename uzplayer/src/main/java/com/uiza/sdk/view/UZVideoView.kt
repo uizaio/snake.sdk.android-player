@@ -1457,11 +1457,13 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun getListTrackVideo(): List<UZItem>? {
+    fun getListTrack(
+        showDialog: Boolean = false,
+        title: String = "Video",
+        rendererIndex: Int
+    ): List<UZItem>? {
         val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
         mappedTrackInfo?.let {
-            val title = "AAAAAAAA"
-            val rendererIndex = 0
             val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
                 UZTrackSelectionView.getDialog(
                     context = context,
@@ -1476,6 +1478,9 @@ class UZVideoView : RelativeLayout,
                     dialogPair.first?.cancel()
                 }
             })
+            if (showDialog) {
+                UZViewUtils.showDialog(dialogPair.first)
+            }
             return dialogPair.second.uZItemList
         }
 

@@ -244,7 +244,13 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.retry()
         }
         btGetListTrackAudio.setOnClickListener {
-            uzVideoView.getListTrackVideo()
+            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 0)
+            var msg = ""
+            list?.forEach {
+                msg += "${it.description} ~ ${it.format.toString()}\n"
+            }
+            log(msg)
+            toast(msg)
         }
     }
 
