@@ -1455,6 +1455,10 @@ class UZVideoView : RelativeLayout,
         }
     }
 
+    fun getListTrackVideo(){
+
+    }
+
     private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
         val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
         mappedTrackInfo?.let {
@@ -1468,18 +1472,11 @@ class UZVideoView : RelativeLayout,
                         trackSelector = playerManager?.trackSelector,
                         rendererIndex = rendererIndex
                     )
-                dialogPair.second.setShowDisableOption(true)
-                dialogPair.second.setAllowAdaptiveSelections(true)
+                dialogPair.second.setShowDisableOption(false)
+                dialogPair.second.setAllowAdaptiveSelections(false)
                 dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
                     override fun onClick() {
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                if (dialogPair.first == null) {
-                                    return@postDelayed
-                                }
-                                dialogPair.first?.cancel()
-                            }, 300
-                        )
+                        dialogPair.first?.cancel()
                     }
                 })
                 if (showDialog) {

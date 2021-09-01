@@ -243,6 +243,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btRetry.setOnClickListener {
             uzVideoView.retry()
         }
+        btGetListTrackAudio.setOnClickListener {
+            uzVideoView.getListTrackVideo()
+        }
     }
 
     private fun logInformation() {

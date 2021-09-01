@@ -192,6 +192,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Retry Player if Error" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btGetListTrackAudio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get list track audio" />
         </LinearLayout>
     </HorizontalScrollView>
 
