@@ -53,7 +53,6 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
-//TODO chi co the dung controller khi da load thanh cong link play
 //TODO skin
 //TODO stats overlap
 class UZVideoView : RelativeLayout,
@@ -299,6 +298,8 @@ class UZVideoView : RelativeLayout,
         updateUIPositionOfProgressBar()
 
         playerView?.let { pv ->
+            playerView?.useController =
+                false//khong cho dung controller cho den khi isFirstStateReady == true
             pv.setOnDoubleTap(object : OnDoubleTap {
                 override fun onDoubleTapFinished() {
                     onDoubleTapFinished?.invoke()
@@ -767,7 +768,6 @@ class UZVideoView : RelativeLayout,
             isInPipMode = true
             positionPIPPlayer = currentPosition
             isUSeControllerRestorePip = isUseController()
-//            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
                 try {
@@ -831,6 +831,9 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setUseController(useController: Boolean) {
+        if (!isFirstStateReady) {
+            throw IllegalArgumentException("setUseController() can be applied if the player state is Player.STATE_READY")
+        }
         playerView?.useController = useController
     }
 
@@ -946,6 +949,9 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setDefaultSeekValue(mls: Long) {
+        if (!isFirstStateReady) {
+            throw IllegalArgumentException("setDefaultSeekValue(...) can be applied if the player state is Player.STATE_READY")
+        }
         defaultSeekValue = mls
     }
 
@@ -1520,7 +1526,9 @@ class UZVideoView : RelativeLayout,
 
     private fun setFirstStateReady(isFirstStateReady: Boolean) {
         this.isFirstStateReady = isFirstStateReady
-        onFirstStateReady?.invoke(isFirstStateReady)
+        if (this.isFirstStateReady) {
+            onFirstStateReady?.invoke(isFirstStateReady)
+        }
     }
 
     private fun initDataSource(

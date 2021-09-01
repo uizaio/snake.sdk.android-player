@@ -32,11 +32,16 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             log("onPlayerViewCreated")
             uzVideoView.isAutoStart = true//default is true
-            uzVideoView.setUseController(true)
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             uzVideoView.setEnableDoubleTapToSeek(true)//default is false
             logInformation()
+        }
+        uzVideoView.onFirstStateReady = { isFirstStateReady ->
+            log("onFirstStateReady isFirstStateReady $isFirstStateReady")
+            uzVideoView.controllerShowTimeoutMs = 15_000 //15s
+            uzVideoView.setDefaultSeekValue(15_000)//15s
+            uzVideoView.setUseController(true)
         }
         uzVideoView.onIsInitResult = { linkPlay ->
             log("onIsInitResult linkPlay $linkPlay")
@@ -79,11 +84,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
             log("onDoubleTapProgressUp $posX $posY")
-        }
-        uzVideoView.onFirstStateReady = { isFirstStateReady ->
-            log("onFirstStateReady isFirstStateReady $isFirstStateReady")
-            uzVideoView.controllerShowTimeoutMs = 15_000 //15s
-            uzVideoView.setDefaultSeekValue(15_000)//15s
         }
         uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
             when (playbackState) {
