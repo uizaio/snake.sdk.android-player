@@ -11,27 +11,24 @@ import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.*
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
 import android.util.Rational
 import android.view.*
-import android.view.View.OnFocusChangeListener
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
+import com.ezralazuardy.orb.Orb
+import com.ezralazuardy.orb.OrbHelper
+import com.ezralazuardy.orb.OrbListener
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.uiza.sdk.BuildConfig
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
 import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView
-import com.uiza.sdk.dialog.playlistfolder.CallbackPlaylistFolder
-import com.uiza.sdk.dialog.playlistfolder.UZPlaylistFolderDialog
 import com.uiza.sdk.dialog.setting.OnToggleChangeListener
 import com.uiza.sdk.dialog.setting.SettingAdapter
 import com.uiza.sdk.dialog.setting.SettingItem
@@ -56,21 +53,16 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
-
-//TODO chi co the dung controller khi da load thanh cong link play
-//TODO life circle
-//TODO tracking
 //TODO skin
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
-    View.OnClickListener,
-    OnFocusChangeListener {
+    View.OnClickListener {
 
     companion object {
         private const val HYPHEN = "-"
         private const val FAST_FORWARD_REWIND_INTERVAL = 10000L // 10s
-        private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 8000 // 8s
+        private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 5000 // 5s
         const val DEFAULT_TARGET_DURATION_MLS = 2000L // 2s
         private const val ARG_VIDEO_POSITION = "ARG_VIDEO_POSITION"
     }
@@ -80,7 +72,9 @@ class UZVideoView : RelativeLayout,
     }
 
     private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
+    private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
     private var playerManager: UZPlayerManager? = null
+
     private var llTopUZ: LinearLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
@@ -88,8 +82,6 @@ class UZVideoView : RelativeLayout,
     private var tvPositionUZ: UZTextView? = null
     private var tvDurationUZ: UZTextView? = null
     private var tvTitleUZ: TextView? = null
-    private var tvLiveStatusUZ: TextView? = null
-    private var tvLiveTimeUZ: TextView? = null
     private var btFullscreenUZ: UZImageButton? = null
     private var btPauseUZ: UZImageButton? = null
     private var btPlayUZ: UZImageButton? = null
@@ -99,13 +91,9 @@ class UZVideoView : RelativeLayout,
     private var btBackScreenUZ: UZImageButton? = null
     private var btVolumeUZ: UZImageButton? = null
     private var btSettingUZ: UZImageButton? = null
-    private var btPlaylistFolderUZ: UZImageButton? = null
     private var btPipUZ: UZImageButton? = null
-    private var btSkipPreviousUZ: UZImageButton? = null
-    private var btSkipNextUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     override var playerView: UZPlayerView? = null
-    private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
 
     override var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
         set(isAutoStart) {
@@ -116,27 +104,65 @@ class UZVideoView : RelativeLayout,
     private var autoMoveToLiveEdge = false
     private var isInPipMode = false
     private var isPIPModeEnabled = false
+    private var isUSeControllerRestorePip = false
     private var positionPIPPlayer = 0L
-    private var isAutoSwitchItemPlaylistFolder = true
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
     private var isSetFirstRequestFocusDoneForTV = false
-    private var timestampOnStartPreview = 0L
+    private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
     private var isLandscape = false
     private var isAlwaysPortraitScreen = false
+    private var isEnableDoubleTapToSeek = false
     private var isOnPlayerEnded = false
-    private var alwaysHideLiveViewers = false
+    private var isShowLayoutDebug = false
 
     //TODO improve this func
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
-    private var firstViewHasFocusTV: View? = null
-    private var onPreviewChangeListener: OnPreviewChangeListener? = null
-    private var uzTVFocusChangeListener: UZTVFocusChangeListener? = null
+    private var isFirstStateReady = false
+
+    private var isViewCreated = false
+    private var skinId = R.layout.uzplayer_skin_default
+    var uzPlayback: UZPlayback? = null
+
+    var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+    var onIsInitResult: ((linkPlay: String) -> Unit)? = null
+    var onSkinChange: (() -> Unit)? = null
+    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
+    var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
+    var onError: ((e: UZException) -> Unit)? = null
+    var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
+    var onFirstStateReady: (() -> Unit)? = null
+
+    var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
+        null
+    var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
+    var onCurrentWindowDynamic: ((isLIVE: Boolean) -> Unit)? = null
+    var onSurfaceRedrawNeeded: ((holder: SurfaceHolder) -> Unit)? = null
+    var onSurfaceCreated: ((holder: SurfaceHolder) -> Unit)? = null
+    var onSurfaceChanged: ((holder: SurfaceHolder, format: Int, width: Int, height: Int) -> Unit)? =
+        null
+    var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
+
+    var onDoubleTapFinished: (() -> Unit)? = null
+    var onDoubleTapProgressDown: ((posX: Float, posY: Float) -> Unit)? = null
+    var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
+    var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
+
+    var onBufferProgress: ((bufferedPosition: Long, bufferedPercentage: Int, duration: Long) -> Unit)? =
+        null
+    var onVideoProgress: ((currentMls: Long, s: Int, duration: Long, percent: Int) -> Unit)? =
+        null
+
+    private var orb: Orb? = null
+
+    private var isAdEnded: Boolean? = null
     override var adPlayerCallback: UZAdPlayerCallback? = null
         set(callback) {
             field = callback
@@ -146,22 +172,6 @@ class UZVideoView : RelativeLayout,
                 throw NoClassDefFoundError(ErrorConstant.ERR_506)
             }
         }
-    private var isFirstStateReady = false
-
-    //TODO
-    private var isCalledFromConnectionEventBus = false
-
-    private var isViewCreated = false
-    private var skinId = R.layout.uzplayer_skin_default
-    var urlIMAAd: String? = null
-
-    var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
-    var onIsInitResult: ((linkPlay: String) -> Unit)? = null
-    var onSkinChange: (() -> Unit)? = null
-    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
-    var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
-    var onError: ((e: UZException) -> Unit)? = null
-    var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -190,9 +200,7 @@ class UZVideoView : RelativeLayout,
 
     private fun onCreateView() {
         inflate(context, R.layout.layout_uz_ima_video_core, this)
-
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-
         if (inflater == null) {
 //            log("onCreateView cannot inflater view")
             throw NullPointerException("Cannot inflater view")
@@ -206,17 +214,24 @@ class UZVideoView : RelativeLayout,
                 it.layoutParams = layoutParams
                 it.visibility = GONE
 
-                if (it.getVideoSurfaceView() is SurfaceView) {
-                    (it.getVideoSurfaceView() as SurfaceView).holder.addCallback(object :
+                if (it.videoSurfaceView is SurfaceView) {
+                    (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
                         SurfaceHolder.Callback2 {
-                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {}
-                        override fun surfaceCreated(holder: SurfaceHolder) {}
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
+
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            onSurfaceCreated?.invoke(holder)
+                        }
+
                         override fun surfaceChanged(
                             holder: SurfaceHolder,
                             format: Int,
                             width: Int,
                             height: Int
                         ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
                         }
 
                         override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -227,6 +242,7 @@ class UZVideoView : RelativeLayout,
                                     }
                                 }
                             }
+                            onSurfaceDestroyed?.invoke(holder)
                         }
                     })
                 }
@@ -239,7 +255,7 @@ class UZVideoView : RelativeLayout,
         }
         updateUIEachSkin()
         setMarginPreviewTimeBar()
-        updateUISizeThumbnail()
+        updateUISizeThumbnailTimeBar()
         isViewCreated = true
 
 //        log("onCreateView isViewCreated $isViewCreated")
@@ -247,26 +263,65 @@ class UZVideoView : RelativeLayout,
 //            log("onCreateView invoke")
             onPlayerViewCreated?.invoke(it)
         }
+
+        createOrb()
+    }
+
+    private fun createOrb() {
+        val observer = OrbHelper.orbObserver {
+            handleNetworkChange(it.connected)
+        }
+        orb = Orb.with(context).setListener(object : OrbListener {
+            override fun onOrbActive() {
+//                log("onOrbActive")
+            }
+
+            override fun onOrbInactive() {
+//                log("onOrbInactive")
+            }
+
+            override fun onOrbObserve() {
+//                log("onOrbObserve")
+            }
+
+            override fun onOrbStop() {
+//                log("onOrbStop")
+            }
+
+        }).observe(observer)
+        orb?.observe(observer)
     }
 
     private fun findViews() {
-        rlMsg.setOnClickListener(this)
-        UZViewUtils.setTextShadow(textView = tvMsg, color = Color.BLACK)
         UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
         updateUIPositionOfProgressBar()
 
         playerView?.let { pv ->
+            playerView?.useController =
+                false//khong cho dung controller cho den khi isFirstStateReady == true
             pv.setOnDoubleTap(object : OnDoubleTap {
-                override fun onDoubleTapFinished() {}
-                override fun onDoubleTapProgressDown(posX: Float, posY: Float) {}
-                override fun onDoubleTapStarted(posX: Float, posY: Float) {}
+                override fun onDoubleTapFinished() {
+                    onDoubleTapFinished?.invoke()
+                }
+
+                override fun onDoubleTapProgressDown(posX: Float, posY: Float) {
+                    onDoubleTapProgressDown?.invoke(posX, posY)
+                }
+
+                override fun onDoubleTapStarted(posX: Float, posY: Float) {
+                    onDoubleTapStarted?.invoke(posX, posY)
+                }
+
                 override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
-                    val halfScreen = UZViewUtils.screenWidth / 2.0f
-                    if (posX - 60.0f > halfScreen) {
-                        seekToForward()
-                    } else if (posX + 60.0f < halfScreen) {
-                        seekToBackward()
+                    if (isEnableDoubleTapToSeek) {
+                        val halfScreen = UZViewUtils.screenWidth / 2.0f
+                        if (posX - 60.0f > halfScreen) {
+                            seekToForward()
+                        } else if (posX + 60.0f < halfScreen) {
+                            seekToBackward()
+                        }
                     }
+                    onDoubleTapProgressUp?.invoke(posX, posY)
                 }
             })
             timeBarUZ = pv.findViewById(R.id.exo_progress)
@@ -279,19 +334,19 @@ class UZVideoView : RelativeLayout,
                     pv.visibility = VISIBLE
                     tb.addOnPreviewChangeListener(object : OnPreviewChangeListener {
                         override fun onStartPreview(previewView: PreviewView?, progress: Int) {
-                            timestampOnStartPreview = System.currentTimeMillis()
-                            onPreviewChangeListener?.onStartPreview(previewView, progress)
+                            timestampOnStartPreviewTimeBar = System.currentTimeMillis()
+                            onStartPreviewTimeBar?.invoke(previewView, progress)
                         }
 
                         override fun onStopPreview(previewView: PreviewView?, progress: Int) {
                             val seekLastDuration =
-                                System.currentTimeMillis() - timestampOnStartPreview
+                                System.currentTimeMillis() - timestampOnStartPreviewTimeBar
                             if (maxSeekLastDurationTimeBar < seekLastDuration) {
                                 maxSeekLastDurationTimeBar = seekLastDuration
                             }
                             isOnPreviewTimeBar = false
                             onStopPreview(progress)
-                            onPreviewChangeListener?.onStopPreview(previewView, progress)
+                            onStopPreviewTimeBar?.invoke(previewView, progress)
                         }
 
                         override fun onPreview(
@@ -304,11 +359,10 @@ class UZVideoView : RelativeLayout,
                                 currentMls = progress.toLong(),
                                 isCalledFromUZTimeBarEvent = true
                             )
-                            onPreviewChangeListener?.onPreview(previewView, progress, fromUser)
+                            onPreviewTimeBar?.invoke(previewView, progress, fromUser)
                         }
 
                     })
-                    tb.onFocusChangeListener = this
                 }
             }
 
@@ -326,13 +380,8 @@ class UZVideoView : RelativeLayout,
             btBackScreenUZ = pv.findViewById(R.id.btBackScreenUZ)
             btVolumeUZ = pv.findViewById(R.id.btVolumeUZ)
             btSettingUZ = pv.findViewById(R.id.btSettingUZ)
-            btPlaylistFolderUZ = pv.findViewById(R.id.btPlaylistFolderUZ)
             btPipUZ = pv.findViewById(R.id.btPipUZ)
-            btSkipNextUZ = pv.findViewById(R.id.btSkipNextUZ)
-            btSkipPreviousUZ = pv.findViewById(R.id.btSkipPreviousUZ)
             btSpeedUZ = pv.findViewById(R.id.btSpeedUZ)
-            tvLiveStatusUZ = pv.findViewById(R.id.tvLiveStatusUZ)
-            tvLiveTimeUZ = pv.findViewById(R.id.tvLiveTimeUZ)
 
             tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDurationUZ?.text = "-:-"
@@ -346,14 +395,7 @@ class UZVideoView : RelativeLayout,
                 UZViewUtils.goneViews(btPipUZ)
             }
 
-            if (BuildConfig.DEBUG) {
-                layoutDebug.visibility = VISIBLE
-            } else {
-                layoutDebug.visibility = GONE
-            }
-
             setEventForViews()
-            setVisibilityOfPlaylistFolderController(GONE)
         }
     }
 
@@ -372,7 +414,7 @@ class UZVideoView : RelativeLayout,
         }
 
     //return pixel
-    private val heightTimeBar: Int
+    val heightTimeBar: Int
         get() {
             timeBarUZ?.let {
                 return UZViewUtils.heightOfView(it)
@@ -422,7 +464,7 @@ class UZVideoView : RelativeLayout,
 
     fun setPlayerControllerAlwaysVisible() {
         controllerAutoShow = true
-        setHideControllerOnTouch(false)
+        setControllerHideOnTouch(false)
         controllerShowTimeoutMs = 0
         isPlayerControllerAlwayVisible = true
     }
@@ -439,16 +481,6 @@ class UZVideoView : RelativeLayout,
         onError?.invoke(exception)
     }
 
-    private fun handlePlayPlayListFolderUI() {
-        setVisibilityOfPlaylistFolderController(
-            if (isPlayPlaylistFolder) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        )
-    }
-
     val player: SimpleExoPlayer?
         get() = playerManager?.getPlayer()
 
@@ -456,45 +488,13 @@ class UZVideoView : RelativeLayout,
         playerManager?.seekTo(positionMs)
     }
 
-
-    fun play(): Boolean {
-        val playback = UZData.getPlayback()
-        if (playback == null) {
-            log("ErrorConstant.ERR_14")
-            return false
-        }
-        if (!ConnectivityUtils.isConnected(context)) {
-            log("ErrorConstant.ERR_0")
-            return false
-        }
-        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
-        return true
-    }
-
-    fun play(playback: UZPlayback): Boolean {
+    fun play(uzPlayback: UZPlayback): Boolean {
         if (!ConnectivityUtils.isConnected(context)) {
             notifyError(ErrorUtils.exceptionNoConnection())
             return false
         }
-        UZData.setPlayback(playback = playback)
-        initPlayback(playback = playback, isClearDataPlaylistFolder = true)
-        return true
-    }
-
-    fun play(playlist: ArrayList<UZPlayback>): Boolean {
-        // TODO: Check how to get subtitle of a custom link play, because we have no idea about entityId or appId
-        if (!ConnectivityUtils.isConnected(context)) {
-            handleError(uzException = ErrorUtils.exceptionNoConnection())
-            return false
-        }
-        if (playlist.isEmpty()) {
-            handleError(uzException = ErrorUtils.exceptionPlaylistFolderItemFirst())
-            return false
-        } else {
-            UZData.clearDataForPlaylistFolder()
-            UZData.setPlayList(playlist = playlist)
-            playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList())
-        }
+        this.uzPlayback = uzPlayback
+        initPlayback()
         return true
     }
 
@@ -524,28 +524,28 @@ class UZVideoView : RelativeLayout,
     val videoHeight: Int
         get() = playerManager?.videoHeight ?: 0
 
-    private fun initPlayback(playback: UZPlayback, isClearDataPlaylistFolder: Boolean) {
-        if (isClearDataPlaylistFolder) {
-            UZData.clearDataForPlaylistFolder()
+    private fun initPlayback() {
+        if (uzPlayback == null) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
+            return
+        }
+        val linkPlay = uzPlayback?.linkPlay
+        if (linkPlay.isNullOrEmpty()) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
+            return
         }
         isCalledFromChangeSkin = false
-        handlePlayPlayListFolderUI()
-        hideLayoutMsg()
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
         updateUIEndScreen()
         releasePlayerManager()
         showProgress()
-        updateUIDependOnLiveStream()
-        val linkPlay = playback.firstLinkPlay
-        if (linkPlay.isNullOrEmpty()) {
-            handleError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
+//        updateUIDependOnLiveStream()
+
         initDataSource(
             linkPlay = linkPlay,
-            urlIMAAd = urlIMAAd,
-            urlThumbnailsPreviewSeekBar = playback.poster
+            urlIMAAd = uzPlayback?.urlIMAAd,
+            poster = uzPlayback?.poster
         )
         onIsInitResult?.invoke(linkPlay)
         initPlayerManager()
@@ -558,10 +558,6 @@ class UZVideoView : RelativeLayout,
                 pm.seekTo(currentPositionBeforeChangeSkin)
                 isRefreshFromChangeSkin = false
                 currentPositionBeforeChangeSkin = 0
-            }
-            if (isCalledFromConnectionEventBus) {
-                pm.setRunnable()
-                isCalledFromConnectionEventBus = false
             }
             initStatsForNerds()
         }
@@ -580,20 +576,17 @@ class UZVideoView : RelativeLayout,
 
     protected fun tryNextLinkPlay() {
         if (isLIVE) {
-            playerManager?.let {
-                it.initWithoutReset()
-                it.setRunnable()
-            }
-            isFirstStateReady = false
+//            playerManager?.let {
+//                it.initWithoutReset()
+//                it.setRunnable()
+//            }
+            retry()
+            setFirstStateReady(false)
             return
         }
-        isFirstStateReady = false
+        setFirstStateReady(false)
         releasePlayerManager()
         checkToSetUpResource()
-    }
-
-    private fun handleErrorNoData() {
-        handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
     }
 
     fun onBackPressed(): Boolean {
@@ -604,8 +597,10 @@ class UZVideoView : RelativeLayout,
         return false
     }
 
-    private var isUSeControllerRestorePip = false
-    fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+    fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration?
+    ) {
         positionPIPPlayer = currentPosition
         isInPipMode = isInPictureInPictureMode
         if (isInPictureInPictureMode) {
@@ -626,6 +621,7 @@ class UZVideoView : RelativeLayout,
             }
         }
         playerManager?.unregister()
+        orb?.stop()
     }
 
     private fun releasePlayerStats() {
@@ -689,7 +685,7 @@ class UZVideoView : RelativeLayout,
     override val isPIPEnable: Boolean
         get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && playerView?.isUseUZDragView() == false && isPIPModeEnabled)
 
-    fun onStopPreview(progress: Int) {
+    private fun onStopPreview(progress: Int) {
         playerManager?.seekTo(progress.toLong())
         playerManager?.resume()
         isOnPlayerEnded = false
@@ -711,7 +707,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
                 UZViewUtils.goneViews(btPipUZ)
-            } else {
+            } else {//portrait screen
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
                 }
@@ -724,7 +720,7 @@ class UZVideoView : RelativeLayout,
                 }
             }
             setMarginPreviewTimeBar()
-            updateUISizeThumbnail()
+            updateUISizeThumbnailTimeBar()
             updateUIPositionOfProgressBar()
             onScreenRotate?.invoke(isLandscape)
         }
@@ -734,19 +730,15 @@ class UZVideoView : RelativeLayout,
         if (v === btFullscreenUZ) {
             toggleFullscreen()
         } else if (v === btBackScreenUZ) {
-            handleClickBackScreen()
+            clickBackScreen()
         } else if (v === btVolumeUZ) {
-            handleClickBtVolume()
+            toggleVolumeMute()
         } else if (v === btSettingUZ) {
             showSettingsDialog()
-        } else if (v === btPlaylistFolderUZ) {
-            handleClickPlaylistFolder()
         } else if (v === btPipUZ) {
             enterPIPMode()
         } else if (v.parent === layoutControls) {
             showTrackSelectionDialog(v, true)
-        } else if (v === tvLiveStatusUZ) {
-            seekToEndLive()
         } else if (v === btFfwdUZ) {
             playerManager?.seekToForward(defaultSeekValue)
         } else if (v === btRewUZ) {
@@ -761,18 +753,8 @@ class UZVideoView : RelativeLayout,
             resume()
         } else if (v === btReplayUZ) {
             replay()
-        } else if (v === btSkipNextUZ) {
-            handleClickSkipNext()
-        } else if (v === btSkipPreviousUZ) {
-            handleClickSkipPrevious()
         } else if (v === btSpeedUZ) {
             showSpeed()
-        }
-        /*có trường hợp đang click vào các control thì bị ẩn control ngay lập tức,
-        trường hợp này ta có thể xử lý khi click vào control thì reset count down để ẩn control ko
-        default controller timeout là 8s, vd tới s thứ 7 bạn tương tác thì tới s thứ 8 controller sẽ bị ẩn*/
-        if (isUseController() && (rlMsg == null || rlMsg?.visibility != VISIBLE) && isPlayerControllerShowing) {
-            showController()
         }
     }
 
@@ -785,7 +767,6 @@ class UZVideoView : RelativeLayout,
             isInPipMode = true
             positionPIPPlayer = currentPosition
             isUSeControllerRestorePip = isUseController()
-//            setUseController(false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
                 try {
@@ -821,9 +802,7 @@ class UZVideoView : RelativeLayout,
     var controllerShowTimeoutMs: Int
         get() = playerView?.controllerShowTimeoutMs ?: -1
         set(controllerShowTimeoutMs) {
-            post {
-                playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
-            }
+            playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
         }
     val isPlayerControllerShowing: Boolean
         get() = playerView?.isControllerVisible ?: false
@@ -839,8 +818,8 @@ class UZVideoView : RelativeLayout,
         playerView?.hideController()
     }
 
-    fun setHideControllerOnTouch(isHide: Boolean) {
-        playerView?.controllerHideOnTouch = isHide
+    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        playerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 
     val controllerHideOnTouch: Boolean
@@ -851,43 +830,10 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setUseController(useController: Boolean) {
+        if (!isFirstStateReady) {
+            throw IllegalArgumentException("setUseController() can be applied if the player state is Player.STATE_READY")
+        }
         playerView?.useController = useController
-    }
-
-    protected val isPlayPlaylistFolder: Boolean
-        get() = !(UZData.getPlayList().isNullOrEmpty())
-
-    private fun playPlaylistPosition(position: Int) {
-        if (!isPlayPlaylistFolder) {
-            log("playPlaylistPosition error: incorrect position")
-            return
-        }
-        log("playPlaylistPosition position: $position")
-        if (position < 0) {
-            log("This is the first item")
-            notifyError(ErrorUtils.exceptionPlaylistFolderItemFirst())
-            return
-        }
-        UZData.getPlayList()?.let {
-            if (position > it.size - 1) {
-                log("This is the last item")
-                notifyError(ErrorUtils.exceptionPlaylistFolderItemLast())
-                return
-            }
-        }
-        pause()
-        hideController()
-        UZViewUtils.setSrcDrawableEnabledForViews(btSkipPreviousUZ, btSkipNextUZ)
-        //set disabled prevent double click, will enable onStateReadyFirst()
-        UZViewUtils.setClickableForViews(able = false, btSkipPreviousUZ, btSkipNextUZ)
-        //end update UI for skip next and skip previous button
-        UZData.setCurrentPositionOfPlayList(position)
-        val playback = UZData.getPlayback()
-        if (playback == null || !playback.canPlay()) {
-            notifyError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
-        initPlayback(playback = playback, isClearDataPlaylistFolder = false)
     }
 
     override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
@@ -930,12 +876,7 @@ class UZVideoView : RelativeLayout,
             if (isAutoReplay) {
                 replay()
             } else {
-                if (isPlayPlaylistFolder && isAutoSwitchItemPlaylistFolder) {
-                    hideController()
-                    autoSwitchNextVideo()
-                } else {
-                    updateUIEndScreen()
-                }
+                updateUIEndScreen()
             }
         }
         hideProgress()
@@ -954,7 +895,6 @@ class UZVideoView : RelativeLayout,
                 updateTvDuration()
                 updateTimeBarWithTimeShiftStatus()
                 if (playWhenReady) {
-                    hideLayoutMsg()
                     timeBarUZ?.hidePreview()
                 }
                 if (context is Activity) {
@@ -962,69 +902,27 @@ class UZVideoView : RelativeLayout,
                 }
 
                 if (!isFirstStateReady) {
-                    isFirstStateReady = true
+                    setFirstStateReady(true)
+                    updateUIDependOnLiveStream()
                 }
             }
         }
         onPlayerStateChanged?.invoke(playWhenReady, playbackState)
     }
 
-    private fun autoSwitchNextVideo() {
-        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() + 1)
-    }
-
-    private fun autoSwitchPreviousLinkVideo() {
-        playPlaylistPosition(position = UZData.getCurrentPositionOfPlayList() - 1)
-    }
-
-    private fun handleClickPlaylistFolder() {
-        UZData.getPlayList()?.let { playList ->
-            val uzPlaylistFolderDlg = UZPlaylistFolderDialog(
-                mContext = context,
-                playList = playList,
-                currentPositionOfDataList = UZData.getCurrentPositionOfPlayList(),
-                callbackPlaylistFolder = object : CallbackPlaylistFolder {
-                    override fun onDismiss() {}
-                    override fun onFocusChange(playback: UZPlayback, position: Int) {}
-                    override fun onClickItem(playback: UZPlayback, position: Int) {
-                        playPlaylistPosition(position)
-                    }
-                })
-            UZViewUtils.showDialog(uzPlaylistFolderDlg)
-        }
-    }
-
-    private fun handleClickSkipNext() {
-        isOnPlayerEnded = false
-        updateUIEndScreen()
-        autoSwitchNextVideo()
-    }
-
-    private fun handleClickSkipPrevious() {
-        isOnPlayerEnded = false
-        updateUIEndScreen()
-        autoSwitchPreviousLinkVideo()
-    }
-
     fun replay() {
         if (playerManager == null) {
             return
         }
-        //TODO Chỗ này đáng lẽ chỉ clear value của tracking khi đảm bảo rằng seekTo(0) true
         val result = playerManager?.seekTo(0)
         if (result == true) {
             isSetFirstRequestFocusDoneForTV = false
             isOnPlayerEnded = false
             updateUIEndScreen()
-            handlePlayPlayListFolderUI()
         }
     }
 
-    private fun handleClickBtVolume() {
-        toggleVolumeMute()
-    }
-
-    private fun handleClickBackScreen() {
+    fun clickBackScreen() {
         if (isLandscape) {
             toggleFullscreen()
         } else {
@@ -1034,12 +932,25 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun handleClickHearing() {
+    fun clickAudio() {
         val view = DebugUtils.getAudioButton(layoutControls)
         view?.performClick()
     }
 
+    fun clickQuality() {
+        val view = DebugUtils.getVideoButton(layoutControls)
+        view?.performClick()
+    }
+
+    fun clickCaptions() {
+        val view = DebugUtils.getCaptionsButton(layoutControls)
+        view?.performClick()
+    }
+
     fun setDefaultSeekValue(mls: Long) {
+        if (!isFirstStateReady) {
+            throw IllegalArgumentException("setDefaultSeekValue(...) can be applied if the player state is Player.STATE_READY")
+        }
         defaultSeekValue = mls
     }
 
@@ -1078,10 +989,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun toggleVolume() {
-        btVolumeUZ?.performClick()
-    }
-
     fun toggleFullscreen() {
         if (context is Activity) {
             UZViewUtils.toggleScreenOrientation(activity = (context as Activity))
@@ -1102,22 +1009,10 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    /**
-     * Bo video hien tai va choi tiep theo mot video trong playlist/folder
-     */
-    fun skipNextVideo() {
-        handleClickSkipNext()
-    }
-
-    /**
-     * Bo video hien tai va choi lui lai mot video trong playlist/folder
-     */
-    fun skipPreviousVideo() {
-        handleClickSkipPrevious()
-    }
-
     val isLIVE: Boolean
-        get() = playerManager != null && playerManager?.isLIVE == true
+        get() {
+            return playerManager != null && playerManager?.isLIVE == true
+        }
 
     var volume: Float
         get() = playerManager?.volume ?: -1F
@@ -1158,32 +1053,25 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun setEventForViews() {
+        fun setClickAndFocusEventForViews(vararg views: View?) {
+            for (v in views) {
+                v?.setOnClickListener(this)
+            }
+        }
+
         setClickAndFocusEventForViews(
             btFullscreenUZ,
             btBackScreenUZ,
             btVolumeUZ,
             btSettingUZ,
-            btPlaylistFolderUZ,
             btPipUZ,
             btFfwdUZ,
             btRewUZ,
             btPlayUZ,
             btPauseUZ,
             btReplayUZ,
-            btSkipNextUZ,
-            btSkipPreviousUZ,
             btSpeedUZ,
-            tvLiveStatusUZ
         )
-    }
-
-    private fun setClickAndFocusEventForViews(vararg views: View?) {
-        for (v in views) {
-            v?.let {
-                it.setOnClickListener(this)
-                it.onFocusChangeListener = this
-            }
-        }
     }
 
     //If auto start true, show button play and gone button pause
@@ -1281,14 +1169,13 @@ class UZVideoView : RelativeLayout,
 
             resizeContainerView()
             updateUIEachSkin()
-            updateUIDependOnLiveStream()
+//            updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
-            setTitle()
             checkToSetUpResource()
-            updateUISizeThumbnail()
+            updateUISizeThumbnailTimeBar()
             onSkinChange?.invoke()
 
             return true
@@ -1329,14 +1216,14 @@ class UZVideoView : RelativeLayout,
                 //uzTimeBar is displaying
                 setTextPosition(currentMls)
             }
-            return
+//            return
         }
         if (isLIVE) {
             return
         }
         btRewUZ?.let { r ->
             btFfwdUZ?.let { f ->
-                if (currentMls == 0L) {
+                if (currentMls <= 0L) {
                     if (r.isSetSrcDrawableEnabled) {
                         r.setSrcDrawableDisabled()
                     }
@@ -1393,17 +1280,10 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun handleFirstViewHasFocus() {
-        if (firstViewHasFocusTV != null) {
-            uzTVFocusChangeListener?.onFocusChange(view = firstViewHasFocusTV, isFocus = true)
-            firstViewHasFocusTV = null
-        }
-    }
-
-    private fun updateUISizeThumbnail() {
+    private fun updateUISizeThumbnailTimeBar() {
         val screenWidth = UZViewUtils.screenWidth
         val widthIv = if (isLandscape) {
-            screenWidth / 4
+            screenWidth / 5
         } else {
             screenWidth / 5
         }
@@ -1429,44 +1309,21 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun setTitle() {
-        tvTitleUZ?.text = UZData.getEntityName()
-    }
-
-    fun setAlwaysHideLiveViewers(hide: Boolean) {
-        alwaysHideLiveViewers = hide
-    }
-
     private fun updateUIDependOnLiveStream() {
         if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
-            //only hide ibPictureInPictureIcon if device is TV
+            //only hide button pip if device is TV
             UZViewUtils.goneViews(btPipUZ)
         }
+        onCurrentWindowDynamic?.invoke(isLIVE)
+        log("updateUIDependOnLiveStream isLIVE $isLIVE")
         if (isLIVE) {
-            if (alwaysHideLiveViewers) {
-                UZViewUtils.visibleViews(tvLiveStatusUZ, tvLiveTimeUZ)
-            } else {
-                UZViewUtils.visibleViews(
-                    tvLiveStatusUZ,
-                    tvLiveTimeUZ,
-                )
-            }
-            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, btRewUZ, btFfwdUZ)
-            setUIVisible(visible = false, btRewUZ, btFfwdUZ)
+            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
         } else {
-            UZViewUtils.goneViews(tvLiveStatusUZ, tvLiveTimeUZ)
-            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, btFfwdUZ, btRewUZ)
-            setUIVisible(visible = true, btRewUZ, btFfwdUZ)
-            //TODO why set visible not work?
+            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btFfwdUZ, btRewUZ)
         }
+        tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
             UZViewUtils.goneViews(btFullscreenUZ)
-        }
-    }
-
-    private fun setUIVisible(visible: Boolean, vararg views: UZImageButton?) {
-        for (v in views) {
-            v?.setUIVisible(visible)
         }
     }
 
@@ -1498,15 +1355,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    fun showLayoutMsg() {
-        hideController()
-        UZViewUtils.visibleViews(rlMsg)
-    }
-
-    fun hideLayoutMsg() {
-        UZViewUtils.goneViews(rlMsg)
-    }
-
     private fun updateUIEndScreen() {
         playerView?.let { pv ->
             if (isOnPlayerEnded) {
@@ -1532,21 +1380,10 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun setVisibilityOfPlaylistFolderController(visibilityOfPlaylistFolderController: Int) {
-        UZViewUtils.setVisibilityViews(
-            visibility = visibilityOfPlaylistFolderController,
-            btPlaylistFolderUZ,
-            btSkipNextUZ,
-            btSkipPreviousUZ
-        )
-        setVisibilityOfPlayPauseReplay(false)
-    }
-
     var dlg: Dialog? = null
 
-
     @SuppressLint("InflateParams")
-    private fun showSettingsDialog() {
+    fun showSettingsDialog() {
         val builder = AlertDialog.Builder(context)
         val inflater = LayoutInflater.from(context)
         if (inflater != null) {
@@ -1659,85 +1496,65 @@ class UZVideoView : RelativeLayout,
         rootViewUZVideo.setBackgroundColor(color)
     }
 
-    fun setMarginDependOnUZTimeBar(view: View?) {
-        if (view == null || timeBarUZ == null) {
-            return
-        }
-        val tmpHeightTimeBar: Int
-        if (isLandscape) {
-            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = 0)
-        } else {
-            tmpHeightTimeBar = heightTimeBar
-            UZViewUtils.setMarginPx(view = view, l = 0, t = 0, r = 0, b = tmpHeightTimeBar / 2)
-        }
-    }
-
-    fun hideProgress() {
+    private fun hideProgress() {
         pb.visibility = View.GONE
     }
 
-    fun showProgress() {
+    private fun showProgress() {
         pb.visibility = View.VISIBLE
     }
 
-    fun setTVFocusChangeListener(uzTVFocusChangeListener: UZTVFocusChangeListener?) {
-        this.uzTVFocusChangeListener = uzTVFocusChangeListener
-        handleFirstViewHasFocus()
-    }
-
-    fun setOnPreviewChangeListener(onPreviewChangeListener: OnPreviewChangeListener?) {
-        this.onPreviewChangeListener = onPreviewChangeListener
-    }
-
     private fun checkToSetUpResource() {
-        val playback = UZData.getPlayback()
-        if (playback == null) {
+        if (uzPlayback == null) {
             handleError(ErrorUtils.exceptionSetup())
         } else {
-            val listLinkPlay = playback.getLinkPlays()
-            if (listLinkPlay.isEmpty()) {
-                handleErrorNoData()
-                return
-            }
-            val linkPlay = listLinkPlay.firstOrNull()
+            val linkPlay = uzPlayback?.linkPlay
             if (linkPlay.isNullOrEmpty()) {
-                handleError(ErrorUtils.exceptionNoLinkPlay())
+                handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
                 return
             }
             initDataSource(
                 linkPlay = linkPlay,
-                urlIMAAd = if (isCalledFromChangeSkin) null else urlIMAAd,
-                urlThumbnailsPreviewSeekBar = playback.poster
+                urlIMAAd = if (isCalledFromChangeSkin) null else uzPlayback?.urlIMAAd,
+                poster = uzPlayback?.poster
             )
             onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
         }
     }
 
+    private fun setFirstStateReady(isFirstStateReady: Boolean) {
+        this.isFirstStateReady = isFirstStateReady
+        if (this.isFirstStateReady) {
+            onFirstStateReady?.invoke()
+        }
+    }
+
     private fun initDataSource(
         linkPlay: String,
         urlIMAAd: String?,
-        urlThumbnailsPreviewSeekBar: String?
+        poster: String?
     ) {
         playerManager = UZPlayerManager.Builder(context)
             .withPlayUrl(linkPlay)
             .withIMAAdUrl(urlIMAAd)
             .build()
 
-        isFirstStateReady = false
+        setFirstStateReady(false)
 
         timeBarUZ?.let {
-            val disable = TextUtils.isEmpty(urlThumbnailsPreviewSeekBar)
-            it.isEnabled = !disable
+            it.setEnabledPreview(!poster.isNullOrEmpty())
             it.setPreviewLoader(object : PreviewLoader {
                 override fun loadPreview(currentPosition: Long, max: Long) {
                     playerManager?.let { pm ->
                         pm.setPlayWhenReady(false)
-                        val posterUrl = UZData.getPosterUrl()
-                        if (!TextUtils.isEmpty(posterUrl))
-                            ivThumbnailUZ?.let { iv ->
-                                ImageUtils.loadThumbnail(imageView = iv, imageUrl = posterUrl)
-                            }
+                        ivThumbnailUZ?.let { iv ->
+                            ImageUtils.loadThumbnail(
+                                imageView = iv,
+                                imageUrl = poster,
+                                currentPosition = currentPosition,
+                            )
+                        }
                     }
                 }
             })
@@ -1749,11 +1566,18 @@ class UZVideoView : RelativeLayout,
                 bufferedPercentage: Int,
                 duration: Long
             ) {
+                onBufferProgress?.invoke(bufferedPosition, bufferedPercentage, duration)
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
-            override fun onAdEnded() {}
-            override fun onAdProgress(s: Int, duration: Int, percent: Int) {}
+            override fun onAdEnded() {
+                isAdEnded = true
+            }
+
+            override fun onAdProgress(s: Int, duration: Int, percent: Int) {
+                isAdEnded = false
+            }
+
             override fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {
                 post {
                     updateUIIbRewIconDependOnProgress(
@@ -1761,10 +1585,8 @@ class UZVideoView : RelativeLayout,
                         isCalledFromUZTimeBarEvent = false
                     )
                 }
-                if (isLIVE) {
-                    post {
-                        updateLiveStatus(currentMls = currentMls, duration = duration)
-                    }
+                if (isAdEnded == true) {
+                    onVideoProgress?.invoke(currentMls, s, duration, percent)
                 }
             }
         })
@@ -1781,7 +1603,7 @@ class UZVideoView : RelativeLayout,
     }
 
     /**
-     * When isLive = true, if not time shift then hide timber
+     * When isLive = true, if not time shift then hide timebar
      */
     private fun updateTimeBarWithTimeShiftStatus() {
         playerManager?.let { pm ->
@@ -1795,67 +1617,32 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    //TODO
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-    //    public void onNetworkEvent(ConnectEvent event) {
-    //        if (event == null || playerManager == null) return;
-    //        if (!event.isConnected()) {
-    //            notifyError(ErrorUtils.exceptionNoConnection());
-    //        } else {
-    //            if (playerManager.getExoPlaybackException() == null) {
-    //                hideController();
-    //                hideLayoutMsg();
-    //            } else {
-    //                isCalledFromConnectionEventBus = true;
-    //                playerManager.setResumeIfConnectionError();
-    //                if (!activityIsPausing) {
-    //                    playerManager.register(this);
-    //                    if (isCalledFromConnectionEventBus) {
-    //                        playerManager.setRunnable();
-    //                        isCalledFromConnectionEventBus = false;
-    //                    }
-    //                }
-    //            }
-    //            resume();
-    //        }
-    //    }
+    private fun handleNetworkChange(isConnected: Boolean) {
+        if (isConnected) {
+            if (playerManager?.exoPlaybackException == null) {
+                hideController()
+            } else {
+                retry()
+            }
+        } else {
+            notifyError(ErrorUtils.exceptionNoConnection())
+        }
+        onNetworkChange?.invoke(isConnected)
+    }
 
     // ===== Stats For Nerds =====
     private fun initStatsForNerds() {
         player?.addAnalyticsListener(statsForNerdsView)
     }
 
-    private fun updateLiveStatus(currentMls: Long, duration: Long) {
-        tvLiveStatusUZ?.let { tv ->
-            val timeToEndChunk = duration - currentMls
-            if (timeToEndChunk <= targetDurationMls * 10) {
-                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color_focus))
-                UZViewUtils.goneViews(tvPositionUZ)
-            } else {
-                tv.setTextColor(ContextCompat.getColor(context, R.color.text_live_color))
-                UZViewUtils.visibleViews(tvPositionUZ)
-            }
-        }
-    }
-
-    private fun seekToEndLive() {
-        val timeToEndChunk = duration - currentPosition
-        if (timeToEndChunk > targetDurationMls * 10) {
-            seekToLiveEdge()
-        }
-    }
-
-    fun updateLiveStreamLatency(latency: Long) {
+    private fun updateLiveStreamLatency(latency: Long) {
         statsForNerdsView.showTextLiveStreamLatency()
         statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency))
     }
 
-    fun hideTextLiveStreamLatency() {
+    private fun hideTextLiveStreamLatency() {
         statsForNerdsView.hideTextLiveStreamLatency()
     }
-
-    override val title: String?
-        get() = null
 
     override fun onOrientationChange(orientation: Int) {
         //270 land trai
@@ -1885,14 +1672,6 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    override fun onFocusChange(v: View?, hasFocus: Boolean) {
-        if (uzTVFocusChangeListener != null) {
-            uzTVFocusChangeListener?.onFocusChange(view = v, isFocus = hasFocus)
-        } else if (firstViewHasFocusTV == null) {
-            firstViewHasFocusTV = v
-        }
-    }
-
     fun setPIPModeEnabled(isPIPModeEnabled: Boolean) {
         this.isPIPModeEnabled = isPIPModeEnabled
         if (isPIPEnable) {
@@ -1908,7 +1687,6 @@ class UZVideoView : RelativeLayout,
 
     fun setAutoReplay(isAutoReplay: Boolean) {
         this.isAutoReplay = isAutoReplay
-        this.isAutoSwitchItemPlaylistFolder = false
     }
 
     fun isAutoReplay(): Boolean {
@@ -1919,11 +1697,45 @@ class UZVideoView : RelativeLayout,
         this.isAlwaysPortraitScreen = isAlwaysPortraitScreen
     }
 
+    fun isAlwaysPortraitScreen(): Boolean {
+        return isAlwaysPortraitScreen
+    }
+
     fun isViewCreated(): Boolean {
         return this.isViewCreated
     }
 
     fun setUseUZDragView(useUZDragView: Boolean) {
         playerView?.setUseUZDragView(useUZDragView)
+    }
+
+    fun isPlayerControllerAlwayVisible(): Boolean {
+        return isPlayerControllerAlwayVisible
+    }
+
+    fun retry() {
+        player?.retry()
+        playerManager?.setPlayWhenReady(true)
+    }
+
+    fun isEnableDoubleTapToSeek(): Boolean {
+        return isEnableDoubleTapToSeek
+    }
+
+    fun setEnableDoubleTapToSeek(isEnableDoubleTapToSeek: Boolean) {
+        this.isEnableDoubleTapToSeek = isEnableDoubleTapToSeek
+    }
+
+    fun setShowLayoutDebug(isShowLayoutDebug: Boolean) {
+        this.isShowLayoutDebug = isShowLayoutDebug
+        if (isShowLayoutDebug) {
+            layoutDebug.visibility = VISIBLE
+        } else {
+            layoutDebug.visibility = GONE
+        }
+    }
+
+    fun isShowLayoutDebug(): Boolean {
+        return this.isShowLayoutDebug
     }
 }

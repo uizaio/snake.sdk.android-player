@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
+package com.uiza.sampleplayer.ui.playertiktokslide
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,8 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sampleplayer.R
-import com.uiza.sampleplayer.app.UZApplication
-import com.uiza.sampleplayer.model.DataVideo
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.fragment_player_tiktok.*
@@ -22,10 +20,10 @@ class FrmPlayerTiktok : Fragment() {
 
         private const val DATA = "DATA"
 
-        fun newInstance(dataVideo: DataVideo): FrmPlayerTiktok {
+        fun newInstance(uzPlayback: UZPlayback): FrmPlayerTiktok {
             val fragment = FrmPlayerTiktok()
             val bundle = Bundle()
-            bundle.putSerializable(DATA, dataVideo)
+            bundle.putSerializable(DATA, uzPlayback)
             fragment.arguments = bundle
             return fragment
         }
@@ -35,12 +33,12 @@ class FrmPlayerTiktok : Fragment() {
         Log.d(javaClass.simpleName, msg)
     }
 
-    private var dataVideo: DataVideo? = null
+    private var data: UZPlayback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        dataVideo = arguments?.getSerializable(DATA) as DataVideo?
+        data = arguments?.getSerializable(DATA) as UZPlayback?
     }
 
     override fun onCreateView(
@@ -52,23 +50,21 @@ class FrmPlayerTiktok : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        log("onViewCreated $dataVideo")
 
         tvLinkPlay.text =
-            "linkPlay ${dataVideo?.linkPlay}\nisPortraitVideo: ${dataVideo?.isPortraitVideo}"
+            "linkPlay ${data?.linkPlay}\nisPortraitVideo: ${data?.isPortraitVideo}"
 
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
-            uzVideoView.setUseController(false)
             uzVideoView.setFreeSize(true)
             uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
             uzVideoView.setAutoReplay(true)
-            if (dataVideo?.isPortraitVideo == true) {
+            if (data?.isPortraitVideo == true) {
                 uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
             } else {
                 uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
             }
-            onPlay(dataVideo?.linkPlay)
+            onPlay(data?.linkPlay)
         }
     }
 
@@ -78,30 +74,25 @@ class FrmPlayerTiktok : Fragment() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback()
-            uzPlayback.poster = UZApplication.thumbnailUrl
-            uzPlayback.addLinkPlay(link)
-            uzVideoView.play(uzPlayback)
-            uzVideoView.pause()
-            log("onPlay")
+            data?.let {
+                uzVideoView.play(it)
+                uzVideoView.pause()
+            }
         }
     }
 
     override fun onDestroyView() {
         uzVideoView.onDestroyView()
-        log("onDestroyView")
         super.onDestroyView()
     }
 
     override fun onResume() {
         super.onResume()
-        log("onResume")
         uzVideoView.onResumeView()
     }
 
     override fun onPause() {
         super.onPause()
-        log("onPause")
         uzVideoView.onPauseView()
     }
 }

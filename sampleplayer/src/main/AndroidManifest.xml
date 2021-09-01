@@ -24,6 +24,17 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="ErrorActivity" />
         <activity
+            android:name=".ui.playerad.PlayerAdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerAdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.playeradvanced.PlayerAdvancedActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerAdvancedActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.playerbasic.PlayerBasicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerBasicActivity"
@@ -44,13 +55,19 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <activity
+            android:name=".ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerBasicActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.playertiktok.PlayerTiktokActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerTiktokActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity"
+            android:name=".ui.playertiktokslide.PlayerTiktokSlideActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerTiktokSlideHorizontalActivity"
             android:screenOrientation="portrait"

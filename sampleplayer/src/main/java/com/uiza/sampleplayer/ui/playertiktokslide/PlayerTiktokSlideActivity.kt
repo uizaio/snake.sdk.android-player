@@ -1,4 +1,4 @@
-package com.uiza.sampleplayer.ui.playertiktokslidehorizontal
+package com.uiza.sampleplayer.ui.playertiktokslide
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,16 +8,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sampleplayer.model.DataVideo
-import kotlinx.android.synthetic.main.activity_player_tiktok_slide_horizontal.*
+import com.uiza.sdk.models.UZPlayback
+import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
 import java.util.*
 
-class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
-    private val listDataVideo = ArrayList<DataVideo>()
+class PlayerTiktokSlideActivity : AppCompatActivity() {
+    private val list = ArrayList<UZPlayback>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_tiktok_slide_horizontal)
+        setContentView(R.layout.activity_player_tiktok_slide)
+
         setupViews()
     }
 
@@ -36,24 +37,24 @@ class PlayerTiktokSlideHorizontalActivity : AppCompatActivity() {
     }
 
     private fun setUpViewPager() {
-        val adapter = VerticalAdapter(this, listDataVideo)
+        val adapter = VerticalAdapter(this, list)
         viewPager.adapter = adapter
     }
 
     private fun addData() {
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_1, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_2, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD, false))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_3, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_4, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_5, true))
-        listDataVideo.add(DataVideo(Constant.LINK_PLAY_VOD_PORTRAIT_6, true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_1, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_2, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD, isPortraitVideo = false))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_3, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_4, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_5, isPortraitVideo = true))
+        list.add(UZPlayback(linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT_6, isPortraitVideo = true))
     }
 
     private inner class VerticalAdapter(
         fragmentActivity: FragmentActivity,
-        private val stringList: List<DataVideo>
+        private val stringList: List<UZPlayback>
     ) :
         FragmentStateAdapter(fragmentActivity) {
 

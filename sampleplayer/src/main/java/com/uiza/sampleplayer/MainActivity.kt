@@ -6,11 +6,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
+import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
-import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
-import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
-import com.uiza.sampleplayer.ui.playertiktokslidehorizontal.PlayerTiktokSlideHorizontalActivity
-import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -30,41 +27,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnPlayerAd.visibility = View.GONE
-        btnPlayerAdvanced.visibility = View.GONE
         btnPlayerCast.visibility = View.GONE
-        btnPlayerFragment.visibility = View.GONE
-        btnPlayerList.visibility = View.GONE
-        btnPlayerPip.visibility = View.GONE
-        btnPlayerRecyclerView.visibility = View.GONE
-        btnPlayerTiktok.visibility = View.GONE
-        btnPlayerTiktokSlide.visibility = View.GONE
-        btnPlayerWithUZDragView.visibility = View.GONE
-        btnPlayerYoutube.visibility = View.GONE
-
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
         btnPlayerAd.setOnClickListener {
-            //TODO
+//            gotoActivity(PlayerAdActivity::class.java)
+        }
+        btnPlayerAdvanced.setOnClickListener {
+            gotoActivity(PlayerAdvancedActivity::class.java)
         }
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
         }
         btnPlayerPip.setOnClickListener {
-            gotoActivity(PlayerPipActivity::class.java)
+//            gotoActivity(PlayerPipActivity::class.java)
+        }
+        btnPlayerPreviewSeekbar.setOnClickListener {
+//            gotoActivity(PlayerPreviewSeekbarActivity::class.java)
+        }
+        btnPlayerSkin.setOnClickListener {
+
         }
         btnPlayerTiktok.setOnClickListener {
-            gotoActivity(PlayerTiktokActivity::class.java)
+//            gotoActivity(PlayerTiktokActivity::class.java)
         }
         btnPlayerTiktokSlide.setOnClickListener {
-            gotoActivity(PlayerTiktokSlideHorizontalActivity::class.java)
+//            gotoActivity(PlayerTiktokSlideActivity::class.java)
         }
         btnPlayerWithUZDragView.setOnClickListener {
-            gotoActivity(PlayerWithUZDragViewActivity::class.java)
+//            gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
         btnPlayerRecyclerView.setOnClickListener {
-            //TODO
+
         }
 
         txtVersion.text = String.format(

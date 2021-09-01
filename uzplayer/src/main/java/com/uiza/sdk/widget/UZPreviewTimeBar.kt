@@ -32,18 +32,19 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
     private val scrubberColor: Int
     private val frameLayoutId: Int
     private val scrubberDiameter: Int
+    private var enabledPreview = false
 
     init {
         var a = context.theme.obtainStyledAttributes(
             attrs,
-            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar, 0, 0
+            R.styleable.DefaultTimeBar, 0, 0
         )
         val playedColor = a.getInt(
-            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_played_color,
+            R.styleable.DefaultTimeBar_played_color,
             DEFAULT_PLAYED_COLOR
         )
         scrubberColor = a.getInt(
-            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_color,
+            R.styleable.DefaultTimeBar_scrubber_color,
             getDefaultScrubberColor(playedColor)
         )
         val defaultScrubberDraggedSize = dpToPx(
@@ -51,7 +52,7 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
             DEFAULT_SCRUBBER_DRAGGED_SIZE_DP
         )
         scrubberDiameter = a.getDimensionPixelSize(
-            com.google.android.exoplayer2.ui.R.styleable.DefaultTimeBar_scrubber_dragged_size,
+            R.styleable.DefaultTimeBar_scrubber_dragged_size,
             defaultScrubberDraggedSize
         )
         a.recycle()
@@ -62,7 +63,7 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         delegate = PreviewDelegate(this, scrubberColor)
-        delegate?.setEnabled(isEnabled)
+        delegate?.setEnabledPreview(enabledPreview)
         addListener(this)
     }
 
@@ -95,9 +96,17 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
         }
     }
 
-    override fun setEnabled(enabled: Boolean) {
-        super.setEnabled(enabled)
-        delegate?.setEnabled(enabled)
+    override fun setEnabled(enabledPreview: Boolean) {
+        super.setEnabled(enabledPreview)
+        delegate?.setEnabledPreview(enabledPreview)
+    }
+
+    fun setEnabledPreview(enabledPreview: Boolean) {
+        if (enabledPreview) {
+            addListener(this)
+        } else {
+            removeListener(this)
+        }
     }
 
     override fun setDuration(duration: Long) {
@@ -115,13 +124,13 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
     }
 
     override fun showPreview() {
-        if (isEnabled) {
+        if (enabledPreview) {
             delegate?.show()
         }
     }
 
     override fun hidePreview() {
-        if (isEnabled) {
+        if (enabledPreview) {
             delegate?.hide()
         }
     }

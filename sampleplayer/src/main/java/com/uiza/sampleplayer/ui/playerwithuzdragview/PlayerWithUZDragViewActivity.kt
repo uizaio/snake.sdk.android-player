@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sampleplayer.app.UZApplication
-import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import com.uiza.sdk.view.UZDragView
@@ -79,21 +78,15 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         }
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
-        var playbackInfo: UZPlayback? = null
+        val playbackInfo: UZPlayback? = null
         if (intent == null) {
             hsvBottom.visibility = View.VISIBLE
             etLinkPlay.visibility = View.VISIBLE
             initPlaylist()
         } else {
-            playbackInfo = intent.getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO)
-            if (playbackInfo == null) {
-                hsvBottom.visibility = View.VISIBLE
-                etLinkPlay.visibility = View.VISIBLE
-                initPlaylist()
-            } else {
-                hsvBottom.visibility = View.GONE
-                etLinkPlay.visibility = View.GONE
-            }
+            hsvBottom.visibility = View.VISIBLE
+            etLinkPlay.visibility = View.VISIBLE
+            initPlaylist()
         }
         bt0.setOnClickListener {
             updateView(index = 0)
@@ -107,10 +100,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         bt4.setOnClickListener {
             updateView(index = 3)
         }
-        bt5.setOnClickListener {
-            etLinkPlay.visibility = View.GONE
-            uzVideoView.play(playlist)
-        }
         if (playbackInfo != null) {
             val isInitSuccess = uzVideoView.play(playbackInfo)
             if (!isInitSuccess) {
@@ -121,24 +110,27 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     private fun updateView(index: Int) {
         etLinkPlay.visibility = View.VISIBLE
-        etLinkPlay.setText(UZApplication.urls[index])
+        etLinkPlay.setText(Constant.urls[index])
         setLastCursorEditText(etLinkPlay)
         onPlay()
     }
 
     private fun initPlaylist() {
-        for (url in UZApplication.urls) {
+        for (url in Constant.urls) {
             val playback = UZPlayback()
-            playback.addLinkPlay(url)
+            playback.linkPlay = url
             playlist.add(playback)
         }
     }
 
     private fun onPlay() {
-        val uzPlayback = UZPlayback()
-        uzPlayback.poster = UZApplication.thumbnailUrl
-        uzPlayback.addLinkPlay(etLinkPlay.text.toString().trim())
-        uzVideoView.play(uzPlayback)
+        val linkPlay = etLinkPlay.text.toString().trim()
+        if (linkPlay.isEmpty()) {
+            Toast.makeText(this, "Empty link play", Toast.LENGTH_SHORT).show()
+        } else {
+            val uzPlayback = UZPlayback(linkPlay = linkPlay)
+            uzVideoView.play(uzPlayback)
+        }
     }
 
     public override fun onDestroy() {

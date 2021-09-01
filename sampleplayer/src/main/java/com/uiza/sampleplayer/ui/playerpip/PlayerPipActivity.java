@@ -58,9 +58,9 @@ public class PlayerPipActivity extends AppCompatActivity {
             playbackInfo = getIntent().getParcelableExtra(Constant.EXTRA_PLAYBACK_INFO);
         }
         if (playbackInfo != null)
-            etLinkPlay.setText(playbackInfo.getFirstLinkPlay());
+            etLinkPlay.setText(playbackInfo.getLinkPlay());
         else
-            etLinkPlay.setText(UZApplication.urls[0]);
+            etLinkPlay.setText(Constant.urls[0]);
 
 //        etLinkPlay.setText("http://worker-live.uizadev.io/stream/app_id/entity_id/master.m3u8");
 
@@ -71,7 +71,7 @@ public class PlayerPipActivity extends AppCompatActivity {
 
     private void onPlay() {
         final UZPlayback playback = new UZPlayback();
-        playback.addLinkPlay(etLinkPlay.getText().toString());
+        playback.setLinkPlay(etLinkPlay.getText().toString().trim());
         uzVideo.play(playback);
     }
 

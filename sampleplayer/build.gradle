@@ -13,14 +13,24 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+    signingConfigs {
+        release {
+            storeFile file("keystore.jks")
+            storePassword PW
+            keyAlias ALIAS
+            keyPassword PW
+        }
+    }
     buildTypes {
         release {
+            debuggable false
             shrinkResources true
             minifyEnabled true
             proguardFiles = [
                     "proguard-rules.pro",
                     getDefaultProguardFile('proguard-android.txt')
             ]
+            signingConfig signingConfigs.release
         }
         debug {
             ext.enableCrashlytics = false
@@ -29,6 +39,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     dexOptions {
         jumboMode true
         javaMaxHeapSize "4g"

@@ -43,21 +43,6 @@
             android:src="@drawable/ic_fullscreen_white_48_uz" />
     </LinearLayout>
 
-    <com.uiza.sdk.widget.UZTextView
-        android:id="@+id/tvLiveStatusUZ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llTopUZ"
-        android:layout_marginStart="@dimen/margin_padding_medium"
-        android:gravity="center"
-        android:paddingStart="@dimen/padding_5"
-        android:paddingTop="@dimen/padding_3"
-        android:paddingEnd="@dimen/padding_5"
-        android:paddingBottom="@dimen/padding_3"
-        android:text="@string/live"
-        android:textColor="@android:color/white"
-        tools:ignore="RelativeOverlap" />
-
     <LinearLayout
         android:id="@+id/llBottom"
         android:layout_width="match_parent"
@@ -160,22 +145,6 @@
                 android:background="@android:color/transparent"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_forward_10_white_uz" />
-
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btSkipPreviousUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_skip_previous_white_uz" />
-
-            <com.uiza.sdk.widget.UZImageButton
-                android:id="@+id/btSkipNextUZ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_skip_next_white_uz" />
 
             <View
                 android:layout_width="0dp"

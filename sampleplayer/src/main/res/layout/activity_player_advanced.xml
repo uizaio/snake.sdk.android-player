@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText">
+
+    <com.uiza.sdk.view.UZVideoView
+        android:id="@+id/uzVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btPlayVOD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="VOD" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btPlayLive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Live" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etLinkPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter link play here" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btPlayLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Play" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_padding_medium"
+        android:text="Scroll horizontal for more actions" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seek to 16s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToLiveEdge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seek To Live Edge" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btResume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resume" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pause" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btTogglePlayPause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle PlayPause" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btReplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Replay" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btToggleStatsForNerds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle StatsForNerds" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btBackScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back screen" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btToggleVolumeMute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle Volume Mute" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btShowSettingsDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show SettingsDialog" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btShowSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show Speed" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSetSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set speed x2" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btShowController"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show Controller" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btHideController"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hide Controller" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btClickAudio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Audio" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btClickQuality"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Quality" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btClickCaptions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Captions" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToForward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToForward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToForward7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToForward 7s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToBackward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToBackward" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btSeekToBackward7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SeekToBackward 7s" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btToggleFullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle Fullscreen" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry Player if Error" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

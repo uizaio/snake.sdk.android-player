@@ -1,5 +1,6 @@
 package com.uiza.sdk.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
@@ -23,7 +24,6 @@ import com.uiza.sdk.observers.OnAudioVolumeChangedListener
 import com.uiza.sdk.utils.Constants
 import com.uiza.sdk.utils.StringUtils.doubleFormatted
 import com.uiza.sdk.utils.StringUtils.humanReadableByteCount
-import com.uiza.sdk.utils.UZData
 import com.uiza.sdk.utils.UZViewUtils.goneViews
 import com.uiza.sdk.utils.UZViewUtils.visibleViews
 import kotlinx.android.synthetic.main.layout_stats_for_nerds.view.*
@@ -80,14 +80,15 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
         depictVersionInfo()
         depictDeviceInfo()
         depictViewPortFrameInfo()
-        depictVideoInfo()
         volumeObserver?.let {
             post {
-                tvVolume.text = String.format(
-                    Locale.US,
-                    "%d / %d",
-                    it.currentVolume,
-                    it.maxVolume
+                setTextVolume(
+                    String.format(
+                        Locale.US,
+                        "%d / %d",
+                        it.currentVolume,
+                        it.maxVolume
+                    )
                 )
             }
         }
@@ -162,7 +163,7 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
 
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
         mHandler.post {
-            tvVolume.text = String.format(Locale.US, "%d / %d", currentVolume, maxVolume)
+            setTextVolume(String.format(Locale.US, "%d / %d", currentVolume, maxVolume))
         }
     }
 
@@ -188,13 +189,20 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
                     )
                 )
             }
-            tvConnectionSpeed.text = formattedValue
-            tvNetworkActivity.text =
-                humanReadableByteCount(bytes = totalBytesLoaded, si = true, isBits = false)
-            tvBufferHealth.text = resources.getString(
-                R.string.format_buffer_health,
-                doubleFormatted(
-                    value = eventTime.totalBufferedDurationMs / 10.0.pow(3.0), precision = 1
+            setTextConnectionSpeed(formattedValue)
+            setTextNetworkActivity(
+                humanReadableByteCount(
+                    bytes = totalBytesLoaded,
+                    si = true,
+                    isBits = false
+                )
+            )
+            setTextBufferHealth(
+                resources.getString(
+                    R.string.format_buffer_health,
+                    doubleFormatted(
+                        value = eventTime.totalBufferedDurationMs / 10.0.pow(3.0), precision = 1
+                    )
                 )
             )
         }
@@ -214,9 +222,11 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
             currentResWidth = width
             currentResHeight = height
             mHandler.post {
-                tvResolution.text = resources.getString(
-                    R.string.format_resolution,
-                    currentResWidth, currentResHeight, optimalResWidth, optimalResHeight
+                setTextResolution(
+                    resources.getString(
+                        R.string.format_resolution,
+                        currentResWidth, currentResHeight, optimalResWidth, optimalResHeight
+                    )
                 )
             }
         }
@@ -233,9 +243,11 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
                 optimalResWidth = downloadFormat.width
                 optimalResHeight = downloadFormat.height
                 mHandler.post {
-                    tvResolution.text = resources.getString(
-                        R.string.format_resolution,
-                        currentResWidth, currentResHeight, optimalResWidth, optimalResHeight
+                    setTextResolution(
+                        resources.getString(
+                            R.string.format_resolution,
+                            currentResWidth, currentResHeight, optimalResWidth, optimalResHeight
+                        )
                     )
                 }
             }
@@ -255,11 +267,13 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
             surfaceHeight = this.height
         }
         mHandler.post {
-            tvViewPortFrame.text = resources.getString(
-                R.string.format_viewport_frame,
-                surfaceWidth,
-                surfaceHeight,
-                droppedFrames
+            setTextViewPortFrame(
+                resources.getString(
+                    R.string.format_viewport_frame,
+                    surfaceWidth,
+                    surfaceHeight,
+                    droppedFrames
+                )
             )
         }
     }
@@ -279,33 +293,15 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
         )
     }
 
-    private fun depictVideoInfo() {
-        setEntityInfo(UZData.getEntityId())
-        setTextHost(UZData.getHost())
-    }
-
-    /**
-     * Depict Entity id
-     *
-     * @param value should be formatted like below
-     * EX: c62a5409-0e8a-4b11-8e0d-c58c43d81b60
-     */
-    fun setEntityInfo(value: String?) {
-        if (TextUtils.isEmpty(value)) {
-            tvEntityId.text = "--"
-        } else {
-            tvEntityId.text = value
-        }
-    }
-
     /**
      * Depict Buffer health
      *
      * @param value should be formatted like below
      * EX: 20 s
      */
+    @SuppressLint("SetTextI18n")
     fun setTextBufferHealth(value: String?) {
-        tvBufferHealth.text = value
+        tvBufferHealth.text = "Buffer Health: $value"
     }
 
     /**
@@ -314,8 +310,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 5 kB or 5 MB
      */
+    @SuppressLint("SetTextI18n")
     fun setTextNetworkActivity(value: String?) {
-        tvNetworkActivity.text = value
+        tvNetworkActivity.text = "Network Activity: $value"
     }
 
     /**
@@ -324,8 +321,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 50%
      */
+    @SuppressLint("SetTextI18n")
     fun setTextVolume(value: String?) {
-        tvVolume.text = value
+        tvVolume.text = "Volume: $value"
     }
 
     /**
@@ -334,8 +332,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 806x453 / 0 dropped frames
      */
+    @SuppressLint("SetTextI18n")
     fun setTextViewPortFrame(value: String?) {
-        tvViewPortFrame.text = value
+        tvViewPortFrame.text = "Viewport / Frames: $value"
     }
 
     /**
@@ -344,8 +343,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 40 mbps or 40 kbps
      */
+    @SuppressLint("SetTextI18n")
     fun setTextConnectionSpeed(value: String?) {
-        tvConnectionSpeed.text = value
+        tvConnectionSpeed.text = "Connection Speed: $value"
     }
 
     /**
@@ -368,8 +368,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: SDK Version / Player Version / API Version
      */
-    fun setTextVersion(value: String?) {
-        tvVersion.text = value
+    @SuppressLint("SetTextI18n")
+    private fun setTextVersion(value: String?) {
+        tvVersion.text = "SDK / Player / API Version: $value"
     }
 
     /**
@@ -378,8 +379,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: Device Name / OS Version
      */
+    @SuppressLint("SetTextI18n")
     fun setTextDeviceInfo(value: String?) {
-        tvDeviceInfo.text = value
+        tvDeviceInfo.text = "Device Info: $value"
     }
 
     /**
@@ -388,8 +390,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: video/avc 1280x720@30
      */
+    @SuppressLint("SetTextI18n")
     fun setTextVideoFormat(value: String?) {
-        tvVideoFormat.text = value
+        tvVideoFormat.text = "Video format: $value"
     }
 
     /**
@@ -398,8 +401,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: audio/mp4a-latm 48000Hz
      */
+    @SuppressLint("SetTextI18n")
     fun setTextAudioFormat(value: String?) {
-        tvAudioFormat.text = value
+        tvAudioFormat.text = "Audio format: $value"
     }
 
     /**
@@ -408,8 +412,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: 1280x720 /
      */
+    @SuppressLint("SetTextI18n")
     fun setTextResolution(value: String?) {
-        tvResolution.text = value
+        tvResolution.text = "Current / Optimal Res: $value"
     }
 
     /**
@@ -418,22 +423,24 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * Ex: 1000 ms /
      */
+    @SuppressLint("SetTextI18n")
     fun setTextLiveStreamLatency(value: String?) {
-        tvLiveStreamLatency.text = context.getString(R.string.format_live_stream_latency, value)
+        tvLiveStreamLatency.text =
+            "Live stream latency: ${context.getString(R.string.format_live_stream_latency, value)}"
     }
 
     /**
      * Hide TextView latency of live stream
      */
     fun hideTextLiveStreamLatency() {
-        goneViews(tvLiveStreamLatency, textLiveStreamLatencyTitle)
+        goneViews(tvLiveStreamLatency)
     }
 
     /**
      * Show TextView latency of live stream
      */
     fun showTextLiveStreamLatency() {
-        visibleViews(tvLiveStreamLatency, textLiveStreamLatencyTitle)
+        visibleViews(tvLiveStreamLatency)
     }
 
     companion object {

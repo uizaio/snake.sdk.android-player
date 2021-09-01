@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText">
+
+    <com.uiza.sdk.view.UZVideoView
+        android:id="@+id/uzVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btAdSingleInlineLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Single Inline Linear" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btAdSingleSkippableInline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Single Skippable Inline" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btAdSingleRedirectLinear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Single Redirect Linear" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

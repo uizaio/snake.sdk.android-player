@@ -23,9 +23,23 @@ object DebugUtils {
         return null
     }
 
-    //return button text in debug layout
     @JvmStatic
-    fun getTextButton(debugRootView: LinearLayout): View? {
+    fun getVideoButton(debugRootView: LinearLayout): View? {
+        for (i in 0 until debugRootView.childCount) {
+            val childView = debugRootView.getChildAt(i)
+            if (childView is Button) {
+                if (childView.text.toString()
+                        .equals(debugRootView.context.getString(R.string.video), ignoreCase = true)
+                ) {
+                    return childView
+                }
+            }
+        }
+        return null
+    }
+
+    @JvmStatic
+    fun getCaptionsButton(debugRootView: LinearLayout): View? {
         for (i in 0 until debugRootView.childCount) {
             val childView = debugRootView.getChildAt(i)
             if (childView is Button) {
