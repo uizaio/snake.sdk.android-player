@@ -187,13 +187,15 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
                     )
                 )
             }
-            tvConnectionSpeed.text = formattedValue
+            setTextConnectionSpeed(formattedValue)
             tvNetworkActivity.text =
                 humanReadableByteCount(bytes = totalBytesLoaded, si = true, isBits = false)
-            tvBufferHealth.text = resources.getString(
-                R.string.format_buffer_health,
-                doubleFormatted(
-                    value = eventTime.totalBufferedDurationMs / 10.0.pow(3.0), precision = 1
+            setTextBufferHealth(
+                resources.getString(
+                    R.string.format_buffer_health,
+                    doubleFormatted(
+                        value = eventTime.totalBufferedDurationMs / 10.0.pow(3.0), precision = 1
+                    )
                 )
             )
         }
@@ -284,8 +286,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 20 s
      */
+    @SuppressLint("SetTextI18n")
     fun setTextBufferHealth(value: String?) {
-        tvBufferHealth.text = value
+        tvBufferHealth.text = "Buffer Health: $value"
     }
 
     /**
@@ -324,8 +327,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 40 mbps or 40 kbps
      */
+    @SuppressLint("SetTextI18n")
     fun setTextConnectionSpeed(value: String?) {
-        tvConnectionSpeed.text = value
+        tvConnectionSpeed.text = "Connection Speed: $value"
     }
 
     /**

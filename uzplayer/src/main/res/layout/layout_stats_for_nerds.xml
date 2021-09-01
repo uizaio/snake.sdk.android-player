@@ -33,42 +33,20 @@
                 tools:text="Audio Format: audio/mp4a-latm 48000Hz" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_connection_speed"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Connection Speed" />
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvConnectionSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="44420 Kbps" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_buffer_health"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Buffer Health" />
+                tools:text="Connection Speed: 44420 Kbps" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvBufferHealth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="48.48 s" />
+                tools:text="Buffer Health: 48.48 s" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
