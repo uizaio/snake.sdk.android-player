@@ -49,61 +49,28 @@
                 tools:text="Buffer Health: 48.48 s" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_network_activity"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Network Activity" />
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvNetworkActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="0 KB" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_volume"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Volume" />
+                tools:text="Network Activity: 0 KB" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvVolume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_2"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="50%" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/stat_viewport_frames"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Viewport / Frames" />
+                tools:text="Volume: 50%" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvViewPortFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_padding_medium"
-                android:text="@string/default_stats_2"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_tiny"
-                tools:text="806x453*2.00 / 0 dropped of 184" />
+                tools:text="Viewport/Frames: 806x453*2.00 / 0 dropped of 184" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"

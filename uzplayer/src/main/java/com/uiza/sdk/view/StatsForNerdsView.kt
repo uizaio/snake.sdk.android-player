@@ -82,11 +82,13 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
         depictViewPortFrameInfo()
         volumeObserver?.let {
             post {
-                tvVolume.text = String.format(
-                    Locale.US,
-                    "%d / %d",
-                    it.currentVolume,
-                    it.maxVolume
+                setTextVolume(
+                    String.format(
+                        Locale.US,
+                        "%d / %d",
+                        it.currentVolume,
+                        it.maxVolume
+                    )
                 )
             }
         }
@@ -161,7 +163,7 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
 
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
         mHandler.post {
-            tvVolume.text = String.format(Locale.US, "%d / %d", currentVolume, maxVolume)
+            setTextVolume(String.format(Locale.US, "%d / %d", currentVolume, maxVolume))
         }
     }
 
@@ -188,8 +190,13 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
                 )
             }
             setTextConnectionSpeed(formattedValue)
-            tvNetworkActivity.text =
-                humanReadableByteCount(bytes = totalBytesLoaded, si = true, isBits = false)
+            setTextNetworkActivity(
+                humanReadableByteCount(
+                    bytes = totalBytesLoaded,
+                    si = true,
+                    isBits = false
+                )
+            )
             setTextBufferHealth(
                 resources.getString(
                     R.string.format_buffer_health,
@@ -256,11 +263,13 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
             surfaceHeight = this.height
         }
         mHandler.post {
-            tvViewPortFrame.text = resources.getString(
-                R.string.format_viewport_frame,
-                surfaceWidth,
-                surfaceHeight,
-                droppedFrames
+            setTextViewPortFrame(
+                resources.getString(
+                    R.string.format_viewport_frame,
+                    surfaceWidth,
+                    surfaceHeight,
+                    droppedFrames
+                )
             )
         }
     }
@@ -297,8 +306,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 5 kB or 5 MB
      */
+    @SuppressLint("SetTextI18n")
     fun setTextNetworkActivity(value: String?) {
-        tvNetworkActivity.text = value
+        tvNetworkActivity.text = "Network Activity: $value"
     }
 
     /**
@@ -307,8 +317,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 50%
      */
+    @SuppressLint("SetTextI18n")
     fun setTextVolume(value: String?) {
-        tvVolume.text = value
+        tvVolume.text = "Volume: $value"
     }
 
     /**
@@ -317,8 +328,9 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
      * @param value should be formatted like below
      * EX: 806x453 / 0 dropped frames
      */
+    @SuppressLint("SetTextI18n")
     fun setTextViewPortFrame(value: String?) {
-        tvViewPortFrame.text = value
+        tvViewPortFrame.text = "Viewport/Frames: $value"
     }
 
     /**
