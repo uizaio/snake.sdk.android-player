@@ -49,7 +49,11 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
             }
             itemView.cardView.setOnClickListener {
-                if (!itemRv.isFocussed) {
+                if (itemRv.isFocussed) {
+                    if (uzVideoView?.isPlaying == false) {
+                        onClickItem?.invoke(adapterPosition, itemRv)
+                    }
+                } else {
                     onClickItem?.invoke(adapterPosition, itemRv)
                 }
             }
