@@ -9,6 +9,7 @@ import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
 import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
+import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
