@@ -1,30 +1,35 @@
 package com.uiza.sampleplayer.ui.playerlist
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uiza.sampleplayer.R
-import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.view_item_player_list.view.*
 
-class PlayerListAdapter(private val list: List<UZPlayback>) :
+class PlayerListAdapter(private val list: List<Item>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var onClickItem: ((index: Int, uzPlayback: UZPlayback) -> Unit)? = null
+    var onClickItem: ((index: Int, item: Item) -> Unit)? = null
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("SetTextI18n")
-        fun bind(uzPlayback: UZPlayback) {
-            itemView.tvName.text = uzPlayback.name
-            itemView.tvAd.text = "Ad: ${uzPlayback.urlIMAAd}"
-            itemView.tvIsPortrait.text = "isPortraitVideo ${uzPlayback.isPortraitVideo}"
-            itemView.tvPoster.text = "poster ${uzPlayback.poster}"
-            itemView.tvLinkPlay.text = "poster ${uzPlayback.linkPlay}"
+        fun bind(item: Item) {
+            itemView.tvName.text = item.uzPlayback?.name
+            itemView.tvAd.text = "urlIMAAd: ${item.uzPlayback?.urlIMAAd}"
+            itemView.tvIsPortrait.text = "isPortraitVideo ${item.uzPlayback?.isPortraitVideo}"
+            itemView.tvPoster.text = "poster ${item.uzPlayback?.poster}"
+            itemView.tvLinkPlay.text = "linkPlay ${item.uzPlayback?.linkPlay}"
 
+            if (item.isPlaying) {
+                itemView.linearLayout.setBackgroundColor(Color.GREEN)
+            } else {
+                itemView.linearLayout.setBackgroundColor(Color.WHITE)
+            }
             itemView.cardView.setOnClickListener {
-                onClickItem?.invoke(adapterPosition, uzPlayback)
+                onClickItem?.invoke(adapterPosition, item)
             }
         }
     }
