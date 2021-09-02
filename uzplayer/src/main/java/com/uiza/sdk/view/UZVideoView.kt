@@ -778,14 +778,20 @@ class UZVideoView : RelativeLayout,
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
                 } catch (e: Exception) {
+                    log("loitpp enterPIPMode e $e")
                     val w: Int
                     val h: Int
-                    if (videoWidth > videoHeight) {
-                        w = 1280
-                        h = 720
+                    if (videoWidth == 0 || videoHeight == 0) {
+                        w = this.width
+                        h = this.height
                     } else {
-                        w = 720
-                        h = 1280
+                        if (videoWidth > videoHeight) {
+                            w = 1280
+                            h = 720
+                        } else {
+                            w = 720
+                            h = 1280
+                        }
                     }
                     val aspectRatio = Rational(w, h)
                     params.setAspectRatio(aspectRatio)
