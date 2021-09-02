@@ -5,7 +5,7 @@ import com.uiza.sdk.models.UZPlayback
 import java.io.Serializable
 
 @Keep
-data class Item(
+data class ItemRv(
     var uzPlayback: UZPlayback? = null,
     var isPlaying: Boolean = false,
 ) : Serializable

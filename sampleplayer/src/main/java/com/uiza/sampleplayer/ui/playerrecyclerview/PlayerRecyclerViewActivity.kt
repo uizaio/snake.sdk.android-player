@@ -6,15 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sampleplayer.ui.playerlist.Item
-import com.uiza.sampleplayer.ui.playerlist.PlayerListAdapter
 import com.uiza.sdk.models.UZPlayback
-import kotlinx.android.synthetic.main.activity_player_list.*
+import kotlinx.android.synthetic.main.activity_player_recycler_view.*
 import java.util.*
 
 class PlayerRecyclerViewActivity : AppCompatActivity() {
-    private val list: MutableList<Item> = ArrayList()
-    private var playerListAdapter: PlayerListAdapter? = null
+    private val list: MutableList<ItemRv> = ArrayList()
+    private var recyclerAdapter: RecyclerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,17 +23,26 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        playerListAdapter = PlayerListAdapter(list)
-        playerListAdapter?.onClickItem = { index: Int, _: Item ->
+        recyclerAdapter = RecyclerAdapter(list)
+        recyclerAdapter?.onClickItem = { index: Int, _: ItemRv ->
+            onPlay(index)
         }
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = playerListAdapter
+        recyclerView.adapter = recyclerAdapter
+    }
+
+    private fun onPlay(index: Int) {
+        list.forEach { item ->
+            item.isPlaying = false
+        }
+        list[index].isPlaying = true
+        notifyDataSetChanged()
     }
 
     private fun prepareData() {
         list.add(
-            Item(
+            ItemRv(
                 UZPlayback(
                     linkPlay = Constant.LINK_PLAY_VOD,
                     name = "VOD",
@@ -44,7 +51,7 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
             )
         )
         list.add(
-            Item(
+            ItemRv(
                 UZPlayback(
                     linkPlay = Constant.LINK_PLAY_LIVE,
                     name = "LIVE",
@@ -53,7 +60,7 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
             )
         )
         list.add(
-            Item(
+            ItemRv(
                 UZPlayback(
                     linkPlay = Constant.LINK_PLAY_VOD_PORTRAIT,
                     name = "Portrait",
@@ -62,7 +69,7 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
             )
         )
         list.add(
-            Item(
+            ItemRv(
                 UZPlayback(
                     linkPlay = Constant.LINK_PLAY_VOD,
                     name = "Ad",
@@ -72,7 +79,7 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
             )
         )
         list.add(
-            Item(
+            ItemRv(
                 UZPlayback(
                     linkPlay = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd",
                     name = "This is name of video",
@@ -86,6 +93,6 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun notifyDataSetChanged() {
-        playerListAdapter?.notifyDataSetChanged()
+        recyclerAdapter?.notifyDataSetChanged()
     }
 }
