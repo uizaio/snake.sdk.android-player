@@ -764,7 +764,10 @@ class UZVideoView : RelativeLayout,
     fun enterPIPMode() {
         if (isPIPEnable) {
             if (isLandscape) {
-                throw  IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
+                throw IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
+            }
+            if (!isFirstStateReady) {
+                throw IllegalArgumentException("Cannot enter PIP Mode if isFirstStateReady is false")
             }
             isInPipMode = true
             positionPIPPlayer = currentPosition

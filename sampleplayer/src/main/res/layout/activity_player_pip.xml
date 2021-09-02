@@ -23,10 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_any_linkplay_here"
-                android:imeOptions="actionDone"
-                android:lines="8"
-                android:padding="5dp"
-                android:textSize="@dimen/txt_medium" />
+                android:padding="@dimen/margin_padding_medium" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnPlay"
