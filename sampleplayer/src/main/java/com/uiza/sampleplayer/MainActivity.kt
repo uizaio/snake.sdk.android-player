@@ -12,6 +12,7 @@ import com.uiza.sampleplayer.ui.playerfragment.PlayerFragmentActivity
 import com.uiza.sampleplayer.ui.playerlist.PlayerListActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import com.uiza.sampleplayer.ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity
+import com.uiza.sampleplayer.ui.playerrecyclerview.PlayerRecyclerViewActivity
 import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playertiktokslide.PlayerTiktokSlideActivity
 import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
@@ -58,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         btnPlayerPreviewSeekbar.setOnClickListener {
             gotoActivity(PlayerPreviewSeekbarActivity::class.java)
         }
+        btnPlayerRecyclerView.setOnClickListener {
+            gotoActivity(PlayerRecyclerViewActivity::class.java)
+        }
         btnPlayerSkin.setOnClickListener {
 
         }
@@ -69,9 +73,6 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
-        }
-        btnPlayerRecyclerView.setOnClickListener {
-
         }
 
         txtVersion.text = String.format(
