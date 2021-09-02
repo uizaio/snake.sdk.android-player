@@ -49,6 +49,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
             } else {
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
                 itemView.tvPause.visibility = View.GONE
+                itemView.uzVideoView.onDestroyView()
             }
             itemView.cardView.setOnClickListener {
                 if (itemRv.isFocussed) {
