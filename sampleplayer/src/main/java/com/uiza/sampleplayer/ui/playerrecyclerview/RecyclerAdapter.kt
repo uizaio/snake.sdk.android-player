@@ -56,6 +56,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 } else {
                     onClickItem?.invoke(adapterPosition, itemRv)
                 }
+                itemView.tvPause.visibility = View.GONE
             }
         }
     }
@@ -80,6 +81,15 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         uzVideoView?.onPauseView()
+        try {
+            if (list[holder.adapterPosition].isFocussed) {
+                holder.itemView.tvPause.visibility = View.VISIBLE
+            } else {
+                holder.itemView.tvPause.visibility = View.GONE
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun onDestroy() {

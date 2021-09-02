@@ -54,4 +54,14 @@
             tools:text="tvLinkPlay" />
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="PAUSE"
+        android:textColor="@color/red"
+        android:textSize="50dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.cardview.widget.CardView>
