@@ -61,7 +61,7 @@
         android:layout_gravity="center"
         android:text="PAUSE"
         android:textColor="@color/red"
-        android:textSize="50dp"
+        android:textSize="60dp"
         android:visibility="gone"
         tools:visibility="visible" />
 </androidx.cardview.widget.CardView>
