@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uiza.sampleplayer.R
-import com.uiza.sdk.view.UZVideoView
 import kotlinx.android.synthetic.main.view_item_recycler.view.*
 
 class RecyclerAdapter(private val list: List<ItemRv>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickItem: ((index: Int, itemRv: ItemRv) -> Unit)? = null
-    private val listUZVideo = ArrayList<UZVideoView>()
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("SetTextI18n")
@@ -26,15 +24,10 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
             itemView.tvLinkPlay.text = "linkPlay ${itemRv.uzPlayback?.linkPlay}"
 
             if (itemRv.isPlaying) {
-                listUZVideo.forEach {
-                    it.pause()
-                    listUZVideo.remove(it)
-                }
                 itemView.linearLayout.setBackgroundColor(Color.GREEN)
                 if (itemView.uzVideoView.isViewCreated()) {
                     itemRv.uzPlayback?.let {
                         itemView.uzVideoView.play(it)
-                        listUZVideo.add(itemView.uzVideoView)
                     }
                 }
             } else {
@@ -64,10 +57,8 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
         }
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
-        listUZVideo.forEach {
-            it.onDestroyView()
-        }
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.itemView.uzVideoView.onDestroyView()
     }
 }
