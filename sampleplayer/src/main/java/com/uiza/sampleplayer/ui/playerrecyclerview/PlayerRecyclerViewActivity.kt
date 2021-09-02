@@ -34,9 +34,9 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
 
     private fun onPlay(index: Int) {
         list.forEach { item ->
-            item.isPlaying = false
+            item.isFocussed = false
         }
-        list[index].isPlaying = true
+        list[index].isFocussed = true
         notifyDataSetChanged()
     }
 

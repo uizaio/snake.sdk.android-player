@@ -2,7 +2,6 @@ package com.uiza.sampleplayer.ui.playerrecyclerview
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +36,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
             itemView.tvPoster.text = "poster ${itemRv.uzPlayback?.poster}"
             itemView.tvLinkPlay.text = "linkPlay ${itemRv.uzPlayback?.linkPlay}"
 
-            if (itemRv.isPlaying) {
+            if (itemRv.isFocussed) {
                 itemView.linearLayout.setBackgroundColor(Color.GREEN)
                 if (uzVideoView == itemView.uzVideoView) {
                     uzVideoView?.onResumeView()
@@ -66,7 +65,6 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("loitpp", "onBindViewHolder $position")
         if (holder is MyViewHolder) {
             val movie = list[position]
             holder.bind(movie)
@@ -74,7 +72,6 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        Log.d("loitpp", "onViewDetachedFromWindow ${holder.adapterPosition}")
         super.onViewDetachedFromWindow(holder)
         uzVideoView?.onPauseView()
     }

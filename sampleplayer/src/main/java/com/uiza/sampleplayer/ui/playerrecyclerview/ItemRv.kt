@@ -7,5 +7,5 @@ import java.io.Serializable
 @Keep
 data class ItemRv(
     var uzPlayback: UZPlayback? = null,
-    var isPlaying: Boolean = false,
+    var isFocussed: Boolean = false,
 ) : Serializable
