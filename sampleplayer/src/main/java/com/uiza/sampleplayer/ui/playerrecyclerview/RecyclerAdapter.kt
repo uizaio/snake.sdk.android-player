@@ -40,6 +40,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 itemView.linearLayout.setBackgroundColor(Color.GREEN)
                 if (uzVideoView == itemView.uzVideoView) {
                     uzVideoView?.onResumeView()
+                    itemView.tvPause.visibility = View.GONE
                 } else {
                     uzVideoView?.onPauseView()
                     uzVideoView = itemView.uzVideoView
@@ -47,6 +48,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 }
             } else {
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
+                itemView.tvPause.visibility = View.GONE
             }
             itemView.cardView.setOnClickListener {
                 if (itemRv.isFocussed) {
@@ -56,7 +58,6 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 } else {
                     onClickItem?.invoke(adapterPosition, itemRv)
                 }
-                itemView.tvPause.visibility = View.GONE
             }
         }
     }
