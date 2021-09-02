@@ -95,4 +95,9 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
     private fun notifyDataSetChanged() {
         recyclerAdapter?.notifyDataSetChanged()
     }
+
+    override fun onDestroy() {
+        recyclerAdapter?.onDestroy()
+        super.onDestroy()
+    }
 }

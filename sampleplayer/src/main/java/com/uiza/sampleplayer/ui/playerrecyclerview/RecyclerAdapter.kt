@@ -7,12 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.uiza.sampleplayer.R
+import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.view.UZVideoView
 import kotlinx.android.synthetic.main.view_item_recycler.view.*
 
 class RecyclerAdapter(private val list: List<ItemRv>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onClickItem: ((index: Int, itemRv: ItemRv) -> Unit)? = null
+    var uzVideoView: UZVideoView? = null
+
+    private fun play(uzPlayback: UZPlayback?) {
+        uzVideoView?.let { v ->
+            if (v.isViewCreated()) {
+                uzPlayback?.let {
+                    v.play(it)
+                }
+            }
+        }
+    }
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("SetTextI18n")
@@ -25,14 +38,11 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
 
             if (itemRv.isPlaying) {
                 itemView.linearLayout.setBackgroundColor(Color.GREEN)
-                if (itemView.uzVideoView.isViewCreated()) {
-                    itemRv.uzPlayback?.let {
-                        itemView.uzVideoView.play(it)
-                    }
-                }
+                uzVideoView?.onPauseView()
+                uzVideoView = itemView.uzVideoView
+                play(itemRv.uzPlayback)
             } else {
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
-                itemView.uzVideoView.onDestroyView()
             }
             itemView.cardView.setOnClickListener {
                 onClickItem?.invoke(adapterPosition, itemRv)
@@ -59,6 +69,10 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        holder.itemView.uzVideoView.onDestroyView()
+        uzVideoView?.onPauseView()
+    }
+
+    fun onDestroy() {
+        uzVideoView?.onPauseView()
     }
 }
