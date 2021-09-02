@@ -6,6 +6,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
@@ -40,6 +41,13 @@ class PlayerListActivity : AppCompatActivity() {
         }
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
+        }
+        uzVideoView.onPlayerStateChanged = { _: Boolean, playbackState: Int ->
+            when (playbackState) {
+                Player.STATE_ENDED -> {
+                    playNext()
+                }
+            }
         }
         playerListAdapter = PlayerListAdapter(list)
         playerListAdapter?.onClickItem = { index: Int, _: Item ->
@@ -142,5 +150,12 @@ class PlayerListActivity : AppCompatActivity() {
 
     private fun notifyDataSetChanged() {
         playerListAdapter?.notifyDataSetChanged()
+    }
+
+    private fun playNext() {
+        if (index < list.size - 1) {
+            index++
+            onPlay()
+        }
     }
 }
