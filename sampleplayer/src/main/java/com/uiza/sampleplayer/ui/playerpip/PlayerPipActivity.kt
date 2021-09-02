@@ -6,12 +6,11 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
+import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player_pip.*
 
 class PlayerPipActivity : AppCompatActivity() {
-    private var disposables: CompositeDisposable? = null
 
     override fun onCreate(savedState: Bundle?) {
         super.onCreate(savedState)
@@ -22,19 +21,22 @@ class PlayerPipActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.setPIPModeEnabled(true)
-        uzVideoView.onScreenRotate = { isLandscape: Boolean ->
-//            if (!isLandscape) {
-//                val w = screenWidth
-//                val h = w * 9 / 16
-//                uzVideoView.setFreeSize(false)
-//                uzVideoView.setSize(w, h)
-//            }
+        uzVideoView.onFirstStateReady = {
+            uzVideoView.setUseController(true)
         }
+
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
 
+        btnVOD.setOnClickListener {
+            etLinkPlay.setText(Constant.LINK_PLAY_VOD)
+            btnPlay.performClick()
+        }
+        btnLive.setOnClickListener {
+            etLinkPlay.setText(Constant.LINK_PLAY_LIVE)
+            btnPlay.performClick()
+        }
         btnPlay.setOnClickListener { onPlay() }
-        disposables = CompositeDisposable()
     }
 
     private fun onPlay() {
@@ -62,7 +64,6 @@ class PlayerPipActivity : AppCompatActivity() {
     public override fun onDestroy() {
         super.onDestroy()
         uzVideoView.onDestroyView()
-        disposables?.dispose()
     }
 
     public override fun onResume() {

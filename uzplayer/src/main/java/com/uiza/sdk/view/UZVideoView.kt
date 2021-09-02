@@ -766,9 +766,6 @@ class UZVideoView : RelativeLayout,
             if (isLandscape) {
                 throw IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
             }
-            if (!isFirstStateReady) {
-                throw IllegalArgumentException("Cannot enter PIP Mode if isFirstStateReady is false")
-            }
             isInPipMode = true
             positionPIPPlayer = currentPosition
             isUSeControllerRestorePip = isUseController()
@@ -834,11 +831,13 @@ class UZVideoView : RelativeLayout,
         return playerView?.useController ?: false
     }
 
-    fun setUseController(useController: Boolean) {
+    fun setUseController(useController: Boolean): Boolean {
         if (!isFirstStateReady) {
-            throw IllegalArgumentException("setUseController() can be applied if the player state is Player.STATE_READY")
+            log("setUseController() can be applied if the player state is Player.STATE_READY")
+            return false
         }
         playerView?.useController = useController
+        return true
     }
 
     override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
