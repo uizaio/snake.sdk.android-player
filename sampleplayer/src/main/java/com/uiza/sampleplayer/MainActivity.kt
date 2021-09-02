@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             gotoActivity(PlayerBasicActivity::class.java)
         }
         btnPlayerPip.setOnClickListener {
-//            gotoActivity(PlayerPipActivity::class.java)
+            gotoActivity(PlayerPipActivity::class.java)
         }
         btnPlayerPreviewSeekbar.setOnClickListener {
 //            gotoActivity(PlayerPreviewSeekbarActivity::class.java)

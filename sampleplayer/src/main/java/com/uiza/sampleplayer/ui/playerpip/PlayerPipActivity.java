@@ -21,15 +21,10 @@ import com.uiza.sdk.view.UZVideoView;
 import io.reactivex.disposables.CompositeDisposable;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-
-/**
- * Demo UZPlayer with Picture In Picture
- */
 public class PlayerPipActivity extends AppCompatActivity {
 
     private UZVideoView uzVideo;
     private EditText etLinkPlay;
-    private Handler handler = new Handler(Looper.getMainLooper());
     private CompositeDisposable disposables;
 
     @Override
@@ -39,17 +34,14 @@ public class PlayerPipActivity extends AppCompatActivity {
         uzVideo = findViewById(R.id.uzVideoView);
         etLinkPlay = findViewById(R.id.etLinkPlay);
         uzVideo.setPIPModeEnabled(true);
-        uzVideo.setOnScreenRotate(new Function1<Boolean, Unit>() {
-            @Override
-            public Unit invoke(Boolean isLandscape) {
-                if (!isLandscape) {
-                    int w = UZViewUtils.getScreenWidth();
-                    int h = w * 9 / 16;
-                    uzVideo.setFreeSize(false);
-                    uzVideo.setSize(w, h);
-                }
-                return null;
+        uzVideo.setOnScreenRotate(isLandscape -> {
+            if (!isLandscape) {
+                int w = UZViewUtils.getScreenWidth();
+                int h = w * 9 / 16;
+                uzVideo.setFreeSize(false);
+                uzVideo.setSize(w, h);
             }
+            return null;
         });
         // If linkplay is livestream, it will auto move to live edge when onResume is called
         uzVideo.setAutoMoveToLiveEdge(true);
@@ -93,7 +85,6 @@ public class PlayerPipActivity extends AppCompatActivity {
         uzVideo.onDestroyView();
         if (disposables != null)
             disposables.dispose();
-        handler = null;
     }
 
     @Override
