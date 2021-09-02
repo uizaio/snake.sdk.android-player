@@ -3,13 +3,16 @@ package com.uiza.sampleplayer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
 import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity
+import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
+import com.uiza.sampleplayer.ui.playertiktokslide.PlayerTiktokSlideActivity
+import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -29,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        btnPlayerCast.visibility = View.GONE
         btnError.setOnClickListener {
             gotoActivity(ErrorActivity::class.java)
         }
@@ -42,23 +44,26 @@ class MainActivity : AppCompatActivity() {
         btnPlayerBasic.setOnClickListener {
             gotoActivity(PlayerBasicActivity::class.java)
         }
+        btnPlayerFragment.setOnClickListener {
+
+        }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
         }
         btnPlayerPreviewSeekbar.setOnClickListener {
-//            gotoActivity(PlayerPreviewSeekbarActivity::class.java)
+            gotoActivity(PlayerPreviewSeekbarActivity::class.java)
         }
         btnPlayerSkin.setOnClickListener {
 
         }
         btnPlayerTiktok.setOnClickListener {
-//            gotoActivity(PlayerTiktokActivity::class.java)
+            gotoActivity(PlayerTiktokActivity::class.java)
         }
         btnPlayerTiktokSlide.setOnClickListener {
-//            gotoActivity(PlayerTiktokSlideActivity::class.java)
+            gotoActivity(PlayerTiktokSlideActivity::class.java)
         }
         btnPlayerWithUZDragView.setOnClickListener {
-//            gotoActivity(PlayerWithUZDragViewActivity::class.java)
+            gotoActivity(PlayerWithUZDragViewActivity::class.java)
         }
         btnPlayerRecyclerView.setOnClickListener {
 
