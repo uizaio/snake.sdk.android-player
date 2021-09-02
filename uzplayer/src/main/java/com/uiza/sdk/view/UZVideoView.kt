@@ -681,7 +681,12 @@ class UZVideoView : RelativeLayout,
         // in PIP to continue
         if (!isInPipMode) {
             playerManager?.pause()
+
         }
+    }
+
+    fun isPlayingAd(): Boolean? {
+        return playerManager?.isPlayingAd
     }
 
     override val isPIPEnable: Boolean

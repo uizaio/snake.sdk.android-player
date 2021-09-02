@@ -25,8 +25,14 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
 
             if (itemRv.isPlaying) {
                 itemView.linearLayout.setBackgroundColor(Color.GREEN)
+                if (itemView.uzVideoView.isViewCreated()) {
+                    itemRv.uzPlayback?.let {
+                        itemView.uzVideoView.play(it)
+                    }
+                }
             } else {
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
+                itemView.uzVideoView.pause()
             }
             itemView.cardView.setOnClickListener {
                 onClickItem?.invoke(adapterPosition, itemRv)
