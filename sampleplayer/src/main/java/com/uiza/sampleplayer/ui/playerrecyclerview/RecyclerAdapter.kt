@@ -49,7 +49,9 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
             }
             itemView.cardView.setOnClickListener {
-                onClickItem?.invoke(adapterPosition, itemRv)
+                if (!itemRv.isFocussed) {
+                    onClickItem?.invoke(adapterPosition, itemRv)
+                }
             }
         }
     }
