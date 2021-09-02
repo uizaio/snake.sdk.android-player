@@ -49,9 +49,15 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <activity
+            android:name=".ui.playerlist.PlayerListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="PlayerListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ui.playerwithuzdragview.PlayerWithUZDragViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="PlayerActivity"
+            android:label="PlayerWithUZDragViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -65,7 +71,7 @@
         <activity
             android:name=".ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="PlayerBasicActivity"
+            android:label="PlayerPreviewSeekbarActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -77,7 +83,7 @@
         <activity
             android:name=".ui.playertiktokslide.PlayerTiktokSlideActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="PlayerTiktokSlideHorizontalActivity"
+            android:label="PlayerTiktokSlideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 

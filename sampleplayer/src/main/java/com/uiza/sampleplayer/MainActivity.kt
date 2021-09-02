@@ -9,6 +9,7 @@ import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
 import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
 import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playerfragment.PlayerFragmentActivity
+import com.uiza.sampleplayer.ui.playerlist.PlayerListActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
 import com.uiza.sampleplayer.ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity
 import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
@@ -47,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerFragment.setOnClickListener {
             gotoActivity(PlayerFragmentActivity::class.java)
+        }
+        btnPlayerList.setOnClickListener {
+            gotoActivity(PlayerListActivity::class.java)
         }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
