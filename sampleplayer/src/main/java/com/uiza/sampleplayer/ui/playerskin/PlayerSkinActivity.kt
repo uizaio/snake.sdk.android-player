@@ -10,6 +10,10 @@ import kotlinx.android.synthetic.main.activity_player_skin.*
 
 class PlayerSkinActivity : AppCompatActivity() {
 
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_skin)
@@ -36,7 +40,19 @@ class PlayerSkinActivity : AppCompatActivity() {
             onPlay(etLinkPlay.text.toString().trim())
         }
         btSkinDefault.setOnClickListener {
+            changeSkin(R.layout.uzplayer_skin_default)
+        }
+        btSkin1.setOnClickListener {
+            changeSkin(R.layout.uzplayer_skin_1)
+        }
+    }
 
+    private fun changeSkin(skinId: Int) {
+        val isSuccess = uzVideoView.changeSkin(skinId)
+        if (isSuccess) {
+            toast("changeSkin Success")
+        } else {
+            toast("changeSkin Failed (Player is not ready)")
         }
     }
 

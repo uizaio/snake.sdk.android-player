@@ -18,7 +18,6 @@ class UZPlayer {
             this.elapsedTime = SystemClock.elapsedRealtime()
             this.skinDefault = skinDefault
         }
-
     }
 
 }

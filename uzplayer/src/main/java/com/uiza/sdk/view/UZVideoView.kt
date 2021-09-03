@@ -56,7 +56,6 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
-//TODO skin
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
@@ -122,7 +121,6 @@ class UZVideoView : RelativeLayout,
     private var isOnPlayerEnded = false
     private var isShowLayoutDebug = false
 
-    //TODO improve this func
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
@@ -1155,17 +1153,18 @@ class UZVideoView : RelativeLayout,
      * return true if success
      */
     fun changeSkin(@LayoutRes skinId: Int): Boolean {
-        if (playerManager == null) {
-            return false
-        }
         if (playerView?.isUseUZDragView() == true) {
             throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
+        }
+        if (playerManager == null) {
+            return false
         }
         if (playerManager?.isPlayingAd == true) {
             notifyError(ErrorUtils.exceptionChangeSkin())
             return false
         }
         this.skinId = skinId
+        UZPlayer.skinDefault = skinId
         isRefreshFromChangeSkin = true
         isCalledFromChangeSkin = true
 
