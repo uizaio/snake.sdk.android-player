@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.uiza.samplebroadcast.DisplayBasicActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
 import com.uiza.sampleplayer.ui.playeradvanced.PlayerAdvancedActivity
@@ -84,7 +85,9 @@ class MainActivity : AppCompatActivity() {
         btnPlayerYoutube.setOnClickListener {
             toast("Coming soon")
         }
-
+        btnDisplayBasic.setOnClickListener {
+            gotoActivity(DisplayBasicActivity::class.java)
+        }
         txtVersion.text = String.format(
             Locale.getDefault(),
             "%s (%s)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE

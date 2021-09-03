@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -98,10 +99,15 @@
             android:label="PlayerTiktokSlideActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.uiza.samplebroadcast.DisplayBasicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:label="DisplayBasicActivity"
+            android:screenOrientation="portrait" />
 
-        <meta-data
-            android:name="uz_live_views_url"
-            android:value="@string/uz_live_views_url" />
+<!--        <meta-data-->
+<!--            android:name="uz_live_views_url"-->
+<!--            android:value="@string/uz_live_views_url" />-->
     </application>
 
 </manifest>
