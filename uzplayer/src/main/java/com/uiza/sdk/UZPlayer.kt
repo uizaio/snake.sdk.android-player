@@ -9,11 +9,14 @@ class UZPlayer {
         var elapsedTime = SystemClock.elapsedRealtime()
             private set
 
-        fun init() {
+        var skinDefault = R.layout.uzplayer_skin_default
+
+        fun init(skinDefault: Int) {
             if (!UZAppUtils.isDependencyAvailable(dependencyClass = "com.google.android.exoplayer2.SimpleExoPlayer")) {
                 throw NoClassDefFoundError("Exo Player library is missing")
             }
-            elapsedTime = SystemClock.elapsedRealtime()
+            this.elapsedTime = SystemClock.elapsedRealtime()
+            this.skinDefault = skinDefault
         }
 
     }

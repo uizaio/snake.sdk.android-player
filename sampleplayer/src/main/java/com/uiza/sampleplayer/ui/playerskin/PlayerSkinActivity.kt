@@ -35,6 +35,9 @@ class PlayerSkinActivity : AppCompatActivity() {
         btPlayLink.setOnClickListener {
             onPlay(etLinkPlay.text.toString().trim())
         }
+        btSkinDefault.setOnClickListener {
+
+        }
     }
 
     private fun onPlay(link: String) {

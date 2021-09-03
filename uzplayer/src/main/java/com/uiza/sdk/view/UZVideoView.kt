@@ -28,6 +28,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sdk.R
+import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
 import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView
@@ -128,7 +129,7 @@ class UZVideoView : RelativeLayout,
     private var isFirstStateReady = false
 
     private var isViewCreated = false
-    private var skinId = R.layout.uzplayer_skin_default
+    private var skinId = UZPlayer.skinDefault
     var uzPlayback: UZPlayback? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
@@ -539,10 +540,11 @@ class UZVideoView : RelativeLayout,
         isCalledFromChangeSkin = false
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
+        playerView?.useController =
+            false//khong cho dung controller cho den khi isFirstStateReady == true
         updateUIEndScreen()
         releasePlayerManager()
         showProgress()
-//        updateUIDependOnLiveStream()
 
         initDataSource(
             linkPlay = linkPlay,
