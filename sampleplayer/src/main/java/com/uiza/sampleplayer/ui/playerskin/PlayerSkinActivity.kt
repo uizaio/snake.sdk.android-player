@@ -45,6 +45,12 @@ class PlayerSkinActivity : AppCompatActivity() {
         btSkin1.setOnClickListener {
             changeSkin(R.layout.uzplayer_skin_1)
         }
+        btSkin2.setOnClickListener {
+            changeSkin(R.layout.uzplayer_skin_2)
+        }
+        btSkin3.setOnClickListener {
+            changeSkin(R.layout.uzplayer_skin_3)
+        }
     }
 
     private fun changeSkin(skinId: Int) {

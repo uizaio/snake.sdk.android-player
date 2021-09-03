@@ -1156,7 +1156,7 @@ class UZVideoView : RelativeLayout,
         if (playerView?.isUseUZDragView() == true) {
             throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
         }
-        if (playerManager == null) {
+        if (playerManager == null || !isFirstStateReady) {
             return false
         }
         if (playerManager?.isPlayingAd == true) {
@@ -1172,8 +1172,8 @@ class UZVideoView : RelativeLayout,
         if (inflater != null) {
             layoutRootView.removeView(playerView)
             layoutRootView.requestLayout()
-            playerView = inflater.inflate(skinId, null) as UZPlayerView
 
+            playerView = inflater.inflate(skinId, null) as UZPlayerView
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
             playerView?.let {
@@ -1185,17 +1185,18 @@ class UZVideoView : RelativeLayout,
 
             resizeContainerView()
             updateUIEachSkin()
-//            updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
+            setVisibilityOfPlayPauseReplay(false)
             onSkinChange?.invoke()
 
             return true
         }
+
         return false
     }
 
