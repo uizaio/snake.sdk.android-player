@@ -1156,7 +1156,7 @@ class UZVideoView : RelativeLayout,
         if (playerView?.isUseUZDragView() == true) {
             throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
         }
-        if (playerManager == null || !isFirstStateReady) {
+        if (playerManager == null || !isFirstStateReady || isOnPlayerEnded) {
             return false
         }
         if (playerManager?.isPlayingAd == true) {
@@ -1170,10 +1170,10 @@ class UZVideoView : RelativeLayout,
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater != null) {
-            layoutRootView.removeView(playerView)
-            layoutRootView.requestLayout()
+//            layoutRootView.removeView(playerView)
+//            layoutRootView.requestLayout()
 
-            playerView = inflater.inflate(skinId, null) as UZPlayerView
+            playerView = inflater.inflate(skinId, null) as UZPlayerView?
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
             playerView?.let {
