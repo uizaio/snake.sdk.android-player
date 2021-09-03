@@ -1,8 +1,6 @@
 package com.uiza.sampleplayer.ui.playerwithuzdragview
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -10,14 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sampleplayer.app.UZApplication
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import com.uiza.sdk.view.UZDragView
 import com.uiza.sdk.view.UZPlayerView
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player_with_uz_drag_view.*
-import java.util.*
 
 class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
@@ -29,14 +24,9 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         Log.d(javaClass.simpleName, msg)
     }
 
-    private var playlist = ArrayList<UZPlayback>()
-    private var handler: Handler? = null
-    private var compositeDisposable = CompositeDisposable()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player_with_uz_drag_view)
-        handler = Handler(Looper.getMainLooper())
         setupViews()
     }
 
@@ -67,6 +57,9 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         uzVideoView.onIsInitResult = {
             uzDragView.setInitResult(true)
         }
+        uzVideoView.onFirstStateReady = {
+            uzVideoView.setUseController(true)
+        }
         uzVideoView.onScreenRotate = { isLandscape ->
             if (!isLandscape) {
                 val w = UZViewUtils.screenWidth
@@ -76,18 +69,9 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
             }
             uzDragView.setScreenRotate(isLandscape)
         }
-        // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
-        val playbackInfo: UZPlayback? = null
-        if (intent == null) {
-            hsvBottom.visibility = View.VISIBLE
-            etLinkPlay.visibility = View.VISIBLE
-            initPlaylist()
-        } else {
-            hsvBottom.visibility = View.VISIBLE
-            etLinkPlay.visibility = View.VISIBLE
-            initPlaylist()
-        }
+        hsvBottom.visibility = View.VISIBLE
+        etLinkPlay.visibility = View.VISIBLE
         bt0.setOnClickListener {
             updateView(index = 0)
         }
@@ -100,12 +84,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         bt4.setOnClickListener {
             updateView(index = 3)
         }
-        if (playbackInfo != null) {
-            val isInitSuccess = uzVideoView.play(playbackInfo)
-            if (!isInitSuccess) {
-                showToast("Init failed")
-            }
-        }
     }
 
     private fun updateView(index: Int) {
@@ -113,14 +91,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         etLinkPlay.setText(Constant.urls[index])
         setLastCursorEditText(etLinkPlay)
         onPlay()
-    }
-
-    private fun initPlaylist() {
-        for (url in Constant.urls) {
-            val playback = UZPlayback()
-            playback.linkPlay = url
-            playlist.add(playback)
-        }
     }
 
     private fun onPlay() {
@@ -135,8 +105,6 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         uzVideoView.onDestroyView()
-        compositeDisposable.dispose()
-        handler = null
         super.onDestroy()
     }
 
