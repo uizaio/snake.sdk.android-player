@@ -18,11 +18,11 @@
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btBackScreenUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow_down_uz" />
+            android:src="@drawable/back" />
 
         <com.uiza.sdk.widget.UZTextView
             android:id="@+id/tvTitleUZ"
@@ -31,18 +31,18 @@
             android:layout_marginStart="@dimen/margin_10"
             android:layout_weight="1"
             android:singleLine="true"
-            android:textColor="@android:color/white"
+            android:textColor="@color/light_yellow"
             android:textSize="@dimen/txt_medium"
             android:textStyle="bold"
             tools:text="@string/app_name" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btPipUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_pip_white_24_uz" />
+            android:src="@drawable/picture" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btVolumeUZ"
@@ -54,11 +54,11 @@
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btSettingUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_settings_white_uz" />
+            android:src="@drawable/settings" />
     </LinearLayout>
 
     <LinearLayout
@@ -74,33 +74,36 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_replay_10_white_uz" />
+            android:src="@drawable/ic_replay_10_white_uz"
+            app:tint="@color/deep_pink" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btPlayUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@drawable/ic_play_white_uz"
+            app:tint="@color/red"
             app:useDefaultIB="false" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btPauseUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
             android:src="@drawable/ic_pause_white_uz"
+            app:tint="@color/green"
             app:useDefaultIB="false" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btReplayUZ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_replay_white_uz" />
+            android:src="@drawable/replay" />
 
         <com.uiza.sdk.widget.UZImageButton
             android:id="@+id/btFfwdUZ"

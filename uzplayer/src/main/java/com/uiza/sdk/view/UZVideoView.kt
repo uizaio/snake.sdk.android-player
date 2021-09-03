@@ -10,7 +10,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
@@ -26,6 +28,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.hls.HlsManifest
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sdk.R
+import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.UZPlayer.Companion.elapsedTime
 import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.hq.UZTrackSelectionView
@@ -53,7 +56,6 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
 
-//TODO skin
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
@@ -119,19 +121,18 @@ class UZVideoView : RelativeLayout,
     private var isOnPlayerEnded = false
     private var isShowLayoutDebug = false
 
-    //TODO improve this func
     private var isRefreshFromChangeSkin = false
     private var currentPositionBeforeChangeSkin = 0L
     private var isCalledFromChangeSkin = false
     private var isFirstStateReady = false
 
     private var isViewCreated = false
-    private var skinId = R.layout.uzplayer_skin_default
+    private var skinId = UZPlayer.skinDefault
     var uzPlayback: UZPlayback? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
-    var onSkinChange: (() -> Unit)? = null
+    var onSkinChange: ((skinId: Int) -> Unit)? = null
     var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
@@ -537,10 +538,11 @@ class UZVideoView : RelativeLayout,
         isCalledFromChangeSkin = false
         controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         isOnPlayerEnded = false
+        playerView?.useController =
+            false//khong cho dung controller cho den khi isFirstStateReady == true
         updateUIEndScreen()
         releasePlayerManager()
         showProgress()
-//        updateUIDependOnLiveStream()
 
         initDataSource(
             linkPlay = linkPlay,
@@ -679,7 +681,12 @@ class UZVideoView : RelativeLayout,
         // in PIP to continue
         if (!isInPipMode) {
             playerManager?.pause()
+
         }
+    }
+
+    fun isPlayingAd(): Boolean? {
+        return playerManager?.isPlayingAd
     }
 
     override val isPIPEnable: Boolean
@@ -762,7 +769,7 @@ class UZVideoView : RelativeLayout,
     fun enterPIPMode() {
         if (isPIPEnable) {
             if (isLandscape) {
-                throw  IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
+                throw IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
             }
             isInPipMode = true
             positionPIPPlayer = currentPosition
@@ -776,14 +783,20 @@ class UZVideoView : RelativeLayout,
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
                 } catch (e: Exception) {
+                    log("loitpp enterPIPMode e $e")
                     val w: Int
                     val h: Int
-                    if (videoWidth > videoHeight) {
-                        w = 1280
-                        h = 720
+                    if (videoWidth == 0 || videoHeight == 0) {
+                        w = this.width
+                        h = this.height
                     } else {
-                        w = 720
-                        h = 1280
+                        if (videoWidth > videoHeight) {
+                            w = 1280
+                            h = 720
+                        } else {
+                            w = 720
+                            h = 1280
+                        }
                     }
                     val aspectRatio = Rational(w, h)
                     params.setAspectRatio(aspectRatio)
@@ -829,11 +842,13 @@ class UZVideoView : RelativeLayout,
         return playerView?.useController ?: false
     }
 
-    fun setUseController(useController: Boolean) {
+    fun setUseController(useController: Boolean): Boolean {
         if (!isFirstStateReady) {
-            throw IllegalArgumentException("setUseController() can be applied if the player state is Player.STATE_READY")
+            log("setUseController() can be applied if the player state is Player.STATE_READY")
+            return false
         }
         playerView?.useController = useController
+        return true
     }
 
     override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
@@ -1138,26 +1153,27 @@ class UZVideoView : RelativeLayout,
      * return true if success
      */
     fun changeSkin(@LayoutRes skinId: Int): Boolean {
-        if (playerManager == null) {
-            return false
-        }
         if (playerView?.isUseUZDragView() == true) {
             throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
+        }
+        if (playerManager == null || !isFirstStateReady || isOnPlayerEnded) {
+            return false
         }
         if (playerManager?.isPlayingAd == true) {
             notifyError(ErrorUtils.exceptionChangeSkin())
             return false
         }
         this.skinId = skinId
+        UZPlayer.skinDefault = skinId
         isRefreshFromChangeSkin = true
         isCalledFromChangeSkin = true
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater != null) {
-            layoutRootView.removeView(playerView)
-            layoutRootView.requestLayout()
-            playerView = inflater.inflate(skinId, null) as UZPlayerView
+//            layoutRootView.removeView(playerView)
+//            layoutRootView.requestLayout()
 
+            playerView = inflater.inflate(skinId, null) as UZPlayerView?
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
             playerView?.let {
@@ -1169,17 +1185,18 @@ class UZVideoView : RelativeLayout,
 
             resizeContainerView()
             updateUIEachSkin()
-//            updateUIDependOnLiveStream()
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
             releasePlayerManager()
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
-            onSkinChange?.invoke()
+            setVisibilityOfPlayPauseReplay(false)
+            onSkinChange?.invoke(getSkinId())
 
             return true
         }
+
         return false
     }
 
@@ -1455,6 +1472,36 @@ class UZVideoView : RelativeLayout,
         }
     }
 
+    fun getListTrack(
+        showDialog: Boolean = false,
+        title: String = "Video",
+        rendererIndex: Int
+    ): List<UZItem>? {
+        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
+        mappedTrackInfo?.let {
+            val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
+                UZTrackSelectionView.getDialog(
+                    context = context,
+                    title = title,
+                    trackSelector = playerManager?.trackSelector,
+                    rendererIndex = rendererIndex
+                )
+            dialogPair.second.setShowDisableOption(false)
+            dialogPair.second.setAllowAdaptiveSelections(false)
+            dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
+                override fun onClick() {
+                    dialogPair.first?.cancel()
+                }
+            })
+            if (showDialog) {
+                UZViewUtils.showDialog(dialogPair.first)
+            }
+            return dialogPair.second.uZItemList
+        }
+
+        return null
+    }
+
     private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
         val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
         mappedTrackInfo?.let {
@@ -1472,14 +1519,7 @@ class UZVideoView : RelativeLayout,
                 dialogPair.second.setAllowAdaptiveSelections(false)
                 dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
                     override fun onClick() {
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                if (dialogPair.first == null) {
-                                    return@postDelayed
-                                }
-                                dialogPair.first?.cancel()
-                            }, 300
-                        )
+                        dialogPair.first?.cancel()
                     }
                 })
                 if (showDialog) {
@@ -1737,5 +1777,9 @@ class UZVideoView : RelativeLayout,
 
     fun isShowLayoutDebug(): Boolean {
         return this.isShowLayoutDebug
+    }
+
+    fun getSkinId(): Int {
+        return this.skinId
     }
 }

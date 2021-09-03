@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.uiza.sdk.view.UZPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    app:auto_show="false"
+    app:controller_layout_id="@layout/layout_controller_uz_custom">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|start"
+        android:text="Test click" />
+</com.uiza.sdk.view.UZPlayerView>

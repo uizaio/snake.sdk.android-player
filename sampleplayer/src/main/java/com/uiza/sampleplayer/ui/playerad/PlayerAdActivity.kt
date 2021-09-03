@@ -1,10 +1,12 @@
 package com.uiza.sampleplayer.ui.playerad
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
+import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_ad.*
 
@@ -16,6 +18,7 @@ class PlayerAdActivity : AppCompatActivity() {
         setupViews()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
@@ -23,6 +26,39 @@ class PlayerAdActivity : AppCompatActivity() {
         }
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
+        }
+        uzVideoView.adPlayerCallback = object : UZAdPlayerCallback {
+            override fun onPlay() {
+                tv.text = "adPlayerCallback onPlay"
+            }
+
+            override fun onVolumeChanged(i: Int) {
+                tv.text = "adPlayerCallback onVolumeChanged $i"
+            }
+
+            override fun onPause() {
+                tv.text = "adPlayerCallback onPause"
+            }
+
+            override fun onLoaded() {
+                tv.text = "adPlayerCallback onLoaded"
+            }
+
+            override fun onResume() {
+                tv.text = "adPlayerCallback onResume"
+            }
+
+            override fun onEnded() {
+                tv.text = "adPlayerCallback onEnded"
+            }
+
+            override fun onError() {
+                tv.text = "adPlayerCallback onError"
+            }
+
+            override fun onBuffering() {
+                tv.text = "adPlayerCallback onBuffering"
+            }
         }
         btAdSingleInlineLinear.setOnClickListener {
             onPlay(

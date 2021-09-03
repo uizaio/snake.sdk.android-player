@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/radius_medium"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_padding_medium">
+
+        <com.uiza.sdk.view.UZVideoView
+            android:id="@+id/uzVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_medium"
+            android:textStyle="bold"
+            tools:text="tvName" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="tvAd" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvIsPortrait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="tvIsPortrait" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPoster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="tvPoster" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLinkPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="tvLinkPlay" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="PAUSE"
+        android:textColor="@color/red"
+        android:textSize="60dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</androidx.cardview.widget.CardView>

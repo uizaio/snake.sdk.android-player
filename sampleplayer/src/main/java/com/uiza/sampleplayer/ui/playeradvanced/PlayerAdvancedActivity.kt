@@ -19,7 +19,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,6 +242,33 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btRetry.setOnClickListener {
             uzVideoView.retry()
+        }
+        btGetListTrackVideo.setOnClickListener {
+            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 0)
+            var msg = ""
+            list?.forEach {
+                msg += "${it.description} ~ ${it.format.toString()}\n"
+            }
+            log(msg)
+            toast(msg)
+        }
+        btGetListTrackAudio.setOnClickListener {
+            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 1)
+            var msg = ""
+            list?.forEach {
+                msg += "${it.description} ~ ${it.format.toString()}\n"
+            }
+            log(msg)
+            toast(msg)
+        }
+        btGetListTrackCaptions.setOnClickListener {
+            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 2)
+            var msg = ""
+            list?.forEach {
+                msg += "${it.description} ~ ${it.format.toString()}\n"
+            }
+            log(msg)
+            toast(msg)
         }
     }
 

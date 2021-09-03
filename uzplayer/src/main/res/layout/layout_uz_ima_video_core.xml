@@ -15,11 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <View
-                android:id="@+id/bkg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/black" />
+<!--            <View-->
+<!--                android:id="@+id/bkg"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@android:color/black" />-->
         </RelativeLayout>
 
         <com.uiza.sdk.view.StatsForNerdsView
