@@ -7,6 +7,7 @@ import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_skin.*
+import kotlinx.android.synthetic.main.uzplayer_skin_custom.*
 
 class PlayerSkinActivity : AppCompatActivity() {
 
@@ -27,6 +28,13 @@ class PlayerSkinActivity : AppCompatActivity() {
         }
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
+        }
+        uzVideoView.onSkinChange = { skinId ->
+            if (skinId == R.layout.uzplayer_skin_custom) {
+                btTest.setOnClickListener {
+                    toast("Click")
+                }
+            }
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

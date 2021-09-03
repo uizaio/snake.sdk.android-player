@@ -132,7 +132,7 @@ class UZVideoView : RelativeLayout,
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
-    var onSkinChange: (() -> Unit)? = null
+    var onSkinChange: ((skinId: Int) -> Unit)? = null
     var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
@@ -1192,7 +1192,7 @@ class UZVideoView : RelativeLayout,
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
             setVisibilityOfPlayPauseReplay(false)
-            onSkinChange?.invoke()
+            onSkinChange?.invoke(getSkinId())
 
             return true
         }
@@ -1777,5 +1777,9 @@ class UZVideoView : RelativeLayout,
 
     fun isShowLayoutDebug(): Boolean {
         return this.isShowLayoutDebug
+    }
+
+    fun getSkinId(): Int {
+        return this.skinId
     }
 }
