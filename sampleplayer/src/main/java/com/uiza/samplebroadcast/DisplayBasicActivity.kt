@@ -25,7 +25,7 @@ class DisplayBasicActivity : AppCompatActivity() {
 
     companion object {
         const val URL_STREAM =
-            "rtmp://a.rtmp.youtube.com/live2/thzy-sxva-5wjf-k1hk-68rh"
+            "rtmp://a.rtmp.youtube.com/live2/tkrp-q1kj-e8x4-4b41-exxf"
 
         private const val REQUEST_CODE = 1
         private val PERMISSIONS = arrayOf(
@@ -166,16 +166,6 @@ class DisplayBasicActivity : AppCompatActivity() {
 
     private fun handleBStartTop() {
         if (hasPermissions(this, *PERMISSIONS)) {
-            val isStreamingDisplay = UZUtil.isStreamingDisplay()
-            if (isStreamingDisplay == true) {
-                showToast("You are still streaming with Display mode... Please stop it before broadcast in foreground mode")
-                return
-            }
-            val isStreamingBroadcastBackground = UZUtil.isStreamingBroadcastBackground()
-            if (isStreamingBroadcastBackground == true) {
-                showToast("You are still streaming with broadcast background mode... Please stop it before broadcast in foreground mode")
-                return
-            }
             if (uzDisplayBroadCast.isStreaming() == false) {
                 uzDisplayBroadCast.start(this)
             } else {
