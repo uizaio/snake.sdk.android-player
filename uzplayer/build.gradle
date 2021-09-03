@@ -1,3 +1,7 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 //apply plugin: 'com.github.dcendents.android-maven'
@@ -76,4 +80,13 @@ dependencies {
 }
 repositories {
     mavenCentral()
+}
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
 }
