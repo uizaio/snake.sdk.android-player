@@ -2,7 +2,6 @@ package com.uiza.sampleplayer.app
 
 class Constant {
     companion object {
-        const val EXTRA_PLAYBACK_INFO = "extra_playback_info"
         const val LINK_PLAY_VOD = "https://hls.ted.com/talks/2639.m3u8?preroll=Thousands"
         const val LINK_PLAY_VOD_2 = "https://bitdash-a.akamaihd.net/content/MI201109210084_1/mpds/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.mpd"
         const val LINK_PLAY_LIVE =

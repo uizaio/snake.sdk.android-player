@@ -102,5 +102,11 @@
             android:layout_height="wrap_content"
             android:text="Player Youtube" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDisplayBasic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/w_50"
+            android:text="Display Basic" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
