@@ -3,6 +3,7 @@ package com.uiza.sampleplayer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.ui.common.error.ErrorActivity
 import com.uiza.sampleplayer.ui.playerad.PlayerAdActivity
@@ -21,6 +22,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -74,6 +80,9 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerWithUZDragView.setOnClickListener {
             gotoActivity(PlayerWithUZDragViewActivity::class.java)
+        }
+        btnPlayerYoutube.setOnClickListener {
+            toast("Coming soon")
         }
 
         txtVersion.text = String.format(
