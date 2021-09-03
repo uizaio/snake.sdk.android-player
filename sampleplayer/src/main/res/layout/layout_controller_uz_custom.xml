@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_player_controller_uz"
+    android:elevation="3dp"
+    android:layoutDirection="ltr">
+
+    <LinearLayout
+        android:id="@+id/llTopUZ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btBackScreenUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_down_uz" />
+
+        <com.uiza.sdk.widget.UZTextView
+            android:id="@+id/tvTitleUZ"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_10"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/txt_medium"
+            android:textStyle="bold"
+            tools:text="@string/app_name" />
+
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btPipUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_pip_white_24_uz" />
+
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btVolumeUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_volume_up_white_24_uz" />
+
+        <com.uiza.sdk.widget.UZImageButton
+            android:id="@+id/btSettingUZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_settings_white_uz" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.uiza.sdk.widget.UZImageButton
+                android:id="@+id/btRewUZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_replay_10_white_uz" />
+
+            <com.uiza.sdk.widget.UZImageButton
+                android:id="@+id/btPlayUZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_play_white_uz"
+                app:useDefaultIB="false" />
+
+            <com.uiza.sdk.widget.UZImageButton
+                android:id="@+id/btPauseUZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_pause_white_uz"
+                app:useDefaultIB="false" />
+
+            <com.uiza.sdk.widget.UZImageButton
+                android:id="@+id/btReplayUZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_replay_white_uz" />
+
+            <com.uiza.sdk.widget.UZImageButton
+                android:id="@+id/btFfwdUZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_forward_10_white_uz" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rlTimeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/margin_padding_small"
+            tools:ignore="UselessParent">
+
+            <FrameLayout
+                android:id="@+id/layoutPreviewUZ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/video_frame_uz"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivThumbnailUZ"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/exo_controls_fastforward_description"
+                    tools:src="@color/colorPrimary" />
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlTopProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layoutPreviewUZ">
+
+                <com.uiza.sdk.widget.UZTextView
+                    android:id="@+id/tvPositionUZ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:gravity="bottom"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    tools:ignore="RelativeOverlap" />
+
+                <com.uiza.sdk.widget.UZTextView
+                    android:id="@+id/tvDurationUZ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_toEndOf="@+id/tvPositionUZ"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/light_grey"
+                    android:textStyle="bold"
+                    tools:ignore="RelativeOverlap" />
+
+                <com.uiza.sdk.widget.UZImageButton
+                    android:id="@+id/btFullscreenUZ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/margin_padding_small"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_fullscreen_white_48_uz" />
+
+            </RelativeLayout>
+
+            <com.uiza.sdk.widget.UZPreviewTimeBar
+                android:id="@+id/exo_progress"
+                style="@style/UZPreviewTimeBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlTopProgress" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>
