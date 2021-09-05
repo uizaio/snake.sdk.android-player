@@ -34,19 +34,13 @@ Get latest release number  [HERE](https://github.com/uizaio/snake.sdk.android-pl
 
 1.  Init UZPlayer
 
-    class UZApplication : MultiDexApplication() {
 
-    override fun onCreate() {  
-    super.onCreate()
-
-    UZPlayer.init(com.uiza.sdk.R.layout.uzplayer_skin_default)
-
+    class UZApplication : MultiDexApplication() {  
+      override fun onCreate() {  
+         super.onCreate()  
+        UZPlayer.init(com.uiza.sdk.R.layout.uzplayer_skin_default)  
+      }  
     }
-
-    }
-
-
-
 
 ### Manifest
 
@@ -111,7 +105,7 @@ Only 3 steps, you can customize everything about player skin.
 
 Please note  _`app:controller_layout_id="@layout/layout_controller_uz_custom`_
 
-**Step 2:**  Create layout  _**## **layout_controller_uz_custom**.xml**_  like  [THIS](https://github.com/uizaio/snake.sdk.android-player/blob/master/sampleplayer/src/main/res/layout/layout_controller_uz_custom.xml):
+**Step 2:**  Create layout  _**layout_controller_uz_custom.xml**_  like  [THIS](https://github.com/uizaio/snake.sdk.android-player/blob/master/sampleplayer/src/main/res/layout/layout_controller_uz_custom.xml):
 
 -   In this xml file, you can edit anything you like: position, color, drawable resouces...
 -   You can add more view (TextView, Button, ImageView...).
