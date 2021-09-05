@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-cast-framework:18.1.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:20.0.0'
 
     //https://github.com/google/ExoPlayer/blob/release-v2/RELEASENOTES.md
     // exoplayer
