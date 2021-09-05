@@ -37,11 +37,11 @@ dependencies {
 
     //https://github.com/google/ExoPlayer/blob/release-v2/RELEASENOTES.md
     // exoplayer
-    api 'com.google.android.exoplayer:exoplayer:2.11.0'
-    implementation 'com.google.android.exoplayer:extension-ima:2.11.0'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.11.0'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.11.0'
-    implementation 'com.google.android.exoplayer:extension-mediasession:2.11.0'
+    api 'com.google.android.exoplayer:exoplayer:2.11.1'
+    implementation 'com.google.android.exoplayer:extension-ima:2.11.1'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.11.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.11.1'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.11.1'
 
     // android support lib
 //    implementation 'androidx.cardview:cardview:1.0.0'
