@@ -32,8 +32,6 @@ Get latest release number  [HERE](https://github.com/uizaio/snake.sdk.android-pl
 
 ## Init SDK
 
-1.  Init UZPlayer
-
     class UZApplication : MultiDexApplication() {  
       override fun onCreate() {  
          super.onCreate()  
