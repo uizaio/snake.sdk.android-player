@@ -612,6 +612,11 @@ class UZVideoView : RelativeLayout,
             // Restore the full-screen UI.
             setUseController(useController = isUSeControllerRestorePip)
         }
+        if (newConfig == null) {
+            log("newConfig == null")
+        } else {
+            log("newConfig != null")
+        }
     }
 
     fun onDestroyView() {
