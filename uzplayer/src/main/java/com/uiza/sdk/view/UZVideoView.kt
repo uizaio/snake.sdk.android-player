@@ -1064,7 +1064,7 @@ class UZVideoView : RelativeLayout,
             resources.getString(R.string.error_speed_illegal)
         }
         val playbackParameters = PlaybackParameters(speed)
-        player?.playbackParameters = playbackParameters
+        player?.setPlaybackParameters(playbackParameters)
     }
 
     private fun setEventForViews() {

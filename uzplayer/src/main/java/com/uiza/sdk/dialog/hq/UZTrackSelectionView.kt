@@ -232,10 +232,11 @@ class UZTrackSelectionView @JvmOverloads constructor(
             trackSelector?.let { dts ->
                 val parameters = dts.parameters
                 isDisabled = parameters.getRendererDisabled(rendererIndex)
-                override = parameters.getSelectionOverride(rendererIndex, trackGroups)
 
                 // Add per-track views.
                 trackGroups?.let { tga ->
+                    override = parameters.getSelectionOverride(rendererIndex, tga)
+
                     trackViews = arrayOfNulls(tga.length)
                     trackViews?.let { a ->
                         for (groupIndex in 0 until tga.length) {
@@ -361,7 +362,9 @@ class UZTrackSelectionView @JvmOverloads constructor(
             val parametersBuilder = dts.buildUponParameters()
             parametersBuilder.setRendererDisabled(rendererIndex, isDisabled)
             if (override != null) {
-                parametersBuilder.setSelectionOverride(rendererIndex, trackGroups, override)
+                trackGroups?.let {
+                    parametersBuilder.setSelectionOverride(rendererIndex, it, override)
+                }
             } else {
                 parametersBuilder.clearSelectionOverrides(rendererIndex)
             }
