@@ -291,6 +291,11 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
         log("isUseController ${uzVideoView.isUseController()}")
         log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
+        log("videoFormat ${uzVideoView.videoFormat?.toString()}")
+        log("audioFormat ${uzVideoView.audioFormat?.toString()}")
+        log("isPlayingAd ${uzVideoView.isPlayingAd()}")
+        log("getSkinId ${uzVideoView.getSkinId()}")
+        log("volume ${uzVideoView.volume}")
     }
 
     private fun onPlay(link: String) {

@@ -15,13 +15,17 @@ import com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer;
 import com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.drm.DrmSessionManager;
 import com.google.android.exoplayer2.ext.ima.ImaAdsLoader;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
+import com.google.android.exoplayer2.offline.StreamKey;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.MediaSourceFactory;
 import com.google.android.exoplayer2.source.ads.AdsMediaSource;
 import com.uiza.sdk.interfaces.UZAdPlayerCallback;
 import com.uiza.sdk.utils.UZAppUtils;
+
+import java.util.List;
 
 /**
  * Manages the {@link ExoPlayer}, the IMA plugin and all video playback.
@@ -217,6 +221,16 @@ public final class UZPlayerManager extends AbstractPlayerManager {
             adsLoader = new ImaAdsLoader(context, adTagUri);
         }
         MediaSourceFactory adMediaSourceFactory = new MediaSourceFactory() {
+            @Override
+            public MediaSourceFactory setStreamKeys(List<StreamKey> streamKeys) {
+                return null;
+            }
+
+            @Override
+            public MediaSourceFactory setDrmSessionManager(DrmSessionManager<?> drmSessionManager) {
+                return null;
+            }
+
             @Override
             public MediaSource createMediaSource(Uri uri) {
                 return buildMediaSource(uri);

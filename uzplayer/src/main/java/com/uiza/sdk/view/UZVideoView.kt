@@ -576,7 +576,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    protected fun tryNextLinkPlay() {
+    private fun tryNextLinkPlay() {
         if (isLIVE) {
 //            playerManager?.let {
 //                it.initWithoutReset()
@@ -783,7 +783,7 @@ class UZVideoView : RelativeLayout,
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
                 } catch (e: Exception) {
-                    log("loitpp enterPIPMode e $e")
+                    log("enterPIPMode e $e")
                     val w: Int
                     val h: Int
                     if (videoWidth == 0 || videoHeight == 0) {
@@ -1344,7 +1344,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    protected fun updateUIButtonVisibilities() {
+    private fun updateUIButtonVisibilities() {
         if (context == null) {
             return
         }
