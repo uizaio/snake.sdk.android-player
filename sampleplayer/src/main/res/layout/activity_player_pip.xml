@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:ignore="HardcodedText">
 
     <com.uiza.sdk.view.UZVideoView
@@ -12,8 +11,11 @@
         android:layout_height="wrap_content" />
 
     <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#55ff0000">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,6 +28,14 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_5"
                 android:text="VOD"
+                android:textSize="@dimen/txt_medium" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPortrait"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_5"
+                android:text="Video portrait"
                 android:textSize="@dimen/txt_medium" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -53,4 +63,4 @@
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>

@@ -3,14 +3,18 @@ package com.uiza.sampleplayer.ui.playerpip
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.activity_player_pip.*
 
 class PlayerPipActivity : AppCompatActivity() {
+
+    private var isPortraitVideo = false
 
     override fun onCreate(savedState: Bundle?) {
         super.onCreate(savedState)
@@ -29,14 +33,31 @@ class PlayerPipActivity : AppCompatActivity() {
         uzVideoView.setAutoMoveToLiveEdge(true)
 
         btnVOD.setOnClickListener {
+            updateSize(false)
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btnPlay.performClick()
         }
+        btnPortrait.setOnClickListener {
+            updateSize(true)
+            etLinkPlay.setText(Constant.LINK_PLAY_VOD_PORTRAIT)
+            btnPlay.performClick()
+        }
         btnLive.setOnClickListener {
+            updateSize(false)
             etLinkPlay.setText(Constant.LINK_PLAY_LIVE)
             btnPlay.performClick()
         }
         btnPlay.setOnClickListener { onPlay() }
+    }
+
+    private fun updateSize(isPortraitVideo: Boolean) {
+        this.isPortraitVideo = isPortraitVideo
+        if (this.isPortraitVideo) {
+            uzVideoView.setFreeSize(true)
+            uzVideoView.setSize(width = UZViewUtils.screenWidth, height = UZViewUtils.screenHeight)
+        } else {
+            uzVideoView.setFreeSize(false)
+        }
     }
 
     private fun onPlay() {
@@ -87,7 +108,23 @@ class PlayerPipActivity : AppCompatActivity() {
         newConfig: Configuration?
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (isInPictureInPictureMode) {
+            sv.visibility = View.GONE
+        } else {
+            sv.visibility = View.VISIBLE
+        }
         uzVideoView.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        if (!isInPictureInPictureMode) {
+            if (this.isPortraitVideo) {
+                uzVideoView.post {
+                    uzVideoView.setFreeSize(true)
+                    uzVideoView.setSize(
+                        width = UZViewUtils.screenWidth,
+                        height = UZViewUtils.screenHeight
+                    )
+                }
+            }
+        }
     }
 
     override fun onUserLeaveHint() {
