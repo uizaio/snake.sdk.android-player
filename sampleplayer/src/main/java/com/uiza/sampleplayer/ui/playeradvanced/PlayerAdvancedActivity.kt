@@ -34,7 +34,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.isAutoStart = true//default is true
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
+            uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(true)//default is false
+            uzVideoView.setShowLayoutDebug(false)
             logInformation()
         }
         uzVideoView.onFirstStateReady = {
@@ -291,6 +293,11 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
         log("isUseController ${uzVideoView.isUseController()}")
         log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
+        log("videoFormat ${uzVideoView.videoFormat?.toString()}")
+        log("audioFormat ${uzVideoView.audioFormat?.toString()}")
+        log("isPlayingAd ${uzVideoView.isPlayingAd()}")
+        log("getSkinId ${uzVideoView.getSkinId()}")
+        log("volume ${uzVideoView.volume}")
     }
 
     private fun onPlay(link: String) {

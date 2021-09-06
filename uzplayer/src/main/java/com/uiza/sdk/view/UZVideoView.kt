@@ -111,6 +111,7 @@ class UZVideoView : RelativeLayout,
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
+    private var isControllerHideOnTouch = true
     private var isSetFirstRequestFocusDoneForTV = false
     private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
@@ -295,7 +296,7 @@ class UZVideoView : RelativeLayout,
 
     private fun findViews() {
         UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
-        updateUIPositionOfProgressBar()
+//        updateUIPositionOfProgressBar()
 
         playerView?.let { pv ->
             playerView?.useController =
@@ -576,7 +577,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    protected fun tryNextLinkPlay() {
+    private fun tryNextLinkPlay() {
         if (isLIVE) {
 //            playerManager?.let {
 //                it.initWithoutReset()
@@ -611,6 +612,11 @@ class UZVideoView : RelativeLayout,
         } else {
             // Restore the full-screen UI.
             setUseController(useController = isUSeControllerRestorePip)
+        }
+        if (newConfig == null) {
+            log("newConfig == null")
+        } else {
+            log("newConfig != null")
         }
     }
 
@@ -728,7 +734,7 @@ class UZVideoView : RelativeLayout,
             }
             setMarginPreviewTimeBar()
             updateUISizeThumbnailTimeBar()
-            updateUIPositionOfProgressBar()
+//            updateUIPositionOfProgressBar()
             onScreenRotate?.invoke(isLandscape)
         }
     }
@@ -783,7 +789,7 @@ class UZVideoView : RelativeLayout,
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
                 } catch (e: Exception) {
-                    log("loitpp enterPIPMode e $e")
+                    log("enterPIPMode e $e")
                     val w: Int
                     val h: Int
                     if (videoWidth == 0 || videoHeight == 0) {
@@ -832,6 +838,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        this.isControllerHideOnTouch = controllerHideOnTouch
         playerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 
@@ -1064,7 +1071,7 @@ class UZVideoView : RelativeLayout,
             resources.getString(R.string.error_speed_illegal)
         }
         val playbackParameters = PlaybackParameters(speed)
-        player?.playbackParameters = playbackParameters
+        player?.setPlaybackParameters(playbackParameters)
     }
 
     private fun setEventForViews() {
@@ -1138,15 +1145,15 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun updateUIPositionOfProgressBar() {
-        playerView?.let { pv ->
-            postDelayed({
-                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
-                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
-                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
-            }, 10)
-        }
-    }
+//    private fun updateUIPositionOfProgressBar() {
+//        playerView?.let { pv ->
+//            postDelayed({
+//                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
+//                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
+//                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
+//            }, 10)
+//        }
+//    }
 
     /*
      ** change skin of player (realtime)
@@ -1344,7 +1351,7 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    protected fun updateUIButtonVisibilities() {
+    private fun updateUIButtonVisibilities() {
         if (context == null) {
             return
         }
@@ -1382,6 +1389,7 @@ class UZVideoView : RelativeLayout,
             } else {
                 setVisibilityOfPlayPauseReplay(false)
                 pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+                setControllerHideOnTouch(isControllerHideOnTouch)
             }
         }
     }
@@ -1781,5 +1789,9 @@ class UZVideoView : RelativeLayout,
 
     fun getSkinId(): Int {
         return this.skinId
+    }
+
+    fun isInPipMode(): Boolean {
+        return isInPipMode
     }
 }
