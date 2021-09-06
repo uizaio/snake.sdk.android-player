@@ -63,7 +63,6 @@ class UZDragView @JvmOverloads constructor(
     var state: State? = State.NULL
         private set
     private var part: Part? = null
-        private set
     private var mDetector: GestureDetectorCompat? = null
     private var onTouchEvent: OnTouchEvent? = null
     private var onSingleTap: OnSingleTap? = null
