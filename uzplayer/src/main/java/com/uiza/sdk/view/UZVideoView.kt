@@ -295,7 +295,7 @@ class UZVideoView : RelativeLayout,
 
     private fun findViews() {
         UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
-        updateUIPositionOfProgressBar()
+//        updateUIPositionOfProgressBar()
 
         playerView?.let { pv ->
             playerView?.useController =
@@ -733,7 +733,7 @@ class UZVideoView : RelativeLayout,
             }
             setMarginPreviewTimeBar()
             updateUISizeThumbnailTimeBar()
-            updateUIPositionOfProgressBar()
+//            updateUIPositionOfProgressBar()
             onScreenRotate?.invoke(isLandscape)
         }
     }
@@ -1143,15 +1143,15 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun updateUIPositionOfProgressBar() {
-        playerView?.let { pv ->
-            postDelayed({
-                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
-                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
-                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
-            }, 10)
-        }
-    }
+//    private fun updateUIPositionOfProgressBar() {
+//        playerView?.let { pv ->
+//            postDelayed({
+//                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
+//                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
+//                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
+//            }, 10)
+//        }
+//    }
 
     /*
      ** change skin of player (realtime)
@@ -1786,5 +1786,9 @@ class UZVideoView : RelativeLayout,
 
     fun getSkinId(): Int {
         return this.skinId
+    }
+
+    fun isInPipMode(): Boolean {
+        return isInPipMode
     }
 }

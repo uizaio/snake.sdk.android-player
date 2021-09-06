@@ -28,6 +28,15 @@ class PlayerPipActivity : AppCompatActivity() {
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
+        uzVideoView.onScreenRotate = { isLandscape ->
+            if (!uzVideoView.isInPipMode()) {
+                if (isLandscape) {
+                    sv.visibility = View.GONE
+                } else {
+                    sv.visibility = View.VISIBLE
+                }
+            }
+        }
 
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
