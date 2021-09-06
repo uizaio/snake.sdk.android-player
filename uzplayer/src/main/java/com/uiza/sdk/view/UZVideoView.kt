@@ -111,6 +111,7 @@ class UZVideoView : RelativeLayout,
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
+    private var isControllerHideOnTouch = true
     private var isSetFirstRequestFocusDoneForTV = false
     private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
@@ -837,6 +838,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        this.isControllerHideOnTouch = controllerHideOnTouch
         playerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 
@@ -1387,6 +1389,7 @@ class UZVideoView : RelativeLayout,
             } else {
                 setVisibilityOfPlayPauseReplay(false)
                 pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+                setControllerHideOnTouch(isControllerHideOnTouch)
             }
         }
     }
