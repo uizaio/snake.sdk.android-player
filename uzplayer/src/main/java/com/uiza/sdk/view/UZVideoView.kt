@@ -1036,6 +1036,15 @@ class UZVideoView : RelativeLayout,
             return playerManager != null && playerManager?.isLIVE == true
         }
 
+    val isVOD: Boolean
+        get() {
+            return playerManager != null && playerManager?.isVOD == true
+        }
+
+    fun getDebugString(): String? {
+        return playerManager?.debugString
+    }
+
     var volume: Float
         get() = playerManager?.volume ?: -1F
         set(volume) {

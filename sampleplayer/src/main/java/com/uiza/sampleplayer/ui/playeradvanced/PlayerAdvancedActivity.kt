@@ -298,6 +298,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isPlayingAd ${uzVideoView.isPlayingAd()}")
         log("getSkinId ${uzVideoView.getSkinId()}")
         log("volume ${uzVideoView.volume}")
+        log("isVOD ${uzVideoView.isVOD}")
+        log("getDebugString ${uzVideoView.getDebugString()}")
     }
 
     private fun onPlay(link: String) {
