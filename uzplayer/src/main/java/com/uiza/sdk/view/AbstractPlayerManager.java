@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -43,14 +42,13 @@ import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.uiza.sdk.interfaces.DebugCallback;
-import com.uiza.sdk.interfaces.UZManagerObserver;
 import com.uiza.sdk.interfaces.UZBufferListener;
+import com.uiza.sdk.interfaces.UZManagerObserver;
 import com.uiza.sdk.interfaces.UZProgressListener;
 import com.uiza.sdk.utils.Constants;
 import com.uiza.sdk.utils.ConvertUtils;
 import com.uiza.sdk.utils.UZAppUtils;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
@@ -73,7 +71,6 @@ abstract class AbstractPlayerManager {
     UZManagerObserver managerObserver;
     String drmScheme;
     private final String linkPlay;
-    long contentPosition;
     protected final SimpleExoPlayer player;
     private UZPlayerEventListener uzPlayerEventListener;
     private UZVideoEventListener uzVideoEventListener;
@@ -84,14 +81,12 @@ abstract class AbstractPlayerManager {
     Runnable runnable;
     UZProgressListener progressListener;
     private UZBufferListener bufferCallback;
-    private long mls = 0;
     protected long duration = 0;
     int percent = 0;
     protected int s = 0;
     private DefaultTrackSelector trackSelector;
     private final String userAgent;
     private boolean isCanAddViewWatchTime;
-    private long timestampPlayed;
     private long bufferPosition;
     private int bufferPercentage;
     private int videoWidth;
@@ -103,7 +98,6 @@ abstract class AbstractPlayerManager {
     DefaultDrmSessionManager<FrameworkMediaCrypto> drmSessionManager;
 
     protected AbstractPlayerManager(@NonNull Context context, String linkPlay, String drmScheme) {
-        this.timestampPlayed = System.currentTimeMillis();
         this.isCanAddViewWatchTime = true;
         this.context = context;
         this.linkPlay = linkPlay;
@@ -138,14 +132,6 @@ abstract class AbstractPlayerManager {
         this.managerObserver = null;
     }
 
-    void initWithoutReset() {
-        initSource();
-    }
-
-    String getLinkPlay() {
-        return linkPlay;
-    }
-
     void setProgressListener(UZProgressListener progressListener) {
         this.progressListener = progressListener;
     }
@@ -175,17 +161,10 @@ abstract class AbstractPlayerManager {
         this.debugCallback = debugCallback;
     }
 
-    //if player is playing then turn off connection -> player is error -> store current position
-    //then if connection is connected again, resume position
-    void setResumeIfConnectionError() {
-        contentPosition = mls;
-    }
-
     void resume() {
         if (linkPlay != null) {
             setPlayWhenReady(true);
         }
-        timestampPlayed = System.currentTimeMillis();
         isCanAddViewWatchTime = true;
     }
 
@@ -198,13 +177,6 @@ abstract class AbstractPlayerManager {
 
     void stop() {
         player.stop();
-    }
-
-    protected void reset() {
-        contentPosition = player.getContentPosition();
-        player.release();
-        handler = null;
-        runnable = null;
     }
 
     protected boolean isPlayingAd() {
@@ -378,6 +350,8 @@ abstract class AbstractPlayerManager {
                 return new HlsMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
             case C.TYPE_OTHER:
                 return new ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
+            case C.TYPE_SS:
+                throw new IllegalStateException("Unsupported TYPE_SS type: " + type);
             default:
                 throw new IllegalStateException("Unsupported type: " + type);
         }
@@ -385,7 +359,7 @@ abstract class AbstractPlayerManager {
 
     void handleVideoProgress() {
         if (progressListener != null && player != null) {
-            mls = getCurrentPosition();
+            long mls = getCurrentPosition();
             duration = getDuration();
             mls = Math.min(mls, duration);
             if (duration != 0)
@@ -454,7 +428,7 @@ abstract class AbstractPlayerManager {
         DefaultRenderersFactory renderersFactory =
                 new DefaultRenderersFactory(context).setExtensionRendererMode(extensionRendererMode);
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
-        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+        trackSelector = new DefaultTrackSelector(context, videoTrackSelectionFactory);
         return ExoPlayerFactory.newSimpleInstance(context, renderersFactory, trackSelector, UZLoadControl.createControl(bufferCallback), drmSessionManager);
     }
 
@@ -512,10 +486,6 @@ abstract class AbstractPlayerManager {
         this.timeShiftOn = timeShiftOn;
     }
 
-    List<String> getSubtitleList() {
-        return null; // template no support
-    }
-
     private class UZVideoEventListener implements VideoListener {
 
         //This is called when the video size changes
@@ -537,7 +507,7 @@ abstract class AbstractPlayerManager {
         //This is called when the current playlist changes
 
         @Override
-        public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
+        public void onTimelineChanged(@NonNull Timeline timeline, int reason) {
             if (managerObserver != null) {
                 managerObserver.onTimelineChanged(timeline, player.getCurrentManifest(), reason);
             }
@@ -545,7 +515,7 @@ abstract class AbstractPlayerManager {
 
         //This is called when the available or selected tracks change
         @Override
-        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+        public void onTracksChanged(@NonNull TrackGroupArray trackGroups, @NonNull TrackSelectionArray trackSelections) {
             notifyUpdateButtonVisibility();
         }
 
@@ -569,9 +539,7 @@ abstract class AbstractPlayerManager {
 
         //This is called then a error happens
         @Override
-        public void onPlayerError(ExoPlaybackException error) {
-            if (error == null)
-                return;
+        public void onPlayerError(@NonNull ExoPlaybackException error) {
             error.printStackTrace();
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                 log("onPlayerError TYPE_SOURCE");

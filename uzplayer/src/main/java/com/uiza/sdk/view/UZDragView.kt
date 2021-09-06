@@ -62,7 +62,7 @@ class UZDragView @JvmOverloads constructor(
     private var callback: Callback? = null
     var state: State? = State.NULL
         private set
-    var part: Part? = null
+    private var part: Part? = null
         private set
     private var mDetector: GestureDetectorCompat? = null
     private var onTouchEvent: OnTouchEvent? = null
@@ -270,12 +270,12 @@ class UZDragView @JvmOverloads constructor(
         bodyView = findViewById(R.id.svBodyView)
 
         headerView?.let { hv ->
-            hv.post(Runnable {
+            hv.post {
                 sizeWHeaderViewOriginal = hv.measuredWidth
                 sizeHHeaderViewOriginal = hv.measuredHeight
                 sizeWHeaderViewMin = sizeWHeaderViewOriginal / 2
                 sizeHHeaderViewMin = sizeHHeaderViewOriginal / 2
-            })
+            }
         }
         val v = findFirstVideoView()
         setOnSingleTap(object : OnSingleTap {
