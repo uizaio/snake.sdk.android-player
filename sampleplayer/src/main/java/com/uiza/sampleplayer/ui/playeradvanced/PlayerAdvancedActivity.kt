@@ -264,6 +264,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("volume ${uzVideoView.volume}")
         log("isVOD ${uzVideoView.isVOD}")
         log("getDebugString ${uzVideoView.getDebugString()}")
+        log("getActions size ${uzVideoView.listRemoteAction?.size}")
     }
 
     private fun onPlay(link: String) {

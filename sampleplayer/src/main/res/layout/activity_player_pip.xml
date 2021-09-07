@@ -24,9 +24,28 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPipControllerDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PipControllerDefault" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPipControllerNone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PipControllerNone" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnPipControllerCustom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PipControllerCustom" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnVOD"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_padding_medium"
                 android:padding="@dimen/padding_5"
                 android:text="VOD"
                 android:textSize="@dimen/txt_medium" />

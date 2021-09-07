@@ -2,10 +2,7 @@ package com.uiza.sdk.view
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.Dialog
-import android.app.PictureInPictureParams
+import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
@@ -56,6 +53,7 @@ import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.util.*
+
 
 class UZVideoView : RelativeLayout,
     UZManagerObserver,
@@ -131,6 +129,8 @@ class UZVideoView : RelativeLayout,
     private var isViewCreated = false
     private var skinId = UZPlayer.skinDefault
     var uzPlayback: UZPlayback? = null
+
+    var listRemoteAction: List<RemoteAction>? = null
 
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
@@ -775,6 +775,7 @@ class UZVideoView : RelativeLayout,
                 try {
                     val aspectRatio = Rational(videoWidth, videoHeight)
                     params.setAspectRatio(aspectRatio)
+                    params.setActions(listRemoteAction)
                     if (context is Activity) {
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
@@ -796,6 +797,7 @@ class UZVideoView : RelativeLayout,
                     }
                     val aspectRatio = Rational(w, h)
                     params.setAspectRatio(aspectRatio)
+                    params.setActions(listRemoteAction)
                     if (context is Activity) {
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }

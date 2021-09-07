@@ -1,6 +1,14 @@
 package com.uiza.sampleplayer.ui.playerpip
 
+import android.app.PendingIntent
+import android.app.RemoteAction
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
@@ -12,15 +20,82 @@ import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.activity_player_pip.*
 
+
 class PlayerPipActivity : AppCompatActivity() {
+    companion object {
+        private const val BROADCAST_ACTION_1 = "BROADCAST_ACTION_1"
+        private const val BROADCAST_ACTION_2 = "BROADCAST_ACTION_2"
+        private const val BROADCAST_ACTION_3 = "BROADCAST_ACTION_3"
+        private const val REQUEST_CODE = 1221
+    }
+
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
 
     private var isPortraitVideo = false
+    private var listRemoteAction: ArrayList<RemoteAction>? = null
+    private var receiver: BroadcastReceiver? = null
 
     override fun onCreate(savedState: Bundle?) {
         super.onCreate(savedState)
         setContentView(R.layout.activity_player_pip)
 
         setupViews()
+    }
+
+    private fun setupActionsDefault() {
+        this.listRemoteAction = null
+        uzVideoView.listRemoteAction = listRemoteAction
+        enterPIPMode()
+    }
+
+    private fun setupActionsNone() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            listRemoteAction = ArrayList()
+
+            val actionIntent1 = Intent(BROADCAST_ACTION_1)
+            val pendingIntent1 = PendingIntent.getBroadcast(this, REQUEST_CODE, actionIntent1, 0)
+            val icon1 = Icon.createWithResource(this, R.drawable.ic_transparent)
+            val remoteAction1 = RemoteAction(icon1, "Info", "Some info", pendingIntent1)
+            remoteAction1.isEnabled = false
+            listRemoteAction?.add(remoteAction1)
+
+            uzVideoView.listRemoteAction = listRemoteAction
+            enterPIPMode()
+        } else {
+            toast("Not supported")
+        }
+    }
+
+    private fun setupActionsCustom() {
+        //You only customer the PIP controller if android SDK >= Android O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            listRemoteAction = ArrayList()
+
+            val actionIntent1 = Intent(BROADCAST_ACTION_1)
+            val pendingIntent1 = PendingIntent.getBroadcast(this, REQUEST_CODE, actionIntent1, 0)
+            val icon1 = Icon.createWithResource(this, android.R.drawable.ic_dialog_info)
+            val remoteAction1 = RemoteAction(icon1, "Info", "Some info", pendingIntent1)
+            listRemoteAction?.add(remoteAction1)
+
+            val actionIntent2 = Intent(BROADCAST_ACTION_2)
+            val pendingIntent2 = PendingIntent.getBroadcast(this, REQUEST_CODE, actionIntent2, 0)
+            val icon2 = Icon.createWithResource(this, android.R.drawable.ic_btn_speak_now)
+            val remoteAction2 = RemoteAction(icon2, "Speak", "Speak info", pendingIntent2)
+            listRemoteAction?.add(remoteAction2)
+
+            val actionIntent3 = Intent(BROADCAST_ACTION_3)
+            val pendingIntent3 = PendingIntent.getBroadcast(this, REQUEST_CODE, actionIntent3, 0)
+            val icon3 = Icon.createWithResource(this, android.R.drawable.ic_dialog_map)
+            val remoteAction3 = RemoteAction(icon3, "Map", "Map info", pendingIntent3)
+            listRemoteAction?.add(remoteAction3)
+
+            uzVideoView.listRemoteAction = listRemoteAction
+            enterPIPMode()
+        } else {
+            toast("Not supported")
+        }
     }
 
     private fun setupViews() {
@@ -57,6 +132,16 @@ class PlayerPipActivity : AppCompatActivity() {
             btnPlay.performClick()
         }
         btnPlay.setOnClickListener { onPlay() }
+
+        btnPipControllerDefault.setOnClickListener {
+            setupActionsDefault()
+        }
+        btnPipControllerNone.setOnClickListener {
+            setupActionsNone()
+        }
+        btnPipControllerCustom.setOnClickListener {
+            setupActionsCustom()
+        }
     }
 
     private fun updateSize(isPortraitVideo: Boolean) {
@@ -72,7 +157,7 @@ class PlayerPipActivity : AppCompatActivity() {
     private fun onPlay() {
         val linkPlay = etLinkPlay.text.toString().trim()
         if (linkPlay.isEmpty()) {
-            Toast.makeText(this, "Linkplay cannot be null or empty", Toast.LENGTH_SHORT).show()
+            toast("Linkplay cannot be null or empty")
             return
         }
         val playback = UZPlayback(
@@ -123,6 +208,8 @@ class PlayerPipActivity : AppCompatActivity() {
             sv.visibility = View.VISIBLE
         }
         uzVideoView.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+
+        //update UI
         if (!isInPictureInPictureMode) {
             if (this.isPortraitVideo) {
                 uzVideoView.post {
@@ -134,10 +221,40 @@ class PlayerPipActivity : AppCompatActivity() {
                 }
             }
         }
+
+        //handle actions
+        if (isInPictureInPictureMode) {
+            val filter = IntentFilter()
+            filter.addAction(BROADCAST_ACTION_1)
+            filter.addAction(BROADCAST_ACTION_2)
+            filter.addAction(BROADCAST_ACTION_3)
+            receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent) {
+                    when (intent.action) {
+                        BROADCAST_ACTION_1 -> {
+                            toast("BROADCAST_ACTION_1")
+                        }
+                        BROADCAST_ACTION_2 -> {
+                            toast("BROADCAST_ACTION_2")
+                        }
+                        BROADCAST_ACTION_3 -> {
+                            toast("BROADCAST_ACTION_3")
+                        }
+                    }
+                }
+            }
+            registerReceiver(receiver, filter)
+        } else {
+            unregisterReceiver(receiver)
+        }
     }
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
+        enterPIPMode()
+    }
+
+    private fun enterPIPMode() {
         try {
             if (!uzVideoView.isLandscapeScreen()) {
                 uzVideoView.enterPIPMode()
