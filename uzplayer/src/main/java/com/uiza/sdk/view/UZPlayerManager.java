@@ -95,8 +95,8 @@ public final class UZPlayerManager extends AbstractPlayerManager {
 
     @Override
     public void setRunnable() {
-        handler = new Handler();
-        runnable = () -> {
+        mHandler = new Handler();
+        mRunnable = () -> {
             if (managerObserver == null || managerObserver.getPlayerView() == null) {
                 return;
             }
@@ -105,11 +105,11 @@ public final class UZPlayerManager extends AbstractPlayerManager {
             } else {
                 handleAdProgress();
             }
-            if (handler != null && runnable != null) {
-                handler.postDelayed(runnable, 1000);
+            if (mHandler != null && mRunnable != null) {
+                mHandler.postDelayed(mRunnable, 1000);
             }
         };
-        new Handler().postDelayed(runnable, 0);
+        new Handler().postDelayed(mRunnable, 0);
     }
 
     private void handleAdProgress() {
@@ -131,7 +131,7 @@ public final class UZPlayerManager extends AbstractPlayerManager {
     @Override
     void initSource() {
         isOnAdEnded = false;
-        if (this.drmScheme != null && drmSessionManager == null) {
+        if (this.drmScheme != null) {
             return;
         }
         createMediaSourceVideo();

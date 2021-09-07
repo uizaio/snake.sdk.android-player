@@ -14,14 +14,10 @@ import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.decoder.DecoderCounters;
-import com.google.android.exoplayer2.drm.DefaultDrmSessionManager;
-import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
-import com.google.android.exoplayer2.drm.FrameworkMediaDrm;
-import com.google.android.exoplayer2.drm.HttpMediaDrmCallback;
-import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -45,13 +41,11 @@ import com.uiza.sdk.interfaces.DebugCallback;
 import com.uiza.sdk.interfaces.UZBufferListener;
 import com.uiza.sdk.interfaces.UZManagerObserver;
 import com.uiza.sdk.interfaces.UZProgressListener;
-import com.uiza.sdk.utils.Constants;
 import com.uiza.sdk.utils.ConvertUtils;
 import com.uiza.sdk.utils.UZAppUtils;
 
 import java.util.Locale;
 import java.util.Objects;
-import java.util.UUID;
 
 abstract class AbstractPlayerManager {
     private void log(String msg) {
@@ -77,8 +71,8 @@ abstract class AbstractPlayerManager {
     private boolean timeShiftSupport = false;
     private boolean extIsTimeShift = false;
     private boolean timeShiftOn = false;
-    protected Handler handler;
-    Runnable runnable;
+    protected Handler mHandler;
+    Runnable mRunnable;
     UZProgressListener progressListener;
     private UZBufferListener bufferCallback;
     protected long duration = 0;
@@ -95,7 +89,6 @@ abstract class AbstractPlayerManager {
     private ExoPlaybackException exoPlaybackException;
     MediaSource mediaSourceVideo;
     MediaSource mediaSourceVideoExt;
-    DefaultDrmSessionManager<FrameworkMediaCrypto> drmSessionManager;
 
     protected AbstractPlayerManager(@NonNull Context context, String linkPlay, String drmScheme) {
         this.isCanAddViewWatchTime = true;
@@ -108,7 +101,6 @@ abstract class AbstractPlayerManager {
         this.manifestDataSourceFactory = buildHttpDataSourceFactory();
         this.mediaDataSourceFactory =
                 new DefaultDataSourceFactory(context, null, manifestDataSourceFactory);
-        this.drmSessionManager = buildDrmSessionManager();
     }
 
     /**
@@ -144,8 +136,8 @@ abstract class AbstractPlayerManager {
         player.stop();
         removeListeners();
         player.release();
-        handler = null;
-        runnable = null;
+        mHandler = null;
+        mRunnable = null;
         try {
             Objects.requireNonNull(Objects.requireNonNull(managerObserver.getPlayerView()).getOverlayFrameLayout()).removeAllViews();
         } catch (NullPointerException e) {
@@ -422,6 +414,22 @@ abstract class AbstractPlayerManager {
         return timeShiftOn;
     }
 
+    public static boolean useExtensionRenderers() {
+        return true;
+    }
+
+    private RenderersFactory buildRenderersFactory(Context context, boolean preferExtensionRenderer) {
+        @DefaultRenderersFactory.ExtensionRendererMode
+        int extensionRendererMode =
+                useExtensionRenderers()
+                        ? (preferExtensionRenderer
+                        ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+                        : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
+        return new DefaultRenderersFactory(context.getApplicationContext())
+                .setExtensionRendererMode(extensionRendererMode);
+    }
+
     SimpleExoPlayer createPlayer() {
         @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
                 DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
@@ -429,21 +437,7 @@ abstract class AbstractPlayerManager {
                 new DefaultRenderersFactory(context).setExtensionRendererMode(extensionRendererMode);
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
         trackSelector = new DefaultTrackSelector(context, videoTrackSelectionFactory);
-        return ExoPlayerFactory.newSimpleInstance(context, renderersFactory, trackSelector, UZLoadControl.createControl(bufferCallback), drmSessionManager);
-    }
-
-    DefaultDrmSessionManager<FrameworkMediaCrypto> buildDrmSessionManager() {
-        DefaultDrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
-        if (!TextUtils.isEmpty(drmScheme)) {
-            String drmLicenseUrl = Constants.DRM_LICENSE_URL;
-            UUID drmSchemeUuid = Util.getDrmUuid(drmScheme);
-            try {
-                drmSessionManager = buildDrmSessionManagerV18(drmSchemeUuid, drmLicenseUrl);
-            } catch (UnsupportedDrmException e) {
-                e.printStackTrace();
-            }
-        }
-        return drmSessionManager;
+        return ExoPlayerFactory.newSimpleInstance(context, renderersFactory, trackSelector, UZLoadControl.createControl(bufferCallback), null);
     }
 
     void initPlayerListeners() {
@@ -466,16 +460,6 @@ abstract class AbstractPlayerManager {
             player.removeVideoListener(uzVideoEventListener);
             uzVideoEventListener = null;
         }
-    }
-
-    private DefaultDrmSessionManager<FrameworkMediaCrypto> buildDrmSessionManagerV18(UUID uuid, String licenseUrl) throws UnsupportedDrmException {
-        HttpDataSource.Factory licenseDataSourceFactory = buildHttpDataSourceFactory();
-        HttpMediaDrmCallback drmCallback = new HttpMediaDrmCallback(licenseUrl, licenseDataSourceFactory);
-        return new DefaultDrmSessionManager<>(uuid, FrameworkMediaDrm.newInstance(uuid), drmCallback, null,
-                false);
-//                .setMultiSession(false)
-//                .setUuidAndExoMediaDrmProvider(uuid, FrameworkMediaDrm.DEFAULT_PROVIDER)
-//                .build(new HttpMediaDrmCallback(licenseUrl, manifestDataSourceFactory));
     }
 
     abstract void initSource();
