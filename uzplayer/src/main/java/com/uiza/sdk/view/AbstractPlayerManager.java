@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsManifest;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.hls.playlist.HlsMasterPlaylist;
+import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -336,7 +337,7 @@ abstract class AbstractPlayerManager {
             case C.TYPE_OTHER:
                 return new ProgressiveMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
             case C.TYPE_SS:
-                throw new IllegalStateException("Unsupported TYPE_SS type: " + type);
+                return new SsMediaSource.Factory(mediaDataSourceFactory).createMediaSource(uri);
             default:
                 throw new IllegalStateException("Unsupported type: " + type);
         }
