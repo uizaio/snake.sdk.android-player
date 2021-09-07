@@ -20,7 +20,7 @@
             android:id="@+id/btBackScreenUZ"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/back" />
 
@@ -40,7 +40,7 @@
             android:id="@+id/btPipUZ"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/picture" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/btVolumeUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_volume_up_white_24_uz" />
 
@@ -56,7 +56,7 @@
             android:id="@+id/btSettingUZ"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/settings" />
     </LinearLayout>
@@ -72,7 +72,7 @@
             android:id="@+id/btRewUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_replay_10_white_uz"
             app:tint="@color/deep_pink" />
@@ -81,7 +81,7 @@
             android:id="@+id/btPlayUZ"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/ic_play_white_uz"
             app:tint="@color/red"
@@ -91,7 +91,7 @@
             android:id="@+id/btPauseUZ"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/ic_pause_white_uz"
             app:tint="@color/green"
@@ -101,7 +101,7 @@
             android:id="@+id/btReplayUZ"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/replay" />
 
@@ -109,7 +109,7 @@
             android:id="@+id/btFfwdUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_forward_10_white_uz" />
     </LinearLayout>
@@ -181,7 +181,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/margin_padding_small"
-                    android:background="@android:color/transparent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_fullscreen_white_48_uz" />
 
