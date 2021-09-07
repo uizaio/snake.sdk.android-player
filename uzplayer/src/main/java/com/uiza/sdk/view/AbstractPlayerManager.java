@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
@@ -38,7 +37,6 @@ import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.uiza.sdk.interfaces.DebugCallback;
-import com.uiza.sdk.interfaces.UZBufferListener;
 import com.uiza.sdk.interfaces.UZManagerObserver;
 import com.uiza.sdk.interfaces.UZProgressListener;
 import com.uiza.sdk.utils.ConvertUtils;
@@ -74,7 +72,6 @@ abstract class AbstractPlayerManager {
     protected Handler mHandler;
     Runnable mRunnable;
     UZProgressListener progressListener;
-    private UZBufferListener bufferCallback;
     protected long duration = 0;
     int percent = 0;
     protected int s = 0;
@@ -126,10 +123,6 @@ abstract class AbstractPlayerManager {
 
     void setProgressListener(UZProgressListener progressListener) {
         this.progressListener = progressListener;
-    }
-
-    void setBufferCallback(UZBufferListener bufferCallback) {
-        this.bufferCallback = bufferCallback;
     }
 
     public void release() {
@@ -418,7 +411,7 @@ abstract class AbstractPlayerManager {
         return true;
     }
 
-    private RenderersFactory buildRenderersFactory(Context context, boolean preferExtensionRenderer) {
+    private RenderersFactory buildRenderersFactory(boolean preferExtensionRenderer) {
         @DefaultRenderersFactory.ExtensionRendererMode
         int extensionRendererMode =
                 useExtensionRenderers()
@@ -426,18 +419,20 @@ abstract class AbstractPlayerManager {
                         ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                         : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
                         : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
-        return new DefaultRenderersFactory(context.getApplicationContext())
+        return new DefaultRenderersFactory(context)
                 .setExtensionRendererMode(extensionRendererMode);
     }
 
     SimpleExoPlayer createPlayer() {
-        @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
-                DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
-        DefaultRenderersFactory renderersFactory =
-                new DefaultRenderersFactory(context).setExtensionRendererMode(extensionRendererMode);
-        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory();
-        trackSelector = new DefaultTrackSelector(context, videoTrackSelectionFactory);
-        return ExoPlayerFactory.newSimpleInstance(context, renderersFactory, trackSelector, UZLoadControl.createControl(bufferCallback), null);
+        RenderersFactory renderersFactory = buildRenderersFactory(true);
+
+        TrackSelection.Factory trackSelectionFactory = new AdaptiveTrackSelection.Factory();
+        trackSelector = new DefaultTrackSelector(context, trackSelectionFactory);
+        trackSelector.setParameters(new DefaultTrackSelector.ParametersBuilder(context).build());
+
+        return new SimpleExoPlayer.Builder(context, renderersFactory)
+                .setTrackSelector(trackSelector)
+                .build();
     }
 
     void initPlayerListeners() {

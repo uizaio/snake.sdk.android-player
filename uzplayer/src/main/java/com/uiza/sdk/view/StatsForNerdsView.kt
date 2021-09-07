@@ -6,7 +6,6 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
@@ -346,20 +345,6 @@ class StatsForNerdsView : RelativeLayout, AnalyticsListener, OnAudioVolumeChange
     @SuppressLint("SetTextI18n")
     fun setTextConnectionSpeed(value: String?) {
         tvConnectionSpeed.text = "Connection Speed: $value"
-    }
-
-    /**
-     * Depict host
-     *
-     * @param value should be formatted like below
-     * EX: https://uiza.io
-     */
-    fun setTextHost(value: String?) {
-        if (TextUtils.isEmpty(value)) {
-            tvHost.text = "--"
-        } else {
-            tvHost.text = value
-        }
     }
 
     /**

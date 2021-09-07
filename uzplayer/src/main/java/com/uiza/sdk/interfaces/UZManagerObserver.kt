@@ -8,7 +8,6 @@ interface UZManagerObserver {
     val isPIPEnable: Boolean
     val playerView: UZPlayerView?
     val isAutoStart: Boolean
-    val adPlayerCallback: UZAdPlayerCallback?
     // progress
     fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int)
     fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int)

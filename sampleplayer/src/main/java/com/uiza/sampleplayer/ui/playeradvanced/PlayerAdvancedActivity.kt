@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
@@ -102,41 +101,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 Player.STATE_ENDED -> {
                     log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_ENDED")
                 }
-            }
-        }
-        uzVideoView.adPlayerCallback = object : UZAdPlayerCallback {
-            override fun onPlay() {
-                log("adPlayerCallback onPlay")
-            }
-
-            override fun onVolumeChanged(i: Int) {
-                log("adPlayerCallback onVolumeChanged $i")
-            }
-
-            override fun onPause() {
-                log("adPlayerCallback onPause")
-            }
-
-            override fun onLoaded() {
-                log("adPlayerCallback onLoaded")
-            }
-
-            override fun onResume() {
-                log("adPlayerCallback onResume")
-            }
-
-            override fun onEnded() {
-                log("adPlayerCallback onEnded")
-                toast("onCurrentWindowDynamic isLIVE ${uzVideoView.isLIVE}")
-                logInformation()
-            }
-
-            override fun onError() {
-                log("adPlayerCallback onError")
-            }
-
-            override fun onBuffering() {
-                log("adPlayerCallback onBuffering")
             }
         }
         uzVideoView.onCurrentWindowDynamic = { isLIVE ->

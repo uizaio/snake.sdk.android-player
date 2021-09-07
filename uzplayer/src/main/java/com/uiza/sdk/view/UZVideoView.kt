@@ -38,10 +38,11 @@ import com.uiza.sdk.dialog.setting.SettingItem
 import com.uiza.sdk.dialog.speed.Callback
 import com.uiza.sdk.dialog.speed.Speed
 import com.uiza.sdk.dialog.speed.UZSpeedDialog
-import com.uiza.sdk.exceptions.ErrorConstant
 import com.uiza.sdk.exceptions.ErrorUtils
 import com.uiza.sdk.exceptions.UZException
-import com.uiza.sdk.interfaces.*
+import com.uiza.sdk.interfaces.DebugCallback
+import com.uiza.sdk.interfaces.UZManagerObserver
+import com.uiza.sdk.interfaces.UZProgressListener
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
 import com.uiza.sdk.utils.*
@@ -163,17 +164,6 @@ class UZVideoView : RelativeLayout,
         null
 
     private var orb: Orb? = null
-
-    private var isAdEnded: Boolean? = null
-    override var adPlayerCallback: UZAdPlayerCallback? = null
-        set(callback) {
-            field = callback
-            if (UZAppUtils.isAdsDependencyAvailable) {
-                playerManager?.setAdPlayerCallback(callback)
-            } else {
-                throw NoClassDefFoundError(ErrorConstant.ERR_506)
-            }
-        }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -1627,13 +1617,6 @@ class UZVideoView : RelativeLayout,
             }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
-            override fun onAdEnded() {
-                isAdEnded = true
-            }
-
-            override fun onAdProgress(s: Int, duration: Int, percent: Int) {
-                isAdEnded = false
-            }
 
             override fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {
                 post {
@@ -1642,19 +1625,12 @@ class UZVideoView : RelativeLayout,
                         isCalledFromUZTimeBarEvent = false
                     )
                 }
-                if (isAdEnded == true) {
-                    onVideoProgress?.invoke(currentMls, s, duration, percent)
-                }
+                onVideoProgress?.invoke(currentMls, s, duration, percent)
             }
         })
         playerManager?.setDebugCallback(object : DebugCallback {
             override fun onUpdateButtonVisibilities() {
                 updateUIButtonVisibilities()
-            }
-        })
-        playerManager?.setBufferCallback(object : UZBufferListener {
-            override fun onBufferChanged(bufferedDurationUs: Long, playbackSpeed: Float) {
-                statsForNerdsView.setBufferedDurationUs(bufferedDurationUs)
             }
         })
     }

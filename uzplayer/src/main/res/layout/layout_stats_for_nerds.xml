@@ -82,14 +82,6 @@
                 tools:text="Current / Optimal Res:806x453 / 1280x720" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvHost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_tiny"
-                tools:text="Host: https://com.uiza.io" />
-
-            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
