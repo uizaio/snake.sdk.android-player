@@ -20,7 +20,7 @@
             android:id="@+id/btBackScreenUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_arrow_down_uz" />
 
@@ -40,7 +40,7 @@
             android:id="@+id/btPipUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_pip_white_24_uz" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/btVolumeUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_volume_up_white_24_uz" />
 
@@ -56,7 +56,7 @@
             android:id="@+id/btSettingUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_settings_white_uz" />
     </LinearLayout>
@@ -72,7 +72,7 @@
             android:id="@+id/btRewUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_replay_10_white_uz" />
 
@@ -80,7 +80,7 @@
             android:id="@+id/btPlayUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/ic_play_white_uz"
             app:useDefaultIB="false" />
@@ -89,7 +89,7 @@
             android:id="@+id/btPauseUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/ic_pause_white_uz"
             app:useDefaultIB="false" />
@@ -98,7 +98,7 @@
             android:id="@+id/btReplayUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_replay_white_uz" />
 
@@ -106,7 +106,7 @@
             android:id="@+id/btFfwdUZ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/ic_forward_10_white_uz" />
     </LinearLayout>
@@ -178,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/margin_padding_small"
-                    android:background="@android:color/transparent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_fullscreen_white_48_uz" />
 
