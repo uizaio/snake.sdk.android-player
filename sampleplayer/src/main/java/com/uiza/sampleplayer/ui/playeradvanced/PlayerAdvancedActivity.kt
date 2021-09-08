@@ -18,7 +18,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,11 +30,11 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             log("onPlayerViewCreated")
-            uzVideoView.isAutoStart = true//default is true
+            uzVideoView.isAutoStart = false//default is true
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             uzVideoView.setControllerHideOnTouch(true)
-            uzVideoView.setEnableDoubleTapToSeek(true)//default is false
+            uzVideoView.setEnableDoubleTapToSeek(false)//default is false
             uzVideoView.setShowLayoutDebug(false)
             logInformation()
         }
@@ -86,20 +86,20 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
             log("onDoubleTapProgressUp $posX $posY")
         }
-        uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
+        uzVideoView.onPlayerStateChanged = { playbackState: Int ->
             when (playbackState) {
                 Player.STATE_IDLE -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_IDLE")
+                    log("onPlayerStateChanged playbackState STATE_IDLE")
                 }
                 Player.STATE_BUFFERING -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_BUFFERING")
+                    log("onPlayerStateChanged playbackState STATE_BUFFERING")
                 }
                 Player.STATE_READY -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_READY")
+                    log("onPlayerStateChanged playbackState STATE_READY")
                     logInformation()
                 }
                 Player.STATE_ENDED -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_ENDED")
+                    log("onPlayerStateChanged playbackState STATE_ENDED")
                 }
             }
         }
@@ -157,9 +157,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btReplay.setOnClickListener {
             uzVideoView.replay()
-        }
-        btToggleStatsForNerds.setOnClickListener {
-            uzVideoView.toggleStatsForNerds()
         }
         btBackScreen.setOnClickListener {
             uzVideoView.clickBackScreen()
@@ -246,10 +243,10 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
         log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
         log("heightTimeBar ${uzVideoView.heightTimeBar}")
-        log("videoProfileW ${uzVideoView.videoProfileW}")
-        log("videoProfileH ${uzVideoView.videoProfileH}")
-        log("videoWidth ${uzVideoView.videoWidth}")
-        log("videoHeight ${uzVideoView.videoHeight}")
+        log("videoProfileW ${uzVideoView.getVideoProfileW()}")
+        log("videoProfileH ${uzVideoView.getVideoProfileH()}")
+        log("getVideoWidth ${uzVideoView.getVideoWidth()}")
+        log("getVideoHeight ${uzVideoView.getVideoHeight()}")
         log("isPlaying ${uzVideoView.isPlaying}")
         log("isPIPEnable ${uzVideoView.isPIPEnable}")
         log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
@@ -263,8 +260,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         log("getSkinId ${uzVideoView.getSkinId()}")
         log("volume ${uzVideoView.volume}")
         log("isVOD ${uzVideoView.isVOD}")
-        log("getDebugString ${uzVideoView.getDebugString()}")
         log("getActions size ${uzVideoView.listRemoteAction?.size}")
+        log("isLIVE ${uzVideoView.isLIVE}")
     }
 
     private fun onPlay(link: String) {
@@ -295,6 +292,16 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     public override fun onPause() {
         super.onPause()
         uzVideoView.onPauseView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        uzVideoView.onStartView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        uzVideoView.onStopView()
     }
 
     override fun onBackPressed() {

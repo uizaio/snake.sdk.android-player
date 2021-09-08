@@ -18,7 +18,6 @@ import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
 import androidx.annotation.ColorInt
-import com.google.android.exoplayer2.ui.PlayerView
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
 import com.uiza.sdk.widget.UZImageButton
@@ -149,8 +148,8 @@ object UZViewUtils {
     }
 
     @JvmStatic
-    fun hideSystemUiFullScreen(playerView: PlayerView) {
-        playerView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+    fun hideSystemUiFullScreen(view: View) {
+        view.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
                 or View.SYSTEM_UI_FLAG_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -159,8 +158,8 @@ object UZViewUtils {
     }
 
     @JvmStatic
-    fun hideSystemUi(playerView: PlayerView) {
-        playerView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+    fun hideSystemUi(view: View) {
+        view.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
                 and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
                 and View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
                 and View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION.inv()
