@@ -1,5 +1,6 @@
 package com.uiza.sampleplayer.ui.playeradvanced
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
@@ -27,46 +28,42 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         setupViews()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            log("onPlayerViewCreated")
             uzVideoView.isAutoStart = false//default is true
             uzVideoView.setAutoReplay(true)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
             uzVideoView.setShowLayoutDebug(false)
-            logInformation()
         }
         uzVideoView.onFirstStateReady = {
-            log("onFirstStateReady isFirstStateReady")
+            tvOnFirstStateReady.text = "onFirstStateReady"
             uzVideoView.controllerShowTimeoutMs = 15_000 //15s
             uzVideoView.setDefaultSeekValue(15_000)//15s
             uzVideoView.setUseController(true)
         }
         uzVideoView.onIsInitResult = { linkPlay ->
-            log("onIsInitResult linkPlay $linkPlay")
+            tvOnIsInitResult.text = "onIsInitResult linkPlay $linkPlay"
         }
         uzVideoView.onStartPreviewTimeBar = { _: PreviewView?, progress: Int ->
             //will be called if you play a video has poster in UZPlayer
-            log("onStartPreviewTimeBar progress $progress")
+            tvOnStartPreviewTimeBar.text = "onStartPreviewTimeBar progress $progress"
         }
         uzVideoView.onStopPreviewTimeBar = { _: PreviewView?, progress: Int ->
             //will be called if you play a video has poster in UZPlayer
-            log("onStopPreviewTimeBar progress $progress")
+            tvOnStopPreviewTimeBar.text = "onStopPreviewTimeBar progress $progress"
         }
         uzVideoView.onPreviewTimeBar = { _: PreviewView?, progress: Int, fromUser: Boolean ->
             //will be called if you play a video has poster in UZPlayer
-            log("onPreviewTimeBar progress $progress, fromUser $fromUser")
+            tvOnPreviewTimeBar.text = "onPreviewTimeBar progress $progress, fromUser $fromUser"
         }
         uzVideoView.onNetworkChange = { isConnected ->
-            log("onNetworkChange isConnected $isConnected")
+            tvOnNetworkChange.text = "onNetworkChange isConnected $isConnected"
         }
         uzVideoView.onSkinChange = {
-            log("onSkinChange")
-        }
-        uzVideoView.onTimeShiftChange = { timeShiftOn: Boolean ->
-            log("onTimeShiftChange timeShiftOn $timeShiftOn")
+            tvOnSkinChange.text = "onSkinChange $it"
         }
         uzVideoView.onScreenRotate = { isLandscape: Boolean ->
             log("onScreenRotate isLandscape $isLandscape")
@@ -96,7 +93,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 }
                 Player.STATE_READY -> {
                     log("onPlayerStateChanged playbackState STATE_READY")
-                    logInformation()
                 }
                 Player.STATE_ENDED -> {
                     log("onPlayerStateChanged playbackState STATE_ENDED")
@@ -235,35 +231,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
     }
 
-    private fun logInformation() {
-        log("isAutoReplay ${uzVideoView.isAutoReplay()}")
-        log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
-        log("isLandscapeScreen ${uzVideoView.isLandscapeScreen()}")
-        log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
-        log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
-        log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
-        log("heightTimeBar ${uzVideoView.heightTimeBar}")
-        log("videoProfileW ${uzVideoView.getVideoProfileW()}")
-        log("videoProfileH ${uzVideoView.getVideoProfileH()}")
-        log("getVideoWidth ${uzVideoView.getVideoWidth()}")
-        log("getVideoHeight ${uzVideoView.getVideoHeight()}")
-        log("isPlaying ${uzVideoView.isPlaying}")
-        log("isPIPEnable ${uzVideoView.isPIPEnable}")
-        log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
-        log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
-        log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
-        log("isUseController ${uzVideoView.isUseController()}")
-        log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
-        log("videoFormat ${uzVideoView.videoFormat?.toString()}")
-        log("audioFormat ${uzVideoView.audioFormat?.toString()}")
-        log("isPlayingAd ${uzVideoView.isPlayingAd()}")
-        log("getSkinId ${uzVideoView.getSkinId()}")
-        log("volume ${uzVideoView.volume}")
-        log("isVOD ${uzVideoView.isVOD}")
-        log("getActions size ${uzVideoView.listRemoteAction?.size}")
-        log("isLIVE ${uzVideoView.isLIVE}")
-    }
-
     private fun onPlay(link: String) {
         if (link.isEmpty()) {
             Toast.makeText(this, "Link play is empty", Toast.LENGTH_SHORT).show()
@@ -275,7 +242,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
             )
             uzVideoView.play(uzPlayback)
-            logInformation()
         }
     }
 

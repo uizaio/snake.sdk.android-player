@@ -114,7 +114,7 @@ class UZVideoView : RelativeLayout,
     private var btSpeedUZ: UZImageButton? = null
     var uzPlayerView: UZPlayerView? = null
 
-    var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
+    var isAutoStart: Boolean = true
         set(isAutoStart) {
             field = isAutoStart
             updateUIButtonPlayPauseDependOnIsAutoStart()
@@ -152,7 +152,6 @@ class UZVideoView : RelativeLayout,
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
     var onSkinChange: ((skinId: Int) -> Unit)? = null
-    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
     var onPlayerStateChanged: ((playbackState: Int) -> Unit)? = null
@@ -711,7 +710,6 @@ class UZVideoView : RelativeLayout,
         }
         adsLoader?.setPlayer(null)
     }
-
 
     private fun updateStartPosition() {
         player?.let {
@@ -1279,16 +1277,6 @@ class UZVideoView : RelativeLayout,
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
             UZViewUtils.goneViews(btFullscreenUZ)
-        }
-    }
-
-    private fun updateUIButtonVisibilities() {
-        if (context == null) {
-            return
-        }
-        layoutControls.removeAllViews()
-        if (player == null) {
-            return
         }
     }
 
