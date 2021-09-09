@@ -66,36 +66,36 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnSkinChange.text = "onSkinChange $it"
         }
         uzVideoView.onScreenRotate = { isLandscape: Boolean ->
-            log("onScreenRotate isLandscape $isLandscape")
+            tvOnScreenRotate.text = "onScreenRotate isLandscape $isLandscape"
         }
         uzVideoView.onError = {
-            toast(it.toString())
+            tvOnError.text = "$it"
         }
         uzVideoView.onDoubleTapFinished = {
-            log("onDoubleTapFinished")
+            tvOnDoubleTapFinished.text = "onDoubleTapFinished"
         }
         uzVideoView.onDoubleTapProgressDown = { posX: Float, posY: Float ->
-            log("onDoubleTapProgressDown $posX $posY")
+            tvOnDoubleTapProgressDown.text = "onDoubleTapProgressDown $posX $posY"
         }
         uzVideoView.onDoubleTapStarted = { posX: Float, posY: Float ->
-            log("onDoubleTapStarted $posX $posY")
+            tvOnDoubleTapStarted.text = "onDoubleTapStarted $posX $posY"
         }
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
-            log("onDoubleTapProgressUp $posX $posY")
+            tvOnDoubleTapProgressUp.text = "onDoubleTapProgressUp $posX $posY"
         }
         uzVideoView.onPlayerStateChanged = { playbackState: Int ->
             when (playbackState) {
                 Player.STATE_IDLE -> {
-                    log("onPlayerStateChanged playbackState STATE_IDLE")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_IDLE"
                 }
                 Player.STATE_BUFFERING -> {
-                    log("onPlayerStateChanged playbackState STATE_BUFFERING")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_BUFFERING"
                 }
                 Player.STATE_READY -> {
-                    log("onPlayerStateChanged playbackState STATE_READY")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_READY"
                 }
                 Player.STATE_ENDED -> {
-                    log("onPlayerStateChanged playbackState STATE_ENDED")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_ENDED"
                 }
             }
         }
@@ -105,13 +105,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             } else {
                 toast("onCurrentWindowDynamic !isLIVE")
             }
-        }
-        uzVideoView.onBufferProgress =
-            { bufferedPosition: Long, bufferedPercentage: Int, duration: Long ->
-                log("onBufferProgress bufferedPosition $bufferedPosition, bufferedPercentage $bufferedPercentage, duration $duration")
-            }
-        uzVideoView.onVideoProgress = { currentMls: Long, s: Int, duration: Long, percent: Int ->
-            log("onVideoProgress currentMls $currentMls, s $s, duration $duration, percent $percent")
         }
         uzVideoView.onSurfaceRedrawNeeded = {
             log("onSurfaceRedrawNeeded")

@@ -174,11 +174,6 @@ class UZVideoView : RelativeLayout,
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
-    var onBufferProgress: ((bufferedPosition: Long, bufferedPercentage: Int, duration: Long) -> Unit)? =
-        null
-    var onVideoProgress: ((currentMls: Long, s: Int, duration: Long, percent: Int) -> Unit)? =
-        null
-
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
 

@@ -14,7 +14,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/light_yellow">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,43 +26,94 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnFirstStateReady"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnFirstStateReady" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnIsInitResult"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnIsInitResult" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnStartPreviewTimeBar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnStartPreviewTimeBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnStopPreviewTimeBar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnStopPreviewTimeBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnPreviewTimeBar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnPreviewTimeBar" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnNetworkChange"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnNetworkChange" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnSkinChange"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="tvOnSkinChange" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnScreenRotate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnScreenRotate" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnError"
+                android:textColor="@color/red" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapFinished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapFinished" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapProgressDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapProgressDown" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapStarted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapStarted" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapProgressUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapProgressUp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPlayerStateChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPlayerStateChanged" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/green"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
