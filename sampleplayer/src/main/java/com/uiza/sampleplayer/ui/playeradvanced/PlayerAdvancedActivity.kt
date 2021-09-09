@@ -312,7 +312,18 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onSkipSilenceEnabledChanged = {
             log("onSkipSilenceEnabledChanged $it")
         }
-
+        uzVideoView.onCues = {
+            log("onCues size ${it.size}")
+        }
+        uzVideoView.onMetadata = {
+            log("onMetadata length ${it.length()}")
+        }
+        uzVideoView.onDeviceInfoChanged = {
+            tvOnDeviceInfoChanged.text = "onDeviceInfoChanged ${it.playbackType}"
+        }
+        uzVideoView.onDeviceVolumeChanged = { volume: Int, muted: Boolean ->
+            tvOnDeviceVolumeChanged.text = "onDeviceVolumeChanged volume $volume, muted $muted"
+        }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()

@@ -297,6 +297,10 @@ class UZVideoView : RelativeLayout,
     var onAudioAttributesChanged: ((audioAttributes: AudioAttributes) -> Unit)? = null
     var onVolumeChanged: ((volume: Float) -> Unit)? = null
     var onSkipSilenceEnabledChanged: ((skipSilenceEnabled: Boolean) -> Unit)? = null
+    var onCues: ((cues: MutableList<Cue>) -> Unit)? = null
+    var onMetadata: ((metadata: com.google.android.exoplayer2.metadata.Metadata) -> Unit)? = null
+    var onDeviceInfoChanged: ((deviceInfo: DeviceInfo) -> Unit)? = null
+    var onDeviceVolumeChanged: ((volume: Int, muted: Boolean) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1646,21 +1650,25 @@ class UZVideoView : RelativeLayout,
 
             override fun onCues(cues: MutableList<Cue>) {
                 super.onCues(cues)
+                onCues?.invoke(cues)
             }
 
             override fun onMetadata(metadata: com.google.android.exoplayer2.metadata.Metadata) {
                 super.onMetadata(metadata)
 //                log("onMetadata ${metadata.length()}")
+                onMetadata?.invoke(metadata)
             }
 
             override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {
                 super.onDeviceInfoChanged(deviceInfo)
 //                log("onDeviceInfoChanged ${deviceInfo.minVolume} ${deviceInfo.maxVolume}")
+                onDeviceInfoChanged?.invoke(deviceInfo)
             }
 
             override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
                 super.onDeviceVolumeChanged(volume, muted)
 //                log("onDeviceVolumeChanged $volume, $muted")
+                onDeviceVolumeChanged?.invoke(volume, muted)
             }
 
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
