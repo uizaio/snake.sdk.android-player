@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
 import com.uiza.sampleplayer.R
@@ -181,6 +182,25 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                                             mediaLoadData: MediaLoadData ->
             tvOnUpstreamDiscarded.text =
                 "onUpstreamDiscarded eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onBandwidthEstimate = { eventTime: AnalyticsListener.EventTime,
+                                            totalLoadTimeMs: Int,
+                                            totalBytesLoaded: Long,
+                                            bitrateEstimate: Long ->
+            tvOnBandwidthEstimate.text =
+                "onBandwidthEstimate eventTime ${eventTime.currentPlaybackPositionMs}, totalLoadTimeMs $totalLoadTimeMs, totalBytesLoaded $totalBytesLoaded, bitrateEstimate $bitrateEstimate"
+        }
+        uzVideoView.onAudioEnabled =
+            { eventTime: AnalyticsListener.EventTime, decoderCounters: DecoderCounters ->
+                tvOnAudioEnabled.text =
+                    "onAudioEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+            }
+        uzVideoView.onAudioDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
+                                                  decoderName: String,
+                                                  initializedTimestampMs: Long,
+                                                  initializationDurationMs: Long ->
+            tvOnAudioDecoderInitialized.text =
+                "onAudioDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
         }
 
         btPlayVOD.setOnClickListener {
