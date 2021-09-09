@@ -237,6 +237,29 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 tvOnAudioSinkError.text =
                     "onAudioSinkError eventTime ${eventTime.currentPlaybackPositionMs}, audioSinkError $audioSinkError"
             }
+        uzVideoView.onAudioCodecError = { eventTime: AnalyticsListener.EventTime,
+                                          audioCodecError: java.lang.Exception ->
+            tvOnAudioCodecError.text =
+                "onAudioCodecError eventTime ${eventTime.currentPlaybackPositionMs}, audioCodecError $audioCodecError"
+        }
+        uzVideoView.onVideoEnabled = { eventTime: AnalyticsListener.EventTime,
+                                       decoderCounters: DecoderCounters ->
+            tvOnVideoEnabled.text =
+                "onVideoEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onVideoDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
+                                                  decoderName: String,
+                                                  initializedTimestampMs: Long,
+                                                  initializationDurationMs: Long ->
+            tvOnVideoDecoderInitialized.text =
+                "onVideoDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
+        }
+        uzVideoView.onVideoInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  format: Format,
+                                                  decoderReuseEvaluation: DecoderReuseEvaluation? ->
+            tvOnVideoInputFormatChanged.text =
+                "onVideoInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
+        }
 
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

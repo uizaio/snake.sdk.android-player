@@ -261,11 +261,40 @@
                 android:layout_height="wrap_content"
                 android:text="tvOnAudioDisabled"
                 android:textSize="@dimen/txt_tiny" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnAudioSinkError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="tvOnAudioSinkError"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioCodecError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioCodecError"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoEnabled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoDecoderInitialized"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoDecoderInitialized"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoInputFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoInputFormatChanged"
                 android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
