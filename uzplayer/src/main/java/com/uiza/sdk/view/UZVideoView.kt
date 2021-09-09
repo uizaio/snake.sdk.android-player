@@ -301,6 +301,12 @@ class UZVideoView : RelativeLayout,
     var onMetadata: ((metadata: com.google.android.exoplayer2.metadata.Metadata) -> Unit)? = null
     var onDeviceInfoChanged: ((deviceInfo: DeviceInfo) -> Unit)? = null
     var onDeviceVolumeChanged: ((volume: Int, muted: Boolean) -> Unit)? = null
+    var onTimelineChanged: ((timeline: Timeline, reason: Int) -> Unit)? = null
+    var onMediaItemTransition: ((mediaItem: MediaItem?, reason: Int) -> Unit)? = null
+    var onTracksChanged: ((trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) -> Unit)? =
+        null
+    var onIsLoadingChanged: ((isLoading: Boolean) -> Unit)? = null
+
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1674,11 +1680,13 @@ class UZVideoView : RelativeLayout,
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 super.onTimelineChanged(timeline, reason)
 //                log("onTimelineChanged ${timeline.periodCount}")
+                onTimelineChanged?.invoke(timeline, reason)
             }
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
 //                log("onMediaItemTransition ${mediaItem?.mediaId}")
+                onMediaItemTransition?.invoke(mediaItem, reason)
             }
 
             override fun onTracksChanged(
@@ -1701,21 +1709,24 @@ class UZVideoView : RelativeLayout,
                     }
                     lastSeenTrackGroupArray = trackGroups
                 }
+
+                onTracksChanged?.invoke(trackGroups, trackSelections)
             }
 
-            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-                super.onMediaMetadataChanged(mediaMetadata)
+//            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+//                super.onMediaMetadataChanged(mediaMetadata)
 //                log("onMediaMetadataChanged")
-            }
+//            }
 
-            override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
-                super.onPlaylistMetadataChanged(mediaMetadata)
+//            override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
+//                super.onPlaylistMetadataChanged(mediaMetadata)
 //                log("onPlaylistMetadataChanged")
-            }
+//            }
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
                 super.onIsLoadingChanged(isLoading)
 //                log("onIsLoadingChanged isLoading $isLoading")
+                onIsLoadingChanged?.invoke(isLoading)
             }
 
             override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {

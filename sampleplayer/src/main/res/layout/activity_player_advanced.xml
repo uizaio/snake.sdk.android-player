@@ -387,6 +387,20 @@
                 android:layout_height="wrap_content"
                 android:text="tvOnDeviceVolumeChanged"
                 android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnTimelineChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnTimelineChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnIsLoadingChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnIsLoadingChanged"
+                android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

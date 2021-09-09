@@ -7,12 +7,16 @@ import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
@@ -324,6 +328,21 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onDeviceVolumeChanged = { volume: Int, muted: Boolean ->
             tvOnDeviceVolumeChanged.text = "onDeviceVolumeChanged volume $volume, muted $muted"
         }
+        uzVideoView.onTimelineChanged = { timeline: Timeline, reason: Int ->
+            tvOnTimelineChanged.text =
+                "onTimelineChanged timeline ${timeline.periodCount}, reason $reason"
+        }
+        uzVideoView.onMediaItemTransition = { mediaItem: MediaItem?, reason: Int ->
+            log("onMediaItemTransition mediaItem ${mediaItem?.mediaId}, reason $reason")
+        }
+        uzVideoView.onTracksChanged =
+            { trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray ->
+                log("onTracksChanged trackGroups ${trackGroups?.length}, trackSelections ${trackSelections.length}")
+            }
+        uzVideoView.onIsLoadingChanged = {
+            tvOnIsLoadingChanged.text = "onIsLoadingChanged $it"
+        }
+
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()
