@@ -174,6 +174,39 @@ class UZVideoView : RelativeLayout,
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
+    var onShuffleModeChanged: ((eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) -> Unit)? =
+        null
+    var onLoadStarted: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadCompleted: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadCanceled: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadError: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData,
+        error: IOException,
+        wasCanceled: Boolean
+    ) -> Unit)? = null
+    var onDownstreamFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onUpstreamDiscarded: ((
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
 
@@ -1703,6 +1736,7 @@ class UZVideoView : RelativeLayout,
                 shuffleModeEnabled: Boolean
             ) {
                 super.onShuffleModeChanged(eventTime, shuffleModeEnabled)
+                onShuffleModeChanged?.invoke(eventTime, shuffleModeEnabled)
             }
 
             override fun onLoadStarted(
@@ -1711,6 +1745,7 @@ class UZVideoView : RelativeLayout,
                 mediaLoadData: MediaLoadData
             ) {
                 super.onLoadStarted(eventTime, loadEventInfo, mediaLoadData)
+                onLoadStarted?.invoke(eventTime, loadEventInfo, mediaLoadData)
             }
 
             override fun onLoadCompleted(
@@ -1719,6 +1754,7 @@ class UZVideoView : RelativeLayout,
                 mediaLoadData: MediaLoadData
             ) {
                 super.onLoadCompleted(eventTime, loadEventInfo, mediaLoadData)
+                onLoadCompleted?.invoke(eventTime, loadEventInfo, mediaLoadData)
             }
 
             override fun onLoadCanceled(
@@ -1727,6 +1763,7 @@ class UZVideoView : RelativeLayout,
                 mediaLoadData: MediaLoadData
             ) {
                 super.onLoadCanceled(eventTime, loadEventInfo, mediaLoadData)
+                onLoadCanceled?.invoke(eventTime, loadEventInfo, mediaLoadData)
             }
 
             override fun onLoadError(
@@ -1737,6 +1774,7 @@ class UZVideoView : RelativeLayout,
                 wasCanceled: Boolean
             ) {
                 super.onLoadError(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
+                onLoadError?.invoke(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
             }
 
             override fun onDownstreamFormatChanged(
@@ -1744,6 +1782,7 @@ class UZVideoView : RelativeLayout,
                 mediaLoadData: MediaLoadData
             ) {
                 super.onDownstreamFormatChanged(eventTime, mediaLoadData)
+                onDownstreamFormatChanged?.invoke(eventTime, mediaLoadData)
             }
 
             override fun onUpstreamDiscarded(
@@ -1751,6 +1790,7 @@ class UZVideoView : RelativeLayout,
                 mediaLoadData: MediaLoadData
             ) {
                 super.onUpstreamDiscarded(eventTime, mediaLoadData)
+                onUpstreamDiscarded?.invoke(eventTime, mediaLoadData)
             }
 
             override fun onBandwidthEstimate(
@@ -2144,7 +2184,6 @@ class UZVideoView : RelativeLayout,
             }
             player?.prepare()
             addListener()
-            log("initializePlayer return true")
             return true
         }
         return false
