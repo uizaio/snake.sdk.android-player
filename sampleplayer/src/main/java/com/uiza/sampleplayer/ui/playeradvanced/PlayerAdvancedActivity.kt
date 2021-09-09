@@ -7,6 +7,9 @@ import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.source.LoadEventInfo
+import com.google.android.exoplayer2.source.MediaLoadData
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
@@ -131,10 +134,28 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnSurfaceCreated.text = "onSurfaceCreated"
         }
         uzVideoView.onSurfaceChanged = { _: SurfaceHolder, format: Int, width: Int, height: Int ->
-            tvOnSurfaceChanged.text = "onSurfaceChanged format $format, width $width, height $height"
+            tvOnSurfaceChanged.text =
+                "onSurfaceChanged format $format, width $width, height $height"
         }
         uzVideoView.onSurfaceDestroyed = {
             tvOnSurfaceDestroyed.text = "onSurfaceDestroyed"
+        }
+        uzVideoView.onShuffleModeChanged =
+            { eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean ->
+                tvOnShuffleModeChanged.text =
+                    "onShuffleModeChanged ${eventTime.currentPlaybackPositionMs}, shuffleModeEnabled $shuffleModeEnabled"
+            }
+        uzVideoView.onLoadStarted = { eventTime: AnalyticsListener.EventTime,
+                                      loadEventInfo: LoadEventInfo,
+                                      mediaLoadData: MediaLoadData ->
+            tvOnLoadStarted.text =
+                "onLoadStarted ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onLoadCompleted = { eventTime: AnalyticsListener.EventTime,
+                                        loadEventInfo: LoadEventInfo,
+                                        mediaLoadData: MediaLoadData ->
+            tvOnLoadCompleted.text =
+                "onLoadCompleted eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

@@ -206,6 +206,88 @@ class UZVideoView : RelativeLayout,
         eventTime: AnalyticsListener.EventTime,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+    var onBandwidthEstimate: ((
+        eventTime: AnalyticsListener.EventTime,
+        totalLoadTimeMs: Int,
+        totalBytesLoaded: Long,
+        bitrateEstimate: Long
+    ) -> Unit)? = null
+    var onAudioEnabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onAudioDecoderInitialized: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit)? = null
+    var onAudioInputFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit)? = null
+    var onAudioPositionAdvancing: ((
+        eventTime: AnalyticsListener.EventTime,
+        playoutStartSystemTimeMs: Long
+    ) -> Unit)? = null
+    var onAudioUnderrun: ((
+        eventTime: AnalyticsListener.EventTime,
+        bufferSize: Int,
+        bufferSizeMs: Long,
+        elapsedSinceLastFeedMs: Long
+    ) -> Unit)? = null
+    var onAudioDecoderReleased: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit)? = null
+    var onAudioDisabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onAudioSinkError: ((
+        eventTime: AnalyticsListener.EventTime,
+        audioSinkError: java.lang.Exception
+    ) -> Unit)? = null
+    var onAudioCodecError: ((
+        eventTime: AnalyticsListener.EventTime,
+        audioCodecError: java.lang.Exception
+    ) -> Unit)? = null
+    var onVideoEnabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onVideoDecoderInitialized: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit)? = null
+    var onVideoInputFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit)? = null
+    var onDroppedVideoFrames: ((
+        eventTime: AnalyticsListener.EventTime,
+        droppedFrames: Int,
+        elapsedMs: Long
+    ) -> Unit)? = null
+    var onVideoDecoderReleased: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit)? = null
+    var onVideoDisabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onVideoFrameProcessingOffset: ((
+        eventTime: AnalyticsListener.EventTime,
+        totalProcessingOffsetUs: Long,
+        frameCount: Int
+    ) -> Unit)? = null
+    var onPlayerReleased: ((eventTime: AnalyticsListener.EventTime) -> Unit)? = null
+
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1805,6 +1887,12 @@ class UZVideoView : RelativeLayout,
                     totalBytesLoaded,
                     bitrateEstimate
                 )
+                onBandwidthEstimate?.invoke(
+                    eventTime,
+                    totalLoadTimeMs,
+                    totalBytesLoaded,
+                    bitrateEstimate
+                )
             }
 
             override fun onAudioEnabled(
@@ -1812,6 +1900,7 @@ class UZVideoView : RelativeLayout,
                 decoderCounters: DecoderCounters
             ) {
                 super.onAudioEnabled(eventTime, decoderCounters)
+                onAudioEnabled?.invoke(eventTime, decoderCounters)
             }
 
             override fun onAudioDecoderInitialized(
@@ -1826,6 +1915,12 @@ class UZVideoView : RelativeLayout,
                     initializedTimestampMs,
                     initializationDurationMs
                 )
+                onAudioDecoderInitialized?.invoke(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
             }
 
             override fun onAudioInputFormatChanged(
@@ -1834,6 +1929,7 @@ class UZVideoView : RelativeLayout,
                 decoderReuseEvaluation: DecoderReuseEvaluation?
             ) {
                 super.onAudioInputFormatChanged(eventTime, format, decoderReuseEvaluation)
+                onAudioInputFormatChanged?.invoke(eventTime, format, decoderReuseEvaluation)
             }
 
             override fun onAudioPositionAdvancing(
@@ -1841,6 +1937,7 @@ class UZVideoView : RelativeLayout,
                 playoutStartSystemTimeMs: Long
             ) {
                 super.onAudioPositionAdvancing(eventTime, playoutStartSystemTimeMs)
+                onAudioPositionAdvancing?.invoke(eventTime, playoutStartSystemTimeMs)
             }
 
             override fun onAudioUnderrun(
@@ -1850,6 +1947,7 @@ class UZVideoView : RelativeLayout,
                 elapsedSinceLastFeedMs: Long
             ) {
                 super.onAudioUnderrun(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
+                onAudioUnderrun?.invoke(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
             }
 
             override fun onAudioDecoderReleased(
@@ -1857,6 +1955,7 @@ class UZVideoView : RelativeLayout,
                 decoderName: String
             ) {
                 super.onAudioDecoderReleased(eventTime, decoderName)
+                onAudioDecoderReleased?.invoke(eventTime, decoderName)
             }
 
             override fun onAudioDisabled(
@@ -1864,6 +1963,7 @@ class UZVideoView : RelativeLayout,
                 decoderCounters: DecoderCounters
             ) {
                 super.onAudioDisabled(eventTime, decoderCounters)
+                onAudioDisabled?.invoke(eventTime, decoderCounters)
             }
 
             override fun onAudioSinkError(
@@ -1871,6 +1971,7 @@ class UZVideoView : RelativeLayout,
                 audioSinkError: java.lang.Exception
             ) {
                 super.onAudioSinkError(eventTime, audioSinkError)
+                onAudioSinkError?.invoke(eventTime, audioSinkError)
             }
 
             override fun onAudioCodecError(
@@ -1878,6 +1979,7 @@ class UZVideoView : RelativeLayout,
                 audioCodecError: java.lang.Exception
             ) {
                 super.onAudioCodecError(eventTime, audioCodecError)
+                onAudioCodecError?.invoke(eventTime, audioCodecError)
             }
 
             override fun onVideoEnabled(
@@ -1885,6 +1987,7 @@ class UZVideoView : RelativeLayout,
                 decoderCounters: DecoderCounters
             ) {
                 super.onVideoEnabled(eventTime, decoderCounters)
+                onVideoEnabled?.invoke(eventTime, decoderCounters)
             }
 
             override fun onVideoDecoderInitialized(
@@ -1899,6 +2002,12 @@ class UZVideoView : RelativeLayout,
                     initializedTimestampMs,
                     initializationDurationMs
                 )
+                onVideoDecoderInitialized?.invoke(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
             }
 
             override fun onVideoInputFormatChanged(
@@ -1907,6 +2016,7 @@ class UZVideoView : RelativeLayout,
                 decoderReuseEvaluation: DecoderReuseEvaluation?
             ) {
                 super.onVideoInputFormatChanged(eventTime, format, decoderReuseEvaluation)
+                onVideoInputFormatChanged?.invoke(eventTime, format, decoderReuseEvaluation)
             }
 
             override fun onDroppedVideoFrames(
@@ -1915,6 +2025,7 @@ class UZVideoView : RelativeLayout,
                 elapsedMs: Long
             ) {
                 super.onDroppedVideoFrames(eventTime, droppedFrames, elapsedMs)
+                onDroppedVideoFrames?.invoke(eventTime, droppedFrames, elapsedMs)
             }
 
             override fun onVideoDecoderReleased(
@@ -1922,6 +2033,7 @@ class UZVideoView : RelativeLayout,
                 decoderName: String
             ) {
                 super.onVideoDecoderReleased(eventTime, decoderName)
+                onVideoDecoderReleased?.invoke(eventTime, decoderName)
             }
 
             override fun onVideoDisabled(
@@ -1929,6 +2041,7 @@ class UZVideoView : RelativeLayout,
                 decoderCounters: DecoderCounters
             ) {
                 super.onVideoDisabled(eventTime, decoderCounters)
+                onVideoDisabled?.invoke(eventTime, decoderCounters)
             }
 
             override fun onVideoFrameProcessingOffset(
@@ -1937,10 +2050,12 @@ class UZVideoView : RelativeLayout,
                 frameCount: Int
             ) {
                 super.onVideoFrameProcessingOffset(eventTime, totalProcessingOffsetUs, frameCount)
+                onVideoFrameProcessingOffset?.invoke(eventTime, totalProcessingOffsetUs, frameCount)
             }
 
             override fun onPlayerReleased(eventTime: AnalyticsListener.EventTime) {
                 super.onPlayerReleased(eventTime)
+                onPlayerReleased?.invoke(eventTime)
             }
         })
         initProgressChange()
