@@ -642,6 +642,10 @@ class UZVideoView : RelativeLayout,
     val isPlaying: Boolean
         get() = player?.isPlaying ?: false
 
+    fun isPlayingAd(): Boolean? {
+        return player?.isPlayingAd
+    }
+
     fun setAutoMoveToLiveEdge(autoMoveToLiveEdge: Boolean) {
         this.autoMoveToLiveEdge = autoMoveToLiveEdge
     }
@@ -718,10 +722,6 @@ class UZVideoView : RelativeLayout,
         trackSelector?.parameters?.let {
             trackSelectorParameters = it
         }
-    }
-
-    fun isPlayingAd(): Boolean? {
-        return player?.isPlayingAd
     }
 
     val isPIPEnable: Boolean

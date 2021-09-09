@@ -39,6 +39,17 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.setShowLayoutDebug(false)
 
             log("heightTimeBar ${uzVideoView.heightTimeBar}")
+            log("videoFormat ${uzVideoView.videoFormat?.width}")
+            log("audioFormat ${uzVideoView.audioFormat?.bitrate}")
+            log("getVideoProfileW ${uzVideoView.getVideoProfileW()}")
+            log("getVideoProfileH ${uzVideoView.getVideoProfileH()}")
+            log("getVideoWidth ${uzVideoView.getVideoWidth()}")
+            log("getVideoHeight ${uzVideoView.getVideoHeight()}")
+            log("isPlayingAd ${uzVideoView.isPlayingAd()}")
+            log("isPlaying ${uzVideoView.isPlaying}")
+            log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
+            log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
+            log("isUseController ${uzVideoView.isUseController()}")
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
