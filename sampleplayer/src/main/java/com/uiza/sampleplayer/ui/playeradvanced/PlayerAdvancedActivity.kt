@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
+import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
@@ -291,6 +292,14 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 tvOnProgressChange.text =
                     "onProgressChange currentPosition $currentPosition, duration $duration, isPlayingAd $isPlayingAd"
             }
+        uzVideoView.onVideoSizeChanged = { videoSize: VideoSize ->
+            tvOnVideoSizeChanged.text =
+                "onVideoSizeChanged videoSize width: ${videoSize.width}, height: ${videoSize.height}, pixelWidthHeightRatio: ${videoSize.pixelWidthHeightRatio}, unappliedRotationDegrees: ${videoSize.unappliedRotationDegrees}"
+        }
+        uzVideoView.onSurfaceSizeChanged = { width: Int, height: Int ->
+            tvOnSurfaceSizeChanged.text = "onSurfaceSizeChanged width $width, height $height"
+        }
+
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()

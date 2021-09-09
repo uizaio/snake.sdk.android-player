@@ -290,6 +290,8 @@ class UZVideoView : RelativeLayout,
     var onProgressChange: ((currentPosition: Long, duration: Long, isPlayingAd: Boolean?) -> Unit)? =
         null
 
+    var onVideoSizeChanged: ((videoSize: VideoSize) -> Unit)? = null
+    var onSurfaceSizeChanged: ((width: Int, height: Int) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1380,7 +1382,7 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.goneViews(btPipUZ)
         }
         onCurrentWindowDynamic?.invoke(isLIVE)
-        log("updateUIDependOnLiveStream isLIVE $isLIVE")
+//        log("updateUIDependOnLiveStream isLIVE $isLIVE")
         if (isLIVE) {
             UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
         } else {
@@ -1597,37 +1599,39 @@ class UZVideoView : RelativeLayout,
         player?.addListener(object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 super.onVideoSizeChanged(videoSize)
-                log("onVideoSizeChanged ${videoSize.width} ${videoSize.height}")
+//                log("onVideoSizeChanged ${videoSize.width} ${videoSize.height}")
+                onVideoSizeChanged?.invoke(videoSize)
             }
 
             override fun onSurfaceSizeChanged(width: Int, height: Int) {
                 super.onSurfaceSizeChanged(width, height)
-                log("onSurfaceSizeChanged $width $height")
+//                log("onSurfaceSizeChanged $width $height")
+                onSurfaceSizeChanged?.invoke(width, height)
             }
 
             override fun onRenderedFirstFrame() {
                 super.onRenderedFirstFrame()
-                log("onRenderedFirstFrame")
+//                log("onRenderedFirstFrame")
             }
 
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 super.onAudioSessionIdChanged(audioSessionId)
-                log("onAudioSessionIdChanged audioSessionId $audioSessionId")
+//                log("onAudioSessionIdChanged audioSessionId $audioSessionId")
             }
 
             override fun onAudioAttributesChanged(audioAttributes: AudioAttributes) {
                 super.onAudioAttributesChanged(audioAttributes)
-                log("onAudioAttributesChanged audioAttributes ${audioAttributes.allowedCapturePolicy}")
+//                log("onAudioAttributesChanged audioAttributes ${audioAttributes.allowedCapturePolicy}")
             }
 
             override fun onVolumeChanged(volume: Float) {
                 super.onVolumeChanged(volume)
-                log("onVolumeChanged volume $volume")
+//                log("onVolumeChanged volume $volume")
             }
 
             override fun onSkipSilenceEnabledChanged(skipSilenceEnabled: Boolean) {
                 super.onSkipSilenceEnabledChanged(skipSilenceEnabled)
-                log("onSkipSilenceEnabledChanged $skipSilenceEnabled")
+//                log("onSkipSilenceEnabledChanged $skipSilenceEnabled")
             }
 
             override fun onCues(cues: MutableList<Cue>) {
@@ -1636,27 +1640,27 @@ class UZVideoView : RelativeLayout,
 
             override fun onMetadata(metadata: com.google.android.exoplayer2.metadata.Metadata) {
                 super.onMetadata(metadata)
-                log("onMetadata ${metadata.length()}")
+//                log("onMetadata ${metadata.length()}")
             }
 
             override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {
                 super.onDeviceInfoChanged(deviceInfo)
-                log("onDeviceInfoChanged ${deviceInfo.minVolume} ${deviceInfo.maxVolume}")
+//                log("onDeviceInfoChanged ${deviceInfo.minVolume} ${deviceInfo.maxVolume}")
             }
 
             override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
                 super.onDeviceVolumeChanged(volume, muted)
-                log("onDeviceVolumeChanged $volume, $muted")
+//                log("onDeviceVolumeChanged $volume, $muted")
             }
 
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 super.onTimelineChanged(timeline, reason)
-                log("onTimelineChanged ${timeline.periodCount}")
+//                log("onTimelineChanged ${timeline.periodCount}")
             }
 
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
-                log("onMediaItemTransition ${mediaItem?.mediaId}")
+//                log("onMediaItemTransition ${mediaItem?.mediaId}")
             }
 
             override fun onTracksChanged(
@@ -1664,7 +1668,7 @@ class UZVideoView : RelativeLayout,
                 trackSelections: TrackSelectionArray
             ) {
                 super.onTracksChanged(trackGroups, trackSelections)
-                log("onTracksChanged")
+//                log("onTracksChanged")
                 if (trackGroups !== lastSeenTrackGroupArray) {
                     val mappedTrackInfo = trackSelector?.currentMappedTrackInfo
                     if (mappedTrackInfo != null) {
@@ -1683,22 +1687,22 @@ class UZVideoView : RelativeLayout,
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 super.onMediaMetadataChanged(mediaMetadata)
-                log("onMediaMetadataChanged")
+//                log("onMediaMetadataChanged")
             }
 
             override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
                 super.onPlaylistMetadataChanged(mediaMetadata)
-                log("onPlaylistMetadataChanged")
+//                log("onPlaylistMetadataChanged")
             }
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
                 super.onIsLoadingChanged(isLoading)
-                log("onIsLoadingChanged isLoading $isLoading")
+//                log("onIsLoadingChanged isLoading $isLoading")
             }
 
             override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
                 super.onAvailableCommandsChanged(availableCommands)
-                log("onAvailableCommandsChanged")
+//                log("onAvailableCommandsChanged")
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -1706,19 +1710,19 @@ class UZVideoView : RelativeLayout,
 
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
-                        log("onPlaybackStateChanged STATE_BUFFERING")
+//                        log("onPlaybackStateChanged STATE_BUFFERING")
                         showProgress()
                     }
                     Player.STATE_IDLE -> {
-                        log("onPlaybackStateChanged STATE_IDLE")
+//                        log("onPlaybackStateChanged STATE_IDLE")
                         showProgress()
                     }
                     Player.STATE_ENDED -> {
-                        log("onPlaybackStateChanged STATE_ENDED")
+//                        log("onPlaybackStateChanged STATE_ENDED")
                         onPlayerEnded()
                     }
                     Player.STATE_READY -> {
-                        log("onPlaybackStateChanged STATE_READY")
+//                        log("onPlaybackStateChanged STATE_READY")
                         hideProgress()
                         updateTvDuration()
                         if (player?.playWhenReady == true) {
@@ -1739,32 +1743,32 @@ class UZVideoView : RelativeLayout,
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 super.onPlayWhenReadyChanged(playWhenReady, reason)
-                log("onPlayWhenReadyChanged playWhenReady $playWhenReady")
+//                log("onPlayWhenReadyChanged playWhenReady $playWhenReady")
             }
 
             override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
                 super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
-                log("onPlaybackSuppressionReasonChanged playbackSuppressionReason $playbackSuppressionReason")
+//                log("onPlaybackSuppressionReasonChanged playbackSuppressionReason $playbackSuppressionReason")
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-                log("onIsPlayingChanged isPlaying $isPlaying")
+//                log("onIsPlayingChanged isPlaying $isPlaying")
             }
 
             override fun onRepeatModeChanged(repeatMode: Int) {
                 super.onRepeatModeChanged(repeatMode)
-                log("onRepeatModeChanged repeatMode $repeatMode")
+//                log("onRepeatModeChanged repeatMode $repeatMode")
             }
 
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
                 super.onShuffleModeEnabledChanged(shuffleModeEnabled)
-                log("onShuffleModeEnabledChanged shuffleModeEnabled $shuffleModeEnabled")
+//                log("onShuffleModeEnabledChanged shuffleModeEnabled $shuffleModeEnabled")
             }
 
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
-                log("onPlayerError error $error")
+//                log("onPlayerError error $error")
                 hideProgress()
                 handleError(ErrorUtils.exceptionPlayback())
 
@@ -1776,7 +1780,7 @@ class UZVideoView : RelativeLayout,
 
             override fun onPlayerErrorChanged(error: PlaybackException?) {
                 super.onPlayerErrorChanged(error)
-                log("onPlayerErrorChanged error $error")
+//                log("onPlayerErrorChanged error $error")
             }
 
             override fun onPositionDiscontinuity(
@@ -1785,32 +1789,32 @@ class UZVideoView : RelativeLayout,
                 reason: Int
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                log("onPositionDiscontinuity oldPosition ${oldPosition.positionMs}, newPosition ${newPosition.positionMs}, reason $reason")
+//                log("onPositionDiscontinuity oldPosition ${oldPosition.positionMs}, newPosition ${newPosition.positionMs}, reason $reason")
             }
 
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
                 super.onPlaybackParametersChanged(playbackParameters)
-                log("onPlaybackParametersChanged playbackParameters ${playbackParameters.speed}")
+//                log("onPlaybackParametersChanged playbackParameters ${playbackParameters.speed}")
             }
 
             override fun onSeekBackIncrementChanged(seekBackIncrementMs: Long) {
                 super.onSeekBackIncrementChanged(seekBackIncrementMs)
-                log("onSeekBackIncrementChanged seekBackIncrementMs $seekBackIncrementMs")
+//                log("onSeekBackIncrementChanged seekBackIncrementMs $seekBackIncrementMs")
             }
 
             override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
                 super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
-                log("onSeekForwardIncrementChanged seekForwardIncrementMs $seekForwardIncrementMs")
+//                log("onSeekForwardIncrementChanged seekForwardIncrementMs $seekForwardIncrementMs")
             }
 
             override fun onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs: Int) {
                 super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs)
-                log("onMaxSeekToPreviousPositionChanged maxSeekToPreviousPositionMs $maxSeekToPreviousPositionMs")
+//                log("onMaxSeekToPreviousPositionChanged maxSeekToPreviousPositionMs $maxSeekToPreviousPositionMs")
             }
 
             override fun onEvents(player: Player, events: Player.Events) {
                 super.onEvents(player, events)
-                log("onEvents")
+//                log("onEvents")
             }
 
         })
@@ -2297,7 +2301,7 @@ class UZVideoView : RelativeLayout,
                 player?.seekTo(startWindow, startPosition)
             }
             mediaItems?.let {
-                log("initializePlayer haveStartPosition $haveStartPosition")
+//                log("initializePlayer haveStartPosition $haveStartPosition")
                 player?.setMediaItems(it, !haveStartPosition)
             }
             player?.prepare()
@@ -2308,7 +2312,6 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun createMediaItems(): List<MediaItem> {
-        log("createMediaItems $uzPlayback")
         val mediaItems = ArrayList<MediaItem>()
         if (uzPlayback == null) {
             return mediaItems

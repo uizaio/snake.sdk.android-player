@@ -338,6 +338,20 @@
                 android:layout_height="wrap_content"
                 android:text="tvOnProgressChange"
                 android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoSizeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoSizeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceSizeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceSizeChanged"
+                android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
