@@ -37,6 +37,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
             uzVideoView.setShowLayoutDebug(false)
+
+            log("heightTimeBar ${uzVideoView.heightTimeBar}")
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
@@ -89,7 +91,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                     tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_IDLE"
                 }
                 Player.STATE_BUFFERING -> {
-                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_BUFFERING"
+                    tvOnPlayerStateChanged.text =
+                        "onPlayerStateChanged playbackState STATE_BUFFERING"
                 }
                 Player.STATE_READY -> {
                     tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_READY"
@@ -100,23 +103,19 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             }
         }
         uzVideoView.onCurrentWindowDynamic = { isLIVE ->
-            if (isLIVE) {
-                toast("onCurrentWindowDynamic isLIVE")
-            } else {
-                toast("onCurrentWindowDynamic !isLIVE")
-            }
+            tvOnCurrentWindowDynamic.text = "onCurrentWindowDynamic isLIVE $isLIVE"
         }
         uzVideoView.onSurfaceRedrawNeeded = {
-            log("onSurfaceRedrawNeeded")
+            tvOnSurfaceRedrawNeeded.text = "onSurfaceRedrawNeeded"
         }
         uzVideoView.onSurfaceCreated = {
-            log("onSurfaceCreated")
+            tvOnSurfaceCreated.text = "onSurfaceCreated"
         }
         uzVideoView.onSurfaceChanged = { _: SurfaceHolder, format: Int, width: Int, height: Int ->
-            log("onSurfaceChanged format $format, width $width, height $height")
+            tvOnSurfaceChanged.text = "onSurfaceChanged format $format, width $width, height $height"
         }
         uzVideoView.onSurfaceDestroyed = {
-            log("onSurfaceDestroyed")
+            tvOnSurfaceDestroyed.text = "onSurfaceDestroyed"
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

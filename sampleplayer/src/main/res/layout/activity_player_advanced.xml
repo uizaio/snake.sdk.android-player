@@ -27,86 +27,133 @@
                 android:id="@+id/tvOnFirstStateReady"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnFirstStateReady" />
+                android:text="tvOnFirstStateReady"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnIsInitResult"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnIsInitResult" />
+                android:text="tvOnIsInitResult"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnStartPreviewTimeBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnStartPreviewTimeBar" />
+                android:text="tvOnStartPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnStopPreviewTimeBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnStopPreviewTimeBar" />
+                android:text="tvOnStopPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnPreviewTimeBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnPreviewTimeBar" />
+                android:text="tvOnPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnNetworkChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnNetworkChange" />
+                android:text="tvOnNetworkChange"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnSkinChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnSkinChange" />
+                android:text="tvOnSkinChange"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnScreenRotate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnScreenRotate" />
+                android:text="tvOnScreenRotate"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="tvOnError"
-                android:textColor="@color/red" />
+                android:textColor="@color/red"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnDoubleTapFinished"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnDoubleTapFinished" />
+                android:text="tvOnDoubleTapFinished"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnDoubleTapProgressDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnDoubleTapProgressDown" />
+                android:text="tvOnDoubleTapProgressDown"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnDoubleTapStarted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnDoubleTapStarted" />
+                android:text="tvOnDoubleTapStarted"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnDoubleTapProgressUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnDoubleTapProgressUp" />
+                android:text="tvOnDoubleTapProgressUp"
+                android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnPlayerStateChanged"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnPlayerStateChanged" />
+                android:text="tvOnPlayerStateChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnCurrentWindowDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnCurrentWindowDynamic"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceRedrawNeeded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceRedrawNeeded"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceCreated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceCreated"
+                android:textSize="@dimen/txt_tiny" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceChanged"
+                android:textSize="@dimen/txt_tiny" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceDestroyed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceDestroyed"
+                android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
