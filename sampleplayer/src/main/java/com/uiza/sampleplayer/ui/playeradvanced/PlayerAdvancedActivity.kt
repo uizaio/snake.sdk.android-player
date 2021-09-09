@@ -6,9 +6,11 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.decoder.DecoderCounters
+import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
 import com.uiza.sampleplayer.R
@@ -202,6 +204,39 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnAudioDecoderInitialized.text =
                 "onAudioDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
         }
+        uzVideoView.onAudioInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  format: Format,
+                                                  decoderReuseEvaluation: DecoderReuseEvaluation? ->
+            tvOnAudioInputFormatChanged.text =
+                "onAudioInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
+        }
+        uzVideoView.onAudioPositionAdvancing = { eventTime: AnalyticsListener.EventTime,
+                                                 playoutStartSystemTimeMs: Long ->
+            tvOnAudioPositionAdvancing.text =
+                "onAudioPositionAdvancing eventTime ${eventTime.currentPlaybackPositionMs}, playoutStartSystemTimeMs $playoutStartSystemTimeMs"
+        }
+        uzVideoView.onAudioUnderrun = { eventTime: AnalyticsListener.EventTime,
+                                        bufferSize: Int,
+                                        bufferSizeMs: Long,
+                                        elapsedSinceLastFeedMs: Long ->
+            tvOnAudioUnderrun.text =
+                "onAudioUnderrun eventTime ${eventTime.currentPlaybackPositionMs}, bufferSize $bufferSize, bufferSizeMs $bufferSizeMs, elapsedSinceLastFeedMs $elapsedSinceLastFeedMs"
+        }
+        uzVideoView.onAudioDecoderReleased = { eventTime: AnalyticsListener.EventTime,
+                                               decoderName: String ->
+            tvOnAudioDecoderReleased.text =
+                "onAudioDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
+        }
+        uzVideoView.onAudioDisabled = { eventTime: AnalyticsListener.EventTime,
+                                        decoderCounters: DecoderCounters ->
+            tvOnAudioDisabled.text =
+                "onAudioDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onAudioSinkError =
+            { eventTime: AnalyticsListener.EventTime, audioSinkError: java.lang.Exception ->
+                tvOnAudioSinkError.text =
+                    "onAudioSinkError eventTime ${eventTime.currentPlaybackPositionMs}, audioSinkError $audioSinkError"
+            }
 
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

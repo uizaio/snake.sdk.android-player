@@ -226,6 +226,47 @@
                 android:layout_height="wrap_content"
                 android:text="tvOnAudioDecoderInitialized"
                 android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioInputFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioInputFormatChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioPositionAdvancing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioPositionAdvancing"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioUnderrun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioUnderrun"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioDecoderReleased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioDecoderReleased"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioDisabled"
+                android:textSize="@dimen/txt_tiny" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioSinkError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioSinkError"
+                android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
