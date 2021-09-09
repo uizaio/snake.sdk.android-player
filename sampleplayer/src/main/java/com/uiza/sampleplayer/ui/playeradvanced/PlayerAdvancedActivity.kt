@@ -15,6 +15,7 @@ import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
+import java.io.IOException
 
 class PlayerAdvancedActivity : AppCompatActivity() {
     private fun toast(msg: String) {
@@ -157,6 +158,31 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnLoadCompleted.text =
                 "onLoadCompleted eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
         }
+        uzVideoView.onLoadCanceled = { eventTime: AnalyticsListener.EventTime,
+                                       loadEventInfo: LoadEventInfo,
+                                       mediaLoadData: MediaLoadData ->
+            tvOnLoadCanceled.text =
+                "onLoadCanceled eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onLoadError = { eventTime: AnalyticsListener.EventTime,
+                                    loadEventInfo: LoadEventInfo,
+                                    mediaLoadData: MediaLoadData,
+                                    error: IOException,
+                                    wasCanceled: Boolean ->
+            tvOnLoadError.text =
+                "onLoadError eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}, error $error, wasCanceled $wasCanceled"
+        }
+        uzVideoView.onDownstreamFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  mediaLoadData: MediaLoadData ->
+            tvOnDownstreamFormatChanged.text =
+                "onDownstreamFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onUpstreamDiscarded = { eventTime: AnalyticsListener.EventTime,
+                                            mediaLoadData: MediaLoadData ->
+            tvOnUpstreamDiscarded.text =
+                "onUpstreamDiscarded eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()

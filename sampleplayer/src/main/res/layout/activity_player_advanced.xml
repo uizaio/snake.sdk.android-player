@@ -177,6 +177,32 @@
                 android:layout_height="wrap_content"
                 android:text="tvOnLoadCompleted"
                 android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadCanceled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadCanceled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadError"
+                android:textSize="@dimen/txt_tiny" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDownstreamFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDownstreamFormatChanged"
+                android:textSize="@dimen/txt_tiny" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnUpstreamDiscarded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnUpstreamDiscarded"
+                android:textSize="@dimen/txt_tiny" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
