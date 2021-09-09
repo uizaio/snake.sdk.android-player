@@ -70,6 +70,8 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
             log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
             log("getSkinId ${uzVideoView.getSkinId()}")
+            log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
+            log("volume ${uzVideoView.volume}")
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"

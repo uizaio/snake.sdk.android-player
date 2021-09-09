@@ -2421,6 +2421,7 @@ class UZVideoView : RelativeLayout,
 
     private fun getAdsLoader(adsConfiguration: AdsConfiguration): AdsLoader? {
         // The ads loader is reused for multiple playbacks, so that ad playback can resume.
+        log("getAdsLoader adTagUri ${adsConfiguration.adTagUri}, adsId ${adsConfiguration.adsId}")
         if (adsLoader == null) {
             adsLoader = ImaAdsLoader.Builder(context).build()
         }
