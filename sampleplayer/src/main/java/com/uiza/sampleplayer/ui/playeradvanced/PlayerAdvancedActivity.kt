@@ -337,12 +337,33 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         uzVideoView.onTracksChanged =
             { trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray ->
-                log("onTracksChanged trackGroups ${trackGroups?.length}, trackSelections ${trackSelections.length}")
+                log("onTracksChanged trackGroups ${trackGroups.length}, trackSelections ${trackSelections.length}")
             }
         uzVideoView.onIsLoadingChanged = {
             tvOnIsLoadingChanged.text = "onIsLoadingChanged $it"
         }
-
+        uzVideoView.onAvailableCommandsChanged = {
+            tvOnAvailableCommandsChanged.text = "onAvailableCommandsChanged ${it.size()}"
+        }
+        uzVideoView.onPlayWhenReadyChanged = { playWhenReady: Boolean, reason: Int ->
+            tvOnPlayWhenReadyChanged.text =
+                "onPlayWhenReadyChanged playWhenReady $playWhenReady, reason $reason"
+        }
+        uzVideoView.onIsPlayingChanged = {
+            tvOnIsPlayingChanged.text = "onIsPlayingChanged $it"
+        }
+        uzVideoView.onRepeatModeChanged = {
+            log("onRepeatModeChanged $it")
+        }
+        uzVideoView.onShuffleModeEnabledChanged = {
+            log("onShuffleModeEnabledChanged $it")
+        }
+        uzVideoView.onPlayerError = {
+            log("onPlayerError ${it.errorCode}")
+        }
+        uzVideoView.onPlayerErrorChanged={
+            log("onPlayerErrorChanged ${it?.errorCode}")
+        }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()

@@ -306,7 +306,13 @@ class UZVideoView : RelativeLayout,
     var onTracksChanged: ((trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) -> Unit)? =
         null
     var onIsLoadingChanged: ((isLoading: Boolean) -> Unit)? = null
-
+    var onAvailableCommandsChanged: ((availableCommands: Player.Commands) -> Unit)? = null
+    var onPlayWhenReadyChanged: ((playWhenReady: Boolean, reason: Int) -> Unit)? = null
+    var onIsPlayingChanged: ((isPlaying: Boolean) -> Unit)? = null
+    var onRepeatModeChanged: ((repeatMode: Int) -> Unit)? = null
+    var onShuffleModeEnabledChanged: ((shuffleModeEnabled: Boolean) -> Unit)? = null
+    var onPlayerError: ((error: PlaybackException) -> Unit)? = null
+    var onPlayerErrorChanged: ((error: PlaybackException?) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1732,6 +1738,7 @@ class UZVideoView : RelativeLayout,
             override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
                 super.onAvailableCommandsChanged(availableCommands)
 //                log("onAvailableCommandsChanged")
+                onAvailableCommandsChanged?.invoke(availableCommands)
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -1773,26 +1780,30 @@ class UZVideoView : RelativeLayout,
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 super.onPlayWhenReadyChanged(playWhenReady, reason)
 //                log("onPlayWhenReadyChanged playWhenReady $playWhenReady")
+                onPlayWhenReadyChanged?.invoke(playWhenReady, reason)
             }
 
-            override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
-                super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
+//            override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
+//                super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
 //                log("onPlaybackSuppressionReasonChanged playbackSuppressionReason $playbackSuppressionReason")
-            }
+//            }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
 //                log("onIsPlayingChanged isPlaying $isPlaying")
+                onIsPlayingChanged?.invoke(isPlaying)
             }
 
             override fun onRepeatModeChanged(repeatMode: Int) {
                 super.onRepeatModeChanged(repeatMode)
 //                log("onRepeatModeChanged repeatMode $repeatMode")
+                onRepeatModeChanged?.invoke(repeatMode)
             }
 
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
                 super.onShuffleModeEnabledChanged(shuffleModeEnabled)
 //                log("onShuffleModeEnabledChanged shuffleModeEnabled $shuffleModeEnabled")
+                onShuffleModeEnabledChanged?.invoke(shuffleModeEnabled)
             }
 
             override fun onPlayerError(error: PlaybackException) {
@@ -1805,11 +1816,14 @@ class UZVideoView : RelativeLayout,
                     player?.seekToDefaultPosition()
                     player?.prepare()
                 }
+
+                onPlayerError?.invoke(error)
             }
 
             override fun onPlayerErrorChanged(error: PlaybackException?) {
                 super.onPlayerErrorChanged(error)
 //                log("onPlayerErrorChanged error $error")
+                onPlayerErrorChanged?.invoke(error)
             }
 
             override fun onPositionDiscontinuity(
