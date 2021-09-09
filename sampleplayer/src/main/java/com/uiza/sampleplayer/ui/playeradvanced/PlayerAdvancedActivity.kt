@@ -299,6 +299,19 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onSurfaceSizeChanged = { width: Int, height: Int ->
             tvOnSurfaceSizeChanged.text = "onSurfaceSizeChanged width $width, height $height"
         }
+        uzVideoView.onAudioSessionIdChanged = { audioSessionId ->
+            tvOnAudioSessionIdChanged.text =
+                "onAudioSessionIdChanged audioSessionId $audioSessionId"
+        }
+        uzVideoView.onAudioAttributesChanged = {
+            tvOnAudioAttributesChanged.text = "onAudioAttributesChanged ${it.allowedCapturePolicy}"
+        }
+        uzVideoView.onVolumeChanged = { volume: Float ->
+            tvOnVolumeChanged.text = "onVolumeChanged volume $volume"
+        }
+        uzVideoView.onSkipSilenceEnabledChanged = {
+            log("onSkipSilenceEnabledChanged $it")
+        }
 
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

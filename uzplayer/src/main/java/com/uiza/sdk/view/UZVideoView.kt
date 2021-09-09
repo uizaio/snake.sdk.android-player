@@ -292,6 +292,11 @@ class UZVideoView : RelativeLayout,
 
     var onVideoSizeChanged: ((videoSize: VideoSize) -> Unit)? = null
     var onSurfaceSizeChanged: ((width: Int, height: Int) -> Unit)? = null
+    var onRenderedFirstFrame: (() -> Unit)? = null
+    var onAudioSessionIdChanged: ((audioSessionId: Int) -> Unit)? = null
+    var onAudioAttributesChanged: ((audioAttributes: AudioAttributes) -> Unit)? = null
+    var onVolumeChanged: ((volume: Float) -> Unit)? = null
+    var onSkipSilenceEnabledChanged: ((skipSilenceEnabled: Boolean) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1612,26 +1617,31 @@ class UZVideoView : RelativeLayout,
             override fun onRenderedFirstFrame() {
                 super.onRenderedFirstFrame()
 //                log("onRenderedFirstFrame")
+                onRenderedFirstFrame?.invoke()
             }
 
             override fun onAudioSessionIdChanged(audioSessionId: Int) {
                 super.onAudioSessionIdChanged(audioSessionId)
 //                log("onAudioSessionIdChanged audioSessionId $audioSessionId")
+                onAudioSessionIdChanged?.invoke(audioSessionId)
             }
 
             override fun onAudioAttributesChanged(audioAttributes: AudioAttributes) {
                 super.onAudioAttributesChanged(audioAttributes)
 //                log("onAudioAttributesChanged audioAttributes ${audioAttributes.allowedCapturePolicy}")
+                onAudioAttributesChanged?.invoke(audioAttributes)
             }
 
             override fun onVolumeChanged(volume: Float) {
                 super.onVolumeChanged(volume)
 //                log("onVolumeChanged volume $volume")
+                onVolumeChanged?.invoke(volume)
             }
 
             override fun onSkipSilenceEnabledChanged(skipSilenceEnabled: Boolean) {
                 super.onSkipSilenceEnabledChanged(skipSilenceEnabled)
 //                log("onSkipSilenceEnabledChanged $skipSilenceEnabled")
+                onSkipSilenceEnabledChanged?.invoke(skipSilenceEnabled)
             }
 
             override fun onCues(cues: MutableList<Cue>) {
