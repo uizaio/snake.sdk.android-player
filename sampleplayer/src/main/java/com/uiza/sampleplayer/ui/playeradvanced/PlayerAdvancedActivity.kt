@@ -260,7 +260,37 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnVideoInputFormatChanged.text =
                 "onVideoInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
         }
-
+        uzVideoView.onDroppedVideoFrames = { eventTime: AnalyticsListener.EventTime,
+                                             droppedFrames: Int,
+                                             elapsedMs: Long ->
+            tvOnDroppedVideoFrames.text =
+                "onDroppedVideoFrames eventTime ${eventTime.currentPlaybackPositionMs}, droppedFrames $droppedFrames, elapsedMs $elapsedMs"
+        }
+        uzVideoView.onVideoDecoderReleased = { eventTime: AnalyticsListener.EventTime,
+                                               decoderName: String ->
+            tvOnVideoDecoderReleased.text =
+                "onVideoDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
+        }
+        uzVideoView.onVideoDisabled = { eventTime: AnalyticsListener.EventTime,
+                                        decoderCounters: DecoderCounters ->
+            tvOnVideoDisabled.text =
+                "onVideoDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onVideoFrameProcessingOffset = { eventTime: AnalyticsListener.EventTime,
+                                                     totalProcessingOffsetUs: Long,
+                                                     frameCount: Int ->
+            tvOnVideoFrameProcessingOffset.text =
+                "onVideoFrameProcessingOffset eventTime ${eventTime.currentPlaybackPositionMs}, totalProcessingOffsetUs $totalProcessingOffsetUs, frameCount $frameCount"
+        }
+        uzVideoView.onPlayerReleased = { eventTime: AnalyticsListener.EventTime ->
+            tvOnPlayerReleased.text =
+                "onPlayerReleased eventTime ${eventTime.currentPlaybackPositionMs}"
+        }
+        uzVideoView.onProgressChange =
+            { currentPosition: Long, duration: Long, isPlayingAd: Boolean? ->
+                tvOnProgressChange.text =
+                    "onProgressChange currentPosition $currentPosition, duration $duration, isPlayingAd $isPlayingAd"
+            }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
             btPlayLink.performClick()

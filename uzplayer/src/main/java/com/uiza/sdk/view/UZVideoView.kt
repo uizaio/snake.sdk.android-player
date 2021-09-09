@@ -287,6 +287,8 @@ class UZVideoView : RelativeLayout,
         frameCount: Int
     ) -> Unit)? = null
     var onPlayerReleased: ((eventTime: AnalyticsListener.EventTime) -> Unit)? = null
+    var onProgressChange: ((currentPosition: Long, duration: Long, isPlayingAd: Boolean?) -> Unit)? =
+        null
 
 
     private var orb: Orb? = null
@@ -434,22 +436,22 @@ class UZVideoView : RelativeLayout,
                 false//khong cho dung controller cho den khi isFirstStateReady == true
             pv.setOnDoubleTap(object : OnDoubleTap {
                 override fun onDoubleTapFinished() {
-                    log("onDoubleTapFinished")
+//                    log("onDoubleTapFinished")
                     onDoubleTapFinished?.invoke()
                 }
 
                 override fun onDoubleTapProgressDown(posX: Float, posY: Float) {
-                    log("onDoubleTapProgressDown")
+//                    log("onDoubleTapProgressDown")
                     onDoubleTapProgressDown?.invoke(posX, posY)
                 }
 
                 override fun onDoubleTapStarted(posX: Float, posY: Float) {
-                    log("onDoubleTapStarted")
+//                    log("onDoubleTapStarted")
                     onDoubleTapStarted?.invoke(posX, posY)
                 }
 
                 override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
-                    log("onDoubleTapProgressUp")
+//                    log("onDoubleTapProgressUp")
                     if (isEnableDoubleTapToSeek) {
                         val halfScreen = UZViewUtils.screenWidth / 2.0f
                         if (posX - 60.0f > halfScreen) {
@@ -2076,6 +2078,7 @@ class UZVideoView : RelativeLayout,
                                 currentMls = p.currentPosition,
                                 isCalledFromUZTimeBarEvent = false
                             )
+                            onProgressChange?.invoke(p.currentPosition, p.duration, isPlayingAd())
                         }
                     }
                 }
