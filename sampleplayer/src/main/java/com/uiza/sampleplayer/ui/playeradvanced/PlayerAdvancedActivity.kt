@@ -361,8 +361,27 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onPlayerError = {
             log("onPlayerError ${it.errorCode}")
         }
-        uzVideoView.onPlayerErrorChanged={
+        uzVideoView.onPlayerErrorChanged = {
             log("onPlayerErrorChanged ${it?.errorCode}")
+        }
+        uzVideoView.onPositionDiscontinuity = { oldPosition: Player.PositionInfo,
+                                                newPosition: Player.PositionInfo,
+                                                reason: Int ->
+            tvOnPositionDiscontinuity.text =
+                "onPositionDiscontinuity oldPosition ${oldPosition.periodIndex}, newPosition ${newPosition.periodIndex}, reason $reason"
+        }
+        uzVideoView.onPlaybackParametersChanged = {
+            tvOnPlaybackParametersChanged.text =
+                "onPlaybackParametersChanged speed ${it.speed}, pitcho ${it.pitch}"
+        }
+        uzVideoView.onSeekBackIncrementChanged = {
+            tvOnSeekBackIncrementChanged.text = "onSeekBackIncrementChanged $it"
+        }
+        uzVideoView.onSeekForwardIncrementChanged = {
+            tvOnSeekForwardIncrementChanged.text = "onSeekForwardIncrementChanged $it"
+        }
+        uzVideoView.onMaxSeekToPreviousPositionChanged = {
+            log("onMaxSeekToPreviousPositionChanged $it")
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)

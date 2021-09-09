@@ -313,6 +313,12 @@ class UZVideoView : RelativeLayout,
     var onShuffleModeEnabledChanged: ((shuffleModeEnabled: Boolean) -> Unit)? = null
     var onPlayerError: ((error: PlaybackException) -> Unit)? = null
     var onPlayerErrorChanged: ((error: PlaybackException?) -> Unit)? = null
+    var onPositionDiscontinuity: ((oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int) -> Unit)? =
+        null
+    var onPlaybackParametersChanged: ((playbackParameters: PlaybackParameters) -> Unit)? = null
+    var onSeekBackIncrementChanged: ((seekBackIncrementMs: Long) -> Unit)? = null
+    var onSeekForwardIncrementChanged: ((seekForwardIncrementMs: Long) -> Unit)? = null
+    var onMaxSeekToPreviousPositionChanged: ((maxSeekToPreviousPositionMs: Int) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -1833,32 +1839,37 @@ class UZVideoView : RelativeLayout,
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
 //                log("onPositionDiscontinuity oldPosition ${oldPosition.positionMs}, newPosition ${newPosition.positionMs}, reason $reason")
+                onPositionDiscontinuity?.invoke(oldPosition, newPosition, reason)
             }
 
             override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
                 super.onPlaybackParametersChanged(playbackParameters)
 //                log("onPlaybackParametersChanged playbackParameters ${playbackParameters.speed}")
+                onPlaybackParametersChanged?.invoke(playbackParameters)
             }
 
             override fun onSeekBackIncrementChanged(seekBackIncrementMs: Long) {
                 super.onSeekBackIncrementChanged(seekBackIncrementMs)
 //                log("onSeekBackIncrementChanged seekBackIncrementMs $seekBackIncrementMs")
+                onSeekBackIncrementChanged?.invoke(seekBackIncrementMs)
             }
 
             override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
                 super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
 //                log("onSeekForwardIncrementChanged seekForwardIncrementMs $seekForwardIncrementMs")
+                onSeekForwardIncrementChanged?.invoke(seekForwardIncrementMs)
             }
 
             override fun onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs: Int) {
                 super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs)
 //                log("onMaxSeekToPreviousPositionChanged maxSeekToPreviousPositionMs $maxSeekToPreviousPositionMs")
+                onMaxSeekToPreviousPositionChanged?.invoke(maxSeekToPreviousPositionMs)
             }
 
-            override fun onEvents(player: Player, events: Player.Events) {
-                super.onEvents(player, events)
+//            override fun onEvents(player: Player, events: Player.Events) {
+//                super.onEvents(player, events)
 //                log("onEvents")
-            }
+//            }
 
         })
         player?.addAnalyticsListener(object : AnalyticsListener {
