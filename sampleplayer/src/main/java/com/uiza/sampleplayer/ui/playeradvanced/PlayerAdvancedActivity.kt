@@ -50,6 +50,14 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
             log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
             log("isUseController ${uzVideoView.isUseController()}")
+            log("isLIVE ${uzVideoView.isLIVE}")
+            log("isVOD ${uzVideoView.isVOD}")
+            log("isAutoReplay ${uzVideoView.isAutoReplay()}")
+            log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
+            log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
+            log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
+            log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
+            log("getSkinId ${uzVideoView.getSkinId()}")
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
