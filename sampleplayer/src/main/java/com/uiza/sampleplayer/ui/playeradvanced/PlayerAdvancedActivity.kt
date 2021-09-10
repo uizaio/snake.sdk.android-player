@@ -21,11 +21,14 @@ import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
+import com.uiza.sdk.view.TrackSelectionDialog
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
 import java.io.IOException
 
 class PlayerAdvancedActivity : AppCompatActivity() {
+    private var isShowingTrackSelectionDialogCustom = false
+
     private fun toast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
@@ -422,6 +425,20 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btShowSettingsDialog.setOnClickListener {
             uzVideoView.showSettingsDialog()
+        }
+        btShowSettingsDialogCustom.setOnClickListener {
+            val trackSelector = uzVideoView.getTrackSelector()
+            if (!isShowingTrackSelectionDialogCustom
+                && trackSelector != null
+                && TrackSelectionDialog.willHaveContent(trackSelector)
+            ) {
+                isShowingTrackSelectionDialogCustom = true
+                val trackSelectionDialog =
+                    TrackSelectionDialog.createForTrackSelector(trackSelector) {
+                        isShowingTrackSelectionDialogCustom = false
+                    }
+                trackSelectionDialog.show(supportFragmentManager, null)
+            }
         }
         btShowSpeed.setOnClickListener {
             uzVideoView.showSpeed()

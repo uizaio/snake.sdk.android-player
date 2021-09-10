@@ -2280,7 +2280,7 @@ class UZVideoView : RelativeLayout,
         return adsLoader
     }
 
-    private fun getTrackSelector(): DefaultTrackSelector? {
+    fun getTrackSelector(): DefaultTrackSelector? {
         return this.trackSelector
     }
 }
