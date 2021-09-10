@@ -2,9 +2,10 @@ package com.uiza.sdk.view
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.*
+import android.app.Activity
+import android.app.PictureInPictureParams
+import android.app.RemoteAction
 import android.content.Context
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
@@ -18,6 +19,7 @@ import android.view.*
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
@@ -50,8 +52,6 @@ import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.dialog.hq.UZItem
-import com.uiza.sdk.dialog.setting.SettingAdapter
-import com.uiza.sdk.dialog.setting.SettingItem
 import com.uiza.sdk.dialog.speed.Callback
 import com.uiza.sdk.dialog.speed.Speed
 import com.uiza.sdk.dialog.speed.UZSpeedDialog
@@ -1410,61 +1410,19 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    var dlg: Dialog? = null
+    private var isShowingTrackSelectionDialog = false
 
     @SuppressLint("InflateParams")
     fun showSettingsDialog() {
-        val builder = AlertDialog.Builder(context)
-        val inflater = LayoutInflater.from(context)
-        if (inflater != null) {
-            builder.setCustomTitle(inflater.inflate(R.layout.view_header_dragview_uz, null))
-        }
-        val actionCount = layoutControls.childCount
-        if (actionCount < 1) {
-            return
-        }
-        val actions = ArrayList<SettingItem>()
-        for (i in 0 until actionCount) {
-            val v = layoutControls.getChildAt(i)
-            if (v is Button) {
-                actions.add(
-                    SettingItem(v.text.toString())
-                )
+        if (!isShowingTrackSelectionDialog && TrackSelectionDialog.willHaveContent(trackSelector)) {
+            isShowingTrackSelectionDialog = true
+            val trackSelectionDialog = TrackSelectionDialog.createForTrackSelector(trackSelector) {
+                isShowingTrackSelectionDialog = false
             }
-        }
-        //TODO
-//        playerManager?.let { pm ->
-//            if (pm.isTimeShiftSupport) {
-//                actions.add(
-//                    SettingItem(
-//                        resources.getString(R.string.time_shift),
-//                        pm.isTimeShiftOn,
-//                        object : OnToggleChangeListener {
-//                            override fun onCheckedChanged(isChecked: Boolean): Boolean {
-//                                dlg?.dismiss()
-//                                val sw = pm.switchTimeShift(isChecked)
-//                                if (sw) {
-//                                    onTimeShiftChange?.invoke(pm.isTimeShiftOn)
-//                                }
-//                                return sw
-//                            }
-//                        })
-//                )
-//            }
-//        }
-        builder.setAdapter(
-            SettingAdapter(
-                context,
-                actions
-            )
-        ) { _: DialogInterface?, which: Int ->
-            if (which < actionCount) {
-                layoutControls.getChildAt(which).performClick()
+            if (context is AppCompatActivity) {
+                val supportFragmentManager = (context as AppCompatActivity).supportFragmentManager
+                trackSelectionDialog.show(supportFragmentManager, null)
             }
-        }
-        dlg = builder.create()
-        dlg?.let {
-            UZViewUtils.showDialog(it)
         }
     }
 
@@ -1764,10 +1722,10 @@ class UZVideoView : RelativeLayout,
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-                if(isPlaying){
+                if (isPlaying) {
                     UZViewUtils.goneViews(btPlayUZ)
                     UZViewUtils.visibleViews(btPauseUZ)
-                }else{
+                } else {
                     UZViewUtils.visibleViews(btPlayUZ)
                     UZViewUtils.goneViews(btPauseUZ)
                 }
