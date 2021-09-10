@@ -225,15 +225,15 @@ public final class TrackSelectionDialogCustom extends DialogFragment {
     public View onCreateView(
             LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View dialogView = inflater.inflate(R.layout.track_selection_dialog_custom, container, false);
-        TabLayout tabLayout = dialogView.findViewById(R.id.track_selection_dialog_tab_layout);
-        ViewPager viewPager = dialogView.findViewById(R.id.track_selection_dialog_view_pager);
-        Button cancelButton = dialogView.findViewById(R.id.track_selection_dialog_cancel_button);
-        Button okButton = dialogView.findViewById(R.id.track_selection_dialog_ok_button);
-        viewPager.setAdapter(new FragmentAdapter(getChildFragmentManager()));
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setVisibility(tabFragments.size() > 1 ? View.VISIBLE : View.GONE);
-        cancelButton.setOnClickListener(view -> dismiss());
-        okButton.setOnClickListener(
+        TabLayout track_selection_dialog_tab_layout = dialogView.findViewById(R.id.track_selection_dialog_tab_layout);
+        ViewPager track_selection_dialog_view_pager = dialogView.findViewById(R.id.track_selection_dialog_view_pager);
+        Button track_selection_dialog_cancel_button = dialogView.findViewById(R.id.track_selection_dialog_cancel_button);
+        Button track_selection_dialog_ok_button = dialogView.findViewById(R.id.track_selection_dialog_ok_button);
+        track_selection_dialog_view_pager.setAdapter(new FragmentAdapter(getChildFragmentManager()));
+        track_selection_dialog_tab_layout.setupWithViewPager(track_selection_dialog_view_pager);
+        track_selection_dialog_tab_layout.setVisibility(tabFragments.size() > 1 ? View.VISIBLE : View.GONE);
+        track_selection_dialog_cancel_button.setOnClickListener(view -> dismiss());
+        track_selection_dialog_ok_button.setOnClickListener(
                 view -> {
                     onClickListener.onClick(getDialog(), DialogInterface.BUTTON_POSITIVE);
                     dismiss();
@@ -342,11 +342,11 @@ public final class TrackSelectionDialogCustom extends DialogFragment {
             View rootView =
                     inflater.inflate(
                             R.layout.exo_track_selection_dialog, container, /* attachToRoot= */ false);
-            TrackSelectionView trackSelectionView = rootView.findViewById(R.id.exo_track_selection_view);
-            trackSelectionView.setShowDisableOption(true);
-            trackSelectionView.setAllowMultipleOverrides(allowMultipleOverrides);
-            trackSelectionView.setAllowAdaptiveSelections(allowAdaptiveSelections);
-            trackSelectionView.init(
+            TrackSelectionView exo_track_selection_view = rootView.findViewById(R.id.exo_track_selection_view);
+            exo_track_selection_view.setShowDisableOption(true);
+            exo_track_selection_view.setAllowMultipleOverrides(allowMultipleOverrides);
+            exo_track_selection_view.setAllowAdaptiveSelections(allowAdaptiveSelections);
+            exo_track_selection_view.init(
                     mappedTrackInfo,
                     rendererIndex,
                     isDisabled,

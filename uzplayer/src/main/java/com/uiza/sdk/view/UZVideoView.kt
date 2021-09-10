@@ -1395,7 +1395,11 @@ class UZVideoView : RelativeLayout,
 
     @SuppressLint("InflateParams")
     fun showSettingsDialog() {
-        if (!isShowingTrackSelectionDialog && TrackSelectionDialog.willHaveContent(trackSelector)) {
+        if (!isShowingTrackSelectionDialog
+            && trackSelector != null
+            && trackSelector?.currentMappedTrackInfo != null
+            && TrackSelectionDialog.willHaveContent(trackSelector)
+        ) {
             isShowingTrackSelectionDialog = true
             val trackSelectionDialog = TrackSelectionDialog.createForTrackSelector(trackSelector) {
                 isShowingTrackSelectionDialog = false
