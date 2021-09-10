@@ -117,7 +117,6 @@ class UZVideoView : RelativeLayout,
     var isAutoStart: Boolean = true
         set(isAutoStart) {
             field = isAutoStart
-            updateUIButtonPlayPauseDependOnIsAutoStart()
         }
 
     private var autoMoveToLiveEdge = false
@@ -554,9 +553,6 @@ class UZVideoView : RelativeLayout,
             tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDurationUZ?.text = "-:-"
 
-            //If auto start true, show button play and gone button pause
-            UZViewUtils.goneViews(btPlayUZ)
-
             btRewUZ?.setSrcDrawableDisabled()
 
             if (!isPIPEnable) {
@@ -684,22 +680,12 @@ class UZVideoView : RelativeLayout,
 
     fun resume() {
         player?.playWhenReady = true
-        UZViewUtils.goneViews(btPlayUZ)
-        btPauseUZ?.let {
-            UZViewUtils.visibleViews(it)
-            it.requestFocus()
-        }
         keepScreenOn = true
     }
 
     fun pause() {
         player?.playWhenReady = false
-        UZViewUtils.goneViews(btPauseUZ)
         keepScreenOn = false
-        btPlayUZ?.let {
-            UZViewUtils.visibleViews(it)
-            it.requestFocus()
-        }
     }
 
     fun getVideoWidth(): Int {
@@ -914,43 +900,56 @@ class UZVideoView : RelativeLayout,
     }
 
     override fun onClick(v: View) {
-        if (v === btFullscreenUZ) {
-            toggleFullscreen()
-        } else if (v === btBackScreenUZ) {
-            clickBackScreen()
-        } else if (v === btVolumeUZ) {
-            toggleVolumeMute()
-        } else if (v === btSettingUZ) {
-            showSettingsDialog()
-        } else if (v === btPipUZ) {
-            enterPIPMode()
-        } else if (v.parent === layoutControls) {
-            showTrackSelectionDialog(v, true)
-        } else if (v === btFfwdUZ) {
-            player?.let {
-                it.seekTo(min(it.currentPosition + defaultSeekValue, it.duration))
+        when {
+            v === btFullscreenUZ -> {
+                toggleFullscreen()
             }
-        } else if (v === btRewUZ) {
-            player?.let {
-                if (it.currentPosition - defaultSeekValue > 0) {
-                    it.seekTo(it.currentPosition - defaultSeekValue)
-                } else {
-                    it.seekTo(0)
+            v === btBackScreenUZ -> {
+                clickBackScreen()
+            }
+            v === btVolumeUZ -> {
+                toggleVolumeMute()
+            }
+            v === btSettingUZ -> {
+                showSettingsDialog()
+            }
+            v === btPipUZ -> {
+                enterPIPMode()
+            }
+            v.parent === layoutControls -> {
+                showTrackSelectionDialog(v, true)
+            }
+            v === btFfwdUZ -> {
+                player?.let {
+                    it.seekTo(min(it.currentPosition + defaultSeekValue, it.duration))
                 }
             }
+            v === btRewUZ -> {
+                player?.let {
+                    if (it.currentPosition - defaultSeekValue > 0) {
+                        it.seekTo(it.currentPosition - defaultSeekValue)
+                    } else {
+                        it.seekTo(0)
+                    }
+                }
 
-            if (isPlaying) {
-                isOnPlayerEnded = false
-                updateUIEndScreen()
+                if (isPlaying) {
+                    isOnPlayerEnded = false
+                    updateUIEndScreen()
+                }
             }
-        } else if (v === btPauseUZ) {
-            pause()
-        } else if (v === btPlayUZ) {
-            resume()
-        } else if (v === btReplayUZ) {
-            replay()
-        } else if (v === btSpeedUZ) {
-            showSpeed()
+            v === btPauseUZ -> {
+                pause()
+            }
+            v === btPlayUZ -> {
+                resume()
+            }
+            v === btReplayUZ -> {
+                replay()
+            }
+            v === btSpeedUZ -> {
+                showSpeed()
+            }
         }
     }
 
@@ -1218,29 +1217,6 @@ class UZVideoView : RelativeLayout,
         )
     }
 
-    //If auto start true, show button play and gone button pause
-    //if not, gone button play and show button pause
-    private fun updateUIButtonPlayPauseDependOnIsAutoStart() {
-        if (isAutoStart) {
-            UZViewUtils.goneViews(btPlayUZ)
-            btPauseUZ?.let { ib ->
-                UZViewUtils.visibleViews(ib)
-            }
-        } else {
-            if (isPlaying) {
-                UZViewUtils.goneViews(btPlayUZ)
-                btPauseUZ?.let { ib ->
-                    UZViewUtils.visibleViews(ib)
-                }
-            } else {
-                btPlayUZ?.let { ib ->
-                    UZViewUtils.visibleViews(ib)
-                }
-                UZViewUtils.goneViews(btPauseUZ)
-            }
-        }
-    }
-
     private fun updateUIEachSkin() {
         if (skinId == R.layout.uzplayer_skin_2 || skinId == R.layout.uzplayer_skin_3) {
 
@@ -1442,7 +1418,6 @@ class UZVideoView : RelativeLayout,
             UZViewUtils.visibleViews(btReplayUZ)
             btReplayUZ?.requestFocus()
         } else {
-            updateUIButtonPlayPauseDependOnIsAutoStart()
             UZViewUtils.goneViews(btReplayUZ)
         }
     }
@@ -1796,7 +1771,13 @@ class UZVideoView : RelativeLayout,
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-//                log("onIsPlayingChanged isPlaying $isPlaying")
+                if(isPlaying){
+                    UZViewUtils.goneViews(btPlayUZ)
+                    UZViewUtils.visibleViews(btPauseUZ)
+                }else{
+                    UZViewUtils.visibleViews(btPlayUZ)
+                    UZViewUtils.goneViews(btPauseUZ)
+                }
                 onIsPlayingChanged?.invoke(isPlaying)
             }
 
