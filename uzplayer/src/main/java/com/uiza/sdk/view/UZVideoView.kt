@@ -113,12 +113,7 @@ class UZVideoView : RelativeLayout,
     private var btPipUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
     var uzPlayerView: UZPlayerView? = null
-
     var isAutoStart: Boolean = true
-        set(isAutoStart) {
-            field = isAutoStart
-        }
-
     private var autoMoveToLiveEdge = false
     private var isInPipMode = false
     private var isPIPModeEnabled = false
@@ -1165,22 +1160,15 @@ class UZVideoView : RelativeLayout,
         }
         set(volume) {
             player?.volume = volume
-            if (volume == 0f) {
-                btVolumeUZ?.setSrcDrawableDisabledCanTouch()
-            } else {
-                btVolumeUZ?.setSrcDrawableEnabled()
-            }
         }
     private var volumeToggle = 0f
 
     fun toggleVolumeMute() {
         if (volume == 0f) {
             volume = volumeToggle
-            btVolumeUZ?.setSrcDrawableEnabled()
         } else {
             volumeToggle = volume
             volume = 0f
-            btVolumeUZ?.setSrcDrawableDisabledCanTouch()
         }
     }
 
@@ -1389,7 +1377,7 @@ class UZVideoView : RelativeLayout,
         if (isLIVE) {
             UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
         } else {
-            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btFfwdUZ, btRewUZ)
+            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
         }
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
@@ -1632,6 +1620,11 @@ class UZVideoView : RelativeLayout,
             override fun onVolumeChanged(volume: Float) {
                 super.onVolumeChanged(volume)
 //                log("onVolumeChanged volume $volume")
+                if (volume == 0f) {
+                    btVolumeUZ?.setSrcDrawableDisabledCanTouch()
+                } else {
+                    btVolumeUZ?.setSrcDrawableEnabled()
+                }
                 onVolumeChanged?.invoke(volume)
             }
 
