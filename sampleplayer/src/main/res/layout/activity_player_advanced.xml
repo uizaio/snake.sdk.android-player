@@ -577,24 +577,6 @@
                     android:text="Hide Controller" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btClickAudio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Click Audio" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btClickQuality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Click Quality" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btClickCaptions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Click Captions" />
-
-                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btSeekToForward"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -629,24 +611,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Retry Player if Error" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btGetListTrackVideo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Get list track video" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btGetListTrackAudio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Get list track audio" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btGetListTrackCaptions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Get list track captions" />
 
             </LinearLayout>
         </HorizontalScrollView>

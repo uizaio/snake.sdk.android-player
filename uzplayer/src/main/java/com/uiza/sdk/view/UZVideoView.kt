@@ -51,7 +51,6 @@ import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer
-import com.uiza.sdk.dialog.hq.UZItem
 import com.uiza.sdk.dialog.speed.Callback
 import com.uiza.sdk.dialog.speed.Speed
 import com.uiza.sdk.dialog.speed.UZSpeedDialog
@@ -911,9 +910,6 @@ class UZVideoView : RelativeLayout,
             v === btPipUZ -> {
                 enterPIPMode()
             }
-            v.parent === layoutControls -> {
-                showTrackSelectionDialog(v, true)
-            }
             v === btFfwdUZ -> {
                 player?.let {
                     it.seekTo(min(it.currentPosition + defaultSeekValue, it.duration))
@@ -1065,21 +1061,6 @@ class UZVideoView : RelativeLayout,
                 (context as Activity).onBackPressed()
             }
         }
-    }
-
-    fun clickAudio() {
-        val view = DebugUtils.getAudioButton(layoutControls)
-        view?.performClick()
-    }
-
-    fun clickQuality() {
-        val view = DebugUtils.getVideoButton(layoutControls)
-        view?.performClick()
-    }
-
-    fun clickCaptions() {
-        val view = DebugUtils.getCaptionsButton(layoutControls)
-        view?.performClick()
     }
 
     fun setDefaultSeekValue(mls: Long) {
@@ -1424,68 +1405,6 @@ class UZVideoView : RelativeLayout,
                 trackSelectionDialog.show(supportFragmentManager, null)
             }
         }
-    }
-
-    fun getListTrack(
-        showDialog: Boolean = false,
-        title: String = "Video",
-        rendererIndex: Int
-    ): List<UZItem>? {
-        //TODO
-//        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
-//        mappedTrackInfo?.let {
-//            val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
-//                UZTrackSelectionView.getDialog(
-//                    context = context,
-//                    title = title,
-//                    trackSelector = playerManager?.trackSelector,
-//                    rendererIndex = rendererIndex
-//                )
-//            dialogPair.second.setShowDisableOption(false)
-//            dialogPair.second.setAllowAdaptiveSelections(false)
-//            dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
-//                override fun onClick() {
-//                    dialogPair.first?.cancel()
-//                }
-//            })
-//            if (showDialog) {
-//                UZViewUtils.showDialog(dialogPair.first)
-//            }
-//            return dialogPair.second.uZItemList
-//        }
-
-        return null
-    }
-
-    private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
-        //TODO
-//        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
-//        mappedTrackInfo?.let {
-//            if (view is Button) {
-//                val title = view.text
-//                val rendererIndex = view.getTag() as Int
-//                val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
-//                    UZTrackSelectionView.getDialog(
-//                        context = context,
-//                        title = title,
-//                        trackSelector = playerManager?.trackSelector,
-//                        rendererIndex = rendererIndex
-//                    )
-//                dialogPair.second.setShowDisableOption(false)
-//                dialogPair.second.setAllowAdaptiveSelections(false)
-//                dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
-//                    override fun onClick() {
-//                        dialogPair.first?.cancel()
-//                    }
-//                })
-//                if (showDialog) {
-//                    UZViewUtils.showDialog(dialogPair.first)
-//                }
-//                return dialogPair.second.uZItemList
-//            }
-//        }
-
-        return null
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -2361,4 +2280,7 @@ class UZVideoView : RelativeLayout,
         return adsLoader
     }
 
+    private fun getTrackSelector(): DefaultTrackSelector? {
+        return this.trackSelector
+    }
 }

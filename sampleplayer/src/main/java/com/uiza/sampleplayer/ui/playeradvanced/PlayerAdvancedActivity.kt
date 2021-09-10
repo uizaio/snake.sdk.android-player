@@ -435,15 +435,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btHideController.setOnClickListener {
             uzVideoView.hideController()
         }
-        btClickAudio.setOnClickListener {
-            uzVideoView.clickAudio()
-        }
-        btClickQuality.setOnClickListener {
-            uzVideoView.clickQuality()
-        }
-        btClickCaptions.setOnClickListener {
-            uzVideoView.clickCaptions()
-        }
         btSeekToForward.setOnClickListener {
             uzVideoView.seekToForward()
         }
@@ -461,33 +452,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btRetry.setOnClickListener {
             uzVideoView.retry()
-        }
-        btGetListTrackVideo.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 0)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
-        }
-        btGetListTrackAudio.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 1)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
-        }
-        btGetListTrackCaptions.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 2)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
         }
     }
 
