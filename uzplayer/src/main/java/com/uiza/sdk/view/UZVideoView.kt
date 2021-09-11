@@ -551,7 +551,7 @@ class UZVideoView : RelativeLayout,
             btRewUZ?.setSrcDrawableDisabled()
 
             if (!isPIPEnable) {
-                UZViewUtils.goneViews(btPipUZ)
+                btPipUZ?.isVisible = false
             }
 
             setEventForViews()
@@ -875,7 +875,7 @@ class UZVideoView : RelativeLayout,
                 btFullscreenUZ?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
-                UZViewUtils.goneViews(btPipUZ)
+                btPipUZ?.isVisible = false
             } else {//portrait screen
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
@@ -885,7 +885,7 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
-                    UZViewUtils.visibleViews(btPipUZ)
+                    btPipUZ?.isVisible = true
                 }
             }
             setMarginPreviewTimeBar()
@@ -1353,18 +1353,26 @@ class UZVideoView : RelativeLayout,
     private fun updateUIDependOnLiveStream() {
         if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide button pip if device is TV
-            UZViewUtils.goneViews(btPipUZ)
+            btPipUZ?.isVisible = false
         }
         onCurrentWindowDynamic?.invoke(isLIVE)
 //        log("updateUIDependOnLiveStream isLIVE $isLIVE")
         if (isLIVE) {
-            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
+            btSpeedUZ?.isVisible = false
+            tvDurationUZ?.isVisible = false
+            tvPositionUZ?.isVisible = false
+            btRewUZ?.isVisible = false
+            btFfwdUZ?.isVisible = false
         } else {
-            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
+            btSpeedUZ?.isVisible = true
+            tvDurationUZ?.isVisible = true
+            tvPositionUZ?.isVisible = true
+            btRewUZ?.isVisible = true
+            btFfwdUZ?.isVisible = true
         }
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
-            UZViewUtils.goneViews(btFullscreenUZ)
+            btFullscreenUZ?.isVisible = false
         }
     }
 
@@ -1953,7 +1961,7 @@ class UZVideoView : RelativeLayout,
 
     private fun initProgressChange() {
         fun observable(): Observable<out Long> {
-            return Observable.interval(0, 1, TimeUnit.SECONDS)
+            return Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
         }
 
         fun observer(): DisposableObserver<Long> {

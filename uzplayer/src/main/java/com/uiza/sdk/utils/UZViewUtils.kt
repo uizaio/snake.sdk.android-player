@@ -13,7 +13,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.provider.Settings
-import android.text.TextUtils
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
@@ -21,7 +20,6 @@ import androidx.annotation.ColorInt
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
 import com.uiza.sdk.widget.UZImageButton
-import java.util.*
 import kotlin.math.max
 
 object UZViewUtils {
@@ -72,32 +70,32 @@ object UZViewUtils {
     val screenWidth: Int
         get() = Resources.getSystem().displayMetrics.widthPixels
 
-    @JvmStatic
-    fun visibleViews(vararg views: View?) {
-        for (v in views) {
-            if (v != null && v.visibility != View.VISIBLE) {
-                v.visibility = View.VISIBLE
-            }
-        }
-    }
+//    @JvmStatic
+//    fun visibleViews(vararg views: View?) {
+//        for (v in views) {
+//            if (v != null && v.visibility != View.VISIBLE) {
+//                v.visibility = View.VISIBLE
+//            }
+//        }
+//    }
 
-    @JvmStatic
-    fun goneViews(vararg views: View?) {
-        for (v in views) {
-            if (v != null && v.visibility != View.GONE) {
-                v.visibility = View.GONE
-            }
-        }
-    }
+//    @JvmStatic
+//    fun goneViews(vararg views: View?) {
+//        for (v in views) {
+//            if (v != null && v.visibility != View.GONE) {
+//                v.visibility = View.GONE
+//            }
+//        }
+//    }
 
-    @JvmStatic
-    fun setVisibilityViews(visibility: Int, vararg views: View?) {
-        for (v in views) {
-            if (v != null && v.visibility != visibility) {
-                v.visibility = visibility
-            }
-        }
-    }
+//    @JvmStatic
+//    fun setVisibilityViews(visibility: Int, vararg views: View?) {
+//        for (v in views) {
+//            if (v != null && v.visibility != visibility) {
+//                v.visibility = visibility
+//            }
+//        }
+//    }
 
     //return pixel
     @JvmStatic
@@ -334,19 +332,19 @@ object UZViewUtils {
         }
     }
 
-    @JvmStatic
-    fun setTextDuration(textView: TextView, duration: String) {
-        if (TextUtils.isEmpty(duration)) return
-        try {
-            val min = duration.toDouble().toInt() + 1
-            var minutes = (min % 60).toString()
-            minutes = if (minutes.length == 1) "0$minutes" else minutes
-            textView.text = String.format(Locale.getDefault(), "%d:%s", min / 60, minutes)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            textView.text = " - "
-        }
-    }
+//    @JvmStatic
+//    fun setTextDuration(textView: TextView, duration: String) {
+//        if (TextUtils.isEmpty(duration)) return
+//        try {
+//            val min = duration.toDouble().toInt() + 1
+//            var minutes = (min % 60).toString()
+//            minutes = if (minutes.length == 1) "0$minutes" else minutes
+//            textView.text = String.format(Locale.getDefault(), "%d:%s", min / 60, minutes)
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            textView.text = " - "
+//        }
+//    }
 
     @JvmStatic
     fun updateUIFocusChange(view: View, isFocus: Boolean, resHasFocus: Int, resNoFocus: Int) {
