@@ -1281,19 +1281,25 @@ class UZVideoView : RelativeLayout,
             return
         }
         if (isOnPlayerEnded) {
+            showController()
+            uzPlayerView?.let {
+                it.controllerShowTimeoutMs = 0
+                it.controllerHideOnTouch = false
+            }
+
             btReplayUZ?.isVisible = true
             btPlayUZ?.isVisible = false
             btPauseUZ?.isVisible = false
 
             btRewUZ?.setSrcDrawableEnabled()
             btFfwdUZ?.setSrcDrawableDisabled()
-
-            showController()
-            uzPlayerView?.let {
-                it.controllerShowTimeoutMs = 0
-                it.controllerHideOnTouch = false
-            }
         } else {
+            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+            setControllerHideOnTouch(isControllerHideOnTouch)
+
+            if(!isPlayerControllerShowing){
+                return
+            }
             if (isPlaying) {
                 btPlayUZ?.isVisible = false
                 btReplayUZ?.isVisible = false
@@ -1315,9 +1321,6 @@ class UZVideoView : RelativeLayout,
                     }
                 }
             }
-
-            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-            setControllerHideOnTouch(isControllerHideOnTouch)
         }
     }
 
