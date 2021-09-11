@@ -20,6 +20,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
@@ -659,10 +660,8 @@ class UZVideoView : RelativeLayout,
         this.uzPlayback = uzPlayback
 
         isCalledFromChangeSkin = false
-        isOnPlayerEnded = false
         //khong cho dung controller cho den khi isFirstStateReady == true
         uzPlayerView?.useController = false
-        updateUIEndScreen()
         releasePlayerManager()
         showProgress()
         initDataSource()
@@ -673,13 +672,17 @@ class UZVideoView : RelativeLayout,
     }
 
     fun resume() {
+        if (isPlayingAd() == true) {
+            return
+        }
         player?.playWhenReady = true
-        keepScreenOn = true
     }
 
     fun pause() {
+        if (isPlayingAd() == true) {
+            return
+        }
         player?.playWhenReady = false
-        keepScreenOn = false
     }
 
     fun getVideoWidth(): Int {
@@ -856,8 +859,6 @@ class UZVideoView : RelativeLayout,
     private fun onStopPreview(progress: Int) {
         seekTo(progress.toLong())
         player?.playWhenReady = true
-        isOnPlayerEnded = false
-        updateUIEndScreen()
     }
 
     public override fun onConfigurationChanged(newConfig: Configuration) {
@@ -922,11 +923,6 @@ class UZVideoView : RelativeLayout,
                     } else {
                         it.seekTo(0)
                     }
-                }
-
-                if (isPlaying) {
-                    isOnPlayerEnded = false
-                    updateUIEndScreen()
                 }
             }
             v === btPauseUZ -> {
@@ -1035,22 +1031,17 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun onPlayerEnded() {
-        if (isPlaying) {
-            keepScreenOn = false
-            isOnPlayerEnded = true
-            if (isAutoReplay) {
-                replay()
-            } else {
-                updateUIEndScreen()
-            }
+        if (isAutoReplay) {
+            replay()
         }
         hideProgress()
     }
 
     fun replay() {
+        if (isPlayingAd() == true) {
+            return
+        }
         seekTo(0)
-        isOnPlayerEnded = false
-        updateUIEndScreen()
     }
 
     fun clickBackScreen() {
@@ -1245,7 +1236,6 @@ class UZVideoView : RelativeLayout,
             releasePlayerManager()
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
-            setVisibilityOfPlayPauseReplay(false)
             onSkinChange?.invoke(getSkinId())
 
             return true
@@ -1284,38 +1274,50 @@ class UZVideoView : RelativeLayout,
             setTextPosition(currentMls)
         } else {
             if (!isOnPreviewTimeBar) {
-                //uzTimeBar is displaying
                 setTextPosition(currentMls)
             }
         }
         if (isLIVE) {
             return
         }
-        btRewUZ?.let { r ->
-            btFfwdUZ?.let { f ->
-                if (currentMls <= 0L) {
-                    if (r.isSetSrcDrawableEnabled) {
+        if (isOnPlayerEnded) {
+            btReplayUZ?.isVisible = true
+            btPlayUZ?.isVisible = false
+            btPauseUZ?.isVisible = false
+
+            btRewUZ?.setSrcDrawableEnabled()
+            btFfwdUZ?.setSrcDrawableDisabled()
+
+            showController()
+            uzPlayerView?.let {
+                it.controllerShowTimeoutMs = 0
+                it.controllerHideOnTouch = false
+            }
+        } else {
+            if (isPlaying) {
+                btPlayUZ?.isVisible = false
+                btReplayUZ?.isVisible = false
+                btPauseUZ?.isVisible = true
+            } else {
+                btPlayUZ?.isVisible = true
+                btReplayUZ?.isVisible = false
+                btPauseUZ?.isVisible = false
+            }
+
+            btRewUZ?.let { r ->
+                btFfwdUZ?.let { f ->
+                    if (currentMls <= 1000L) {
                         r.setSrcDrawableDisabled()
-                    }
-                    if (!f.isSetSrcDrawableEnabled) {
                         f.setSrcDrawableEnabled()
-                    }
-                } else if (currentMls == duration) {
-                    if (!r.isSetSrcDrawableEnabled) {
+                    } else {
                         r.setSrcDrawableEnabled()
-                    }
-                    if (f.isSetSrcDrawableEnabled) {
-                        f.setSrcDrawableDisabled()
-                    }
-                } else {
-                    if (!r.isSetSrcDrawableEnabled) {
-                        r.setSrcDrawableEnabled()
-                    }
-                    if (!f.isSetSrcDrawableEnabled) {
                         f.setSrcDrawableEnabled()
                     }
                 }
             }
+
+            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+            setControllerHideOnTouch(isControllerHideOnTouch)
         }
     }
 
@@ -1363,31 +1365,6 @@ class UZVideoView : RelativeLayout,
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
             UZViewUtils.goneViews(btFullscreenUZ)
-        }
-    }
-
-    private fun updateUIEndScreen() {
-        uzPlayerView?.let { pv ->
-            if (isOnPlayerEnded) {
-                setVisibilityOfPlayPauseReplay(true)
-                showController()
-                pv.controllerShowTimeoutMs = 0
-                pv.controllerHideOnTouch = false
-            } else {
-                setVisibilityOfPlayPauseReplay(false)
-                pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-                setControllerHideOnTouch(isControllerHideOnTouch)
-            }
-        }
-    }
-
-    private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
-        if (isShowReplay) {
-            UZViewUtils.goneViews(btPlayUZ, btPauseUZ)
-            UZViewUtils.visibleViews(btReplayUZ)
-            btReplayUZ?.requestFocus()
-        } else {
-            UZViewUtils.goneViews(btReplayUZ)
         }
     }
 
@@ -1602,18 +1579,22 @@ class UZVideoView : RelativeLayout,
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
 //                        log("onPlaybackStateChanged STATE_BUFFERING")
+                        isOnPlayerEnded = false
                         showProgress()
                     }
                     Player.STATE_IDLE -> {
 //                        log("onPlaybackStateChanged STATE_IDLE")
+                        isOnPlayerEnded = false
                         showProgress()
                     }
                     Player.STATE_ENDED -> {
 //                        log("onPlaybackStateChanged STATE_ENDED")
+                        isOnPlayerEnded = true
                         onPlayerEnded()
                     }
                     Player.STATE_READY -> {
 //                        log("onPlaybackStateChanged STATE_READY")
+                        isOnPlayerEnded = false
                         hideProgress()
                         updateTvDuration()
                         if (player?.playWhenReady == true) {
@@ -1645,13 +1626,7 @@ class UZVideoView : RelativeLayout,
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-                if (isPlaying) {
-                    UZViewUtils.goneViews(btPlayUZ)
-                    UZViewUtils.visibleViews(btPauseUZ)
-                } else {
-                    UZViewUtils.visibleViews(btPlayUZ)
-                    UZViewUtils.goneViews(btPauseUZ)
-                }
+//                log("loitpp onIsPlayingChanged isPlaying $isPlaying")
                 onIsPlayingChanged?.invoke(isPlaying)
             }
 

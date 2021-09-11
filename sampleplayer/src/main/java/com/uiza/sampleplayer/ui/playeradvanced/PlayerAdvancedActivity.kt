@@ -46,7 +46,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAutoStart = false//default is true
-            uzVideoView.setAutoReplay(true)//default is false
+            uzVideoView.setAutoReplay(false)//default is false
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
