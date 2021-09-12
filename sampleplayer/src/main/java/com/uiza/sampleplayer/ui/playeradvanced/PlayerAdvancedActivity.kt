@@ -77,7 +77,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
-            uzVideoView.controllerShowTimeoutMs = 15_000 //15s
+            uzVideoView.controllerShowTimeoutMs = 10_000 //10s
             uzVideoView.setDefaultSeekValue(15_000)//15s
             uzVideoView.setUseController(true)
         }

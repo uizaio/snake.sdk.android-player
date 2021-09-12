@@ -555,6 +555,7 @@ class UZVideoView : RelativeLayout,
             }
 
             setEventForViews()
+            updateUIButton(currentPosition)
         }
     }
 
@@ -647,6 +648,12 @@ class UZVideoView : RelativeLayout,
     }
 
     fun play(uzPlayback: UZPlayback): Boolean {
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
+        resume()
+
         if (!ConnectivityUtils.isConnected(context)) {
             notifyError(ErrorUtils.exceptionNoConnection())
             return false
@@ -676,6 +683,10 @@ class UZVideoView : RelativeLayout,
             return
         }
         player?.playWhenReady = true
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
     fun pause() {
@@ -683,6 +694,10 @@ class UZVideoView : RelativeLayout,
             return
         }
         player?.playWhenReady = false
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
     fun getVideoWidth(): Int {
@@ -1042,6 +1057,10 @@ class UZVideoView : RelativeLayout,
             return
         }
         seekTo(0)
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
     fun clickBackScreen() {
@@ -1281,44 +1300,48 @@ class UZVideoView : RelativeLayout,
             return
         }
         if (isOnPlayerEnded) {
-            showController()
-            uzPlayerView?.let {
-                it.controllerShowTimeoutMs = 0
-                it.controllerHideOnTouch = false
-            }
-
             btReplayUZ?.isVisible = true
             btPlayUZ?.isVisible = false
             btPauseUZ?.isVisible = false
 
             btRewUZ?.setSrcDrawableEnabled()
             btFfwdUZ?.setSrcDrawableDisabled()
-        } else {
-            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-            setControllerHideOnTouch(isControllerHideOnTouch)
 
-            if(!isPlayerControllerShowing){
+            showController()
+            uzPlayerView?.let {
+                it.controllerShowTimeoutMs = 0
+                it.controllerHideOnTouch = false
+            }
+        } else {
+            if (!isPlayerControllerShowing) {
                 return
             }
-            if (isPlaying) {
-                btPlayUZ?.isVisible = false
-                btReplayUZ?.isVisible = false
-                btPauseUZ?.isVisible = true
-            } else {
-                btPlayUZ?.isVisible = true
-                btReplayUZ?.isVisible = false
-                btPauseUZ?.isVisible = false
-            }
+            updateUIButton(currentMls)
 
-            btRewUZ?.let { r ->
-                btFfwdUZ?.let { f ->
-                    if (currentMls <= 1000L) {
-                        r.setSrcDrawableDisabled()
-                        f.setSrcDrawableEnabled()
-                    } else {
-                        r.setSrcDrawableEnabled()
-                        f.setSrcDrawableEnabled()
-                    }
+            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+            setControllerHideOnTouch(isControllerHideOnTouch)
+        }
+    }
+
+    private fun updateUIButton(currentMls: Long) {
+        if (isPlaying) {
+            btPlayUZ?.isVisible = false
+            btReplayUZ?.isVisible = false
+            btPauseUZ?.isVisible = true
+        } else {
+            btPlayUZ?.isVisible = true
+            btReplayUZ?.isVisible = false
+            btPauseUZ?.isVisible = false
+        }
+
+        btRewUZ?.let { r ->
+            btFfwdUZ?.let { f ->
+                if (currentMls <= 1000L) {
+                    r.setSrcDrawableDisabled()
+                    f.setSrcDrawableEnabled()
+                } else {
+                    r.setSrcDrawableEnabled()
+                    f.setSrcDrawableEnabled()
                 }
             }
         }
