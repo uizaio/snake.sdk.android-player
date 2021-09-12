@@ -1228,14 +1228,51 @@ class UZVideoView : RelativeLayout,
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater != null) {
+            layoutRootView.removeView(uzPlayerView)
+            uzPlayerView = null
+
             uzPlayerView = inflater.inflate(skinId, null) as UZPlayerView?
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
             uzPlayerView?.let {
                 it.layoutParams = layoutParams
                 it.requestFocus()
-                layoutRootView.addView(it)
 
+                if (it.videoSurfaceView is SurfaceView) {
+                    (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
+                        SurfaceHolder.Callback2 {
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
+
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            onSurfaceCreated?.invoke(holder)
+                        }
+
+                        override fun surfaceChanged(
+                            holder: SurfaceHolder,
+                            format: Int,
+                            width: Int,
+                            height: Int
+                        ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
+                        }
+
+                        override fun surfaceDestroyed(holder: SurfaceHolder) {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (context is Activity) {
+                                        (context as Activity).finishAndRemoveTask()
+                                    }
+                                }
+                            }
+                            onSurfaceDestroyed?.invoke(holder)
+                        }
+                    })
+                }
+
+                layoutRootView.addView(it)
                 val builder = ParametersBuilder(context)
                 trackSelectorParameters = builder.build()
                 clearStartPosition()
@@ -1248,9 +1285,11 @@ class UZVideoView : RelativeLayout,
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
-            releasePlayerManager()
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
+            updateUIButtonVolume()
+
+            uzPlayerView?.player = player
             onSkinChange?.invoke(getSkinId())
 
             return true
@@ -1338,6 +1377,14 @@ class UZVideoView : RelativeLayout,
                     f.setSrcDrawableEnabled()
                 }
             }
+        }
+    }
+
+    private fun updateUIButtonVolume(){
+        if (volume == 0f) {
+            btVolumeUZ?.setSrcDrawableDisabledCanTouch()
+        } else {
+            btVolumeUZ?.setSrcDrawableEnabled()
         }
     }
 
@@ -1506,11 +1553,7 @@ class UZVideoView : RelativeLayout,
             override fun onVolumeChanged(volume: Float) {
                 super.onVolumeChanged(volume)
 //                log("onVolumeChanged volume $volume")
-                if (volume == 0f) {
-                    btVolumeUZ?.setSrcDrawableDisabledCanTouch()
-                } else {
-                    btVolumeUZ?.setSrcDrawableEnabled()
-                }
+                updateUIButtonVolume()
                 onVolumeChanged?.invoke(volume)
             }
 
