@@ -11,207 +11,614 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <View
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayVOD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="VOD" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Live" />
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/etLinkPlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter link play here" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btPlayLink"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Play" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_padding_medium"
-        android:text="Scroll horizontal for more actions" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_weight="1"
+        android:background="@color/light_yellow">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_padding_medium">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnFirstStateReady"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnFirstStateReady"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnIsInitResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnIsInitResult"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnStartPreviewTimeBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnStartPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnStopPreviewTimeBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnStopPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPreviewTimeBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPreviewTimeBar"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnNetworkChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnNetworkChange"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSkinChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSkinChange"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnScreenRotate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnScreenRotate"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnError"
+                android:textColor="@color/red"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapFinished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapFinished"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapProgressDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapProgressDown"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapStarted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapStarted"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDoubleTapProgressUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDoubleTapProgressUp"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPlayerStateChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPlayerStateChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnCurrentWindowDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnCurrentWindowDynamic"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceRedrawNeeded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceRedrawNeeded"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceCreated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceCreated"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceDestroyed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceDestroyed"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnShuffleModeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnShuffleModeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadStarted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadStarted"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadCompleted"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadCanceled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadCanceled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnLoadError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnLoadError"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDownstreamFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDownstreamFormatChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnUpstreamDiscarded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnUpstreamDiscarded"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnBandwidthEstimate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnBandwidthEstimate"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioEnabled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioDecoderInitialized"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioDecoderInitialized"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioInputFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioInputFormatChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioPositionAdvancing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioPositionAdvancing"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioUnderrun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioUnderrun"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioDecoderReleased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioDecoderReleased"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioDisabled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioSinkError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioSinkError"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioCodecError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioCodecError"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoEnabled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoDecoderInitialized"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoDecoderInitialized"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoInputFormatChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoInputFormatChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDroppedVideoFrames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDroppedVideoFrames"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoDecoderReleased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoDecoderReleased"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoDisabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoDisabled"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoFrameProcessingOffset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoFrameProcessingOffset"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPlayerReleased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPlayerReleased"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnProgressChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnProgressChange"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVideoSizeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVideoSizeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceSizeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSurfaceSizeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioSessionIdChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioSessionIdChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAudioAttributesChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAudioAttributesChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnVolumeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnVolumeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDeviceInfoChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDeviceInfoChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnDeviceVolumeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnDeviceVolumeChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnTimelineChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnTimelineChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnIsLoadingChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnIsLoadingChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnAvailableCommandsChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnAvailableCommandsChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPlayWhenReadyChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPlayWhenReadyChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnIsPlayingChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnIsPlayingChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPositionDiscontinuity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPositionDiscontinuity"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnPlaybackParametersChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnPlaybackParametersChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSeekBackIncrementChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSeekBackIncrementChanged"
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSeekForwardIncrementChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tvOnSeekForwardIncrementChanged"
+                android:textSize="@dimen/txt_tiny" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btPlayVOD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VOD" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btPlayLive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Live" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etLinkPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter link play here" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btPlayLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Play" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginStart="@dimen/margin_padding_medium"
+            android:text="Scroll horizontal for more actions" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekTo"
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Seek to 16s" />
+                android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekToLiveEdge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Seek To Live Edge" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seek to 16s" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btResume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Resume" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekToLiveEdge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Seek To Live Edge" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pause" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btResume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Resume" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btTogglePlayPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle PlayPause" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pause" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btReplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Replay" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btTogglePlayPause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Toggle PlayPause" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btToggleStatsForNerds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle StatsForNerds" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btReplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Replay" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btBackScreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back screen" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btBackScreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back screen" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btToggleVolumeMute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle Volume Mute" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btToggleVolumeMute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Toggle Volume Mute" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btShowSettingsDialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show SettingsDialog" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btShowSettingsDialog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show SettingsDialog" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btShowSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show Speed" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btShowSettingsDialogCustom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show SettingsDialog Custom" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSetSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set speed x2" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btShowSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Speed" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btShowController"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show Controller" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSetSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set speed x2" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btHideController"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hide Controller" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btShowController"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Controller" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btClickAudio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Click Audio" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btHideController"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hide Controller" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btClickQuality"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Click Quality" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekToForward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SeekToForward" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btClickCaptions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Click Captions" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekToForward7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SeekToForward 7s" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekToForward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SeekToForward" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekToBackward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SeekToBackward" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekToForward7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SeekToForward 7s" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btSeekToBackward7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SeekToBackward 7s" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekToBackward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SeekToBackward" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btToggleFullscreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Toggle Fullscreen" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btSeekToBackward7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SeekToBackward 7s" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btRetry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Retry Player if Error" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btToggleFullscreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Toggle Fullscreen" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btRetry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Retry Player if Error" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btGetListTrackVideo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get list track video" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btGetListTrackAudio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get list track audio" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btGetListTrackCaptions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Get list track captions" />
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
 </LinearLayout>

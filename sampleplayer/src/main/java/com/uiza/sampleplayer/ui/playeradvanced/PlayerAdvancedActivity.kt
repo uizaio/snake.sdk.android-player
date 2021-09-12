@@ -1,19 +1,33 @@
 package com.uiza.sampleplayer.ui.playeradvanced
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.Format
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.decoder.DecoderCounters
+import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
+import com.google.android.exoplayer2.source.LoadEventInfo
+import com.google.android.exoplayer2.source.MediaLoadData
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
-import com.uiza.sdk.interfaces.UZAdPlayerCallback
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import kotlinx.android.synthetic.main.activity_player_advanced.*
+import java.io.IOException
 
 class PlayerAdvancedActivity : AppCompatActivity() {
+    private var isShowingTrackSelectionDialogCustom = false
+
     private fun toast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
@@ -28,142 +42,355 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         setupViews()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
-            log("onPlayerViewCreated")
-            uzVideoView.isAutoStart = true//default is true
-            uzVideoView.setAutoReplay(true)//default is false
-//            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
-            uzVideoView.setControllerHideOnTouch(true)
-            uzVideoView.setEnableDoubleTapToSeek(true)//default is false
+            uzVideoView.isAutoStart = false//default is true
+            uzVideoView.setAutoReplay(false)//default is false
+            uzVideoView.setEnableDoubleTapToSeek(false)//default is false
             uzVideoView.setShowLayoutDebug(false)
-            logInformation()
+
+            log("heightTimeBar ${uzVideoView.heightTimeBar}")
+            log("videoFormat ${uzVideoView.videoFormat?.width}")
+            log("audioFormat ${uzVideoView.audioFormat?.bitrate}")
+            log("getVideoProfileW ${uzVideoView.getVideoProfileW()}")
+            log("getVideoProfileH ${uzVideoView.getVideoProfileH()}")
+            log("getVideoWidth ${uzVideoView.getVideoWidth()}")
+            log("getVideoHeight ${uzVideoView.getVideoHeight()}")
+            log("isPlayingAd ${uzVideoView.isPlayingAd()}")
+            log("isPlaying ${uzVideoView.isPlaying}")
+            log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
+            log("isControllerHideOnTouch ${uzVideoView.isControllerHideOnTouch()}")
+            log("isUseController ${uzVideoView.isUseController()}")
+            log("isLIVE ${uzVideoView.isLIVE}")
+            log("isVOD ${uzVideoView.isVOD}")
+            log("isAutoReplay ${uzVideoView.isAutoReplay()}")
+            log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
+            log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
+            log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
+            log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
+            log("getSkinId ${uzVideoView.getSkinId()}")
+            log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
+            log("volume ${uzVideoView.volume}")
         }
         uzVideoView.onFirstStateReady = {
-            log("onFirstStateReady isFirstStateReady")
-            uzVideoView.controllerShowTimeoutMs = 15_000 //15s
-            uzVideoView.setDefaultSeekValue(15_000)//15s
+            tvOnFirstStateReady.text = "onFirstStateReady"
             uzVideoView.setUseController(true)
+            uzVideoView.setDefaultSeekValue(15_000)//15s
+            uzVideoView.setControllerHideOnTouch(true)
+
+            val isAlwaysVisible = false
+            if (isAlwaysVisible) {
+                uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
+            } else {
+                uzVideoView.controllerShowTimeoutMs = 10_000 //10s
+            }
         }
         uzVideoView.onIsInitResult = { linkPlay ->
-            log("onIsInitResult linkPlay $linkPlay")
+            tvOnIsInitResult.text = "onIsInitResult linkPlay $linkPlay"
         }
         uzVideoView.onStartPreviewTimeBar = { _: PreviewView?, progress: Int ->
             //will be called if you play a video has poster in UZPlayer
-            log("onStartPreviewTimeBar progress $progress")
+            tvOnStartPreviewTimeBar.text = "onStartPreviewTimeBar progress $progress"
         }
         uzVideoView.onStopPreviewTimeBar = { _: PreviewView?, progress: Int ->
             //will be called if you play a video has poster in UZPlayer
-            log("onStopPreviewTimeBar progress $progress")
+            tvOnStopPreviewTimeBar.text = "onStopPreviewTimeBar progress $progress"
         }
         uzVideoView.onPreviewTimeBar = { _: PreviewView?, progress: Int, fromUser: Boolean ->
             //will be called if you play a video has poster in UZPlayer
-            log("onPreviewTimeBar progress $progress, fromUser $fromUser")
+            tvOnPreviewTimeBar.text = "onPreviewTimeBar progress $progress, fromUser $fromUser"
         }
         uzVideoView.onNetworkChange = { isConnected ->
-            log("onNetworkChange isConnected $isConnected")
+            tvOnNetworkChange.text = "onNetworkChange isConnected $isConnected"
         }
         uzVideoView.onSkinChange = {
-            log("onSkinChange")
-        }
-        uzVideoView.onTimeShiftChange = { timeShiftOn: Boolean ->
-            log("onTimeShiftChange timeShiftOn $timeShiftOn")
+            tvOnSkinChange.text = "onSkinChange $it"
         }
         uzVideoView.onScreenRotate = { isLandscape: Boolean ->
-            log("onScreenRotate isLandscape $isLandscape")
+            tvOnScreenRotate.text = "onScreenRotate isLandscape $isLandscape"
         }
         uzVideoView.onError = {
-            toast(it.toString())
+            tvOnError.text = "$it"
         }
         uzVideoView.onDoubleTapFinished = {
-            log("onDoubleTapFinished")
+            tvOnDoubleTapFinished.text = "onDoubleTapFinished"
         }
         uzVideoView.onDoubleTapProgressDown = { posX: Float, posY: Float ->
-            log("onDoubleTapProgressDown $posX $posY")
+            tvOnDoubleTapProgressDown.text = "onDoubleTapProgressDown $posX $posY"
         }
         uzVideoView.onDoubleTapStarted = { posX: Float, posY: Float ->
-            log("onDoubleTapStarted $posX $posY")
+            tvOnDoubleTapStarted.text = "onDoubleTapStarted $posX $posY"
         }
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
-            log("onDoubleTapProgressUp $posX $posY")
+            tvOnDoubleTapProgressUp.text = "onDoubleTapProgressUp $posX $posY"
         }
-        uzVideoView.onPlayerStateChanged = { playWhenReady: Boolean, playbackState: Int ->
+        uzVideoView.onPlayerStateChanged = { playbackState: Int ->
             when (playbackState) {
                 Player.STATE_IDLE -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_IDLE")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_IDLE"
                 }
                 Player.STATE_BUFFERING -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_BUFFERING")
+                    tvOnPlayerStateChanged.text =
+                        "onPlayerStateChanged playbackState STATE_BUFFERING"
                 }
                 Player.STATE_READY -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_READY")
-                    logInformation()
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_READY"
                 }
                 Player.STATE_ENDED -> {
-                    log("onPlayerStateChanged playWhenReady $playWhenReady, playbackState STATE_ENDED")
+                    tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_ENDED"
                 }
-            }
-        }
-        uzVideoView.adPlayerCallback = object : UZAdPlayerCallback {
-            override fun onPlay() {
-                log("adPlayerCallback onPlay")
-            }
-
-            override fun onVolumeChanged(i: Int) {
-                log("adPlayerCallback onVolumeChanged $i")
-            }
-
-            override fun onPause() {
-                log("adPlayerCallback onPause")
-            }
-
-            override fun onLoaded() {
-                log("adPlayerCallback onLoaded")
-            }
-
-            override fun onResume() {
-                log("adPlayerCallback onResume")
-            }
-
-            override fun onEnded() {
-                log("adPlayerCallback onEnded")
-                toast("onCurrentWindowDynamic isLIVE ${uzVideoView.isLIVE}")
-                logInformation()
-            }
-
-            override fun onError() {
-                log("adPlayerCallback onError")
-            }
-
-            override fun onBuffering() {
-                log("adPlayerCallback onBuffering")
             }
         }
         uzVideoView.onCurrentWindowDynamic = { isLIVE ->
-            if (isLIVE) {
-                toast("onCurrentWindowDynamic isLIVE")
-            } else {
-                toast("onCurrentWindowDynamic !isLIVE")
-            }
-        }
-        uzVideoView.onBufferProgress =
-            { bufferedPosition: Long, bufferedPercentage: Int, duration: Long ->
-                log("onBufferProgress bufferedPosition $bufferedPosition, bufferedPercentage $bufferedPercentage, duration $duration")
-            }
-        uzVideoView.onVideoProgress = { currentMls: Long, s: Int, duration: Long, percent: Int ->
-            log("onVideoProgress currentMls $currentMls, s $s, duration $duration, percent $percent")
+            tvOnCurrentWindowDynamic.text = "onCurrentWindowDynamic isLIVE $isLIVE"
         }
         uzVideoView.onSurfaceRedrawNeeded = {
-            log("onSurfaceRedrawNeeded")
+            tvOnSurfaceRedrawNeeded.text = "onSurfaceRedrawNeeded"
         }
         uzVideoView.onSurfaceCreated = {
-            log("onSurfaceCreated")
+            tvOnSurfaceCreated.text = "onSurfaceCreated"
         }
         uzVideoView.onSurfaceChanged = { _: SurfaceHolder, format: Int, width: Int, height: Int ->
-            log("onSurfaceChanged format $format, width $width, height $height")
+            tvOnSurfaceChanged.text =
+                "onSurfaceChanged format $format, width $width, height $height"
         }
         uzVideoView.onSurfaceDestroyed = {
-            log("onSurfaceDestroyed")
+            tvOnSurfaceDestroyed.text = "onSurfaceDestroyed"
+        }
+        uzVideoView.onShuffleModeChanged =
+            { eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean ->
+                tvOnShuffleModeChanged.text =
+                    "onShuffleModeChanged ${eventTime.currentPlaybackPositionMs}, shuffleModeEnabled $shuffleModeEnabled"
+            }
+        uzVideoView.onLoadStarted = { eventTime: AnalyticsListener.EventTime,
+                                      loadEventInfo: LoadEventInfo,
+                                      mediaLoadData: MediaLoadData ->
+            tvOnLoadStarted.text =
+                "onLoadStarted ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onLoadCompleted = { eventTime: AnalyticsListener.EventTime,
+                                        loadEventInfo: LoadEventInfo,
+                                        mediaLoadData: MediaLoadData ->
+            tvOnLoadCompleted.text =
+                "onLoadCompleted eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onLoadCanceled = { eventTime: AnalyticsListener.EventTime,
+                                       loadEventInfo: LoadEventInfo,
+                                       mediaLoadData: MediaLoadData ->
+            tvOnLoadCanceled.text =
+                "onLoadCanceled eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onLoadError = { eventTime: AnalyticsListener.EventTime,
+                                    loadEventInfo: LoadEventInfo,
+                                    mediaLoadData: MediaLoadData,
+                                    error: IOException,
+                                    wasCanceled: Boolean ->
+            tvOnLoadError.text =
+                "onLoadError eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}, error $error, wasCanceled $wasCanceled"
+        }
+        uzVideoView.onDownstreamFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  mediaLoadData: MediaLoadData ->
+            tvOnDownstreamFormatChanged.text =
+                "onDownstreamFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onUpstreamDiscarded = { eventTime: AnalyticsListener.EventTime,
+                                            mediaLoadData: MediaLoadData ->
+            tvOnUpstreamDiscarded.text =
+                "onUpstreamDiscarded eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
+        }
+        uzVideoView.onBandwidthEstimate = { eventTime: AnalyticsListener.EventTime,
+                                            totalLoadTimeMs: Int,
+                                            totalBytesLoaded: Long,
+                                            bitrateEstimate: Long ->
+            tvOnBandwidthEstimate.text =
+                "onBandwidthEstimate eventTime ${eventTime.currentPlaybackPositionMs}, totalLoadTimeMs $totalLoadTimeMs, totalBytesLoaded $totalBytesLoaded, bitrateEstimate $bitrateEstimate"
+        }
+        uzVideoView.onAudioEnabled =
+            { eventTime: AnalyticsListener.EventTime, decoderCounters: DecoderCounters ->
+                tvOnAudioEnabled.text =
+                    "onAudioEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+            }
+        uzVideoView.onAudioDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
+                                                  decoderName: String,
+                                                  initializedTimestampMs: Long,
+                                                  initializationDurationMs: Long ->
+            tvOnAudioDecoderInitialized.text =
+                "onAudioDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
+        }
+        uzVideoView.onAudioInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  format: Format,
+                                                  decoderReuseEvaluation: DecoderReuseEvaluation? ->
+            tvOnAudioInputFormatChanged.text =
+                "onAudioInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
+        }
+        uzVideoView.onAudioPositionAdvancing = { eventTime: AnalyticsListener.EventTime,
+                                                 playoutStartSystemTimeMs: Long ->
+            tvOnAudioPositionAdvancing.text =
+                "onAudioPositionAdvancing eventTime ${eventTime.currentPlaybackPositionMs}, playoutStartSystemTimeMs $playoutStartSystemTimeMs"
+        }
+        uzVideoView.onAudioUnderrun = { eventTime: AnalyticsListener.EventTime,
+                                        bufferSize: Int,
+                                        bufferSizeMs: Long,
+                                        elapsedSinceLastFeedMs: Long ->
+            tvOnAudioUnderrun.text =
+                "onAudioUnderrun eventTime ${eventTime.currentPlaybackPositionMs}, bufferSize $bufferSize, bufferSizeMs $bufferSizeMs, elapsedSinceLastFeedMs $elapsedSinceLastFeedMs"
+        }
+        uzVideoView.onAudioDecoderReleased = { eventTime: AnalyticsListener.EventTime,
+                                               decoderName: String ->
+            tvOnAudioDecoderReleased.text =
+                "onAudioDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
+        }
+        uzVideoView.onAudioDisabled = { eventTime: AnalyticsListener.EventTime,
+                                        decoderCounters: DecoderCounters ->
+            tvOnAudioDisabled.text =
+                "onAudioDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onAudioSinkError =
+            { eventTime: AnalyticsListener.EventTime, audioSinkError: java.lang.Exception ->
+                tvOnAudioSinkError.text =
+                    "onAudioSinkError eventTime ${eventTime.currentPlaybackPositionMs}, audioSinkError $audioSinkError"
+            }
+        uzVideoView.onAudioCodecError = { eventTime: AnalyticsListener.EventTime,
+                                          audioCodecError: java.lang.Exception ->
+            tvOnAudioCodecError.text =
+                "onAudioCodecError eventTime ${eventTime.currentPlaybackPositionMs}, audioCodecError $audioCodecError"
+        }
+        uzVideoView.onVideoEnabled = { eventTime: AnalyticsListener.EventTime,
+                                       decoderCounters: DecoderCounters ->
+            tvOnVideoEnabled.text =
+                "onVideoEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onVideoDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
+                                                  decoderName: String,
+                                                  initializedTimestampMs: Long,
+                                                  initializationDurationMs: Long ->
+            tvOnVideoDecoderInitialized.text =
+                "onVideoDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
+        }
+        uzVideoView.onVideoInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
+                                                  format: Format,
+                                                  decoderReuseEvaluation: DecoderReuseEvaluation? ->
+            tvOnVideoInputFormatChanged.text =
+                "onVideoInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
+        }
+        uzVideoView.onDroppedVideoFrames = { eventTime: AnalyticsListener.EventTime,
+                                             droppedFrames: Int,
+                                             elapsedMs: Long ->
+            tvOnDroppedVideoFrames.text =
+                "onDroppedVideoFrames eventTime ${eventTime.currentPlaybackPositionMs}, droppedFrames $droppedFrames, elapsedMs $elapsedMs"
+        }
+        uzVideoView.onVideoDecoderReleased = { eventTime: AnalyticsListener.EventTime,
+                                               decoderName: String ->
+            tvOnVideoDecoderReleased.text =
+                "onVideoDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
+        }
+        uzVideoView.onVideoDisabled = { eventTime: AnalyticsListener.EventTime,
+                                        decoderCounters: DecoderCounters ->
+            tvOnVideoDisabled.text =
+                "onVideoDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
+        }
+        uzVideoView.onVideoFrameProcessingOffset = { eventTime: AnalyticsListener.EventTime,
+                                                     totalProcessingOffsetUs: Long,
+                                                     frameCount: Int ->
+            tvOnVideoFrameProcessingOffset.text =
+                "onVideoFrameProcessingOffset eventTime ${eventTime.currentPlaybackPositionMs}, totalProcessingOffsetUs $totalProcessingOffsetUs, frameCount $frameCount"
+        }
+        uzVideoView.onPlayerReleased = { eventTime: AnalyticsListener.EventTime ->
+            tvOnPlayerReleased.text =
+                "onPlayerReleased eventTime ${eventTime.currentPlaybackPositionMs}"
+        }
+        uzVideoView.onProgressChange =
+            { currentPosition: Long, duration: Long, isPlayingAd: Boolean? ->
+                tvOnProgressChange.text =
+                    "onProgressChange currentPosition $currentPosition, duration $duration, isPlayingAd $isPlayingAd"
+            }
+        uzVideoView.onVideoSizeChanged = { videoSize: VideoSize ->
+            tvOnVideoSizeChanged.text =
+                "onVideoSizeChanged videoSize width: ${videoSize.width}, height: ${videoSize.height}, pixelWidthHeightRatio: ${videoSize.pixelWidthHeightRatio}, unappliedRotationDegrees: ${videoSize.unappliedRotationDegrees}"
+        }
+        uzVideoView.onSurfaceSizeChanged = { width: Int, height: Int ->
+            tvOnSurfaceSizeChanged.text = "onSurfaceSizeChanged width $width, height $height"
+        }
+        uzVideoView.onAudioSessionIdChanged = { audioSessionId ->
+            tvOnAudioSessionIdChanged.text =
+                "onAudioSessionIdChanged audioSessionId $audioSessionId"
+        }
+        uzVideoView.onAudioAttributesChanged = {
+            tvOnAudioAttributesChanged.text = "onAudioAttributesChanged ${it.allowedCapturePolicy}"
+        }
+        uzVideoView.onVolumeChanged = { volume: Float ->
+            tvOnVolumeChanged.text = "onVolumeChanged volume $volume"
+        }
+        uzVideoView.onSkipSilenceEnabledChanged = {
+            log("onSkipSilenceEnabledChanged $it")
+        }
+        uzVideoView.onCues = {
+            log("onCues size ${it.size}")
+        }
+        uzVideoView.onMetadata = {
+            log("onMetadata length ${it.length()}")
+        }
+        uzVideoView.onDeviceInfoChanged = {
+            tvOnDeviceInfoChanged.text = "onDeviceInfoChanged ${it.playbackType}"
+        }
+        uzVideoView.onDeviceVolumeChanged = { volume: Int, muted: Boolean ->
+            tvOnDeviceVolumeChanged.text = "onDeviceVolumeChanged volume $volume, muted $muted"
+        }
+        uzVideoView.onTimelineChanged = { timeline: Timeline, reason: Int ->
+            tvOnTimelineChanged.text =
+                "onTimelineChanged timeline ${timeline.periodCount}, reason $reason"
+        }
+        uzVideoView.onMediaItemTransition = { mediaItem: MediaItem?, reason: Int ->
+            log("onMediaItemTransition mediaItem ${mediaItem?.mediaId}, reason $reason")
+        }
+        uzVideoView.onTracksChanged =
+            { trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray ->
+                log("onTracksChanged trackGroups ${trackGroups.length}, trackSelections ${trackSelections.length}")
+            }
+        uzVideoView.onIsLoadingChanged = {
+            tvOnIsLoadingChanged.text = "onIsLoadingChanged $it"
+        }
+        uzVideoView.onAvailableCommandsChanged = {
+            tvOnAvailableCommandsChanged.text = "onAvailableCommandsChanged ${it.size()}"
+        }
+        uzVideoView.onPlayWhenReadyChanged = { playWhenReady: Boolean, reason: Int ->
+            tvOnPlayWhenReadyChanged.text =
+                "onPlayWhenReadyChanged playWhenReady $playWhenReady, reason $reason"
+        }
+        uzVideoView.onIsPlayingChanged = {
+            tvOnIsPlayingChanged.text = "onIsPlayingChanged $it"
+        }
+        uzVideoView.onRepeatModeChanged = {
+            log("onRepeatModeChanged $it")
+        }
+        uzVideoView.onShuffleModeEnabledChanged = {
+            log("onShuffleModeEnabledChanged $it")
+        }
+        uzVideoView.onPlayerError = {
+            log("onPlayerError ${it.errorCode}")
+        }
+        uzVideoView.onPlayerErrorChanged = {
+            log("onPlayerErrorChanged ${it?.errorCode}")
+        }
+        uzVideoView.onPositionDiscontinuity = { oldPosition: Player.PositionInfo,
+                                                newPosition: Player.PositionInfo,
+                                                reason: Int ->
+            tvOnPositionDiscontinuity.text =
+                "onPositionDiscontinuity oldPosition ${oldPosition.periodIndex}, newPosition ${newPosition.periodIndex}, reason $reason"
+        }
+        uzVideoView.onPlaybackParametersChanged = {
+            tvOnPlaybackParametersChanged.text =
+                "onPlaybackParametersChanged speed ${it.speed}, pitcho ${it.pitch}"
+        }
+        uzVideoView.onSeekBackIncrementChanged = {
+            tvOnSeekBackIncrementChanged.text = "onSeekBackIncrementChanged $it"
+        }
+        uzVideoView.onSeekForwardIncrementChanged = {
+            tvOnSeekForwardIncrementChanged.text = "onSeekForwardIncrementChanged $it"
+        }
+        uzVideoView.onMaxSeekToPreviousPositionChanged = {
+            log("onMaxSeekToPreviousPositionChanged $it")
         }
         btPlayVOD.setOnClickListener {
             etLinkPlay.setText(Constant.LINK_PLAY_VOD)
@@ -194,9 +421,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btReplay.setOnClickListener {
             uzVideoView.replay()
         }
-        btToggleStatsForNerds.setOnClickListener {
-            uzVideoView.toggleStatsForNerds()
-        }
         btBackScreen.setOnClickListener {
             uzVideoView.clickBackScreen()
         }
@@ -205,6 +429,21 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btShowSettingsDialog.setOnClickListener {
             uzVideoView.showSettingsDialog()
+        }
+        btShowSettingsDialogCustom.setOnClickListener {
+            val trackSelector = uzVideoView.getTrackSelector()
+            if (!isShowingTrackSelectionDialogCustom
+                && trackSelector != null
+                && trackSelector.currentMappedTrackInfo != null
+                && TrackSelectionDialogCustom.willHaveContent(trackSelector)
+            ) {
+                isShowingTrackSelectionDialogCustom = true
+                val trackSelectionDialog =
+                    TrackSelectionDialogCustom.createForTrackSelector(trackSelector) {
+                        isShowingTrackSelectionDialogCustom = false
+                    }
+                trackSelectionDialog.show(supportFragmentManager, null)
+            }
         }
         btShowSpeed.setOnClickListener {
             uzVideoView.showSpeed()
@@ -217,15 +456,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btHideController.setOnClickListener {
             uzVideoView.hideController()
-        }
-        btClickAudio.setOnClickListener {
-            uzVideoView.clickAudio()
-        }
-        btClickQuality.setOnClickListener {
-            uzVideoView.clickQuality()
-        }
-        btClickCaptions.setOnClickListener {
-            uzVideoView.clickCaptions()
         }
         btSeekToForward.setOnClickListener {
             uzVideoView.seekToForward()
@@ -245,61 +475,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btRetry.setOnClickListener {
             uzVideoView.retry()
         }
-        btGetListTrackVideo.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 0)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
-        }
-        btGetListTrackAudio.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 1)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
-        }
-        btGetListTrackCaptions.setOnClickListener {
-            val list = uzVideoView.getListTrack(showDialog = false, title = "", rendererIndex = 2)
-            var msg = ""
-            list?.forEach {
-                msg += "${it.description} ~ ${it.format.toString()}\n"
-            }
-            log(msg)
-            toast(msg)
-        }
-    }
-
-    private fun logInformation() {
-        log("isAutoReplay ${uzVideoView.isAutoReplay()}")
-        log("isPlayerControllerAlwayVisible ${uzVideoView.isPlayerControllerAlwayVisible()}")
-        log("isLandscapeScreen ${uzVideoView.isLandscapeScreen()}")
-        log("isAlwaysPortraitScreen ${uzVideoView.isAlwaysPortraitScreen()}")
-        log("isShowLayoutDebug ${uzVideoView.isShowLayoutDebug()}")
-        log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
-        log("heightTimeBar ${uzVideoView.heightTimeBar}")
-        log("videoProfileW ${uzVideoView.videoProfileW}")
-        log("videoProfileH ${uzVideoView.videoProfileH}")
-        log("videoWidth ${uzVideoView.videoWidth}")
-        log("videoHeight ${uzVideoView.videoHeight}")
-        log("isPlaying ${uzVideoView.isPlaying}")
-        log("isPIPEnable ${uzVideoView.isPIPEnable}")
-        log("controllerShowTimeoutMs ${uzVideoView.controllerShowTimeoutMs}")
-        log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
-        log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
-        log("isUseController ${uzVideoView.isUseController()}")
-        log("isEnableDoubleTapToSeek ${uzVideoView.isEnableDoubleTapToSeek()}")
-        log("videoFormat ${uzVideoView.videoFormat?.toString()}")
-        log("audioFormat ${uzVideoView.audioFormat?.toString()}")
-        log("isPlayingAd ${uzVideoView.isPlayingAd()}")
-        log("getSkinId ${uzVideoView.getSkinId()}")
-        log("volume ${uzVideoView.volume}")
-        log("isVOD ${uzVideoView.isVOD}")
-        log("getDebugString ${uzVideoView.getDebugString()}")
     }
 
     private fun onPlay(link: String) {
@@ -313,7 +488,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
             )
             uzVideoView.play(uzPlayback)
-            logInformation()
         }
     }
 
@@ -330,6 +504,16 @@ class PlayerAdvancedActivity : AppCompatActivity() {
     public override fun onPause() {
         super.onPause()
         uzVideoView.onPauseView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        uzVideoView.onStartView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        uzVideoView.onStopView()
     }
 
     override fun onBackPressed() {

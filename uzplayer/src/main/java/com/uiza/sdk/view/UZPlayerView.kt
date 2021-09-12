@@ -8,8 +8,7 @@ import android.util.AttributeSet
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import androidx.core.view.GestureDetectorCompat
-import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlin.math.abs
 
 //I want to to show playback controls only when onTouch event is fired.
@@ -18,11 +17,11 @@ class UZPlayerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : PlayerView(
+) : StyledPlayerView(
     context,
     attrs,
     defStyleAttr
-), PlayerControlView.VisibilityListener {
+) {
 
     companion object {
         private const val SWIPE_THRESHOLD = 100
@@ -56,22 +55,20 @@ class UZPlayerView @JvmOverloads constructor(
 
     init {
         if (!isInEditMode) {
-            setControllerVisibilityListener(this)
+            setControllerVisibilityListener {
+                controllerVisible = it == VISIBLE
+                controllerStateCallback?.onVisibilityChange(controllerVisible)
+            }
         }
         mDetector = GestureDetectorCompat(context, UZGestureListener())
     }
 
-    override fun isControllerVisible(): Boolean {
+    fun isControllerVisible(): Boolean {
         return controllerVisible
     }
 
     fun setControllerStateCallback(controllerStateCallback: ControllerStateCallback?) {
         this.controllerStateCallback = controllerStateCallback
-    }
-
-    override fun onVisibilityChange(visibility: Int) {
-        controllerVisible = visibility == VISIBLE
-        controllerStateCallback?.onVisibilityChange(controllerVisible)
     }
 
     fun toggleShowHideController() {
@@ -80,14 +77,6 @@ class UZPlayerView @JvmOverloads constructor(
         } else {
             showController()
         }
-    }
-
-    override fun showController() {
-        super.showController()
-    }
-
-    override fun hideController() {
-        super.hideController()
     }
 
     fun setOnTouchEvent(onTouchEvent: OnTouchEvent?) {
@@ -136,16 +125,6 @@ class UZPlayerView @JvmOverloads constructor(
             mDetector.onTouchEvent(ev)
         }
     }
-
-    val playerControlView: PlayerControlView?
-        get() {
-            for (i in 0 until this.childCount) {
-                if (getChildAt(i) is PlayerControlView) {
-                    return getChildAt(i) as PlayerControlView
-                }
-            }
-            return null
-        }
 
     interface ControllerStateCallback {
         fun onVisibilityChange(visible: Boolean)
@@ -298,4 +277,5 @@ class UZPlayerView @JvmOverloads constructor(
     fun isUseUZDragView(): Boolean {
         return useUZDragView
     }
+
 }

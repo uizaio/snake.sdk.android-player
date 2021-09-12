@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">UZPlayer</string>
     <string name="speed">Speed</string>
     <string name="error_change_skin_with_uzdragview">You cannot change skin because you use UZVideoView with UZDragView.</string>
@@ -44,5 +44,14 @@
     <string name="stats">Stats</string>
     <string name="time_shift">Time Shift</string>
     <string name="ad_tag_url_test"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=]]></string>
-
+    <string name="track_selection_title">Select tracks</string>
+    <string name="error_drm_unsupported_before_api_18">DRM content not supported on API levels below 18</string>
+    <string name="download_start_error_offline_license">Failed to obtain offline license</string>
+    <string name="download_live_unsupported">This demo app does not support downloading live content</string>
+    <string name="download_start_error">Failed to start download</string>
+    <string name="error_generic">Playback failed</string>
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+    <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
 </resources>

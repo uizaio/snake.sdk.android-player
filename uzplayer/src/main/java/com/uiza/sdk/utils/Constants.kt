@@ -14,7 +14,6 @@ object Constants {
     const val RATIO_PORTRAIT_MOBILE = 12
     const val W_320 = 320
     const val W_180 = 180
-    const val DF_PLAYER_IS_AUTO_START = true
     const val TEXT_TYPE = "text/plain"
     const val DRM_LICENSE_URL = ""
     const val KEY_UIZA_ENTITY_ID = "KEY_UIZA_ENTITY_ID"

@@ -42,7 +42,7 @@ class PlayerListActivity : AppCompatActivity() {
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
-        uzVideoView.onPlayerStateChanged = { _: Boolean, playbackState: Int ->
+        uzVideoView.onPlayerStateChanged = { playbackState: Int ->
             when (playbackState) {
                 Player.STATE_ENDED -> {
                     playNext()

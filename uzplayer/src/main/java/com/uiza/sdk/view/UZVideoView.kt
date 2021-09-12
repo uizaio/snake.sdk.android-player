@@ -3,16 +3,14 @@ package com.uiza.sdk.view
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.AlertDialog
-import android.app.Dialog
 import android.app.PictureInPictureParams
+import android.app.RemoteAction
 import android.content.Context
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
@@ -21,31 +19,47 @@ import android.view.*
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.source.hls.HlsManifest
+import com.google.android.exoplayer2.MediaItem.AdsConfiguration
+import com.google.android.exoplayer2.MediaItem.Builder
+import com.google.android.exoplayer2.analytics.AnalyticsListener
+import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.decoder.DecoderCounters
+import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
+import com.google.android.exoplayer2.device.DeviceInfo
+import com.google.android.exoplayer2.drm.FrameworkMediaDrm
+import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
+import com.google.android.exoplayer2.source.*
+import com.google.android.exoplayer2.source.ads.AdsLoader
+import com.google.android.exoplayer2.text.Cue
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.util.Assertions
+import com.google.android.exoplayer2.util.ErrorMessageProvider
+import com.google.android.exoplayer2.util.EventLogger
+import com.google.android.exoplayer2.util.Util
+import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sdk.R
 import com.uiza.sdk.UZPlayer
-import com.uiza.sdk.UZPlayer.Companion.elapsedTime
-import com.uiza.sdk.dialog.hq.UZItem
-import com.uiza.sdk.dialog.hq.UZTrackSelectionView
-import com.uiza.sdk.dialog.setting.OnToggleChangeListener
-import com.uiza.sdk.dialog.setting.SettingAdapter
-import com.uiza.sdk.dialog.setting.SettingItem
 import com.uiza.sdk.dialog.speed.Callback
 import com.uiza.sdk.dialog.speed.Speed
 import com.uiza.sdk.dialog.speed.UZSpeedDialog
-import com.uiza.sdk.exceptions.ErrorConstant
 import com.uiza.sdk.exceptions.ErrorUtils
 import com.uiza.sdk.exceptions.UZException
-import com.uiza.sdk.interfaces.*
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
 import com.uiza.sdk.utils.*
-import com.uiza.sdk.utils.ConvertUtils.getProgramDateTime
 import com.uiza.sdk.view.UZPlayerView.OnDoubleTap
 import com.uiza.sdk.widget.UZImageButton
 import com.uiza.sdk.widget.UZPreviewTimeBar
@@ -53,11 +67,18 @@ import com.uiza.sdk.widget.UZTextView
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
-import java.util.*
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import kotlin.math.max
+import kotlin.math.min
 
 class UZVideoView : RelativeLayout,
-    UZManagerObserver,
     SensorOrientationChangeNotifier.Listener,
     View.OnClickListener {
 
@@ -65,18 +86,14 @@ class UZVideoView : RelativeLayout,
         private const val HYPHEN = "-"
         private const val FAST_FORWARD_REWIND_INTERVAL = 10000L // 10s
         private const val DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS = 5000 // 5s
-        const val DEFAULT_TARGET_DURATION_MLS = 2000L // 2s
         private const val ARG_VIDEO_POSITION = "ARG_VIDEO_POSITION"
     }
 
     private fun log(msg: String) {
-        Log.d(javaClass.simpleName, msg)
+        Log.d("loitpp" + javaClass.simpleName, msg)
     }
 
-    private var targetDurationMls = DEFAULT_TARGET_DURATION_MLS
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
-    private var playerManager: UZPlayerManager? = null
-
     private var llTopUZ: LinearLayout? = null
     private var layoutPreviewUZ: FrameLayout? = null
     private var timeBarUZ: UZPreviewTimeBar? = null
@@ -95,14 +112,8 @@ class UZVideoView : RelativeLayout,
     private var btSettingUZ: UZImageButton? = null
     private var btPipUZ: UZImageButton? = null
     private var btSpeedUZ: UZImageButton? = null
-    override var playerView: UZPlayerView? = null
-
-    override var isAutoStart: Boolean = Constants.DF_PLAYER_IS_AUTO_START
-        set(isAutoStart) {
-            field = isAutoStart
-            updateUIButtonPlayPauseDependOnIsAutoStart()
-        }
-
+    var uzPlayerView: UZPlayerView? = null
+    var isAutoStart: Boolean = true
     private var autoMoveToLiveEdge = false
     private var isInPipMode = false
     private var isPIPModeEnabled = false
@@ -111,8 +122,6 @@ class UZVideoView : RelativeLayout,
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
-    private var isControllerHideOnTouch = true
-    private var isSetFirstRequestFocusDoneForTV = false
     private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
@@ -131,13 +140,14 @@ class UZVideoView : RelativeLayout,
     private var skinId = UZPlayer.skinDefault
     var uzPlayback: UZPlayback? = null
 
+    var listRemoteAction: List<RemoteAction>? = null
+
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
     var onSkinChange: ((skinId: Int) -> Unit)? = null
-    var onTimeShiftChange: ((timeShiftOn: Boolean) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
-    var onPlayerStateChanged: ((playWhenReady: Boolean, playbackState: Int) -> Unit)? = null
+    var onPlayerStateChanged: ((playbackState: Int) -> Unit)? = null
     var onFirstStateReady: (() -> Unit)? = null
 
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
@@ -157,23 +167,165 @@ class UZVideoView : RelativeLayout,
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
-    var onBufferProgress: ((bufferedPosition: Long, bufferedPercentage: Int, duration: Long) -> Unit)? =
+    var onShuffleModeChanged: ((eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) -> Unit)? =
         null
-    var onVideoProgress: ((currentMls: Long, s: Int, duration: Long, percent: Int) -> Unit)? =
+    var onLoadStarted: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadCompleted: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadCanceled: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onLoadError: ((
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData,
+        error: IOException,
+        wasCanceled: Boolean
+    ) -> Unit)? = null
+    var onDownstreamFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onUpstreamDiscarded: ((
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit)? = null
+    var onBandwidthEstimate: ((
+        eventTime: AnalyticsListener.EventTime,
+        totalLoadTimeMs: Int,
+        totalBytesLoaded: Long,
+        bitrateEstimate: Long
+    ) -> Unit)? = null
+    var onAudioEnabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onAudioDecoderInitialized: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit)? = null
+    var onAudioInputFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit)? = null
+    var onAudioPositionAdvancing: ((
+        eventTime: AnalyticsListener.EventTime,
+        playoutStartSystemTimeMs: Long
+    ) -> Unit)? = null
+    var onAudioUnderrun: ((
+        eventTime: AnalyticsListener.EventTime,
+        bufferSize: Int,
+        bufferSizeMs: Long,
+        elapsedSinceLastFeedMs: Long
+    ) -> Unit)? = null
+    var onAudioDecoderReleased: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit)? = null
+    var onAudioDisabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onAudioSinkError: ((
+        eventTime: AnalyticsListener.EventTime,
+        audioSinkError: java.lang.Exception
+    ) -> Unit)? = null
+    var onAudioCodecError: ((
+        eventTime: AnalyticsListener.EventTime,
+        audioCodecError: java.lang.Exception
+    ) -> Unit)? = null
+    var onVideoEnabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onVideoDecoderInitialized: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit)? = null
+    var onVideoInputFormatChanged: ((
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit)? = null
+    var onDroppedVideoFrames: ((
+        eventTime: AnalyticsListener.EventTime,
+        droppedFrames: Int,
+        elapsedMs: Long
+    ) -> Unit)? = null
+    var onVideoDecoderReleased: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit)? = null
+    var onVideoDisabled: ((
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit)? = null
+    var onVideoFrameProcessingOffset: ((
+        eventTime: AnalyticsListener.EventTime,
+        totalProcessingOffsetUs: Long,
+        frameCount: Int
+    ) -> Unit)? = null
+    var onPlayerReleased: ((eventTime: AnalyticsListener.EventTime) -> Unit)? = null
+    var onProgressChange: ((currentPosition: Long, duration: Long, isPlayingAd: Boolean?) -> Unit)? =
         null
+
+    var onVideoSizeChanged: ((videoSize: VideoSize) -> Unit)? = null
+    var onSurfaceSizeChanged: ((width: Int, height: Int) -> Unit)? = null
+    var onRenderedFirstFrame: (() -> Unit)? = null
+    var onAudioSessionIdChanged: ((audioSessionId: Int) -> Unit)? = null
+    var onAudioAttributesChanged: ((audioAttributes: AudioAttributes) -> Unit)? = null
+    var onVolumeChanged: ((volume: Float) -> Unit)? = null
+    var onSkipSilenceEnabledChanged: ((skipSilenceEnabled: Boolean) -> Unit)? = null
+    var onCues: ((cues: MutableList<Cue>) -> Unit)? = null
+    var onMetadata: ((metadata: com.google.android.exoplayer2.metadata.Metadata) -> Unit)? = null
+    var onDeviceInfoChanged: ((deviceInfo: DeviceInfo) -> Unit)? = null
+    var onDeviceVolumeChanged: ((volume: Int, muted: Boolean) -> Unit)? = null
+    var onTimelineChanged: ((timeline: Timeline, reason: Int) -> Unit)? = null
+    var onMediaItemTransition: ((mediaItem: MediaItem?, reason: Int) -> Unit)? = null
+    var onTracksChanged: ((trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) -> Unit)? =
+        null
+    var onIsLoadingChanged: ((isLoading: Boolean) -> Unit)? = null
+    var onAvailableCommandsChanged: ((availableCommands: Player.Commands) -> Unit)? = null
+    var onPlayWhenReadyChanged: ((playWhenReady: Boolean, reason: Int) -> Unit)? = null
+    var onIsPlayingChanged: ((isPlaying: Boolean) -> Unit)? = null
+    var onRepeatModeChanged: ((repeatMode: Int) -> Unit)? = null
+    var onShuffleModeEnabledChanged: ((shuffleModeEnabled: Boolean) -> Unit)? = null
+    var onPlayerError: ((error: PlaybackException) -> Unit)? = null
+    var onPlayerErrorChanged: ((error: PlaybackException?) -> Unit)? = null
+    var onPositionDiscontinuity: ((oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int) -> Unit)? =
+        null
+    var onPlaybackParametersChanged: ((playbackParameters: PlaybackParameters) -> Unit)? = null
+    var onSeekBackIncrementChanged: ((seekBackIncrementMs: Long) -> Unit)? = null
+    var onSeekForwardIncrementChanged: ((seekForwardIncrementMs: Long) -> Unit)? = null
+    var onMaxSeekToPreviousPositionChanged: ((maxSeekToPreviousPositionMs: Int) -> Unit)? = null
 
     private var orb: Orb? = null
+    private val compositeDisposable = CompositeDisposable()
 
-    private var isAdEnded: Boolean? = null
-    override var adPlayerCallback: UZAdPlayerCallback? = null
-        set(callback) {
-            field = callback
-            if (UZAppUtils.isAdsDependencyAvailable) {
-                playerManager?.setAdPlayerCallback(callback)
-            } else {
-                throw NoClassDefFoundError(ErrorConstant.ERR_506)
-            }
-        }
+    var player: SimpleExoPlayer? = null
+    private var dataSourceFactory: DataSource.Factory? = null
+    private var mediaItems: List<MediaItem>? = null
+    private var trackSelector: DefaultTrackSelector? = null
+    private var trackSelectorParameters: DefaultTrackSelector.Parameters? = null
+    private var lastSeenTrackGroupArray: TrackGroupArray? = null
+    private var startAutoPlay = false
+    private var startWindow = 0
+    private var startPosition: Long = 0
+    private var adsLoader: AdsLoader? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -194,25 +346,25 @@ class UZVideoView : RelativeLayout,
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-//        log("onAttachedToWindow isViewCreated $isViewCreated")
         if (!isViewCreated) {
             onCreateView()
         }
     }
 
     private fun onCreateView() {
+        dataSourceFactory = DemoUtil.getDataSourceFactory(context)
         inflate(context, R.layout.layout_uz_ima_video_core, this)
+
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater == null) {
-//            log("onCreateView cannot inflater view")
             throw NullPointerException("Cannot inflater view")
         } else {
-            playerView = inflater.inflate(skinId, null) as UZPlayerView?
+            uzPlayerView = inflater.inflate(skinId, null) as UZPlayerView?
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
 
-            playerView?.let {
+            uzPlayerView?.let {
                 it.layoutParams = layoutParams
                 it.visibility = GONE
 
@@ -249,7 +401,13 @@ class UZVideoView : RelativeLayout,
                     })
                 }
 
+                it.setErrorMessageProvider(PlayerErrorMessageProvider(context))
+                it.requestFocus()
                 layoutRootView.addView(it)
+
+                val builder = ParametersBuilder(context)
+                trackSelectorParameters = builder.build()
+                clearStartPosition()
             }
 
             findViews()
@@ -260,9 +418,7 @@ class UZVideoView : RelativeLayout,
         updateUISizeThumbnailTimeBar()
         isViewCreated = true
 
-//        log("onCreateView isViewCreated $isViewCreated")
-        playerView?.let {
-//            log("onCreateView invoke")
+        uzPlayerView?.let {
             onPlayerViewCreated?.invoke(it)
         }
 
@@ -296,25 +452,28 @@ class UZVideoView : RelativeLayout,
 
     private fun findViews() {
         UZViewUtils.setColorProgressBar(progressBar = pb, color = Color.WHITE)
-//        updateUIPositionOfProgressBar()
 
-        playerView?.let { pv ->
-            playerView?.useController =
+        uzPlayerView?.let { pv ->
+            uzPlayerView?.useController =
                 false//khong cho dung controller cho den khi isFirstStateReady == true
             pv.setOnDoubleTap(object : OnDoubleTap {
                 override fun onDoubleTapFinished() {
+//                    log("onDoubleTapFinished")
                     onDoubleTapFinished?.invoke()
                 }
 
                 override fun onDoubleTapProgressDown(posX: Float, posY: Float) {
+//                    log("onDoubleTapProgressDown")
                     onDoubleTapProgressDown?.invoke(posX, posY)
                 }
 
                 override fun onDoubleTapStarted(posX: Float, posY: Float) {
+//                    log("onDoubleTapStarted")
                     onDoubleTapStarted?.invoke(posX, posY)
                 }
 
                 override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
+//                    log("onDoubleTapProgressUp")
                     if (isEnableDoubleTapToSeek) {
                         val halfScreen = UZViewUtils.screenWidth / 2.0f
                         if (posX - 60.0f > halfScreen) {
@@ -388,16 +547,14 @@ class UZVideoView : RelativeLayout,
             tvPositionUZ?.text = StringUtils.convertMlsecondsToHMmSs(0)
             tvDurationUZ?.text = "-:-"
 
-            //If auto start true, show button play and gone button pause
-            UZViewUtils.goneViews(btPlayUZ)
-
             btRewUZ?.setSrcDrawableDisabled()
 
             if (!isPIPEnable) {
-                UZViewUtils.goneViews(btPipUZ)
+                btPipUZ?.isVisible = false
             }
 
             setEventForViews()
+            updateUIButton(currentPosition)
         }
     }
 
@@ -405,14 +562,14 @@ class UZVideoView : RelativeLayout,
         if (isFreeSize) {
             setSize(width = this.width, height = this.height)
         } else {
-            setSize(width = videoWidth, height = videoHeight)
+            setSize(width = getVideoWidth(), height = getVideoHeight())
         }
     }
 
     var controllerAutoShow: Boolean
-        get() = playerView?.controllerAutoShow ?: false
+        get() = uzPlayerView?.controllerAutoShow ?: false
         set(isAutoShowController) {
-            playerView?.controllerAutoShow = isAutoShowController
+            uzPlayerView?.controllerAutoShow = isAutoShowController
         }
 
     //return pixel
@@ -436,16 +593,18 @@ class UZVideoView : RelativeLayout,
     val audioFormat: Format?
         get() = player?.audioFormat
 
-    val videoProfileW: Int
-        get() = playerManager?.videoProfileW ?: 0
+    fun getVideoProfileW(): Int {
+        return videoFormat?.width ?: 0
+    }
 
-    val videoProfileH: Int
-        get() = playerManager?.videoProfileH ?: 0
+    fun getVideoProfileH(): Int {
+        return videoFormat?.height ?: 0
+    }
 
     fun setResizeMode(resizeMode: Int) {
         try {
-            playerView?.resizeMode = resizeMode
-        } catch (e: IllegalStateException) {
+            uzPlayerView?.resizeMode = resizeMode
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -469,6 +628,9 @@ class UZVideoView : RelativeLayout,
         setControllerHideOnTouch(false)
         controllerShowTimeoutMs = 0
         isPlayerControllerAlwayVisible = true
+        if (!isPlayerControllerShowing) {
+            showController()
+        }
     }
 
     private fun handleError(uzException: UZException?) {
@@ -483,113 +645,77 @@ class UZVideoView : RelativeLayout,
         onError?.invoke(exception)
     }
 
-    val player: SimpleExoPlayer?
-        get() = playerManager?.getPlayer()
-
     fun seekTo(positionMs: Long) {
-        playerManager?.seekTo(positionMs)
+        player?.seekTo(positionMs)
     }
 
     fun play(uzPlayback: UZPlayback): Boolean {
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
+        resume()
+
         if (!ConnectivityUtils.isConnected(context)) {
             notifyError(ErrorUtils.exceptionNoConnection())
             return false
         }
+        val linkPlay = uzPlayback.linkPlay
+        if (linkPlay.isNullOrEmpty()) {
+            handleError(ErrorUtils.exceptionNoLinkPlay())
+            return false
+        }
+        releaseAdsLoader()
         this.uzPlayback = uzPlayback
-        initPlayback()
+
+        isCalledFromChangeSkin = false
+        //khong cho dung controller cho den khi isFirstStateReady == true
+        uzPlayerView?.useController = false
+        releasePlayerManager()
+        showProgress()
+        initDataSource()
+        initPlayerManager()
+        initializePlayer()
+        onIsInitResult?.invoke(linkPlay)
         return true
     }
 
     fun resume() {
-        playerManager?.resume()
-        UZViewUtils.goneViews(btPlayUZ)
-        btPauseUZ?.let {
-            UZViewUtils.visibleViews(it)
-            it.requestFocus()
+        if (isPlayingAd() == true) {
+            return
         }
-        keepScreenOn = true
+        player?.playWhenReady = true
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
     fun pause() {
-        playerManager?.pause()
-        UZViewUtils.goneViews(btPauseUZ)
-        keepScreenOn = false
-        btPlayUZ?.let {
-            UZViewUtils.visibleViews(it)
-            it.requestFocus()
+        if (isPlayingAd() == true) {
+            return
         }
+        player?.playWhenReady = false
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
-    val videoWidth: Int
-        get() = playerManager?.videoWidth ?: 0
+    fun getVideoWidth(): Int {
+        return uzPlayerView?.player?.videoSize?.width ?: 0
+    }
 
-    val videoHeight: Int
-        get() = playerManager?.videoHeight ?: 0
-
-    private fun initPlayback() {
-        if (uzPlayback == null) {
-            handleError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
-        val linkPlay = uzPlayback?.linkPlay
-        if (linkPlay.isNullOrEmpty()) {
-            handleError(ErrorUtils.exceptionNoLinkPlay())
-            return
-        }
-        isCalledFromChangeSkin = false
-        controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-        isOnPlayerEnded = false
-        playerView?.useController =
-            false//khong cho dung controller cho den khi isFirstStateReady == true
-        updateUIEndScreen()
-        releasePlayerManager()
-        showProgress()
-
-        initDataSource(
-            linkPlay = linkPlay,
-            urlIMAAd = uzPlayback?.urlIMAAd,
-            poster = uzPlayback?.poster
-        )
-        onIsInitResult?.invoke(linkPlay)
-        initPlayerManager()
+    fun getVideoHeight(): Int {
+        return uzPlayerView?.player?.videoSize?.height ?: 0
     }
 
     private fun initPlayerManager() {
-        playerManager?.let { pm ->
-            pm.register(this)
-            if (isRefreshFromChangeSkin) {
-                pm.seekTo(currentPositionBeforeChangeSkin)
-                isRefreshFromChangeSkin = false
-                currentPositionBeforeChangeSkin = 0
-            }
-            initStatsForNerds()
+        if (isRefreshFromChangeSkin) {
+            seekTo(currentPositionBeforeChangeSkin)
+            isRefreshFromChangeSkin = false
+            currentPositionBeforeChangeSkin = 0
         }
-    }
-
-    fun toggleStatsForNerds() {
-        if (player == null) return
-        val isEnableStatsForNerds =
-            statsForNerdsView == null || statsForNerdsView.visibility != VISIBLE
-        if (isEnableStatsForNerds) {
-            UZViewUtils.visibleViews(statsForNerdsView)
-        } else {
-            UZViewUtils.goneViews(statsForNerdsView)
-        }
-    }
-
-    private fun tryNextLinkPlay() {
-        if (isLIVE) {
-//            playerManager?.let {
-//                it.initWithoutReset()
-//                it.setRunnable()
-//            }
-            retry()
-            setFirstStateReady(false)
-            return
-        }
-        setFirstStateReady(false)
-        releasePlayerManager()
-        checkToSetUpResource()
     }
 
     fun onBackPressed(): Boolean {
@@ -621,51 +747,55 @@ class UZVideoView : RelativeLayout,
     }
 
     fun onDestroyView() {
-        releasePlayerStats()
+        compositeDisposable.clear()
         releasePlayerManager()
         if (isPIPEnable) {
             if (context is Activity) {
                 (context as Activity).finishAndRemoveTask()
             }
         }
-        playerManager?.unregister()
+        releaseAdsLoader()
         orb?.stop()
     }
 
-    private fun releasePlayerStats() {
-        player?.removeAnalyticsListener(statsForNerdsView)
-    }
-
     private fun releasePlayerManager() {
-        playerManager?.release()
+        try {
+            uzPlayerView?.overlayFrameLayout?.removeAllViews()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun onResumeView() {
         SensorOrientationChangeNotifier.getInstance(context)?.addListener(this)
-        playerManager?.resume()
+        player?.playWhenReady = true
+        if (Util.SDK_INT <= 23 || player == null) {
+            initializePlayer()
+            if (uzPlayerView != null) {
+                uzPlayerView?.onResume()
+            }
+        }
+
         if (positionPIPPlayer > 0L && isInPipMode) {
             seekTo(positionPIPPlayer)
         } else if (autoMoveToLiveEdge && isLIVE) {
             // try to move to the edge of livestream video
             seekToLiveEdge()
         }
+
     }
 
     val isPlaying: Boolean
-        get() = player?.playWhenReady ?: false
+        get() = player?.isPlaying ?: false
 
-    /**
-     * Set auto move the the last window of livestream, default is false
-     *
-     * @param autoMoveToLiveEdge true if always seek to last livestream video, otherwise false
-     */
+    fun isPlayingAd(): Boolean? {
+        return player?.isPlayingAd
+    }
+
     fun setAutoMoveToLiveEdge(autoMoveToLiveEdge: Boolean) {
         this.autoMoveToLiveEdge = autoMoveToLiveEdge
     }
 
-    /**
-     * Seek to live edge of a streaming video
-     */
     fun seekToLiveEdge() {
         if (isLIVE) {
             player?.seekToDefaultPosition()
@@ -674,10 +804,30 @@ class UZVideoView : RelativeLayout,
 
     fun onSaveInstanceState(outState: Bundle) {
         outState.putLong(ARG_VIDEO_POSITION, currentPosition)
+        updateTrackSelectorParameters()
+        updateStartPosition()
     }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle) {
         positionPIPPlayer = savedInstanceState.getLong(ARG_VIDEO_POSITION)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        return uzPlayerView?.dispatchKeyEvent(event) == true || super.dispatchKeyEvent(event)
+    }
+
+    fun onStartView() {
+        if (Util.SDK_INT > 23) {
+            initializePlayer()
+            uzPlayerView?.onResume()
+        }
+    }
+
+    fun onStopView() {
+        if (Util.SDK_INT > 23) {
+            uzPlayerView?.onPause()
+            releasePlayer()
+        }
     }
 
     fun onPauseView() {
@@ -686,29 +836,52 @@ class UZVideoView : RelativeLayout,
 
         // in PIP to continue
         if (!isInPipMode) {
-            playerManager?.pause()
-
+            player?.playWhenReady = false
+            if (Util.SDK_INT <= 23) {
+                uzPlayerView?.onPause()
+                releasePlayer()
+            }
         }
     }
 
-    fun isPlayingAd(): Boolean? {
-        return playerManager?.isPlayingAd
+    private fun releasePlayer() {
+        if (player != null) {
+            updateTrackSelectorParameters()
+            updateStartPosition()
+            player?.release()
+            player = null
+            mediaItems = emptyList()
+            trackSelector = null
+        }
+        adsLoader?.setPlayer(null)
     }
 
-    override val isPIPEnable: Boolean
-        get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && playerView?.isUseUZDragView() == false && isPIPModeEnabled)
+    private fun updateStartPosition() {
+        player?.let {
+            startAutoPlay = it.playWhenReady
+            startWindow = it.currentWindowIndex
+            startPosition = max(0, it.contentPosition)
+        }
+    }
+
+    private fun updateTrackSelectorParameters() {
+        trackSelector?.parameters?.let {
+            trackSelectorParameters = it
+        }
+    }
+
+    val isPIPEnable: Boolean
+        get() = (btPipUZ != null && UZAppUtils.hasSupportPIP(context = context) && uzPlayerView?.isUseUZDragView() == false && isPIPModeEnabled)
 
     private fun onStopPreview(progress: Int) {
-        playerManager?.seekTo(progress.toLong())
-        playerManager?.resume()
-        isOnPlayerEnded = false
-        updateUIEndScreen()
+        seekTo(progress.toLong())
+        player?.playWhenReady = true
     }
 
     public override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        playerView?.let { pv ->
+        uzPlayerView?.let { pv ->
             resizeContainerView()
             val currentOrientation = resources.configuration.orientation
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -719,7 +892,7 @@ class UZVideoView : RelativeLayout,
                 btFullscreenUZ?.let {
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = true)
                 }
-                UZViewUtils.goneViews(btPipUZ)
+                btPipUZ?.isVisible = false
             } else {//portrait screen
                 if (!isInPipMode) {
                     UZViewUtils.hideSystemUi(pv)
@@ -729,45 +902,58 @@ class UZVideoView : RelativeLayout,
                     UZViewUtils.setUIFullScreenIcon(imageButton = it, isFullScreen = false)
                 }
                 if (isPIPEnable) {
-                    UZViewUtils.visibleViews(btPipUZ)
+                    btPipUZ?.isVisible = true
                 }
             }
             setMarginPreviewTimeBar()
             updateUISizeThumbnailTimeBar()
-//            updateUIPositionOfProgressBar()
             onScreenRotate?.invoke(isLandscape)
         }
     }
 
     override fun onClick(v: View) {
-        if (v === btFullscreenUZ) {
-            toggleFullscreen()
-        } else if (v === btBackScreenUZ) {
-            clickBackScreen()
-        } else if (v === btVolumeUZ) {
-            toggleVolumeMute()
-        } else if (v === btSettingUZ) {
-            showSettingsDialog()
-        } else if (v === btPipUZ) {
-            enterPIPMode()
-        } else if (v.parent === layoutControls) {
-            showTrackSelectionDialog(v, true)
-        } else if (v === btFfwdUZ) {
-            playerManager?.seekToForward(defaultSeekValue)
-        } else if (v === btRewUZ) {
-            playerManager?.seekToBackward(defaultSeekValue)
-            if (isPlaying) {
-                isOnPlayerEnded = false
-                updateUIEndScreen()
+        when {
+            v === btFullscreenUZ -> {
+                toggleFullscreen()
             }
-        } else if (v === btPauseUZ) {
-            pause()
-        } else if (v === btPlayUZ) {
-            resume()
-        } else if (v === btReplayUZ) {
-            replay()
-        } else if (v === btSpeedUZ) {
-            showSpeed()
+            v === btBackScreenUZ -> {
+                clickBackScreen()
+            }
+            v === btVolumeUZ -> {
+                toggleVolumeMute()
+            }
+            v === btSettingUZ -> {
+                showSettingsDialog()
+            }
+            v === btPipUZ -> {
+                enterPIPMode()
+            }
+            v === btFfwdUZ -> {
+                player?.let {
+                    it.seekTo(min(it.currentPosition + defaultSeekValue, it.duration))
+                }
+            }
+            v === btRewUZ -> {
+                player?.let {
+                    if (it.currentPosition - defaultSeekValue > 0) {
+                        it.seekTo(it.currentPosition - defaultSeekValue)
+                    } else {
+                        it.seekTo(0)
+                    }
+                }
+            }
+            v === btPauseUZ -> {
+                pause()
+            }
+            v === btPlayUZ -> {
+                resume()
+            }
+            v === btReplayUZ -> {
+                replay()
+            }
+            v === btSpeedUZ -> {
+                showSpeed()
+            }
         }
     }
 
@@ -783,8 +969,9 @@ class UZVideoView : RelativeLayout,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
                 try {
-                    val aspectRatio = Rational(videoWidth, videoHeight)
+                    val aspectRatio = Rational(getVideoWidth(), getVideoHeight())
                     params.setAspectRatio(aspectRatio)
+                    params.setActions(listRemoteAction)
                     if (context is Activity) {
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
@@ -792,11 +979,11 @@ class UZVideoView : RelativeLayout,
                     log("enterPIPMode e $e")
                     val w: Int
                     val h: Int
-                    if (videoWidth == 0 || videoHeight == 0) {
+                    if (getVideoWidth() == 0 || getVideoHeight() == 0) {
                         w = this.width
                         h = this.height
                     } else {
-                        if (videoWidth > videoHeight) {
+                        if (getVideoWidth() > getVideoHeight()) {
                             w = 1280
                             h = 720
                         } else {
@@ -806,6 +993,7 @@ class UZVideoView : RelativeLayout,
                     }
                     val aspectRatio = Rational(w, h)
                     params.setAspectRatio(aspectRatio)
+                    params.setActions(listRemoteAction)
                     if (context is Activity) {
                         (context as Activity).enterPictureInPictureMode(params.build())
                     }
@@ -818,35 +1006,29 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    var controllerShowTimeoutMs: Int
-        get() = playerView?.controllerShowTimeoutMs ?: -1
+    var controllerShowTimeoutMs: Int = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
+        get() = uzPlayerView?.controllerShowTimeoutMs ?: -1
         set(controllerShowTimeoutMs) {
-            playerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
+            field = controllerShowTimeoutMs
+            uzPlayerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
         }
+
     val isPlayerControllerShowing: Boolean
-        get() = playerView?.isControllerVisible ?: false
+        get() = uzPlayerView?.isControllerVisible() ?: false
 
     fun showController() {
-        playerView?.showController()
+        uzPlayerView?.showController()
     }
 
     fun hideController() {
         if (isPlayerControllerAlwayVisible) {
             return
         }
-        playerView?.hideController()
+        uzPlayerView?.hideController()
     }
-
-    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
-        this.isControllerHideOnTouch = controllerHideOnTouch
-        playerView?.controllerHideOnTouch = controllerHideOnTouch
-    }
-
-    val controllerHideOnTouch: Boolean
-        get() = playerView?.controllerHideOnTouch ?: false
 
     fun isUseController(): Boolean {
-        return playerView?.useController ?: false
+        return uzPlayerView?.useController ?: false
     }
 
     fun setUseController(useController: Boolean): Boolean {
@@ -854,94 +1036,27 @@ class UZVideoView : RelativeLayout,
             log("setUseController() can be applied if the player state is Player.STATE_READY")
             return false
         }
-        playerView?.useController = useController
+        uzPlayerView?.useController = useController
         return true
     }
 
-    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
-        if (manifest is HlsManifest) {
-            val playlist = manifest.mediaPlaylist
-            targetDurationMls = C.usToMs(playlist.targetDurationUs)
-            // From the current playing frame to end time of chunk
-            val timeToEndChunk = duration - currentPosition
-            val extProgramDateTime = getProgramDateTime(
-                playlist = playlist,
-                timeToEndChunk = timeToEndChunk
-            )
-            if (extProgramDateTime == C.INDEX_UNSET.toLong()) {
-                hideTextLiveStreamLatency()
-                return
-            }
-            val elapsedTime = SystemClock.elapsedRealtime() - elapsedTime
-            val currentTime = System.currentTimeMillis() + elapsedTime
-            val latency = currentTime - extProgramDateTime
-            updateLiveStreamLatency(latency)
-        } else {
-            hideTextLiveStreamLatency()
-        }
-    }
-
-    override fun onPlayerError(error: ExoPlaybackException?) {
-        hideProgress()
-        handleError(ErrorUtils.exceptionPlayback())
-        if (ConnectivityUtils.isConnected(context)) {
-            tryNextLinkPlay()
-        } else {
-            pause()
-        }
-    }
-
-    override fun onPlayerEnded() {
-        if (isPlaying) {
-            keepScreenOn = false
-            isOnPlayerEnded = true
-            if (isAutoReplay) {
-                replay()
-            } else {
-                updateUIEndScreen()
-            }
+    private fun onPlayerEnded() {
+        if (isAutoReplay) {
+            replay()
         }
         hideProgress()
-    }
-
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        when (playbackState) {
-            Player.STATE_BUFFERING, Player.STATE_IDLE -> {
-                showProgress()
-            }
-            Player.STATE_ENDED -> {
-                onPlayerEnded()
-            }
-            Player.STATE_READY -> {
-                hideProgress()
-                updateTvDuration()
-                updateTimeBarWithTimeShiftStatus()
-                if (playWhenReady) {
-                    timeBarUZ?.hidePreview()
-                }
-                if (context is Activity) {
-                    (context as Activity).setResult(Activity.RESULT_OK)
-                }
-
-                if (!isFirstStateReady) {
-                    setFirstStateReady(true)
-                    updateUIDependOnLiveStream()
-                }
-            }
-        }
-        onPlayerStateChanged?.invoke(playWhenReady, playbackState)
+        showController()
     }
 
     fun replay() {
-        if (playerManager == null) {
+        if (isPlayingAd() == true) {
             return
         }
-        val result = playerManager?.seekTo(0)
-        if (result == true) {
-            isSetFirstRequestFocusDoneForTV = false
-            isOnPlayerEnded = false
-            updateUIEndScreen()
-        }
+        seekTo(0)
+        updateUIIbRewIconDependOnProgress(
+            currentMls = currentPosition,
+            isCalledFromUZTimeBarEvent = false
+        )
     }
 
     fun clickBackScreen() {
@@ -952,21 +1067,6 @@ class UZVideoView : RelativeLayout,
                 (context as Activity).onBackPressed()
             }
         }
-    }
-
-    fun clickAudio() {
-        val view = DebugUtils.getAudioButton(layoutControls)
-        view?.performClick()
-    }
-
-    fun clickQuality() {
-        val view = DebugUtils.getVideoButton(layoutControls)
-        view?.performClick()
-    }
-
-    fun clickCaptions() {
-        val view = DebugUtils.getCaptionsButton(layoutControls)
-        view?.performClick()
     }
 
     fun setDefaultSeekValue(mls: Long) {
@@ -997,7 +1097,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun toggleShowHideController() {
-        playerView?.toggleShowHideController()
+        uzPlayerView?.toggleShowHideController()
     }
 
     fun togglePlayPause() {
@@ -1033,42 +1133,29 @@ class UZVideoView : RelativeLayout,
 
     val isLIVE: Boolean
         get() {
-            return playerManager != null && playerManager?.isLIVE == true
+            return player?.isCurrentWindowLive ?: false
         }
 
     val isVOD: Boolean
         get() {
-            return playerManager != null && playerManager?.isVOD == true
+            return !isLIVE
         }
 
-    fun getDebugString(): String? {
-        return playerManager?.debugString
-    }
-
     var volume: Float
-        get() = playerManager?.volume ?: -1F
+        get() {
+            return player?.volume ?: -1f
+        }
         set(volume) {
-            playerManager?.let { pm ->
-                pm.volume = volume
-                if (pm.volume != 0f) {
-                    btVolumeUZ?.setSrcDrawableEnabled()
-                } else {
-                    btVolumeUZ?.setSrcDrawableDisabledCanTouch()
-                }
-            }
+            player?.volume = volume
         }
     private var volumeToggle = 0f
 
     fun toggleVolumeMute() {
-        playerManager?.let { pm ->
-            if (pm.volume == 0f) {
-                volume = volumeToggle
-                btVolumeUZ?.setSrcDrawableEnabled()
-            } else {
-                volumeToggle = volume
-                volume = 0f
-                btVolumeUZ?.setSrcDrawableDisabledCanTouch()
-            }
+        if (volume == 0f) {
+            volume = volumeToggle
+        } else {
+            volumeToggle = volume
+            volume = 0f
         }
     }
 
@@ -1080,7 +1167,7 @@ class UZVideoView : RelativeLayout,
             resources.getString(R.string.error_speed_illegal)
         }
         val playbackParameters = PlaybackParameters(speed)
-        player?.setPlaybackParameters(playbackParameters)
+        player?.playbackParameters = playbackParameters
     }
 
     private fun setEventForViews() {
@@ -1105,41 +1192,6 @@ class UZVideoView : RelativeLayout,
         )
     }
 
-    //If auto start true, show button play and gone button pause
-    //if not, gone button play and show button pause
-    private fun updateUIButtonPlayPauseDependOnIsAutoStart() {
-        if (isAutoStart) {
-            UZViewUtils.goneViews(btPlayUZ)
-            btPauseUZ?.let { ib ->
-                UZViewUtils.visibleViews(ib)
-                if (!isSetFirstRequestFocusDoneForTV) {
-                    ib.requestFocus() //set first request focus if using player for TV
-                    isSetFirstRequestFocusDoneForTV = true
-                }
-            }
-        } else {
-            if (isPlaying) {
-                UZViewUtils.goneViews(btPlayUZ)
-                btPauseUZ?.let { ib ->
-                    UZViewUtils.visibleViews(ib)
-                    if (!isSetFirstRequestFocusDoneForTV) {
-                        ib.requestFocus() //set first request focus if using player for TV
-                        isSetFirstRequestFocusDoneForTV = true
-                    }
-                }
-            } else {
-                btPlayUZ?.let { ib ->
-                    UZViewUtils.visibleViews(ib)
-                    if (!isSetFirstRequestFocusDoneForTV) {
-                        ib.requestFocus() //set first request focus if using player for TV
-                        isSetFirstRequestFocusDoneForTV = true
-                    }
-                }
-                UZViewUtils.goneViews(btPauseUZ)
-            }
-        }
-    }
-
     private fun updateUIEachSkin() {
         if (skinId == R.layout.uzplayer_skin_2 || skinId == R.layout.uzplayer_skin_3) {
 
@@ -1154,28 +1206,18 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-//    private fun updateUIPositionOfProgressBar() {
-//        playerView?.let { pv ->
-//            postDelayed({
-//                val marginL = pv.measuredWidth / 2 - pb.measuredWidth / 2
-//                val marginT = pv.measuredHeight / 2 - pb.measuredHeight / 2
-//                UZViewUtils.setMarginPx(view = pb, l = marginL, t = marginT, r = 0, b = 0)
-//            }, 10)
-//        }
-//    }
-
     /*
      ** change skin of player (realtime)
      * return true if success
      */
     fun changeSkin(@LayoutRes skinId: Int): Boolean {
-        if (playerView?.isUseUZDragView() == true) {
+        if (uzPlayerView?.isUseUZDragView() == true) {
             throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
         }
-        if (playerManager == null || !isFirstStateReady || isOnPlayerEnded) {
+        if (player == null || !isFirstStateReady || isOnPlayerEnded) {
             return false
         }
-        if (playerManager?.isPlayingAd == true) {
+        if (isPlayingAd() == true) {
             notifyError(ErrorUtils.exceptionChangeSkin())
             return false
         }
@@ -1186,15 +1228,54 @@ class UZVideoView : RelativeLayout,
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater != null) {
-//            layoutRootView.removeView(playerView)
-//            layoutRootView.requestLayout()
+            layoutRootView.removeView(uzPlayerView)
+            uzPlayerView = null
 
-            playerView = inflater.inflate(skinId, null) as UZPlayerView?
+            uzPlayerView = inflater.inflate(skinId, null) as UZPlayerView?
             val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
             layoutParams.addRule(CENTER_IN_PARENT, TRUE)
-            playerView?.let {
+            uzPlayerView?.let {
                 it.layoutParams = layoutParams
+                it.requestFocus()
+
+                if (it.videoSurfaceView is SurfaceView) {
+                    (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
+                        SurfaceHolder.Callback2 {
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
+
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            onSurfaceCreated?.invoke(holder)
+                        }
+
+                        override fun surfaceChanged(
+                            holder: SurfaceHolder,
+                            format: Int,
+                            width: Int,
+                            height: Int
+                        ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
+                        }
+
+                        override fun surfaceDestroyed(holder: SurfaceHolder) {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (context is Activity) {
+                                        (context as Activity).finishAndRemoveTask()
+                                    }
+                                }
+                            }
+                            onSurfaceDestroyed?.invoke(holder)
+                        }
+                    })
+                }
+
                 layoutRootView.addView(it)
+                val builder = ParametersBuilder(context)
+                trackSelectorParameters = builder.build()
+                clearStartPosition()
             }
             layoutRootView.requestLayout()
             findViews()
@@ -1204,10 +1285,11 @@ class UZVideoView : RelativeLayout,
             setMarginPreviewTimeBar()
 
             currentPositionBeforeChangeSkin = currentPosition
-            releasePlayerManager()
             checkToSetUpResource()
             updateUISizeThumbnailTimeBar()
-            setVisibilityOfPlayPauseReplay(false)
+            updateUIButtonVolume()
+
+            uzPlayerView?.player = player
             onSkinChange?.invoke(getSkinId())
 
             return true
@@ -1246,70 +1328,63 @@ class UZVideoView : RelativeLayout,
             setTextPosition(currentMls)
         } else {
             if (!isOnPreviewTimeBar) {
-                //uzTimeBar is displaying
                 setTextPosition(currentMls)
             }
-//            return
         }
         if (isLIVE) {
-            return
-        }
-        btRewUZ?.let { r ->
-            btFfwdUZ?.let { f ->
-                if (currentMls <= 0L) {
-                    if (r.isSetSrcDrawableEnabled) {
-                        r.setSrcDrawableDisabled()
-                    }
-                    if (!f.isSetSrcDrawableEnabled) {
-                        f.setSrcDrawableEnabled()
-                    }
-                } else if (currentMls == duration) {
-                    if (!r.isSetSrcDrawableEnabled) {
-                        r.setSrcDrawableEnabled()
-                    }
-                    if (f.isSetSrcDrawableEnabled) {
-                        f.setSrcDrawableDisabled()
-                    }
-                } else {
-                    if (!r.isSetSrcDrawableEnabled) {
-                        r.setSrcDrawableEnabled()
-                    }
-                    if (!f.isSetSrcDrawableEnabled) {
-                        f.setSrcDrawableEnabled()
-                    }
+            btReplayUZ?.isVisible = false
+            if (isPlaying) {
+                btPlayUZ?.isVisible = false
+                btPauseUZ?.isVisible = true
+            } else {
+                btPlayUZ?.isVisible = true
+                btPauseUZ?.isVisible = false
+            }
+        } else {
+            if (isOnPlayerEnded) {
+                btReplayUZ?.isVisible = true
+                btPlayUZ?.isVisible = false
+                btPauseUZ?.isVisible = false
+
+                btRewUZ?.setSrcDrawableEnabled()
+                btFfwdUZ?.setSrcDrawableDisabled()
+            } else {
+                if (isPlayerControllerShowing) {
+                    updateUIButton(currentMls)
                 }
             }
         }
     }
 
-    //FOR TV
-    fun updateUIFocusChange(view: View, isFocus: Boolean) {
-        when (view) {
-            is UZImageButton -> {
-                UZViewUtils.updateUIFocusChange(
-                    view = view,
-                    isFocus = isFocus,
-                    resHasFocus = R.drawable.background_tv_has_focus_uz,
-                    resNoFocus = R.drawable.background_tv_no_focus_uz
-                )
-                view.clearColorFilter()
+    private fun updateUIButton(currentMls: Long) {
+        if (isPlaying) {
+            btPlayUZ?.isVisible = false
+            btReplayUZ?.isVisible = false
+            btPauseUZ?.isVisible = true
+        } else {
+            btPlayUZ?.isVisible = true
+            btReplayUZ?.isVisible = false
+            btPauseUZ?.isVisible = false
+        }
+
+        btRewUZ?.let { r ->
+            btFfwdUZ?.let { f ->
+                if (currentMls <= 1000L) {
+                    r.setSrcDrawableDisabled()
+                    f.setSrcDrawableEnabled()
+                } else {
+                    r.setSrcDrawableEnabled()
+                    f.setSrcDrawableEnabled()
+                }
             }
-            is Button -> {
-                UZViewUtils.updateUIFocusChange(
-                    view = view,
-                    isFocus = isFocus,
-                    resHasFocus = R.drawable.background_tv_has_focus_uz,
-                    resNoFocus = R.drawable.background_tv_no_focus_uz
-                )
-            }
-            is UZPreviewTimeBar -> {
-                UZViewUtils.updateUIFocusChange(
-                    view = view,
-                    isFocus = isFocus,
-                    resHasFocus = R.drawable.background_tv_has_focus_uz_timebar,
-                    resNoFocus = R.drawable.background_tv_no_focus_uz_timebar
-                )
-            }
+        }
+    }
+
+    private fun updateUIButtonVolume(){
+        if (volume == 0f) {
+            btVolumeUZ?.setSrcDrawableDisabledCanTouch()
+        } else {
+            btVolumeUZ?.setSrcDrawableEnabled()
         }
     }
 
@@ -1345,208 +1420,47 @@ class UZVideoView : RelativeLayout,
     private fun updateUIDependOnLiveStream() {
         if (UZAppUtils.isTablet(context) && UZAppUtils.isTV(context)) {
             //only hide button pip if device is TV
-            UZViewUtils.goneViews(btPipUZ)
+            btPipUZ?.isVisible = false
         }
         onCurrentWindowDynamic?.invoke(isLIVE)
-        log("updateUIDependOnLiveStream isLIVE $isLIVE")
+//        log("updateUIDependOnLiveStream isLIVE $isLIVE")
         if (isLIVE) {
-            UZViewUtils.goneViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btRewUZ, btFfwdUZ)
+            btSpeedUZ?.isVisible = false
+            tvDurationUZ?.isVisible = false
+            tvPositionUZ?.isVisible = false
+            btRewUZ?.isVisible = false
+            btFfwdUZ?.isVisible = false
         } else {
-            UZViewUtils.visibleViews(btSpeedUZ, tvDurationUZ, tvPositionUZ, btFfwdUZ, btRewUZ)
+            btSpeedUZ?.isVisible = true
+            tvDurationUZ?.isVisible = true
+            tvPositionUZ?.isVisible = true
+            btRewUZ?.isVisible = true
+            btFfwdUZ?.isVisible = true
         }
         tvTitleUZ?.text = uzPlayback?.name ?: ""
         if (UZAppUtils.isTV(context)) {
-            UZViewUtils.goneViews(btFullscreenUZ)
+            btFullscreenUZ?.isVisible = false
         }
     }
 
-    private fun updateUIButtonVisibilities() {
-        if (context == null) {
-            return
-        }
-        layoutControls.removeAllViews()
-        if (player == null) {
-            return
-        }
-        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo ?: return
-        for (i in 0 until mappedTrackInfo.rendererCount) {
-            val trackGroups = mappedTrackInfo.getTrackGroups(i)
-            if (trackGroups.length != 0) {
-                val button = Button(context)
-                button.isSoundEffectsEnabled = false
-                val label: Int = when (playerManager?.getPlayer()?.getRendererType(i)) {
-                    C.TRACK_TYPE_AUDIO -> R.string.audio
-                    C.TRACK_TYPE_VIDEO -> R.string.video
-                    C.TRACK_TYPE_TEXT -> R.string.text
-                    else -> continue
-                }
-                button.setText(label)
-                button.tag = i
-                button.setOnClickListener(this)
-                layoutControls.addView(button)
-            }
-        }
-    }
-
-    private fun updateUIEndScreen() {
-        playerView?.let { pv ->
-            if (isOnPlayerEnded) {
-                setVisibilityOfPlayPauseReplay(true)
-                showController()
-                pv.controllerShowTimeoutMs = 0
-                pv.controllerHideOnTouch = false
-            } else {
-                setVisibilityOfPlayPauseReplay(false)
-                pv.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-                setControllerHideOnTouch(isControllerHideOnTouch)
-            }
-        }
-    }
-
-    private fun setVisibilityOfPlayPauseReplay(isShowReplay: Boolean) {
-        if (isShowReplay) {
-            UZViewUtils.goneViews(btPlayUZ, btPauseUZ)
-            UZViewUtils.visibleViews(btReplayUZ)
-            btReplayUZ?.requestFocus()
-        } else {
-            updateUIButtonPlayPauseDependOnIsAutoStart()
-            UZViewUtils.goneViews(btReplayUZ)
-        }
-    }
-
-    var dlg: Dialog? = null
+    private var isShowingTrackSelectionDialog = false
 
     @SuppressLint("InflateParams")
     fun showSettingsDialog() {
-        val builder = AlertDialog.Builder(context)
-        val inflater = LayoutInflater.from(context)
-        if (inflater != null) {
-            builder.setCustomTitle(inflater.inflate(R.layout.view_header_dragview_uz, null))
-        }
-        val actionCount = layoutControls.childCount
-        if (actionCount < 1) {
-            return
-        }
-        val actions = ArrayList<SettingItem>()
-        for (i in 0 until actionCount) {
-            val v = layoutControls.getChildAt(i)
-            if (v is Button) {
-                actions.add(
-                    SettingItem(v.text.toString())
-                )
+        if (!isShowingTrackSelectionDialog
+            && trackSelector != null
+            && trackSelector?.currentMappedTrackInfo != null
+            && TrackSelectionDialog.willHaveContent(trackSelector)
+        ) {
+            isShowingTrackSelectionDialog = true
+            val trackSelectionDialog = TrackSelectionDialog.createForTrackSelector(trackSelector) {
+                isShowingTrackSelectionDialog = false
+            }
+            if (context is AppCompatActivity) {
+                val supportFragmentManager = (context as AppCompatActivity).supportFragmentManager
+                trackSelectionDialog.show(supportFragmentManager, null)
             }
         }
-        if (statsForNerdsView != null) {
-            actions.add(
-                SettingItem(
-                    resources.getString(R.string.stats),
-                    statsForNerdsView.visibility == VISIBLE,
-                    object : OnToggleChangeListener {
-                        override fun onCheckedChanged(isChecked: Boolean): Boolean {
-                            dlg?.dismiss()
-                            if (isChecked) {
-                                UZViewUtils.visibleViews(statsForNerdsView)
-                            } else {
-                                UZViewUtils.goneViews(statsForNerdsView)
-                            }
-                            return true
-                        }
-                    })
-            )
-        }
-        playerManager?.let { pm ->
-            if (pm.isTimeShiftSupport) {
-                actions.add(
-                    SettingItem(
-                        resources.getString(R.string.time_shift),
-                        pm.isTimeShiftOn,
-                        object : OnToggleChangeListener {
-                            override fun onCheckedChanged(isChecked: Boolean): Boolean {
-                                dlg?.dismiss()
-                                val sw = pm.switchTimeShift(isChecked)
-                                if (sw) {
-                                    onTimeShiftChange?.invoke(pm.isTimeShiftOn)
-                                }
-                                return sw
-                            }
-                        })
-                )
-            }
-        }
-        builder.setAdapter(
-            SettingAdapter(
-                context,
-                actions
-            )
-        ) { _: DialogInterface?, which: Int ->
-            if (which < actionCount) {
-                layoutControls.getChildAt(which).performClick()
-            }
-        }
-        dlg = builder.create()
-        dlg?.let {
-            UZViewUtils.showDialog(it)
-        }
-    }
-
-    fun getListTrack(
-        showDialog: Boolean = false,
-        title: String = "Video",
-        rendererIndex: Int
-    ): List<UZItem>? {
-        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
-        mappedTrackInfo?.let {
-            val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
-                UZTrackSelectionView.getDialog(
-                    context = context,
-                    title = title,
-                    trackSelector = playerManager?.trackSelector,
-                    rendererIndex = rendererIndex
-                )
-            dialogPair.second.setShowDisableOption(false)
-            dialogPair.second.setAllowAdaptiveSelections(false)
-            dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
-                override fun onClick() {
-                    dialogPair.first?.cancel()
-                }
-            })
-            if (showDialog) {
-                UZViewUtils.showDialog(dialogPair.first)
-            }
-            return dialogPair.second.uZItemList
-        }
-
-        return null
-    }
-
-    private fun showTrackSelectionDialog(view: View, showDialog: Boolean): List<UZItem>? {
-        val mappedTrackInfo = playerManager?.trackSelector?.currentMappedTrackInfo
-        mappedTrackInfo?.let {
-            if (view is Button) {
-                val title = view.text
-                val rendererIndex = view.getTag() as Int
-                val dialogPair: Pair<AlertDialog, UZTrackSelectionView> =
-                    UZTrackSelectionView.getDialog(
-                        context = context,
-                        title = title,
-                        trackSelector = playerManager?.trackSelector,
-                        rendererIndex = rendererIndex
-                    )
-                dialogPair.second.setShowDisableOption(false)
-                dialogPair.second.setAllowAdaptiveSelections(false)
-                dialogPair.second.setCallback(object : com.uiza.sdk.dialog.hq.Callback {
-                    override fun onClick() {
-                        dialogPair.first?.cancel()
-                    }
-                })
-                if (showDialog) {
-                    UZViewUtils.showDialog(dialogPair.first)
-                }
-                return dialogPair.second.uZItemList
-            }
-        }
-
-        return null
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -1570,11 +1484,7 @@ class UZVideoView : RelativeLayout,
                 handleError(uzException = ErrorUtils.exceptionNoLinkPlay())
                 return
             }
-            initDataSource(
-                linkPlay = linkPlay,
-                urlIMAAd = if (isCalledFromChangeSkin) null else uzPlayback?.urlIMAAd,
-                poster = uzPlayback?.poster
-            )
+            initDataSource()
             onIsInitResult?.invoke(linkPlay)
             initPlayerManager()
         }
@@ -1587,118 +1497,578 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    private fun initDataSource(
-        linkPlay: String,
-        urlIMAAd: String?,
-        poster: String?
-    ) {
-        playerManager = UZPlayerManager.Builder(context)
-            .withPlayUrl(linkPlay)
-            .withIMAAdUrl(urlIMAAd)
-            .build()
-
+    private fun initDataSource() {
         setFirstStateReady(false)
 
+        val poster = uzPlayback?.poster
         timeBarUZ?.let {
             it.setEnabledPreview(!poster.isNullOrEmpty())
             it.setPreviewLoader(object : PreviewLoader {
                 override fun loadPreview(currentPosition: Long, max: Long) {
-                    playerManager?.let { pm ->
-                        pm.setPlayWhenReady(false)
-                        ivThumbnailUZ?.let { iv ->
-                            ImageUtils.loadThumbnail(
-                                imageView = iv,
-                                imageUrl = poster,
-                                currentPosition = currentPosition,
-                            )
-                        }
+                    player?.playWhenReady = false
+                    ivThumbnailUZ?.let { iv ->
+                        ImageUtils.loadThumbnail(
+                            imageView = iv,
+                            imageUrl = poster,
+                            currentPosition = currentPosition,
+                        )
                     }
                 }
             })
         }
-
-        playerManager?.setProgressListener(object : UZProgressListener {
-            override fun onBufferProgress(
-                bufferedPosition: Long,
-                bufferedPercentage: Int,
-                duration: Long
-            ) {
-                onBufferProgress?.invoke(bufferedPosition, bufferedPercentage, duration)
-            }
-
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
-            override fun onAdEnded() {
-                isAdEnded = true
-            }
-
-            override fun onAdProgress(s: Int, duration: Int, percent: Int) {
-                isAdEnded = false
-            }
-
-            override fun onVideoProgress(currentMls: Long, s: Int, duration: Long, percent: Int) {
-                post {
-                    updateUIIbRewIconDependOnProgress(
-                        currentMls = currentMls,
-                        isCalledFromUZTimeBarEvent = false
-                    )
-                }
-                if (isAdEnded == true) {
-                    onVideoProgress?.invoke(currentMls, s, duration, percent)
-                }
-            }
-        })
-        playerManager?.setDebugCallback(object : DebugCallback {
-            override fun onUpdateButtonVisibilities() {
-                updateUIButtonVisibilities()
-            }
-        })
-        playerManager?.setBufferCallback(object : UZBufferListener {
-            override fun onBufferChanged(bufferedDurationUs: Long, playbackSpeed: Float) {
-                statsForNerdsView.setBufferedDurationUs(bufferedDurationUs)
-            }
-        })
     }
 
-    /**
-     * When isLive = true, if not time shift then hide timebar
-     */
-    private fun updateTimeBarWithTimeShiftStatus() {
-        playerManager?.let { pm ->
-            if (pm.isTimeShiftSupport) {
-                if (pm.isTimeShiftOn) {
-                    UZViewUtils.visibleViews(timeBarUZ)
-                } else {
-                    UZViewUtils.goneViews(timeBarUZ)
+    private fun addListener() {
+        player?.addListener(object : Player.Listener {
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                super.onVideoSizeChanged(videoSize)
+//                log("onVideoSizeChanged ${videoSize.width} ${videoSize.height}")
+                onVideoSizeChanged?.invoke(videoSize)
+            }
+
+            override fun onSurfaceSizeChanged(width: Int, height: Int) {
+                super.onSurfaceSizeChanged(width, height)
+//                log("onSurfaceSizeChanged $width $height")
+                onSurfaceSizeChanged?.invoke(width, height)
+            }
+
+            override fun onRenderedFirstFrame() {
+                super.onRenderedFirstFrame()
+//                log("onRenderedFirstFrame")
+                onRenderedFirstFrame?.invoke()
+            }
+
+            override fun onAudioSessionIdChanged(audioSessionId: Int) {
+                super.onAudioSessionIdChanged(audioSessionId)
+//                log("onAudioSessionIdChanged audioSessionId $audioSessionId")
+                onAudioSessionIdChanged?.invoke(audioSessionId)
+            }
+
+            override fun onAudioAttributesChanged(audioAttributes: AudioAttributes) {
+                super.onAudioAttributesChanged(audioAttributes)
+//                log("onAudioAttributesChanged audioAttributes ${audioAttributes.allowedCapturePolicy}")
+                onAudioAttributesChanged?.invoke(audioAttributes)
+            }
+
+            override fun onVolumeChanged(volume: Float) {
+                super.onVolumeChanged(volume)
+//                log("onVolumeChanged volume $volume")
+                updateUIButtonVolume()
+                onVolumeChanged?.invoke(volume)
+            }
+
+            override fun onSkipSilenceEnabledChanged(skipSilenceEnabled: Boolean) {
+                super.onSkipSilenceEnabledChanged(skipSilenceEnabled)
+//                log("onSkipSilenceEnabledChanged $skipSilenceEnabled")
+                onSkipSilenceEnabledChanged?.invoke(skipSilenceEnabled)
+            }
+
+            override fun onCues(cues: MutableList<Cue>) {
+                super.onCues(cues)
+                onCues?.invoke(cues)
+            }
+
+            override fun onMetadata(metadata: com.google.android.exoplayer2.metadata.Metadata) {
+                super.onMetadata(metadata)
+//                log("onMetadata ${metadata.length()}")
+                onMetadata?.invoke(metadata)
+            }
+
+            override fun onDeviceInfoChanged(deviceInfo: DeviceInfo) {
+                super.onDeviceInfoChanged(deviceInfo)
+//                log("onDeviceInfoChanged ${deviceInfo.minVolume} ${deviceInfo.maxVolume}")
+                onDeviceInfoChanged?.invoke(deviceInfo)
+            }
+
+            override fun onDeviceVolumeChanged(volume: Int, muted: Boolean) {
+                super.onDeviceVolumeChanged(volume, muted)
+//                log("onDeviceVolumeChanged $volume, $muted")
+                onDeviceVolumeChanged?.invoke(volume, muted)
+            }
+
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                super.onTimelineChanged(timeline, reason)
+//                log("onTimelineChanged ${timeline.periodCount}")
+                onTimelineChanged?.invoke(timeline, reason)
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+//                log("onMediaItemTransition ${mediaItem?.mediaId}")
+                onMediaItemTransition?.invoke(mediaItem, reason)
+            }
+
+            override fun onTracksChanged(
+                trackGroups: TrackGroupArray,
+                trackSelections: TrackSelectionArray
+            ) {
+                super.onTracksChanged(trackGroups, trackSelections)
+//                log("onTracksChanged")
+                if (trackGroups !== lastSeenTrackGroupArray) {
+                    val mappedTrackInfo = trackSelector?.currentMappedTrackInfo
+                    if (mappedTrackInfo != null) {
+                        if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO) == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS
+                        ) {
+                            throw Exception("Media includes video tracks, but none are playable by this device")
+                        }
+                        if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_AUDIO) == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS
+                        ) {
+                            throw Exception("Media includes audio tracks, but none are playable by this device")
+                        }
+                    }
+                    lastSeenTrackGroupArray = trackGroups
+                }
+
+                onTracksChanged?.invoke(trackGroups, trackSelections)
+            }
+
+//            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
+//                super.onMediaMetadataChanged(mediaMetadata)
+//                log("onMediaMetadataChanged")
+//            }
+
+//            override fun onPlaylistMetadataChanged(mediaMetadata: MediaMetadata) {
+//                super.onPlaylistMetadataChanged(mediaMetadata)
+//                log("onPlaylistMetadataChanged")
+//            }
+
+            override fun onIsLoadingChanged(isLoading: Boolean) {
+                super.onIsLoadingChanged(isLoading)
+//                log("onIsLoadingChanged isLoading $isLoading")
+                onIsLoadingChanged?.invoke(isLoading)
+            }
+
+            override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
+                super.onAvailableCommandsChanged(availableCommands)
+//                log("onAvailableCommandsChanged")
+                onAvailableCommandsChanged?.invoke(availableCommands)
+            }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                super.onPlaybackStateChanged(playbackState)
+
+                when (playbackState) {
+                    Player.STATE_BUFFERING -> {
+//                        log("onPlaybackStateChanged STATE_BUFFERING")
+                        isOnPlayerEnded = false
+                        showProgress()
+                    }
+                    Player.STATE_IDLE -> {
+//                        log("onPlaybackStateChanged STATE_IDLE")
+                        isOnPlayerEnded = false
+                        showProgress()
+                    }
+                    Player.STATE_ENDED -> {
+//                        log("onPlaybackStateChanged STATE_ENDED")
+                        isOnPlayerEnded = true
+                        onPlayerEnded()
+                    }
+                    Player.STATE_READY -> {
+                        isOnPlayerEnded = false
+                        hideProgress()
+                        updateTvDuration()
+                        if (player?.playWhenReady == true) {
+                            timeBarUZ?.hidePreview()
+                        }
+                        if (context is Activity) {
+                            (context as Activity).setResult(Activity.RESULT_OK)
+                        }
+
+                        if (isPlayingAd() == true) {
+                            //do nothing
+                        } else {
+                            if (!isFirstStateReady) {
+                                setFirstStateReady(true)
+                                updateUIDependOnLiveStream()
+                            }
+                        }
+                    }
+                }
+                onPlayerStateChanged?.invoke(playbackState)
+            }
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                super.onPlayWhenReadyChanged(playWhenReady, reason)
+//                log("onPlayWhenReadyChanged playWhenReady $playWhenReady")
+                onPlayWhenReadyChanged?.invoke(playWhenReady, reason)
+            }
+
+//            override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
+//                super.onPlaybackSuppressionReasonChanged(playbackSuppressionReason)
+//                log("onPlaybackSuppressionReasonChanged playbackSuppressionReason $playbackSuppressionReason")
+//            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+//                log("loitpp onIsPlayingChanged isPlaying $isPlaying")
+                onIsPlayingChanged?.invoke(isPlaying)
+            }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                super.onRepeatModeChanged(repeatMode)
+//                log("onRepeatModeChanged repeatMode $repeatMode")
+                onRepeatModeChanged?.invoke(repeatMode)
+            }
+
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+                super.onShuffleModeEnabledChanged(shuffleModeEnabled)
+//                log("onShuffleModeEnabledChanged shuffleModeEnabled $shuffleModeEnabled")
+                onShuffleModeEnabledChanged?.invoke(shuffleModeEnabled)
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+//                log("onPlayerError error $error")
+                hideProgress()
+                handleError(ErrorUtils.exceptionPlayback())
+
+                if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
+                    player?.seekToDefaultPosition()
+                    player?.prepare()
+                }
+
+                onPlayerError?.invoke(error)
+            }
+
+            override fun onPlayerErrorChanged(error: PlaybackException?) {
+                super.onPlayerErrorChanged(error)
+//                log("onPlayerErrorChanged error $error")
+                onPlayerErrorChanged?.invoke(error)
+            }
+
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+//                log("onPositionDiscontinuity oldPosition ${oldPosition.positionMs}, newPosition ${newPosition.positionMs}, reason $reason")
+                onPositionDiscontinuity?.invoke(oldPosition, newPosition, reason)
+            }
+
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+                super.onPlaybackParametersChanged(playbackParameters)
+//                log("onPlaybackParametersChanged playbackParameters ${playbackParameters.speed}")
+                onPlaybackParametersChanged?.invoke(playbackParameters)
+            }
+
+            override fun onSeekBackIncrementChanged(seekBackIncrementMs: Long) {
+                super.onSeekBackIncrementChanged(seekBackIncrementMs)
+//                log("onSeekBackIncrementChanged seekBackIncrementMs $seekBackIncrementMs")
+                onSeekBackIncrementChanged?.invoke(seekBackIncrementMs)
+            }
+
+            override fun onSeekForwardIncrementChanged(seekForwardIncrementMs: Long) {
+                super.onSeekForwardIncrementChanged(seekForwardIncrementMs)
+//                log("onSeekForwardIncrementChanged seekForwardIncrementMs $seekForwardIncrementMs")
+                onSeekForwardIncrementChanged?.invoke(seekForwardIncrementMs)
+            }
+
+            override fun onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs: Int) {
+                super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs)
+//                log("onMaxSeekToPreviousPositionChanged maxSeekToPreviousPositionMs $maxSeekToPreviousPositionMs")
+                onMaxSeekToPreviousPositionChanged?.invoke(maxSeekToPreviousPositionMs)
+            }
+
+//            override fun onEvents(player: Player, events: Player.Events) {
+//                super.onEvents(player, events)
+//                log("onEvents")
+//            }
+
+        })
+        player?.addAnalyticsListener(object : AnalyticsListener {
+            override fun onShuffleModeChanged(
+                eventTime: AnalyticsListener.EventTime,
+                shuffleModeEnabled: Boolean
+            ) {
+                super.onShuffleModeChanged(eventTime, shuffleModeEnabled)
+                onShuffleModeChanged?.invoke(eventTime, shuffleModeEnabled)
+            }
+
+            override fun onLoadStarted(
+                eventTime: AnalyticsListener.EventTime,
+                loadEventInfo: LoadEventInfo,
+                mediaLoadData: MediaLoadData
+            ) {
+                super.onLoadStarted(eventTime, loadEventInfo, mediaLoadData)
+                onLoadStarted?.invoke(eventTime, loadEventInfo, mediaLoadData)
+            }
+
+            override fun onLoadCompleted(
+                eventTime: AnalyticsListener.EventTime,
+                loadEventInfo: LoadEventInfo,
+                mediaLoadData: MediaLoadData
+            ) {
+                super.onLoadCompleted(eventTime, loadEventInfo, mediaLoadData)
+                onLoadCompleted?.invoke(eventTime, loadEventInfo, mediaLoadData)
+            }
+
+            override fun onLoadCanceled(
+                eventTime: AnalyticsListener.EventTime,
+                loadEventInfo: LoadEventInfo,
+                mediaLoadData: MediaLoadData
+            ) {
+                super.onLoadCanceled(eventTime, loadEventInfo, mediaLoadData)
+                onLoadCanceled?.invoke(eventTime, loadEventInfo, mediaLoadData)
+            }
+
+            override fun onLoadError(
+                eventTime: AnalyticsListener.EventTime,
+                loadEventInfo: LoadEventInfo,
+                mediaLoadData: MediaLoadData,
+                error: IOException,
+                wasCanceled: Boolean
+            ) {
+                super.onLoadError(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
+                onLoadError?.invoke(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
+            }
+
+            override fun onDownstreamFormatChanged(
+                eventTime: AnalyticsListener.EventTime,
+                mediaLoadData: MediaLoadData
+            ) {
+                super.onDownstreamFormatChanged(eventTime, mediaLoadData)
+                onDownstreamFormatChanged?.invoke(eventTime, mediaLoadData)
+            }
+
+            override fun onUpstreamDiscarded(
+                eventTime: AnalyticsListener.EventTime,
+                mediaLoadData: MediaLoadData
+            ) {
+                super.onUpstreamDiscarded(eventTime, mediaLoadData)
+                onUpstreamDiscarded?.invoke(eventTime, mediaLoadData)
+            }
+
+            override fun onBandwidthEstimate(
+                eventTime: AnalyticsListener.EventTime,
+                totalLoadTimeMs: Int,
+                totalBytesLoaded: Long,
+                bitrateEstimate: Long
+            ) {
+                super.onBandwidthEstimate(
+                    eventTime,
+                    totalLoadTimeMs,
+                    totalBytesLoaded,
+                    bitrateEstimate
+                )
+                onBandwidthEstimate?.invoke(
+                    eventTime,
+                    totalLoadTimeMs,
+                    totalBytesLoaded,
+                    bitrateEstimate
+                )
+            }
+
+            override fun onAudioEnabled(
+                eventTime: AnalyticsListener.EventTime,
+                decoderCounters: DecoderCounters
+            ) {
+                super.onAudioEnabled(eventTime, decoderCounters)
+                onAudioEnabled?.invoke(eventTime, decoderCounters)
+            }
+
+            override fun onAudioDecoderInitialized(
+                eventTime: AnalyticsListener.EventTime,
+                decoderName: String,
+                initializedTimestampMs: Long,
+                initializationDurationMs: Long
+            ) {
+                super.onAudioDecoderInitialized(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
+                onAudioDecoderInitialized?.invoke(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
+            }
+
+            override fun onAudioInputFormatChanged(
+                eventTime: AnalyticsListener.EventTime,
+                format: Format,
+                decoderReuseEvaluation: DecoderReuseEvaluation?
+            ) {
+                super.onAudioInputFormatChanged(eventTime, format, decoderReuseEvaluation)
+                onAudioInputFormatChanged?.invoke(eventTime, format, decoderReuseEvaluation)
+            }
+
+            override fun onAudioPositionAdvancing(
+                eventTime: AnalyticsListener.EventTime,
+                playoutStartSystemTimeMs: Long
+            ) {
+                super.onAudioPositionAdvancing(eventTime, playoutStartSystemTimeMs)
+                onAudioPositionAdvancing?.invoke(eventTime, playoutStartSystemTimeMs)
+            }
+
+            override fun onAudioUnderrun(
+                eventTime: AnalyticsListener.EventTime,
+                bufferSize: Int,
+                bufferSizeMs: Long,
+                elapsedSinceLastFeedMs: Long
+            ) {
+                super.onAudioUnderrun(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
+                onAudioUnderrun?.invoke(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
+            }
+
+            override fun onAudioDecoderReleased(
+                eventTime: AnalyticsListener.EventTime,
+                decoderName: String
+            ) {
+                super.onAudioDecoderReleased(eventTime, decoderName)
+                onAudioDecoderReleased?.invoke(eventTime, decoderName)
+            }
+
+            override fun onAudioDisabled(
+                eventTime: AnalyticsListener.EventTime,
+                decoderCounters: DecoderCounters
+            ) {
+                super.onAudioDisabled(eventTime, decoderCounters)
+                onAudioDisabled?.invoke(eventTime, decoderCounters)
+            }
+
+            override fun onAudioSinkError(
+                eventTime: AnalyticsListener.EventTime,
+                audioSinkError: java.lang.Exception
+            ) {
+                super.onAudioSinkError(eventTime, audioSinkError)
+                onAudioSinkError?.invoke(eventTime, audioSinkError)
+            }
+
+            override fun onAudioCodecError(
+                eventTime: AnalyticsListener.EventTime,
+                audioCodecError: java.lang.Exception
+            ) {
+                super.onAudioCodecError(eventTime, audioCodecError)
+                onAudioCodecError?.invoke(eventTime, audioCodecError)
+            }
+
+            override fun onVideoEnabled(
+                eventTime: AnalyticsListener.EventTime,
+                decoderCounters: DecoderCounters
+            ) {
+                super.onVideoEnabled(eventTime, decoderCounters)
+                onVideoEnabled?.invoke(eventTime, decoderCounters)
+            }
+
+            override fun onVideoDecoderInitialized(
+                eventTime: AnalyticsListener.EventTime,
+                decoderName: String,
+                initializedTimestampMs: Long,
+                initializationDurationMs: Long
+            ) {
+                super.onVideoDecoderInitialized(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
+                onVideoDecoderInitialized?.invoke(
+                    eventTime,
+                    decoderName,
+                    initializedTimestampMs,
+                    initializationDurationMs
+                )
+            }
+
+            override fun onVideoInputFormatChanged(
+                eventTime: AnalyticsListener.EventTime,
+                format: Format,
+                decoderReuseEvaluation: DecoderReuseEvaluation?
+            ) {
+                super.onVideoInputFormatChanged(eventTime, format, decoderReuseEvaluation)
+                onVideoInputFormatChanged?.invoke(eventTime, format, decoderReuseEvaluation)
+            }
+
+            override fun onDroppedVideoFrames(
+                eventTime: AnalyticsListener.EventTime,
+                droppedFrames: Int,
+                elapsedMs: Long
+            ) {
+                super.onDroppedVideoFrames(eventTime, droppedFrames, elapsedMs)
+                onDroppedVideoFrames?.invoke(eventTime, droppedFrames, elapsedMs)
+            }
+
+            override fun onVideoDecoderReleased(
+                eventTime: AnalyticsListener.EventTime,
+                decoderName: String
+            ) {
+                super.onVideoDecoderReleased(eventTime, decoderName)
+                onVideoDecoderReleased?.invoke(eventTime, decoderName)
+            }
+
+            override fun onVideoDisabled(
+                eventTime: AnalyticsListener.EventTime,
+                decoderCounters: DecoderCounters
+            ) {
+                super.onVideoDisabled(eventTime, decoderCounters)
+                onVideoDisabled?.invoke(eventTime, decoderCounters)
+            }
+
+            override fun onVideoFrameProcessingOffset(
+                eventTime: AnalyticsListener.EventTime,
+                totalProcessingOffsetUs: Long,
+                frameCount: Int
+            ) {
+                super.onVideoFrameProcessingOffset(eventTime, totalProcessingOffsetUs, frameCount)
+                onVideoFrameProcessingOffset?.invoke(eventTime, totalProcessingOffsetUs, frameCount)
+            }
+
+            override fun onPlayerReleased(eventTime: AnalyticsListener.EventTime) {
+                super.onPlayerReleased(eventTime)
+                onPlayerReleased?.invoke(eventTime)
+            }
+        })
+        initProgressChange()
+    }
+
+    private fun initProgressChange() {
+        fun observable(): Observable<out Long> {
+            return Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
+        }
+
+        fun observer(): DisposableObserver<Long> {
+            return object : DisposableObserver<Long>() {
+                override fun onNext(value: Long) {
+                    player?.let { p ->
+                        if (p.duration > 0) {
+//                            log("initProgressChange ${p.currentPosition} ${p.duration} isPlayingAd: ${isPlayingAd()}")
+                            updateUIIbRewIconDependOnProgress(
+                                currentMls = p.currentPosition,
+                                isCalledFromUZTimeBarEvent = false
+                            )
+                            onProgressChange?.invoke(p.currentPosition, p.duration, isPlayingAd())
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    e.printStackTrace()
+                }
+
+                override fun onComplete() {
                 }
             }
         }
+        compositeDisposable.add(
+            observable()
+                .subscribeOn(Schedulers.io()) // Be notified on the main thread
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(observer())
+        )
     }
 
     private fun handleNetworkChange(isConnected: Boolean) {
         if (isConnected) {
-            if (playerManager?.exoPlaybackException == null) {
-                hideController()
-            } else {
-                retry()
-            }
+            hideController()
+            retry()
         } else {
             notifyError(ErrorUtils.exceptionNoConnection())
         }
         onNetworkChange?.invoke(isConnected)
-    }
-
-    // ===== Stats For Nerds =====
-    private fun initStatsForNerds() {
-        player?.addAnalyticsListener(statsForNerdsView)
-    }
-
-    private fun updateLiveStreamLatency(latency: Long) {
-        statsForNerdsView.showTextLiveStreamLatency()
-        statsForNerdsView.setTextLiveStreamLatency(StringUtils.groupingSeparatorLong(latency))
-    }
-
-    private fun hideTextLiveStreamLatency() {
-        statsForNerdsView.hideTextLiveStreamLatency()
     }
 
     override fun onOrientationChange(orientation: Int) {
@@ -1763,7 +2133,7 @@ class UZVideoView : RelativeLayout,
     }
 
     fun setUseUZDragView(useUZDragView: Boolean) {
-        playerView?.setUseUZDragView(useUZDragView)
+        uzPlayerView?.setUseUZDragView(useUZDragView)
     }
 
     fun isPlayerControllerAlwayVisible(): Boolean {
@@ -1771,8 +2141,8 @@ class UZVideoView : RelativeLayout,
     }
 
     fun retry() {
-        player?.retry()
-        playerManager?.setPlayWhenReady(true)
+        player?.prepare()
+        player?.playWhenReady = true
     }
 
     fun isEnableDoubleTapToSeek(): Boolean {
@@ -1802,5 +2172,176 @@ class UZVideoView : RelativeLayout,
 
     fun isInPipMode(): Boolean {
         return isInPipMode
+    }
+
+    private class PlayerErrorMessageProvider(val context: Context) :
+        ErrorMessageProvider<PlaybackException> {
+        override fun getErrorMessage(e: PlaybackException): Pair<Int, String> {
+            var errorString: String = context.getString(R.string.error_generic)
+            val cause = e.cause
+            if (cause is DecoderInitializationException) {
+                // Special case for decoder initialization failures.
+                if (cause.codecInfo == null) {
+                    when {
+                        cause.cause is DecoderQueryException -> {
+                            errorString = context.getString(R.string.error_querying_decoders)
+                        }
+                        cause.secureDecoderRequired -> {
+                            errorString = context.getString(
+                                R.string.error_no_secure_decoder,
+                                cause.mimeType
+                            )
+                        }
+                        else -> {
+                            errorString = context.getString(
+                                R.string.error_no_decoder,
+                                cause.mimeType
+                            )
+                        }
+                    }
+                } else {
+                    errorString = context.getString(
+                        R.string.error_instantiating_decoder,
+                        cause.codecInfo?.name
+                    )
+                }
+            }
+            return Pair.create(0, errorString)
+        }
+    }
+
+    private fun clearStartPosition() {
+        startAutoPlay = true
+        startWindow = C.INDEX_UNSET
+        startPosition = C.TIME_UNSET
+    }
+
+    private fun initializePlayer(): Boolean {
+        dataSourceFactory?.let { dtf ->
+            mediaItems = createMediaItems()
+            if (mediaItems.isNullOrEmpty()) {
+                return false
+            }
+            if (player == null) {
+                val preferExtensionDecoders = false
+                val renderersFactory =
+                    DemoUtil.buildRenderersFactory(context, preferExtensionDecoders)
+                val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(dtf)
+                    .setAdsLoaderProvider { adsConfiguration: AdsConfiguration? ->
+                        adsConfiguration?.let {
+                            this.getAdsLoader(it)
+                        }
+                    }
+                    .setAdViewProvider(uzPlayerView)
+                trackSelector = DefaultTrackSelector(context)
+                trackSelectorParameters?.let {
+                    trackSelector?.parameters = it
+                }
+                lastSeenTrackGroupArray = null
+                trackSelector?.let {
+                    player = SimpleExoPlayer.Builder(context, renderersFactory)
+                        .setMediaSourceFactory(mediaSourceFactory)
+                        .setTrackSelector(it)
+                        .build()
+                }
+
+                player?.let {
+                    it.addAnalyticsListener(EventLogger(trackSelector))
+                    it.setAudioAttributes(AudioAttributes.DEFAULT, true)
+                    it.playWhenReady = startAutoPlay
+                }
+
+                uzPlayerView?.player = player
+            }
+
+            val haveStartPosition = startWindow != C.INDEX_UNSET
+            if (haveStartPosition) {
+                player?.seekTo(startWindow, startPosition)
+            }
+            mediaItems?.let {
+//                log("initializePlayer haveStartPosition $haveStartPosition")
+                player?.setMediaItems(it, !haveStartPosition)
+            }
+            player?.prepare()
+            addListener()
+            return true
+        }
+        return false
+    }
+
+    private fun createMediaItems(): List<MediaItem> {
+        val mediaItems = ArrayList<MediaItem>()
+        if (uzPlayback == null) {
+            return mediaItems
+        }
+        uzPlayback?.let { uzp ->
+            val builder = Builder()
+            builder
+                .setUri(Uri.parse(uzp.linkPlay))
+                .setAdTagUri(uzp.urlIMAAd)
+            mediaItems.add(builder.build())
+
+            var hasAds = false
+            for (i in mediaItems.indices) {
+                val mediaItem = mediaItems[i]
+                if (!Util.checkCleartextTrafficPermitted(mediaItem)) {
+                    throw Exception("Cleartext HTTP traffic not permitted. See https://exoplayer.dev/issues/cleartext-not-permitted")
+                }
+                if (context is Activity) {
+                    if (Util.maybeRequestReadExternalStoragePermission(
+                            context as Activity,
+                            mediaItem
+                        )
+                    ) {
+                        return emptyList()
+                    }
+                }
+
+                val drmConfiguration =
+                    Assertions.checkNotNull(mediaItem.playbackProperties).drmConfiguration
+                if (drmConfiguration != null) {
+                    if (Util.SDK_INT < 18) {
+                        throw Exception("DRM content not supported on API levels below 18")
+                    } else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.uuid)) {
+                        throw  Exception("This device does not support the required DRM scheme")
+                    }
+                }
+                hasAds = hasAds or (mediaItem.playbackProperties?.adsConfiguration != null)
+            }
+            if (!hasAds) {
+                releaseAdsLoader()
+            }
+        }
+        return mediaItems
+    }
+
+    private fun releaseAdsLoader() {
+        if (adsLoader != null) {
+            adsLoader?.release()
+            adsLoader = null
+            uzPlayerView?.overlayFrameLayout?.removeAllViews()
+        }
+    }
+
+    private fun getAdsLoader(adsConfiguration: AdsConfiguration): AdsLoader? {
+        // The ads loader is reused for multiple playbacks, so that ad playback can resume.
+        log("getAdsLoader adTagUri ${adsConfiguration.adTagUri}, adsId ${adsConfiguration.adsId}")
+        if (adsLoader == null) {
+            adsLoader = ImaAdsLoader.Builder(context).build()
+        }
+        adsLoader?.setPlayer(player)
+        return adsLoader
+    }
+
+    fun getTrackSelector(): DefaultTrackSelector? {
+        return this.trackSelector
+    }
+
+    fun isControllerHideOnTouch(): Boolean? {
+        return uzPlayerView?.controllerHideOnTouch
+    }
+
+    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        uzPlayerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 }

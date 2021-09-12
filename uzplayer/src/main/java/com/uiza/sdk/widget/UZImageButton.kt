@@ -20,8 +20,6 @@ class UZImageButton : AppCompatImageButton {
     private var screenWPortrait = 0
     private var screenWLandscape = 0
     private var isUseDefault = false
-    var isSetSrcDrawableEnabled = false
-        private set
     private var ratioLand = 7
     private var ratioPort = 5
     var size = 0
@@ -51,7 +49,6 @@ class UZImageButton : AppCompatImageButton {
         }
         clearColorFilter()
         invalidate()
-        isSetSrcDrawableEnabled = true
     }
 
     fun setSrcDrawableDisabled() {
@@ -64,7 +61,6 @@ class UZImageButton : AppCompatImageButton {
             clearColorFilter()
         }
         invalidate()
-        isSetSrcDrawableEnabled = false
     }
 
     fun setSrcDrawableDisabledCanTouch() {
@@ -77,7 +73,6 @@ class UZImageButton : AppCompatImageButton {
             clearColorFilter()
         }
         invalidate()
-        isSetSrcDrawableEnabled = false
     }
 
     private fun initSizeScreenW(attrs: AttributeSet?, defStyleAttr: Int) {
