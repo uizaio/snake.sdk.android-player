@@ -47,9 +47,6 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAutoStart = false//default is true
             uzVideoView.setAutoReplay(false)//default is false
-            //TODO test
-//            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
-            uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
             uzVideoView.setShowLayoutDebug(false)
 
@@ -78,9 +75,16 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
-            uzVideoView.controllerShowTimeoutMs = 10_000 //10s
-            uzVideoView.setDefaultSeekValue(15_000)//15s
             uzVideoView.setUseController(true)
+            uzVideoView.setDefaultSeekValue(15_000)//15s
+            uzVideoView.setControllerHideOnTouch(true)
+
+            val isAlwaysVisible = false
+            if (isAlwaysVisible) {
+                uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
+            } else {
+                uzVideoView.controllerShowTimeoutMs = 10_000 //10s
+            }
         }
         uzVideoView.onIsInitResult = { linkPlay ->
             tvOnIsInitResult.text = "onIsInitResult linkPlay $linkPlay"

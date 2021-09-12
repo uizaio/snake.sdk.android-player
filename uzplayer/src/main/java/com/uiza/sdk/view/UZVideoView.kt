@@ -628,6 +628,9 @@ class UZVideoView : RelativeLayout,
         setControllerHideOnTouch(false)
         controllerShowTimeoutMs = 0
         isPlayerControllerAlwayVisible = true
+        if (!isPlayerControllerShowing) {
+            showController()
+        }
     }
 
     private fun handleError(uzException: UZException?) {
@@ -1618,7 +1621,6 @@ class UZVideoView : RelativeLayout,
                         onPlayerEnded()
                     }
                     Player.STATE_READY -> {
-//                        log("onPlaybackStateChanged STATE_READY")
                         isOnPlayerEnded = false
                         hideProgress()
                         updateTvDuration()
@@ -1629,9 +1631,13 @@ class UZVideoView : RelativeLayout,
                             (context as Activity).setResult(Activity.RESULT_OK)
                         }
 
-                        if (!isFirstStateReady) {
-                            setFirstStateReady(true)
-                            updateUIDependOnLiveStream()
+                        if (isPlayingAd() == true) {
+                            //do nothing
+                        } else {
+                            if (!isFirstStateReady) {
+                                setFirstStateReady(true)
+                                updateUIDependOnLiveStream()
+                            }
                         }
                     }
                 }
