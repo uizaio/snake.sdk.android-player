@@ -1290,20 +1290,27 @@ class UZVideoView : RelativeLayout,
             }
         }
         if (isLIVE) {
-            return
-        }
-        if (isOnPlayerEnded) {
-            btReplayUZ?.isVisible = true
-            btPlayUZ?.isVisible = false
-            btPauseUZ?.isVisible = false
-
-            btRewUZ?.setSrcDrawableEnabled()
-            btFfwdUZ?.setSrcDrawableDisabled()
-        } else {
-            if (!isPlayerControllerShowing) {
-                return
+            btReplayUZ?.isVisible = false
+            if (isPlaying) {
+                btPlayUZ?.isVisible = false
+                btPauseUZ?.isVisible = true
+            } else {
+                btPlayUZ?.isVisible = true
+                btPauseUZ?.isVisible = false
             }
-            updateUIButton(currentMls)
+        } else {
+            if (isOnPlayerEnded) {
+                btReplayUZ?.isVisible = true
+                btPlayUZ?.isVisible = false
+                btPauseUZ?.isVisible = false
+
+                btRewUZ?.setSrcDrawableEnabled()
+                btFfwdUZ?.setSrcDrawableDisabled()
+            } else {
+                if (isPlayerControllerShowing) {
+                    updateUIButton(currentMls)
+                }
+            }
         }
     }
 
