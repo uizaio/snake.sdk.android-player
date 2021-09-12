@@ -122,7 +122,6 @@ class UZVideoView : RelativeLayout,
     private var isAutoReplay = false
     private var isFreeSize = false
     private var isPlayerControllerAlwayVisible = false
-    private var isControllerHideOnTouch = true
     private var timestampOnStartPreviewTimeBar = 0L
     private var isOnPreviewTimeBar = false
     private var maxSeekLastDurationTimeBar = 0L
@@ -1004,9 +1003,10 @@ class UZVideoView : RelativeLayout,
         }
     }
 
-    var controllerShowTimeoutMs: Int
+    var controllerShowTimeoutMs: Int = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
         get() = uzPlayerView?.controllerShowTimeoutMs ?: -1
         set(controllerShowTimeoutMs) {
+            field = controllerShowTimeoutMs
             uzPlayerView?.controllerShowTimeoutMs = controllerShowTimeoutMs
         }
 
@@ -1023,14 +1023,6 @@ class UZVideoView : RelativeLayout,
         }
         uzPlayerView?.hideController()
     }
-
-    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
-        this.isControllerHideOnTouch = controllerHideOnTouch
-        uzPlayerView?.controllerHideOnTouch = controllerHideOnTouch
-    }
-
-    val controllerHideOnTouch: Boolean
-        get() = uzPlayerView?.controllerHideOnTouch ?: false
 
     fun isUseController(): Boolean {
         return uzPlayerView?.useController ?: false
@@ -1050,6 +1042,7 @@ class UZVideoView : RelativeLayout,
             replay()
         }
         hideProgress()
+        showController()
     }
 
     fun replay() {
@@ -1306,20 +1299,11 @@ class UZVideoView : RelativeLayout,
 
             btRewUZ?.setSrcDrawableEnabled()
             btFfwdUZ?.setSrcDrawableDisabled()
-
-            showController()
-            uzPlayerView?.let {
-                it.controllerShowTimeoutMs = 0
-                it.controllerHideOnTouch = false
-            }
         } else {
             if (!isPlayerControllerShowing) {
                 return
             }
             updateUIButton(currentMls)
-
-            uzPlayerView?.controllerShowTimeoutMs = DEFAULT_VALUE_CONTROLLER_TIMEOUT_MLS
-            setControllerHideOnTouch(isControllerHideOnTouch)
         }
     }
 
@@ -2295,5 +2279,13 @@ class UZVideoView : RelativeLayout,
 
     fun getTrackSelector(): DefaultTrackSelector? {
         return this.trackSelector
+    }
+
+    fun isControllerHideOnTouch(): Boolean? {
+        return uzPlayerView?.controllerHideOnTouch
+    }
+
+    fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
+        uzPlayerView?.controllerHideOnTouch = controllerHideOnTouch
     }
 }

@@ -47,6 +47,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAutoStart = false//default is true
             uzVideoView.setAutoReplay(false)//default is false
+            //TODO test
 //            uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             uzVideoView.setControllerHideOnTouch(true)
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
@@ -62,7 +63,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("isPlayingAd ${uzVideoView.isPlayingAd()}")
             log("isPlaying ${uzVideoView.isPlaying}")
             log("isPlayerControllerShowing ${uzVideoView.isPlayerControllerShowing}")
-            log("controllerHideOnTouch ${uzVideoView.controllerHideOnTouch}")
+            log("isControllerHideOnTouch ${uzVideoView.isControllerHideOnTouch()}")
             log("isUseController ${uzVideoView.isUseController()}")
             log("isLIVE ${uzVideoView.isLIVE}")
             log("isVOD ${uzVideoView.isVOD}")
