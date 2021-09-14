@@ -1,18 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/black"
+    tools:ignore="HardcodedText">
 
     <com.uiza.sdk.view.UZVideoView
         android:id="@+id/uzVideoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvLinkPlay"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:padding="@dimen/margin_padding_medium"
-        android:textColor="@color/white" />
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLinkPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_padding_medium"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btFit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fit" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btFixedWidth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fixed width" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btFixedHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fixed height" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fill" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btZoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zoom" />
+    </LinearLayout>
 </RelativeLayout>

@@ -108,5 +108,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/w_50"
             android:text="Display Basic" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnGithub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/w_50"
+            android:text="Github" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
