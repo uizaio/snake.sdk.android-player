@@ -618,6 +618,35 @@
                     android:layout_height="wrap_content"
                     android:text="Retry Player if Error" />
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btFit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fit" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btFixedWidth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fixed width" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btFixedHeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fixed height" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btFill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fill" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btZoom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Zoom" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>

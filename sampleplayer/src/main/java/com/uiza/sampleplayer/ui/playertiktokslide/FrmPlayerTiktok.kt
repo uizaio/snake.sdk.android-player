@@ -66,6 +66,22 @@ class FrmPlayerTiktok : Fragment() {
             }
             onPlay(data?.linkPlay)
         }
+
+        btFit.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
+        }
+        btFixedWidth.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        }
+        btFixedHeight.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
+        }
+        btFill.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
+        }
+        btZoom.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
+        }
     }
 
     private fun onPlay(link: String?) {

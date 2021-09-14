@@ -6,11 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
-import kotlinx.android.synthetic.main.activity_player_advanced.*
 import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
 import java.util.*
 
@@ -35,21 +33,6 @@ class PlayerTiktokSlideActivity : AppCompatActivity() {
             } else {
                 viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
             }
-        }
-        btFit.setOnClickListener {
-            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
-        }
-        btFixedWidth.setOnClickListener {
-            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
-        }
-        btFixedHeight.setOnClickListener {
-            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
-        }
-        btFill.setOnClickListener {
-            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
-        }
-        btZoom.setOnClickListener {
-            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
         }
     }
 

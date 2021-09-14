@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
@@ -474,6 +475,21 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         }
         btRetry.setOnClickListener {
             uzVideoView.retry()
+        }
+        btFit.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT)
+        }
+        btFixedWidth.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH)
+        }
+        btFixedHeight.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
+        }
+        btFill.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL)
+        }
+        btZoom.setOnClickListener {
+            uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
         }
     }
 
