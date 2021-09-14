@@ -1,6 +1,7 @@
 package com.uiza.sampleplayer
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -87,6 +88,12 @@ class MainActivity : AppCompatActivity() {
         }
         btnDisplayBasic.setOnClickListener {
             gotoActivity(DisplayBasicActivity::class.java)
+        }
+        btnGithub.setOnClickListener {
+            val intent =
+                Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)
+            intent.data = Uri.parse("https://github.com/uizaio/snake.sdk.android-player")
+            startActivity(intent)
         }
         txtVersion.text = String.format(
             Locale.getDefault(),
