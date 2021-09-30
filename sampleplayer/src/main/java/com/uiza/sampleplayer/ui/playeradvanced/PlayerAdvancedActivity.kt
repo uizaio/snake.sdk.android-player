@@ -45,11 +45,12 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setupViews() {
+        //will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.isAutoStart = false//default is true
             uzVideoView.setAutoReplay(false)//default is false
             uzVideoView.setEnableDoubleTapToSeek(false)//default is false
-            uzVideoView.setShowLayoutDebug(false)
+            uzVideoView.setShowLayoutDebug(false)//hide debug layout
 
             log("heightTimeBar ${uzVideoView.heightTimeBar}")
             log("videoFormat ${uzVideoView.videoFormat?.width}")
@@ -74,46 +75,56 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("controllerAutoShow ${uzVideoView.controllerAutoShow}")
             log("volume ${uzVideoView.volume}")
         }
+
+        //the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             tvOnFirstStateReady.text = "onFirstStateReady"
-            uzVideoView.setUseController(true)
-            uzVideoView.setDefaultSeekValue(15_000)//15s
-            uzVideoView.setControllerHideOnTouch(true)
+            uzVideoView.setUseController(true)//use controller
+            uzVideoView.setDefaultSeekValue(15_000)//seek value = 15s
+            uzVideoView.setControllerHideOnTouch(true)//show/hide controller if touch in the player
 
-            val isAlwaysVisible = false
-            if (isAlwaysVisible) {
+            val isAlwaysVisibleController = false
+            if (isAlwaysVisibleController) {
                 uzVideoView.setPlayerControllerAlwaysVisible()//make the controller always show
             } else {
+                //in case you want to set value show timeout of controller
                 uzVideoView.controllerShowTimeoutMs = 10_000 //10s
             }
         }
+
+        //result when init resources
         uzVideoView.onIsInitResult = { linkPlay ->
             tvOnIsInitResult.text = "onIsInitResult linkPlay $linkPlay"
         }
+        //will be called if you play a video has poster in player
         uzVideoView.onStartPreviewTimeBar = { _: PreviewView?, progress: Int ->
-            //will be called if you play a video has poster in UZPlayer
             tvOnStartPreviewTimeBar.text = "onStartPreviewTimeBar progress $progress"
         }
+        //will be called if you play a video has poster in player
         uzVideoView.onStopPreviewTimeBar = { _: PreviewView?, progress: Int ->
-            //will be called if you play a video has poster in UZPlayer
             tvOnStopPreviewTimeBar.text = "onStopPreviewTimeBar progress $progress"
         }
+        //will be called if you play a video has poster in player
         uzVideoView.onPreviewTimeBar = { _: PreviewView?, progress: Int, fromUser: Boolean ->
-            //will be called if you play a video has poster in UZPlayer
             tvOnPreviewTimeBar.text = "onPreviewTimeBar progress $progress, fromUser $fromUser"
         }
+        //will be called if your network is changed
         uzVideoView.onNetworkChange = { isConnected ->
             tvOnNetworkChange.text = "onNetworkChange isConnected $isConnected"
         }
+        //will be called when you change skin of player
         uzVideoView.onSkinChange = {
             tvOnSkinChange.text = "onSkinChange $it"
         }
+        //will be called when screen is rotated
         uzVideoView.onScreenRotate = { isLandscape: Boolean ->
             tvOnScreenRotate.text = "onScreenRotate isLandscape $isLandscape"
         }
+        //will be called when the player has any UZException
         uzVideoView.onError = {
             tvOnError.text = "$it"
         }
+        //listener for double tap on the player
         uzVideoView.onDoubleTapFinished = {
             tvOnDoubleTapFinished.text = "onDoubleTapFinished"
         }
@@ -126,26 +137,33 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onDoubleTapProgressUp = { posX: Float, posY: Float ->
             tvOnDoubleTapProgressUp.text = "onDoubleTapProgressUp $posX $posY"
         }
+        //will be called when player state is changed
         uzVideoView.onPlayerStateChanged = { playbackState: Int ->
             when (playbackState) {
+                //The player does not have any media to play
                 Player.STATE_IDLE -> {
                     tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_IDLE"
                 }
+                //The player is not able to immediately play from its current position. This state typically occurs when more data needs to be loaded
                 Player.STATE_BUFFERING -> {
                     tvOnPlayerStateChanged.text =
                         "onPlayerStateChanged playbackState STATE_BUFFERING"
                 }
+                //The player is able to immediately play from its current position. The player will be playing if getPlayWhenReady() is true, and paused otherwise
                 Player.STATE_READY -> {
                     tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_READY"
                 }
+                //The player has finished playing the media.
                 Player.STATE_ENDED -> {
                     tvOnPlayerStateChanged.text = "onPlayerStateChanged playbackState STATE_ENDED"
                 }
             }
         }
+        //help you know the current video is Live content or not
         uzVideoView.onCurrentWindowDynamic = { isLIVE ->
             tvOnCurrentWindowDynamic.text = "onCurrentWindowDynamic isLIVE $isLIVE"
         }
+        //listener for surface view
         uzVideoView.onSurfaceRedrawNeeded = {
             tvOnSurfaceRedrawNeeded.text = "onSurfaceRedrawNeeded"
         }
@@ -159,6 +177,10 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onSurfaceDestroyed = {
             tvOnSurfaceDestroyed.text = "onSurfaceDestroyed"
         }
+        //Called when the shuffle mode changed.
+        //Params:
+        //eventTime – The event time.
+        //shuffleModeEnabled – Whether the shuffle mode is enabled.
         uzVideoView.onShuffleModeChanged =
             { eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean ->
                 tvOnShuffleModeChanged.text =
@@ -499,10 +521,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            val uzPlayback = UZPlayback(
-                linkPlay = link,
-                urlIMAAd = "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator="
-            )
+            val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }
     }

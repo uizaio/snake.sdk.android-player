@@ -144,32 +144,49 @@ class UZVideoView : RelativeLayout,
 
     //will be called when player is created
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+    //result when init resources
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
+    //will be called when you change skin of player
     var onSkinChange: ((skinId: Int) -> Unit)? = null
+    //will be called when screen is rotated
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
+    //will be called when the player has any UZException
     var onError: ((e: UZException) -> Unit)? = null
+    //will be called when player state is changed
     var onPlayerStateChanged: ((playbackState: Int) -> Unit)? = null
 
     //the first time the player has playbackState == Player.STATE_READY
     var onFirstStateReady: (() -> Unit)? = null
 
+    //will be called if you play a video has poster in player
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    //will be called if you play a video has poster in player
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    //will be called if you play a video has poster in player
     var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
         null
+    //will be called if your network is changed
     var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
+    //help you know the current video is Live content or not
     var onCurrentWindowDynamic: ((isLIVE: Boolean) -> Unit)? = null
+
+    //listener for surface view
     var onSurfaceRedrawNeeded: ((holder: SurfaceHolder) -> Unit)? = null
     var onSurfaceCreated: ((holder: SurfaceHolder) -> Unit)? = null
     var onSurfaceChanged: ((holder: SurfaceHolder, format: Int, width: Int, height: Int) -> Unit)? =
         null
     var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
 
+    //listener for double tap on the player
     var onDoubleTapFinished: (() -> Unit)? = null
     var onDoubleTapProgressDown: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
+    //Called when the shuffle mode changed.
+    //Params:
+    //eventTime – The event time.
+    //shuffleModeEnabled – Whether the shuffle mode is enabled.
     var onShuffleModeChanged: ((eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) -> Unit)? =
         null
     var onLoadStarted: ((
