@@ -142,12 +142,15 @@ class UZVideoView : RelativeLayout,
 
     var listRemoteAction: List<RemoteAction>? = null
 
+    //will be called when player is created
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
     var onSkinChange: ((skinId: Int) -> Unit)? = null
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
     var onError: ((e: UZException) -> Unit)? = null
     var onPlayerStateChanged: ((playbackState: Int) -> Unit)? = null
+
+    //the first time the player has playbackState == Player.STATE_READY
     var onFirstStateReady: (() -> Unit)? = null
 
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
