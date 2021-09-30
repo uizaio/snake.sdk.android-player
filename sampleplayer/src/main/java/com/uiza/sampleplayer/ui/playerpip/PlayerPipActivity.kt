@@ -100,9 +100,13 @@ class PlayerPipActivity : AppCompatActivity() {
 
     private fun setupViews() {
         uzVideoView.setPIPModeEnabled(true)
+
+        //the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
+
+        //will be called when screen is rotated
         uzVideoView.onScreenRotate = { isLandscape ->
             if (!uzVideoView.isInPipMode()) {
                 if (isLandscape) {

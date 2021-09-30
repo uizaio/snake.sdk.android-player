@@ -1083,6 +1083,7 @@ class UZVideoView : RelativeLayout,
         return player?.isPlayingAd
     }
 
+    // If link play is livestream, it will auto move to live edge when onResume is called
     fun setAutoMoveToLiveEdge(autoMoveToLiveEdge: Boolean) {
         this.autoMoveToLiveEdge = autoMoveToLiveEdge
     }

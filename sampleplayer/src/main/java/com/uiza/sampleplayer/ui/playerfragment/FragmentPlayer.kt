@@ -29,6 +29,8 @@ class FragmentPlayer : Fragment() {
 
     private fun setupViews() {
         uzVideoView.setPIPModeEnabled(true)
+
+        //the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
