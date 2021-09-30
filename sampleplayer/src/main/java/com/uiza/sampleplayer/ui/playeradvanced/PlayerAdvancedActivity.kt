@@ -332,31 +332,65 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnAudioUnderrun.text =
                 "onAudioUnderrun eventTime ${eventTime.currentPlaybackPositionMs}, bufferSize $bufferSize, bufferSizeMs $bufferSizeMs, elapsedSinceLastFeedMs $elapsedSinceLastFeedMs"
         }
+
+        //Called when an audio renderer releases a decoder.
+        //Params:
+        //eventTime – The event time.
+        //decoderName – The decoder that was released.
         uzVideoView.onAudioDecoderReleased = { eventTime: AnalyticsListener.EventTime,
                                                decoderName: String ->
             tvOnAudioDecoderReleased.text =
                 "onAudioDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
         }
+
+        //Called when an audio renderer is disabled.
+        //Params:
+        //eventTime – The event time.
+        //decoderCounters – DecoderCounters that were updated by the renderer
         uzVideoView.onAudioDisabled = { eventTime: AnalyticsListener.EventTime,
                                         decoderCounters: DecoderCounters ->
             tvOnAudioDisabled.text =
                 "onAudioDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
         }
+
+        //Called when AudioSink has encountered an error.
+        //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+        //Params:
+        //eventTime – The event time.
+        //audioSinkError – The error that occurred. Typically an AudioSink.InitializationException, a AudioSink.WriteException, or an AudioSink.UnexpectedDiscontinuityException
         uzVideoView.onAudioSinkError =
             { eventTime: AnalyticsListener.EventTime, audioSinkError: java.lang.Exception ->
                 tvOnAudioSinkError.text =
                     "onAudioSinkError eventTime ${eventTime.currentPlaybackPositionMs}, audioSinkError $audioSinkError"
             }
+
+        //Called when an audio decoder encounters an error.
+        //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+        //Params:
+        //eventTime – The event time.
+        //audioCodecError – The error. Typically a MediaCodec.CodecException if the renderer uses MediaCodec, or a DecoderException if the renderer uses a software decoder
         uzVideoView.onAudioCodecError = { eventTime: AnalyticsListener.EventTime,
                                           audioCodecError: java.lang.Exception ->
             tvOnAudioCodecError.text =
                 "onAudioCodecError eventTime ${eventTime.currentPlaybackPositionMs}, audioCodecError $audioCodecError"
         }
+
+        //Called when a video renderer is enabled.
+        //Params:
+        //eventTime – The event time.
+        //decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
         uzVideoView.onVideoEnabled = { eventTime: AnalyticsListener.EventTime,
                                        decoderCounters: DecoderCounters ->
             tvOnVideoEnabled.text =
                 "onVideoEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
         }
+
+        //Called when a video renderer creates a decoder.
+        //Params:
+        //eventTime – The event time.
+        //decoderName – The decoder that was created.
+        //initializedTimestampMs – SystemClock.elapsedRealtime() when initialization finished.
+        //initializationDurationMs – The time taken to initialize the decoder in milliseconds.
         uzVideoView.onVideoDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
                                                   decoderName: String,
                                                   initializedTimestampMs: Long,
@@ -364,34 +398,67 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnVideoDecoderInitialized.text =
                 "onVideoDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
         }
+
+        //Called when the format of the media being consumed by a video renderer changes.
+        //Params:
+        //eventTime – The event time.
+        //format – The new format.
+        //decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
         uzVideoView.onVideoInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
                                                   format: Format,
                                                   decoderReuseEvaluation: DecoderReuseEvaluation? ->
             tvOnVideoInputFormatChanged.text =
                 "onVideoInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
         }
+
+        //Called after video frames have been dropped.
+        //Params:
+        //eventTime – The event time.
+        //droppedFrames – The number of dropped frames since the last call to this method.
+        //elapsedMs – The duration in milliseconds over which the frames were dropped. This duration is timed from when the renderer was started or from when dropped frames were last reported (whichever was more recent), and not from when the first of the reported drops occurred.
         uzVideoView.onDroppedVideoFrames = { eventTime: AnalyticsListener.EventTime,
                                              droppedFrames: Int,
                                              elapsedMs: Long ->
             tvOnDroppedVideoFrames.text =
                 "onDroppedVideoFrames eventTime ${eventTime.currentPlaybackPositionMs}, droppedFrames $droppedFrames, elapsedMs $elapsedMs"
         }
+
+        //Called when a video renderer releases a decoder.
+        //Params:
+        //eventTime – The event time.
+        //decoderName – The decoder that was released.
         uzVideoView.onVideoDecoderReleased = { eventTime: AnalyticsListener.EventTime,
                                                decoderName: String ->
             tvOnVideoDecoderReleased.text =
                 "onVideoDecoderReleased eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName"
         }
+
+        //Called when a video renderer is disabled.
+        //Params:
+        //eventTime – The event time.
+        //decoderCounters – DecoderCounters that were updated by the renderer.
         uzVideoView.onVideoDisabled = { eventTime: AnalyticsListener.EventTime,
                                         decoderCounters: DecoderCounters ->
             tvOnVideoDisabled.text =
                 "onVideoDisabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
         }
+
+        //Called when there is an update to the video frame processing offset reported by a video renderer.
+        //The processing offset for a video frame is the difference between the time at which the frame became available to render, and the time at which it was scheduled to be rendered. A positive value indicates the frame became available early enough, whereas a negative value indicates that the frame wasn't available until after the time at which it should have been rendered.
+        //Params:
+        //eventTime – The event time.
+        //totalProcessingOffsetUs – The sum of the video frame processing offsets for frames rendered since the last call to this method.
+        //frameCount – The number to samples included in totalProcessingOffsetUs.
         uzVideoView.onVideoFrameProcessingOffset = { eventTime: AnalyticsListener.EventTime,
                                                      totalProcessingOffsetUs: Long,
                                                      frameCount: Int ->
             tvOnVideoFrameProcessingOffset.text =
                 "onVideoFrameProcessingOffset eventTime ${eventTime.currentPlaybackPositionMs}, totalProcessingOffsetUs $totalProcessingOffsetUs, frameCount $frameCount"
         }
+
+        //Called when the Player is released.
+        //Params:
+        //eventTime – The event time.
         uzVideoView.onPlayerReleased = { eventTime: AnalyticsListener.EventTime ->
             tvOnPlayerReleased.text =
                 "onPlayerReleased eventTime ${eventTime.currentPlaybackPositionMs}"
