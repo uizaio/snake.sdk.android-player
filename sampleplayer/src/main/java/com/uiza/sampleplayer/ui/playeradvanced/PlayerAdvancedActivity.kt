@@ -186,24 +186,50 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 tvOnShuffleModeChanged.text =
                     "onShuffleModeChanged ${eventTime.currentPlaybackPositionMs}, shuffleModeEnabled $shuffleModeEnabled"
             }
+        //Called when a media source started loading data.
+        //Params:
+        //eventTime – The event time.
+        //loadEventInfo – The LoadEventInfo defining the load event.
+        //mediaLoadData – The MediaLoadData defining the data being loaded.
         uzVideoView.onLoadStarted = { eventTime: AnalyticsListener.EventTime,
                                       loadEventInfo: LoadEventInfo,
                                       mediaLoadData: MediaLoadData ->
             tvOnLoadStarted.text =
                 "onLoadStarted ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
         }
+
+        //Called when a media source completed loading data.
+        //Params:
+        //eventTime – The event time.
+        //loadEventInfo – The LoadEventInfo defining the load event.
+        //mediaLoadData – The MediaLoadData defining the data being loaded.
         uzVideoView.onLoadCompleted = { eventTime: AnalyticsListener.EventTime,
                                         loadEventInfo: LoadEventInfo,
                                         mediaLoadData: MediaLoadData ->
             tvOnLoadCompleted.text =
                 "onLoadCompleted eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
         }
+
+        //Called when a media source canceled loading data.
+        //Params:
+        //eventTime – The event time.
+        //loadEventInfo – The LoadEventInfo defining the load event.
+        //mediaLoadData – The MediaLoadData defining the data being loaded.
         uzVideoView.onLoadCanceled = { eventTime: AnalyticsListener.EventTime,
                                        loadEventInfo: LoadEventInfo,
                                        mediaLoadData: MediaLoadData ->
             tvOnLoadCanceled.text =
                 "onLoadCanceled eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}"
         }
+
+        //Called when a media source loading error occurred.
+        //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+        //Params:
+        //eventTime – The event time.
+        //loadEventInfo – The LoadEventInfo defining the load event.
+        //mediaLoadData – The MediaLoadData defining the data being loaded.
+        //error – The load error.
+        //wasCanceled – Whether the load was canceled as a result of the error
         uzVideoView.onLoadError = { eventTime: AnalyticsListener.EventTime,
                                     loadEventInfo: LoadEventInfo,
                                     mediaLoadData: MediaLoadData,
@@ -212,16 +238,33 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnLoadError.text =
                 "onLoadError eventTime ${eventTime.currentPlaybackPositionMs}, loadEventInfo ${loadEventInfo.bytesLoaded}, mediaLoadData ${mediaLoadData.dataType}, error $error, wasCanceled $wasCanceled"
         }
+
+        //Called when the downstream format sent to the renderers changed.
+        //Params:
+        //eventTime – The event time.
+        //mediaLoadData – The MediaLoadData defining the newly selected media data
         uzVideoView.onDownstreamFormatChanged = { eventTime: AnalyticsListener.EventTime,
                                                   mediaLoadData: MediaLoadData ->
             tvOnDownstreamFormatChanged.text =
                 "onDownstreamFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
         }
+
+        //Called when data is removed from the back of a media buffer, typically so that it can be re-buffered in a different format.
+        //Params:
+        //eventTime – The event time.
+        //mediaLoadData – The MediaLoadData defining the media being discarded.
         uzVideoView.onUpstreamDiscarded = { eventTime: AnalyticsListener.EventTime,
                                             mediaLoadData: MediaLoadData ->
             tvOnUpstreamDiscarded.text =
                 "onUpstreamDiscarded eventTime ${eventTime.currentPlaybackPositionMs}, mediaLoadData ${mediaLoadData.dataType}"
         }
+
+        //Called when the bandwidth estimate for the current data source has been updated.
+        //Params:
+        //eventTime – The event time.
+        //totalLoadTimeMs – The total time spend loading this update is based on, in milliseconds.
+        //totalBytesLoaded – The total bytes loaded this update is based on.
+        //bitrateEstimate – The bandwidth estimate, in bits per second
         uzVideoView.onBandwidthEstimate = { eventTime: AnalyticsListener.EventTime,
                                             totalLoadTimeMs: Int,
                                             totalBytesLoaded: Long,
@@ -229,11 +272,23 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnBandwidthEstimate.text =
                 "onBandwidthEstimate eventTime ${eventTime.currentPlaybackPositionMs}, totalLoadTimeMs $totalLoadTimeMs, totalBytesLoaded $totalBytesLoaded, bitrateEstimate $bitrateEstimate"
         }
+
+        //Called when an audio renderer is enabled.
+        //Params:
+        //eventTime – The event time.
+        //decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
         uzVideoView.onAudioEnabled =
             { eventTime: AnalyticsListener.EventTime, decoderCounters: DecoderCounters ->
                 tvOnAudioEnabled.text =
                     "onAudioEnabled eventTime ${eventTime.currentPlaybackPositionMs}, decoderCounters ${decoderCounters.decoderInitCount}"
             }
+
+        //Called when an audio renderer creates a decoder.
+        //Params:
+        //eventTime – The event time.
+        //decoderName – The decoder that was created.
+        //initializedTimestampMs – SystemClock.elapsedRealtime() when initialization finished.
+        //initializationDurationMs – The time taken to initialize the decoder in milliseconds.
         uzVideoView.onAudioDecoderInitialized = { eventTime: AnalyticsListener.EventTime,
                                                   decoderName: String,
                                                   initializedTimestampMs: Long,
@@ -241,17 +296,35 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             tvOnAudioDecoderInitialized.text =
                 "onAudioDecoderInitialized eventTime ${eventTime.currentPlaybackPositionMs}, decoderName $decoderName, initializedTimestampMs $initializedTimestampMs, initializationDurationMs $initializationDurationMs"
         }
+
+        //Called when the format of the media being consumed by an audio renderer changes.
+        //Params:
+        //eventTime – The event time.
+        //format – The new format.
+        //decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
         uzVideoView.onAudioInputFormatChanged = { eventTime: AnalyticsListener.EventTime,
                                                   format: Format,
                                                   decoderReuseEvaluation: DecoderReuseEvaluation? ->
             tvOnAudioInputFormatChanged.text =
                 "onAudioInputFormatChanged eventTime ${eventTime.currentPlaybackPositionMs}, format ${format.bitrate}, decoderReuseEvaluation $decoderReuseEvaluation"
         }
+
+        //Called when the audio position has increased for the first time since the last pause or position reset.
+        //Params:
+        //eventTime – The event time.
+        //playoutStartSystemTimeMs – The approximate derived System.currentTimeMillis() at which playout started.
         uzVideoView.onAudioPositionAdvancing = { eventTime: AnalyticsListener.EventTime,
                                                  playoutStartSystemTimeMs: Long ->
             tvOnAudioPositionAdvancing.text =
                 "onAudioPositionAdvancing eventTime ${eventTime.currentPlaybackPositionMs}, playoutStartSystemTimeMs $playoutStartSystemTimeMs"
         }
+
+        //Called when an audio underrun occurs.
+        //Params:
+        //eventTime – The event time.
+        //bufferSize – The size of the audio output buffer, in bytes.
+        //bufferSizeMs – The size of the audio output buffer, in milliseconds, if it contains PCM encoded audio. C.TIME_UNSET if the output buffer contains non-PCM encoded audio.
+        //elapsedSinceLastFeedMs – The time since audio was last written to the output buffer.
         uzVideoView.onAudioUnderrun = { eventTime: AnalyticsListener.EventTime,
                                         bufferSize: Int,
                                         bufferSizeMs: Long,
