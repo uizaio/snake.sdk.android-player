@@ -468,90 +468,221 @@ class PlayerAdvancedActivity : AppCompatActivity() {
                 tvOnProgressChange.text =
                     "onProgressChange currentPosition $currentPosition, duration $duration, isPlayingAd $isPlayingAd"
             }
+
+        //Called each time there's a change in the size of the video being rendered.
+        //Params:
+        //videoSize – The new size of the video.
         uzVideoView.onVideoSizeChanged = { videoSize: VideoSize ->
             tvOnVideoSizeChanged.text =
                 "onVideoSizeChanged videoSize width: ${videoSize.width}, height: ${videoSize.height}, pixelWidthHeightRatio: ${videoSize.pixelWidthHeightRatio}, unappliedRotationDegrees: ${videoSize.unappliedRotationDegrees}"
         }
+
+        //Called each time there's a change in the size of the surface onto which the video is being rendered.
+        //Params:
+        //width – The surface width in pixels. May be C.LENGTH_UNSET if unknown, or 0 if the video is not rendered onto a surface.
+        //height – The surface height in pixels. May be C.LENGTH_UNSET if unknown, or 0 if the video is not rendered onto a surface.
         uzVideoView.onSurfaceSizeChanged = { width: Int, height: Int ->
             tvOnSurfaceSizeChanged.text = "onSurfaceSizeChanged width $width, height $height"
         }
+
+        //Called when the audio session ID changes.
+        //Params:
+        //audioSessionId – The audio session ID.
         uzVideoView.onAudioSessionIdChanged = { audioSessionId ->
             tvOnAudioSessionIdChanged.text =
                 "onAudioSessionIdChanged audioSessionId $audioSessionId"
         }
+
+        //Called when the audio attributes change.
+        //Params:
+        //audioAttributes – The audio attributes
         uzVideoView.onAudioAttributesChanged = {
             tvOnAudioAttributesChanged.text = "onAudioAttributesChanged ${it.allowedCapturePolicy}"
         }
+
+        //Called when the volume changes.
+        //Params:
+        //volume – The new volume, with 0 being silence and 1 being unity gain
         uzVideoView.onVolumeChanged = { volume: Float ->
             tvOnVolumeChanged.text = "onVolumeChanged volume $volume"
         }
+
+        //Called when skipping silences is enabled or disabled in the audio stream.
+        //Params:
+        //eventTime – The event time.
+        //skipSilenceEnabled – Whether skipping silences in the audio stream is enabled.
         uzVideoView.onSkipSilenceEnabledChanged = {
             log("onSkipSilenceEnabledChanged $it")
         }
+
+        //Called when there is a change in the Cues.
+        //cues is in ascending order of priority. If any of the cue boxes overlap when displayed, the Cue nearer the end of the list should be shown on top.
+        //Params:
+        //cues – The Cues. May be empty.
         uzVideoView.onCues = {
             log("onCues size ${it.size}")
         }
+
+        //Called when there is Metadata associated with the current playback time.
+        //Params:
+        //eventTime – The event time.
+        //metadata – The metadata
         uzVideoView.onMetadata = {
             log("onMetadata length ${it.length()}")
         }
+
+        //Called when the device information changes.
         uzVideoView.onDeviceInfoChanged = {
             tvOnDeviceInfoChanged.text = "onDeviceInfoChanged ${it.playbackType}"
         }
+
+        //Called when the device volume or mute state changes.
         uzVideoView.onDeviceVolumeChanged = { volume: Int, muted: Boolean ->
             tvOnDeviceVolumeChanged.text = "onDeviceVolumeChanged volume $volume, muted $muted"
         }
+
+        //Called when the timeline has been refreshed.
+        //Note that the current window or period index may change as a result of a timeline change. If playback can't continue smoothly because of this timeline change, a separate onPositionDiscontinuity(Player.PositionInfo, Player.PositionInfo, int) callback will be triggered.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //timeline – The latest timeline. Never null, but may be empty.
+        //reason – The Player.TimelineChangeReason responsible for this timeline change.
         uzVideoView.onTimelineChanged = { timeline: Timeline, reason: Int ->
             tvOnTimelineChanged.text =
                 "onTimelineChanged timeline ${timeline.periodCount}, reason $reason"
         }
+
+        //Called when playback transitions to a media item or starts repeating a media item according to the current repeat mode.
+        //Note that this callback is also called when the playlist becomes non-empty or empty as a consequence of a playlist change.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //mediaItem – The MediaItem. May be null if the playlist becomes empty.
+        //reason – The reason for the transition.
         uzVideoView.onMediaItemTransition = { mediaItem: MediaItem?, reason: Int ->
             log("onMediaItemTransition mediaItem ${mediaItem?.mediaId}, reason $reason")
         }
+
+        //Called when the available or selected tracks change.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //trackGroups – The available tracks. Never null, but may be of length zero.
+        //trackSelections – The selected tracks. Never null, but may contain null elements. A concrete implementation may include null elements if it has a fixed number of renderer components, wishes to report a TrackSelection for each of them, and has one or more renderer components that is not assigned any selected tracks.
         uzVideoView.onTracksChanged =
             { trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray ->
                 log("onTracksChanged trackGroups ${trackGroups.length}, trackSelections ${trackSelections.length}")
             }
+
+        //Called when the player starts or stops loading the source.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //isLoading – Whether the source is currently being loaded.
         uzVideoView.onIsLoadingChanged = {
             tvOnIsLoadingChanged.text = "onIsLoadingChanged $it"
         }
+
+        //Called when the value returned from isCommandAvailable(int) changes for at least one Player.Command.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //availableCommands – The available Player.Commands.
         uzVideoView.onAvailableCommandsChanged = {
             tvOnAvailableCommandsChanged.text = "onAvailableCommandsChanged ${it.size()}"
         }
+
+        //Called when the value returned from getPlayWhenReady() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //playWhenReady – Whether playback will proceed when ready.
+        //reason – The reason for the change.
         uzVideoView.onPlayWhenReadyChanged = { playWhenReady: Boolean, reason: Int ->
             tvOnPlayWhenReadyChanged.text =
                 "onPlayWhenReadyChanged playWhenReady $playWhenReady, reason $reason"
         }
+
+        //Called when the value of isPlaying() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //isPlaying – Whether the player is playing
         uzVideoView.onIsPlayingChanged = {
             tvOnIsPlayingChanged.text = "onIsPlayingChanged $it"
         }
+
+        //Called when the value of getRepeatMode() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //repeatMode – The Player.RepeatMode used for playback.
         uzVideoView.onRepeatModeChanged = {
             log("onRepeatModeChanged $it")
         }
+
+        //Called when the value of getShuffleModeEnabled() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //shuffleModeEnabled – Whether shuffling of windows is enabled.
         uzVideoView.onShuffleModeEnabledChanged = {
             log("onShuffleModeEnabledChanged $it")
         }
+
+        //Called when an error occurs. The playback state will transition to STATE_IDLE immediately after this method is called. The player instance can still be used, and release() must still be called on the player should it no longer be required.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Implementations of Player may pass an instance of a subclass of PlaybackException to this method in order to include more information about the error.
+        //Params:
+        //error – The error.
         uzVideoView.onPlayerError = {
             log("onPlayerError ${it.errorCode}")
         }
+
+        //Called when the PlaybackException returned by getPlayerError() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Implementations of Player may pass an instance of a subclass of PlaybackException to this method in order to include more information about the error.
+        //Params:
+        //error – The new error, or null if the error is being cleared.
         uzVideoView.onPlayerErrorChanged = {
             log("onPlayerErrorChanged ${it?.errorCode}")
         }
+
+        //Called when a position discontinuity occurs.
+        //A position discontinuity occurs when the playing period changes, the playback position jumps within the period currently being played, or when the playing period has been skipped or removed.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //oldPosition – The position before the discontinuity.
+        //newPosition – The position after the discontinuity.
+        //reason – The Player.DiscontinuityReason responsible for the discontinuity.
         uzVideoView.onPositionDiscontinuity = { oldPosition: Player.PositionInfo,
                                                 newPosition: Player.PositionInfo,
                                                 reason: Int ->
             tvOnPositionDiscontinuity.text =
                 "onPositionDiscontinuity oldPosition ${oldPosition.periodIndex}, newPosition ${newPosition.periodIndex}, reason $reason"
         }
+
+        //Called when the current playback parameters change. The playback parameters may change due to a call to setPlaybackParameters(PlaybackParameters), or the player itself may change them (for example, if audio playback switches to passthrough or offload mode, where speed adjustment is no longer possible).
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //playbackParameters – The playback parameters.
         uzVideoView.onPlaybackParametersChanged = {
             tvOnPlaybackParametersChanged.text =
                 "onPlaybackParametersChanged speed ${it.speed}, pitcho ${it.pitch}"
         }
+
+        //Called when the value of getSeekBackIncrement() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //seekBackIncrementMs – The seekBack() increment, in milliseconds.
         uzVideoView.onSeekBackIncrementChanged = {
             tvOnSeekBackIncrementChanged.text = "onSeekBackIncrementChanged $it"
         }
+
+        //Called when the value of getSeekForwardIncrement() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //seekForwardIncrementMs – The seekForward() increment, in milliseconds.
         uzVideoView.onSeekForwardIncrementChanged = {
             tvOnSeekForwardIncrementChanged.text = "onSeekForwardIncrementChanged $it"
         }
+
+        //Called when the value of getMaxSeekToPreviousPosition() changes.
+        //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+        //Params:
+        //maxSeekToPreviousPositionMs – The maximum position for which seekToPrevious() seeks to the previous position, in milliseconds.
         uzVideoView.onMaxSeekToPreviousPositionChanged = {
             log("onMaxSeekToPreviousPositionChanged $it")
         }
