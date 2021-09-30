@@ -54,10 +54,10 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
             itemView.cardView.setOnClickListener {
                 if (itemRv.isFocussed) {
                     if (uzVideoView?.isPlaying == false) {
-                        onClickItem?.invoke(adapterPosition, itemRv)
+                        onClickItem?.invoke(bindingAdapterPosition, itemRv)
                     }
                 } else {
-                    onClickItem?.invoke(adapterPosition, itemRv)
+                    onClickItem?.invoke(bindingAdapterPosition, itemRv)
                 }
             }
         }
@@ -84,7 +84,7 @@ class RecyclerAdapter(private val list: List<ItemRv>) :
         super.onViewDetachedFromWindow(holder)
         uzVideoView?.onPauseView()
         try {
-            if (list[holder.adapterPosition].isFocussed) {
+            if (list[holder.bindingAdapterPosition].isFocussed) {
                 holder.itemView.tvPause.visibility = View.VISIBLE
             } else {
                 holder.itemView.tvPause.visibility = View.GONE

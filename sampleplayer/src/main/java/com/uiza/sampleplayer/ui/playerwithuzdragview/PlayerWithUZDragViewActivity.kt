@@ -45,6 +45,8 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
             }
         })
         uzDragView.setScreenRotate(false)
+
+        //will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.uzPlayerView?.setControllerStateCallback(object :
                 UZPlayerView.ControllerStateCallback {
@@ -54,9 +56,13 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
             })
             uzVideoView.setUseUZDragView(true)
         }
+
+        //result when init resources
         uzVideoView.onIsInitResult = {
             uzDragView.setInitResult(true)
         }
+
+        //the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }

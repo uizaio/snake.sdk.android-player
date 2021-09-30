@@ -142,48 +142,95 @@ class UZVideoView : RelativeLayout,
 
     var listRemoteAction: List<RemoteAction>? = null
 
+    //will be called when player is created
     var onPlayerViewCreated: ((playerView: UZPlayerView) -> Unit)? = null
+    //result when init resources
     var onIsInitResult: ((linkPlay: String) -> Unit)? = null
+    //will be called when you change skin of player
     var onSkinChange: ((skinId: Int) -> Unit)? = null
+    //will be called when screen is rotated
     var onScreenRotate: ((isLandscape: Boolean) -> Unit)? = null
+    //will be called when the player has any UZException
     var onError: ((e: UZException) -> Unit)? = null
+    //will be called when player state is changed
     var onPlayerStateChanged: ((playbackState: Int) -> Unit)? = null
+
+    //the first time the player has playbackState == Player.STATE_READY
     var onFirstStateReady: (() -> Unit)? = null
 
+    //will be called if you play a video has poster in player
     var onStartPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    //will be called if you play a video has poster in player
     var onStopPreviewTimeBar: ((previewView: PreviewView?, progress: Int) -> Unit)? = null
+    //will be called if you play a video has poster in player
     var onPreviewTimeBar: ((previewView: PreviewView?, progress: Int, fromUser: Boolean) -> Unit)? =
         null
+    //will be called if your network is changed
     var onNetworkChange: ((isConnected: Boolean) -> Unit)? = null
+    //help you know the current video is Live content or not
     var onCurrentWindowDynamic: ((isLIVE: Boolean) -> Unit)? = null
+
+    //listener for surface view
     var onSurfaceRedrawNeeded: ((holder: SurfaceHolder) -> Unit)? = null
     var onSurfaceCreated: ((holder: SurfaceHolder) -> Unit)? = null
     var onSurfaceChanged: ((holder: SurfaceHolder, format: Int, width: Int, height: Int) -> Unit)? =
         null
     var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
 
+    //listener for double tap on the player
     var onDoubleTapFinished: (() -> Unit)? = null
     var onDoubleTapProgressDown: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapStarted: ((posX: Float, posY: Float) -> Unit)? = null
     var onDoubleTapProgressUp: ((posX: Float, posY: Float) -> Unit)? = null
 
+    //Called when the shuffle mode changed.
+    //Params:
+    //eventTime – The event time.
+    //shuffleModeEnabled – Whether the shuffle mode is enabled.
     var onShuffleModeChanged: ((eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) -> Unit)? =
         null
+
+    //Called when a media source started loading data.
+    //Params:
+    //eventTime – The event time.
+    //loadEventInfo – The LoadEventInfo defining the load event.
+    //mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadStarted: ((
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+
+    //Called when a media source completed loading data.
+    //Params:
+    //eventTime – The event time.
+    //loadEventInfo – The LoadEventInfo defining the load event.
+    //mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadCompleted: ((
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+
+    //Called when a media source canceled loading data.
+    //Params:
+    //eventTime – The event time.
+    //loadEventInfo – The LoadEventInfo defining the load event.
+    //mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadCanceled: ((
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+
+    //Called when a media source loading error occurred.
+    //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+    //Params:
+    //eventTime – The event time.
+    //loadEventInfo – The LoadEventInfo defining the load event.
+    //mediaLoadData – The MediaLoadData defining the data being loaded.
+    //error – The load error.
+    //wasCanceled – Whether the load was canceled as a result of the error
     var onLoadError: ((
         eventTime: AnalyticsListener.EventTime,
         loadEventInfo: LoadEventInfo,
@@ -191,126 +238,370 @@ class UZVideoView : RelativeLayout,
         error: IOException,
         wasCanceled: Boolean
     ) -> Unit)? = null
+
+    //Called when the downstream format sent to the renderers changed.
+    //Params:
+    //eventTime – The event time.
+    //mediaLoadData – The MediaLoadData defining the newly selected media data
     var onDownstreamFormatChanged: ((
         eventTime: AnalyticsListener.EventTime,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+
+    //Called when data is removed from the back of a media buffer, typically so that it can be re-buffered in a different format.
+    //Params:
+    //eventTime – The event time.
+    //mediaLoadData – The MediaLoadData defining the media being discarded.
     var onUpstreamDiscarded: ((
         eventTime: AnalyticsListener.EventTime,
         mediaLoadData: MediaLoadData
     ) -> Unit)? = null
+
+    //Called when the bandwidth estimate for the current data source has been updated.
+    //Params:
+    //eventTime – The event time.
+    //totalLoadTimeMs – The total time spend loading this update is based on, in milliseconds.
+    //totalBytesLoaded – The total bytes loaded this update is based on.
+    //bitrateEstimate – The bandwidth estimate, in bits per second
     var onBandwidthEstimate: ((
         eventTime: AnalyticsListener.EventTime,
         totalLoadTimeMs: Int,
         totalBytesLoaded: Long,
         bitrateEstimate: Long
     ) -> Unit)? = null
+
+    //Called when an audio renderer is enabled.
+    //Params:
+    //eventTime – The event time.
+    //decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
     var onAudioEnabled: ((
         eventTime: AnalyticsListener.EventTime,
         decoderCounters: DecoderCounters
     ) -> Unit)? = null
+
+    //Called when an audio renderer creates a decoder.
+    //Params:
+    //eventTime – The event time.
+    //decoderName – The decoder that was created.
+    //initializedTimestampMs – SystemClock.elapsedRealtime() when initialization finished.
+    //initializationDurationMs – The time taken to initialize the decoder in milliseconds.
     var onAudioDecoderInitialized: ((
         eventTime: AnalyticsListener.EventTime,
         decoderName: String,
         initializedTimestampMs: Long,
         initializationDurationMs: Long
     ) -> Unit)? = null
+
+    //Called when the format of the media being consumed by an audio renderer changes.
+    //Params:
+    //eventTime – The event time.
+    //format – The new format.
+    //decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
     var onAudioInputFormatChanged: ((
         eventTime: AnalyticsListener.EventTime,
         format: Format,
         decoderReuseEvaluation: DecoderReuseEvaluation?
     ) -> Unit)? = null
+
+    //Called when the audio position has increased for the first time since the last pause or position reset.
+    //Params:
+    //eventTime – The event time.
+    //playoutStartSystemTimeMs – The approximate derived System.currentTimeMillis() at which playout started.
     var onAudioPositionAdvancing: ((
         eventTime: AnalyticsListener.EventTime,
         playoutStartSystemTimeMs: Long
     ) -> Unit)? = null
+
+    //Called when an audio underrun occurs.
+    //Params:
+    //eventTime – The event time.
+    //bufferSize – The size of the audio output buffer, in bytes.
+    //bufferSizeMs – The size of the audio output buffer, in milliseconds, if it contains PCM encoded audio. C.TIME_UNSET if the output buffer contains non-PCM encoded audio.
+    //elapsedSinceLastFeedMs – The time since audio was last written to the output buffer.
     var onAudioUnderrun: ((
         eventTime: AnalyticsListener.EventTime,
         bufferSize: Int,
         bufferSizeMs: Long,
         elapsedSinceLastFeedMs: Long
     ) -> Unit)? = null
+
+    //Called when an audio renderer releases a decoder.
+    //Params:
+    //eventTime – The event time.
+    //decoderName – The decoder that was released.
     var onAudioDecoderReleased: ((
         eventTime: AnalyticsListener.EventTime,
         decoderName: String
     ) -> Unit)? = null
+
+    //Called when an audio renderer is disabled.
+    //Params:
+    //eventTime – The event time.
+    //decoderCounters – DecoderCounters that were updated by the renderer
     var onAudioDisabled: ((
         eventTime: AnalyticsListener.EventTime,
         decoderCounters: DecoderCounters
     ) -> Unit)? = null
+
+    //Called when AudioSink has encountered an error.
+    //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+    //Params:
+    //eventTime – The event time.
+    //audioSinkError – The error that occurred. Typically an AudioSink.InitializationException, a AudioSink.WriteException, or an AudioSink.UnexpectedDiscontinuityException
     var onAudioSinkError: ((
         eventTime: AnalyticsListener.EventTime,
         audioSinkError: java.lang.Exception
     ) -> Unit)? = null
+
+    //Called when an audio decoder encounters an error.
+    //This method being called does not indicate that playback has failed, or that it will fail. The player may be able to recover from the error. Hence applications should not implement this method to display a user visible error or initiate an application level retry. Player.Listener.onPlayerError is the appropriate place to implement such behavior. This method is called to provide the application with an opportunity to log the error if it wishes to do so.
+    //Params:
+    //eventTime – The event time.
+    //audioCodecError – The error. Typically a MediaCodec.CodecException if the renderer uses MediaCodec, or a DecoderException if the renderer uses a software decoder
     var onAudioCodecError: ((
         eventTime: AnalyticsListener.EventTime,
         audioCodecError: java.lang.Exception
     ) -> Unit)? = null
+
+    //Called when a video renderer is enabled.
+    //Params:
+    //eventTime – The event time.
+    //decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
     var onVideoEnabled: ((
         eventTime: AnalyticsListener.EventTime,
         decoderCounters: DecoderCounters
     ) -> Unit)? = null
+
+    //Called when a video renderer creates a decoder.
+    //Params:
+    //eventTime – The event time.
+    //decoderName – The decoder that was created.
+    //initializedTimestampMs – SystemClock.elapsedRealtime() when initialization finished.
+    //initializationDurationMs – The time taken to initialize the decoder in milliseconds.
     var onVideoDecoderInitialized: ((
         eventTime: AnalyticsListener.EventTime,
         decoderName: String,
         initializedTimestampMs: Long,
         initializationDurationMs: Long
     ) -> Unit)? = null
+
+    //Called when the format of the media being consumed by a video renderer changes.
+    //Params:
+    //eventTime – The event time.
+    //format – The new format.
+    //decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
     var onVideoInputFormatChanged: ((
         eventTime: AnalyticsListener.EventTime,
         format: Format,
         decoderReuseEvaluation: DecoderReuseEvaluation?
     ) -> Unit)? = null
+
+    //Called after video frames have been dropped.
+    //Params:
+    //eventTime – The event time.
+    //droppedFrames – The number of dropped frames since the last call to this method.
+    //elapsedMs – The duration in milliseconds over which the frames were dropped. This duration is timed from when the renderer was started or from when dropped frames were last reported (whichever was more recent), and not from when the first of the reported drops occurred.
     var onDroppedVideoFrames: ((
         eventTime: AnalyticsListener.EventTime,
         droppedFrames: Int,
         elapsedMs: Long
     ) -> Unit)? = null
+
+    //Called when a video renderer releases a decoder.
+    //Params:
+    //eventTime – The event time.
+    //decoderName – The decoder that was released.
     var onVideoDecoderReleased: ((
         eventTime: AnalyticsListener.EventTime,
         decoderName: String
     ) -> Unit)? = null
+
+    //Called when a video renderer is disabled.
+    //Params:
+    //eventTime – The event time.
+    //decoderCounters – DecoderCounters that were updated by the renderer.
     var onVideoDisabled: ((
         eventTime: AnalyticsListener.EventTime,
         decoderCounters: DecoderCounters
     ) -> Unit)? = null
+
+    //Called when there is an update to the video frame processing offset reported by a video renderer.
+    //The processing offset for a video frame is the difference between the time at which the frame became available to render, and the time at which it was scheduled to be rendered. A positive value indicates the frame became available early enough, whereas a negative value indicates that the frame wasn't available until after the time at which it should have been rendered.
+    //Params:
+    //eventTime – The event time.
+    //totalProcessingOffsetUs – The sum of the video frame processing offsets for frames rendered since the last call to this method.
+    //frameCount – The number to samples included in totalProcessingOffsetUs.
     var onVideoFrameProcessingOffset: ((
         eventTime: AnalyticsListener.EventTime,
         totalProcessingOffsetUs: Long,
         frameCount: Int
     ) -> Unit)? = null
+
+    //Called when the Player is released.
+    //Params:
+    //eventTime – The event time.
     var onPlayerReleased: ((eventTime: AnalyticsListener.EventTime) -> Unit)? = null
     var onProgressChange: ((currentPosition: Long, duration: Long, isPlayingAd: Boolean?) -> Unit)? =
         null
 
+    //Called each time there's a change in the size of the video being rendered.
+    //Params:
+    //videoSize – The new size of the video.
     var onVideoSizeChanged: ((videoSize: VideoSize) -> Unit)? = null
+
+    //Called each time there's a change in the size of the surface onto which the video is being rendered.
+    //Params:
+    //width – The surface width in pixels. May be C.LENGTH_UNSET if unknown, or 0 if the video is not rendered onto a surface.
+    //height – The surface height in pixels. May be C.LENGTH_UNSET if unknown, or 0 if the video is not rendered onto a surface.
     var onSurfaceSizeChanged: ((width: Int, height: Int) -> Unit)? = null
     var onRenderedFirstFrame: (() -> Unit)? = null
+
+    //Called when the audio session ID changes.
+    //Params:
+    //audioSessionId – The audio session ID.
     var onAudioSessionIdChanged: ((audioSessionId: Int) -> Unit)? = null
+
+    //Called when the audio attributes change.
+    //Params:
+    //audioAttributes – The audio attributes
     var onAudioAttributesChanged: ((audioAttributes: AudioAttributes) -> Unit)? = null
+
+    //Called when the volume changes.
+    //Params:
+    //volume – The new volume, with 0 being silence and 1 being unity gain
     var onVolumeChanged: ((volume: Float) -> Unit)? = null
+
+    //Called when skipping silences is enabled or disabled in the audio stream.
+    //Params:
+    //eventTime – The event time.
+    //skipSilenceEnabled – Whether skipping silences in the audio stream is enabled.
     var onSkipSilenceEnabledChanged: ((skipSilenceEnabled: Boolean) -> Unit)? = null
+
+    //Called when there is a change in the Cues.
+    //cues is in ascending order of priority. If any of the cue boxes overlap when displayed, the Cue nearer the end of the list should be shown on top.
+    //Params:
+    //cues – The Cues. May be empty.
     var onCues: ((cues: MutableList<Cue>) -> Unit)? = null
+
+    //Called when there is Metadata associated with the current playback time.
+    //Params:
+    //eventTime – The event time.
+    //metadata – The metadata
     var onMetadata: ((metadata: com.google.android.exoplayer2.metadata.Metadata) -> Unit)? = null
+
+    //Called when the device information changes.
     var onDeviceInfoChanged: ((deviceInfo: DeviceInfo) -> Unit)? = null
+
+    //Called when the device volume or mute state changes.
     var onDeviceVolumeChanged: ((volume: Int, muted: Boolean) -> Unit)? = null
+
+    //Called when the timeline has been refreshed.
+    //Note that the current window or period index may change as a result of a timeline change. If playback can't continue smoothly because of this timeline change, a separate onPositionDiscontinuity(Player.PositionInfo, Player.PositionInfo, int) callback will be triggered.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //timeline – The latest timeline. Never null, but may be empty.
+    //reason – The Player.TimelineChangeReason responsible for this timeline change.
     var onTimelineChanged: ((timeline: Timeline, reason: Int) -> Unit)? = null
+
+    //Called when playback transitions to a media item or starts repeating a media item according to the current repeat mode.
+    //Note that this callback is also called when the playlist becomes non-empty or empty as a consequence of a playlist change.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //mediaItem – The MediaItem. May be null if the playlist becomes empty.
+    //reason – The reason for the transition.
     var onMediaItemTransition: ((mediaItem: MediaItem?, reason: Int) -> Unit)? = null
+
+    //Called when the available or selected tracks change.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //trackGroups – The available tracks. Never null, but may be of length zero.
+    //trackSelections – The selected tracks. Never null, but may contain null elements. A concrete implementation may include null elements if it has a fixed number of renderer components, wishes to report a TrackSelection for each of them, and has one or more renderer components that is not assigned any selected tracks.
     var onTracksChanged: ((trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) -> Unit)? =
         null
+
+    //Called when the player starts or stops loading the source.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //isLoading – Whether the source is currently being loaded.
     var onIsLoadingChanged: ((isLoading: Boolean) -> Unit)? = null
+
+    //Called when the value returned from isCommandAvailable(int) changes for at least one Player.Command.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //availableCommands – The available Player.Commands.
     var onAvailableCommandsChanged: ((availableCommands: Player.Commands) -> Unit)? = null
+
+    //Called when the value returned from getPlayWhenReady() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //playWhenReady – Whether playback will proceed when ready.
+    //reason – The reason for the change.
     var onPlayWhenReadyChanged: ((playWhenReady: Boolean, reason: Int) -> Unit)? = null
+
+    //Called when the value of isPlaying() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //isPlaying – Whether the player is playing
     var onIsPlayingChanged: ((isPlaying: Boolean) -> Unit)? = null
+
+    //Called when the value of getRepeatMode() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //repeatMode – The Player.RepeatMode used for playback.
     var onRepeatModeChanged: ((repeatMode: Int) -> Unit)? = null
+
+    //Called when the value of getShuffleModeEnabled() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //shuffleModeEnabled – Whether shuffling of windows is enabled.
     var onShuffleModeEnabledChanged: ((shuffleModeEnabled: Boolean) -> Unit)? = null
+
+    //Called when an error occurs. The playback state will transition to STATE_IDLE immediately after this method is called. The player instance can still be used, and release() must still be called on the player should it no longer be required.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Implementations of Player may pass an instance of a subclass of PlaybackException to this method in order to include more information about the error.
+    //Params:
+    //error – The error.
     var onPlayerError: ((error: PlaybackException) -> Unit)? = null
+
+    //Called when the PlaybackException returned by getPlayerError() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Implementations of Player may pass an instance of a subclass of PlaybackException to this method in order to include more information about the error.
+    //Params:
+    //error – The new error, or null if the error is being cleared.
     var onPlayerErrorChanged: ((error: PlaybackException?) -> Unit)? = null
+
+    //Called when a position discontinuity occurs.
+    //A position discontinuity occurs when the playing period changes, the playback position jumps within the period currently being played, or when the playing period has been skipped or removed.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //oldPosition – The position before the discontinuity.
+    //newPosition – The position after the discontinuity.
+    //reason – The Player.DiscontinuityReason responsible for the discontinuity.
     var onPositionDiscontinuity: ((oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int) -> Unit)? =
         null
+
+    //Called when the current playback parameters change. The playback parameters may change due to a call to setPlaybackParameters(PlaybackParameters), or the player itself may change them (for example, if audio playback switches to passthrough or offload mode, where speed adjustment is no longer possible).
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //playbackParameters – The playback parameters.
     var onPlaybackParametersChanged: ((playbackParameters: PlaybackParameters) -> Unit)? = null
+
+    //Called when the value of getSeekBackIncrement() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //seekBackIncrementMs – The seekBack() increment, in milliseconds.
     var onSeekBackIncrementChanged: ((seekBackIncrementMs: Long) -> Unit)? = null
+
+    //Called when the value of getSeekForwardIncrement() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //seekForwardIncrementMs – The seekForward() increment, in milliseconds.
     var onSeekForwardIncrementChanged: ((seekForwardIncrementMs: Long) -> Unit)? = null
+
+    //Called when the value of getMaxSeekToPreviousPosition() changes.
+    //onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+    //Params:
+    //maxSeekToPreviousPositionMs – The maximum position for which seekToPrevious() seeks to the previous position, in milliseconds.
     var onMaxSeekToPreviousPositionChanged: ((maxSeekToPreviousPositionMs: Int) -> Unit)? = null
 
     private var orb: Orb? = null
@@ -792,6 +1083,7 @@ class UZVideoView : RelativeLayout,
         return player?.isPlayingAd
     }
 
+    // If link play is livestream, it will auto move to live edge when onResume is called
     fun setAutoMoveToLiveEdge(autoMoveToLiveEdge: Boolean) {
         this.autoMoveToLiveEdge = autoMoveToLiveEdge
     }

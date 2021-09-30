@@ -54,6 +54,7 @@ class FrmPlayerTiktok : Fragment() {
         tvLinkPlay.text =
             "linkPlay ${data?.linkPlay}\nisPortraitVideo: ${data?.isPortraitVideo}"
 
+        //will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setFreeSize(true)

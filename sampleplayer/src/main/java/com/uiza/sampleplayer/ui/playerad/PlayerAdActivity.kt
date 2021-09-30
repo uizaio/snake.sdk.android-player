@@ -20,9 +20,14 @@ class PlayerAdActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun setupViews() {
         uzVideoView.onPlayerViewCreated = {
+            //always in portrait mode
             uzVideoView.setAlwaysPortraitScreen(true)
+
+            //disabled feature PIP
             uzVideoView.setPIPModeEnabled(false)
         }
+
+        //the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
