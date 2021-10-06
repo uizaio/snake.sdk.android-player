@@ -90,7 +90,7 @@ class UZVideoView : RelativeLayout,
     }
 
     private fun log(msg: String) {
-        Log.d("loitpp" + javaClass.simpleName, msg)
+        Log.d(javaClass.simpleName, msg)
     }
 
     private var defaultSeekValue = FAST_FORWARD_REWIND_INTERVAL
@@ -1992,7 +1992,7 @@ class UZVideoView : RelativeLayout,
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
-//                log("loitpp onIsPlayingChanged isPlaying $isPlaying")
+//                log("onIsPlayingChanged isPlaying $isPlaying")
                 onIsPlayingChanged?.invoke(isPlaying)
             }
 

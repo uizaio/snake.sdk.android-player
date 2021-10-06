@@ -1,37 +1,48 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in E:\Installation\Ung_Dung_Lap_Trinh\Java\IDE\AndroidStudio\SDK/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-dontwarn javax.naming.**
+-dontwarn javax.servlet.**
+-dontwarn org.joda.**
+-dontwarn org.slf4j.**
 
-# Add any project specific keep options here:
+-dontwarn com.google.android.material.**
+-keep class com.google.android.material.** { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-dontwarn androidx.**
+-keep class androidx.** { *; }
+-keep interface androidx.** { *; }
 
-##for eventbus
-#-keepattributes *Annotation*
-#-keepclassmembers class ** {
-#    @org.greenrobot.eventbus.Subscribe <methods>;
-#}
-#-keep enum org.greenrobot.eventbus.ThreadMode { *; }
-##end for eventbus
-#
-##for realm
-#-keep class io.realm.annotations.RealmModule
-#-keep @io.realm.annotations.RealmModule class *
-#-dontwarn javax.**
-#-dontwarn io.realm.**
-##for realm
-#
-##for loading view
-#-keep class vn.loitp.views.progressloadingview.avloadingindicatorview.lib.avi.** { *; }
-#-keep class vn.loitp.views.progressloadingview.avloadingindicatorview.lib.avi.indicators.** { *; }
-##for loading view
+-ignorewarnings
+
+#exo
+-keep class com.google.android.exoplayer2.** { public *; }
+-keep class com.google.android.gms.cast.** { public *; }
+-keep public class com.google.android.gms.ads.** { public *;}
+
+# For old ads classes
+-keep public class com.google.ads.** { public *;}
+
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+
+# Gson specific classes
+-dontwarn sun.misc.**
+#-keep class com.google.gson.stream.** { *; }
+
+# Prevent proguard from stripping interface information from TypeAdapter, TypeAdapterFactory,
+# JsonSerializer, JsonDeserializer instances (so they can be used in @JsonAdapter)
+-keep class * implements com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Prevent R8 from leaving Data object members always null
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+ }
+ -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+-dontwarn retrofit2.**
