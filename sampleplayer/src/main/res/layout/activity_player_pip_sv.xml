@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlRootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText">
+
+    <com.uiza.sdk.view.UZVideoView
+        android:id="@+id/uzVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/svChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_65"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Chat 1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="Chat 2"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Chat 3"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="Chat 4"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="Chat 5"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Type something..."
+                android:textColor="@color/white"
+                android:textColorHint="@color/light_grey"
+                android:textSize="@dimen/text_size_large" />
+
+            <View
+                android:id="@+id/layoutKeyboardFake"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

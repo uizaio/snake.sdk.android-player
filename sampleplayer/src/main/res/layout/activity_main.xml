@@ -61,6 +61,12 @@
             android:text="Player PIP (API >= 24 and Support PIP)" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPlayerPipSv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player PIP (API >= 24 and Support PIP) inside Scrollview" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnPlayerPreviewSeekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

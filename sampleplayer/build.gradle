@@ -69,5 +69,4 @@ dependencies {
 
     //for broadcast
     implementation 'com.github.uizaio:snake.sdk.android:1.0.9'
-
 }
