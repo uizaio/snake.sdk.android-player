@@ -14,6 +14,7 @@ import com.uiza.sampleplayer.ui.playerbasic.PlayerBasicActivity
 import com.uiza.sampleplayer.ui.playerfragment.PlayerFragmentActivity
 import com.uiza.sampleplayer.ui.playerlist.PlayerListActivity
 import com.uiza.sampleplayer.ui.playerpip.PlayerPipActivity
+import com.uiza.sampleplayer.ui.playerpipinscrollview.PlayerPipScrollViewActivity
 import com.uiza.sampleplayer.ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity
 import com.uiza.sampleplayer.ui.playerrecyclerview.PlayerRecyclerViewActivity
 import com.uiza.sampleplayer.ui.playerskin.PlayerSkinActivity
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         }
         btnPlayerPip.setOnClickListener {
             gotoActivity(PlayerPipActivity::class.java)
+        }
+        btnPlayerPipSv.setOnClickListener {
+            gotoActivity(PlayerPipScrollViewActivity::class.java)
         }
         btnPlayerPreviewSeekbar.setOnClickListener {
             gotoActivity(PlayerPreviewSeekbarActivity::class.java)

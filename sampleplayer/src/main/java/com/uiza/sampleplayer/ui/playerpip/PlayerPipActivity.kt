@@ -20,7 +20,6 @@ import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.utils.UZViewUtils
 import kotlinx.android.synthetic.main.activity_player_pip.*
 
-
 class PlayerPipActivity : AppCompatActivity() {
     companion object {
         private const val BROADCAST_ACTION_1 = "BROADCAST_ACTION_1"
@@ -69,7 +68,7 @@ class PlayerPipActivity : AppCompatActivity() {
     }
 
     private fun setupActionsCustom() {
-        //You only customer the PIP controller if android SDK >= Android O
+        // You only customer the PIP controller if android SDK >= Android O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             listRemoteAction = ArrayList()
 
@@ -101,12 +100,12 @@ class PlayerPipActivity : AppCompatActivity() {
     private fun setupViews() {
         uzVideoView.setPIPModeEnabled(true)
 
-        //the first time the player has playbackState == Player.STATE_READY
+        // the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
 
-        //will be called when screen is rotated
+        // will be called when screen is rotated
         uzVideoView.onScreenRotate = { isLandscape ->
             if (!uzVideoView.isInPipMode()) {
                 if (isLandscape) {
@@ -213,7 +212,7 @@ class PlayerPipActivity : AppCompatActivity() {
         }
         uzVideoView.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
 
-        //update UI
+        // update UI
         if (!isInPictureInPictureMode) {
             if (this.isPortraitVideo) {
                 uzVideoView.post {
@@ -226,7 +225,7 @@ class PlayerPipActivity : AppCompatActivity() {
             }
         }
 
-        //handle actions
+        // handle actions
         if (isInPictureInPictureMode) {
             val filter = IntentFilter()
             filter.addAction(BROADCAST_ACTION_1)

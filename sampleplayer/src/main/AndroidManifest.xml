@@ -70,6 +70,15 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="n" />
         <activity
+            android:name=".ui.playerpipinscrollview.PlayerPipScrollViewActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity"
+            android:supportsPictureInPicture="true"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            tools:targetApi="n" />
+        <activity
             android:name=".ui.playerpreviewseekbar.PlayerPreviewSeekbarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:label="PlayerPreviewSeekbarActivity"
@@ -105,9 +114,9 @@
             android:label="DisplayBasicActivity"
             android:screenOrientation="portrait" />
 
-<!--        <meta-data-->
-<!--            android:name="uz_live_views_url"-->
-<!--            android:value="@string/uz_live_views_url" />-->
+        <!--        <meta-data-->
+        <!--            android:name="uz_live_views_url"-->
+        <!--            android:value="@string/uz_live_views_url" />-->
     </application>
 
 </manifest>

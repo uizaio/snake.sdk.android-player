@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
-import kotlinx.android.synthetic.main.activity_player_pip.*
+import kotlinx.android.synthetic.main.fragment_player.*
 
 class FragmentPlayer : Fragment() {
 
@@ -30,7 +30,7 @@ class FragmentPlayer : Fragment() {
     private fun setupViews() {
         uzVideoView.setPIPModeEnabled(true)
 
-        //the first time the player has playbackState == Player.STATE_READY
+        // the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
@@ -47,7 +47,7 @@ class FragmentPlayer : Fragment() {
         }
         btnPlay.setOnClickListener { onPlay() }
 
-        //on back pressed
+        // on back pressed
         activity?.onBackPressedDispatcher?.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (!uzVideoView.onBackPressed()) {
