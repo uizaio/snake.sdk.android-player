@@ -14,5 +14,4 @@ class UZApplication : MultiDexApplication() {
 //        UZPlayer.init(com.uiza.sdk.R.layout.uzplayer_skin_2)
 //        UZPlayer.init(com.uiza.sdk.R.layout.uzplayer_skin_3)
     }
-
 }

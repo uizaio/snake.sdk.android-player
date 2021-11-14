@@ -2,8 +2,8 @@ package com.uiza.sampleplayer.ui.common.error
 
 import android.os.Bundle
 import android.view.MenuItem
-import com.uiza.sampleplayer.R
 import androidx.appcompat.app.AppCompatActivity
+import com.uiza.sampleplayer.R
 import com.uiza.sdk.exceptions.ErrorConstant
 import kotlinx.android.synthetic.main.activity_common_error.*
 

@@ -24,7 +24,7 @@ import com.google.android.exoplayer2.ui.TrackSelectionView.TrackSelectionListene
 import com.google.android.exoplayer2.util.Assertions
 import com.google.android.material.tabs.TabLayout
 import com.uiza.sampleplayer.R
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 /**
  * Dialog to select tracks.

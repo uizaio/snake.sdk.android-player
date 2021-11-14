@@ -15,13 +15,13 @@ class PlayerPreviewSeekbarActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
-        //will be called when player is created
+        // will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)
         }
 
-        //the first time the player has playbackState == Player.STATE_READY
+        // the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }

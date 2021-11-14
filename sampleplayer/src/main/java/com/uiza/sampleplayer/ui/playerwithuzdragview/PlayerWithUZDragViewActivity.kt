@@ -46,23 +46,23 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         })
         uzDragView.setScreenRotate(false)
 
-        //will be called when player is created
+        // will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.uzPlayerView?.setControllerStateCallback(object :
-                UZPlayerView.ControllerStateCallback {
-                override fun onVisibilityChange(visible: Boolean) {
-                    uzDragView.setVisibilityChange(visible)
-                }
-            })
+                    UZPlayerView.ControllerStateCallback {
+                    override fun onVisibilityChange(visible: Boolean) {
+                        uzDragView.setVisibilityChange(visible)
+                    }
+                })
             uzVideoView.setUseUZDragView(true)
         }
 
-        //result when init resources
+        // result when init resources
         uzVideoView.onIsInitResult = {
             uzDragView.setInitResult(true)
         }
 
-        //the first time the player has playbackState == Player.STATE_READY
+        // the first time the player has playbackState == Player.STATE_READY
         uzVideoView.onFirstStateReady = {
             uzVideoView.setUseController(true)
         }
