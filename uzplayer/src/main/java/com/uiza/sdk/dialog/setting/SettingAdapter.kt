@@ -95,6 +95,5 @@ class SettingAdapter(
         fun setTitle(title: String?) {
             text1.text = title
         }
-
     }
 }

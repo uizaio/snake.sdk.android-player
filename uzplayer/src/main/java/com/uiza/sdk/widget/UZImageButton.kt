@@ -89,7 +89,7 @@ class UZImageButton : AppCompatImageButton {
             isUseDefault = true
             drawableDisabled = null
         }
-        //disable click sound of a particular button in android app
+        // disable click sound of a particular button in android app
         isSoundEffectsEnabled = false
         if (!isUseDefault) {
             drawableEnabled = drawable
@@ -105,7 +105,7 @@ class UZImageButton : AppCompatImageButton {
         }
         screenWPortrait = screenWidth
         screenWLandscape = UZViewUtils.getScreenHeightIncludeNavigationBar(this.context)
-        //set padding 5dp
+        // set padding 5dp
         val px = dp2px(5f)
         setPadding(px, px, px, px)
         post {

@@ -53,5 +53,4 @@ internal class PreviewAnimatorImpl(
             .alpha(0f)
             .setListener(hideListener)
     }
-
 }

@@ -18,9 +18,11 @@ object ConnectivityUtils {
             val network = cm.activeNetwork
             if (network != null) {
                 val ncs = cm.getNetworkCapabilities(network)
-                return ncs != null && (ncs.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || ncs.hasTransport(
-                    NetworkCapabilities.TRANSPORT_WIFI
-                ))
+                return ncs != null && (
+                    ncs.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || ncs.hasTransport(
+                        NetworkCapabilities.TRANSPORT_WIFI
+                    )
+                    )
             }
             false
         } else {

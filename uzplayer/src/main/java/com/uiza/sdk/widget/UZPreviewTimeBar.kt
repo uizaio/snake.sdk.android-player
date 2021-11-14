@@ -14,10 +14,12 @@ import com.uiza.sdk.widget.previewseekbar.PreviewDelegate
 import com.uiza.sdk.widget.previewseekbar.PreviewLoader
 import com.uiza.sdk.widget.previewseekbar.PreviewView
 import com.uiza.sdk.widget.previewseekbar.PreviewView.OnPreviewChangeListener
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
-class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(context, attrs),
-    PreviewView, OnScrubListener {
+class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) :
+    DefaultTimeBar(context, attrs),
+    PreviewView,
+    OnScrubListener {
 
     companion object {
         fun getDefaultScrubberColor(playedColor: Int): Int {
@@ -182,5 +184,4 @@ class UZPreviewTimeBar(context: Context, attrs: AttributeSet?) : DefaultTimeBar(
     private fun dpToPx(displayMetrics: DisplayMetrics, dp: Int): Int {
         return (dp * displayMetrics.density + 0.5f).toInt()
     }
-
 }

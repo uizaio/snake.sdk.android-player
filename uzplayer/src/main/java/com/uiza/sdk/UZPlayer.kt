@@ -19,5 +19,4 @@ class UZPlayer {
             this.skinDefault = skinDefault
         }
     }
-
 }

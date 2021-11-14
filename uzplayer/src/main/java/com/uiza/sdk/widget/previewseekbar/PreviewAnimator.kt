@@ -15,7 +15,7 @@ abstract class PreviewAnimator(
 ) {
     abstract fun move()
     abstract fun show()
-    abstract fun hide()// Don't move if we still haven't reached half of the width
+    abstract fun hide() // Don't move if we still haven't reached half of the width
 
     /**
      * Get x position for the preview frame. This method takes into account a margin

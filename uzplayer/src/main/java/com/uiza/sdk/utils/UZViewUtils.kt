@@ -13,9 +13,9 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Build
 import android.provider.Settings
-import android.view.*
+import android.view.* // ktlint-disable no-wildcard-imports
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.*
+import android.widget.* // ktlint-disable no-wildcard-imports
 import androidx.annotation.ColorInt
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
@@ -36,8 +36,8 @@ object UZViewUtils {
         return false
     }
 
-    //return true if device is set auto switch rotation on
-    //return false if device is set auto switch rotation off
+    // return true if device is set auto switch rotation on
+    // return false if device is set auto switch rotation off
     @JvmStatic
     fun isRotationPossible(context: Context): Boolean {
         val hasAccelerometer =
@@ -97,7 +97,7 @@ object UZViewUtils {
 //        }
 //    }
 
-    //return pixel
+    // return pixel
     @JvmStatic
     fun heightOfView(view: View): Int {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -147,21 +147,25 @@ object UZViewUtils {
 
     @JvmStatic
     fun hideSystemUiFullScreen(view: View) {
-        view.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+        view.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LOW_PROFILE
                 or View.SYSTEM_UI_FLAG_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            )
     }
 
     @JvmStatic
     fun hideSystemUi(view: View) {
-        view.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
+        view.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LOW_PROFILE
                 and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
                 and View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
                 and View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION.inv()
-                and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv())
+                and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
+            )
     }
 
     @JvmStatic
@@ -173,9 +177,9 @@ object UZViewUtils {
     @JvmStatic
     fun setTextShadow(textView: TextView, @ColorInt color: Int) {
         textView.setShadowLayer(
-            1f,  // radius
-            1f,  // dx
-            1f,  // dy
+            1f, // radius
+            1f, // dx
+            1f, // dy
             color // shadow color
         )
     }
@@ -248,10 +252,10 @@ object UZViewUtils {
         val widthSurfaceView: Int
         val heightSurfaceView: Int
         val isFullScreen = isFullScreen(viewGroup.context)
-        if (isFullScreen) { //landscape
+        if (isFullScreen) { // landscape
             widthSurfaceView = getScreenHeightIncludeNavigationBar(viewGroup.context)
             heightSurfaceView = screenHeight
-        } else { //portrait
+        } else { // portrait
             widthSurfaceView = screenWidth
             heightSurfaceView = if (videoW == 0 || videoH == 0) {
                 (widthSurfaceView * Constants.RATIO_9_16).toInt()
@@ -266,14 +270,14 @@ object UZViewUtils {
         viewGroup.layoutParams.width = widthSurfaceView
         viewGroup.layoutParams.height = heightSurfaceView
         viewGroup.requestLayout()
-        //set size of parent view group of viewGroup
+        // set size of parent view group of viewGroup
         val parentViewGroup = viewGroup.parent as RelativeLayout?
         parentViewGroup?.let {
             it.layoutParams.width = widthSurfaceView
             it.layoutParams.height = heightSurfaceView
             it.requestLayout()
         }
-        //edit size of imageview thumnail
+        // edit size of imageview thumnail
         val flImgThumnailPreviewSeekbar =
             viewGroup.findViewById<FrameLayout>(R.id.layoutPreviewUZ)
         flImgThumnailPreviewSeekbar?.let {
@@ -301,24 +305,26 @@ object UZViewUtils {
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 )
                 window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         or View.SYSTEM_UI_FLAG_FULLSCREEN
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    )
             } else {
-                //TODO cần làm ở sdk thấp, thanh navigation ko chịu ẩn
+                // TODO cần làm ở sdk thấp, thanh navigation ko chịu ẩn
             }
         }
         dialog.show()
         try {
             window.attributes.windowAnimations = R.style.uiza_dialog_animation
             window.setBackgroundDrawableResource(R.drawable.background_dialog_uz)
-            //set dialog position
+            // set dialog position
             val wlp = window.attributes
             wlp.gravity = Gravity.BOTTOM
-            //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            // wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
             wlp.dimAmount = 0.65f
             wlp.width = ViewGroup.LayoutParams.MATCH_PARENT
             wlp.height =

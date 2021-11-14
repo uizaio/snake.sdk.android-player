@@ -11,7 +11,7 @@ import androidx.core.view.GestureDetectorCompat
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlin.math.abs
 
-//I want to to show playback controls only when onTouch event is fired.
+// I want to to show playback controls only when onTouch event is fired.
 // How to prevent control buttons being showed up when on long pressing, dragging etc.?
 class UZPlayerView @JvmOverloads constructor(
     context: Context,
@@ -277,5 +277,4 @@ class UZPlayerView @JvmOverloads constructor(
     fun isUseUZDragView(): Boolean {
         return useUZDragView
     }
-
 }

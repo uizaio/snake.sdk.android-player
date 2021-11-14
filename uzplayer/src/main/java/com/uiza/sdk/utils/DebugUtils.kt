@@ -7,14 +7,14 @@ import com.uiza.sdk.R
 
 object DebugUtils {
 
-    //return button audio in debug layout
+    // return button audio in debug layout
     @JvmStatic
     fun getAudioButton(debugRootView: LinearLayout): View? {
         for (i in 0 until debugRootView.childCount) {
             val childView = debugRootView.getChildAt(i)
             if (childView is Button) {
                 if (childView.text.toString()
-                        .equals(debugRootView.context.getString(R.string.audio), ignoreCase = true)
+                    .equals(debugRootView.context.getString(R.string.audio), ignoreCase = true)
                 ) {
                     return childView
                 }
@@ -29,7 +29,7 @@ object DebugUtils {
             val childView = debugRootView.getChildAt(i)
             if (childView is Button) {
                 if (childView.text.toString()
-                        .equals(debugRootView.context.getString(R.string.video), ignoreCase = true)
+                    .equals(debugRootView.context.getString(R.string.video), ignoreCase = true)
                 ) {
                     return childView
                 }
@@ -44,7 +44,7 @@ object DebugUtils {
             val childView = debugRootView.getChildAt(i)
             if (childView is Button) {
                 if (childView.text.toString()
-                        .equals(debugRootView.context.getString(R.string.text), ignoreCase = true)
+                    .equals(debugRootView.context.getString(R.string.text), ignoreCase = true)
                 ) {
                     return childView
                 }
