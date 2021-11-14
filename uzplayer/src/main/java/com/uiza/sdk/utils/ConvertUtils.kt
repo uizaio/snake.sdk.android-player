@@ -54,11 +54,13 @@ object ConvertUtils {
         while (playingIndex > 0) {
             val tag = playlist.tags[playingIndex - 1]
             if (tag.contains(EXTINF)) {
-                totalTime += (tag.replace(",", emptyStr).replace(
-                    oldValue = EXTINF,
-                    newValue = emptyStr
-                )
-                    .toDouble() * 1000).toLong()
+                totalTime += (
+                    tag.replace(",", emptyStr).replace(
+                        oldValue = EXTINF,
+                        newValue = emptyStr
+                    )
+                        .toDouble() * 1000
+                    ).toLong()
                 if (totalTime >= timeToEndChunk) {
                     break
                 }

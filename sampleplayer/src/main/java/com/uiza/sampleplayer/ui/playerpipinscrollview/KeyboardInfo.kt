@@ -1,8 +1,5 @@
 package com.uiza.sampleplayer.ui.playerpipinscrollview
 
-/**
- * Created by Cristian Holdunu on 12/01/2019.
- */
 object KeyboardInfo {
     const val HEIGHT_NOT_COMPUTED = -1
     const val STATE_UNKNOWN = -1

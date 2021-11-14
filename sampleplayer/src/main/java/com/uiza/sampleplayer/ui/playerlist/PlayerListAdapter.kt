@@ -50,5 +50,4 @@ class PlayerListAdapter(private val list: List<Item>) :
             holder.bind(movie)
         }
     }
-
 }

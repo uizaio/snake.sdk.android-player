@@ -6,9 +6,9 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
-//https://stackoverflow.com/questions/8248274/android-detect-orientation-changed
+// https://stackoverflow.com/questions/8248274/android-detect-orientation-changed
 class SensorOrientationChangeNotifier private constructor(context: Context) {
 
     companion object {

@@ -12,11 +12,11 @@ class UZTextView : AppCompatTextView {
     private var isUseDefault = false
     private var isLandscape = false
 
-    //sp
+    // sp
     var textSizeLand = -1F
         get() = if (field == -1F) 15F else field
 
-    //sp
+    // sp
     var textSizePortrait = -1F
         get() = if (field == -1F) 10F else field
 
@@ -48,9 +48,9 @@ class UZTextView : AppCompatTextView {
             true
         }
         setShadowLayer(
-            1f,  // radius
-            1f,  // dx
-            1f,  // dy
+            1f, // radius
+            1f, // dx
+            1f, // dy
             Color.BLACK // shadow color
         )
         updateSize()

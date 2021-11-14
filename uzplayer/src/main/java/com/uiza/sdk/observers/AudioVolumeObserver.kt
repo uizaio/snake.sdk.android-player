@@ -4,8 +4,6 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
 import android.provider.Settings
-import com.uiza.sdk.observers.AudioVolumeContentObserver
-import com.uiza.sdk.observers.OnAudioVolumeChangedListener
 
 class AudioVolumeObserver(private val mContext: Context, handler: Handler) {
     val handler: Handler
@@ -51,5 +49,4 @@ class AudioVolumeObserver(private val mContext: Context, handler: Handler) {
 
     val maxVolume: Int?
         get() = mAudioManager?.getStreamMaxVolume(audioStreamType)
-
 }

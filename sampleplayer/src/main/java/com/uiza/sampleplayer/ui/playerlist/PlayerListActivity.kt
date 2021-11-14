@@ -1,5 +1,6 @@
 package com.uiza.sampleplayer.ui.playerlist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,8 +11,8 @@ import com.google.android.exoplayer2.Player
 import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
-import kotlinx.android.synthetic.main.activity_player_list.*
-import java.util.*
+import kotlinx.android.synthetic.main.activity_player_list.* // ktlint-disable no-wildcard-imports
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class PlayerListActivity : AppCompatActivity() {
     private val list: MutableList<Item> = ArrayList()
@@ -25,13 +26,12 @@ class PlayerListActivity : AppCompatActivity() {
         setupViews()
         prepareData()
 
-        //play first item
+        // play first item
         Handler(Looper.getMainLooper()).postDelayed(
             {
                 onPlay()
             }, 1
         )
-
     }
 
     private fun setupViews() {
@@ -61,14 +61,14 @@ class PlayerListActivity : AppCompatActivity() {
 
     private fun onPlay() {
         if (uzVideoView.isViewCreated()) {
-            //update ui
+            // update ui
             list.forEach { item ->
                 item.isPlaying = false
             }
             list[index].isPlaying = true
             notifyDataSetChanged()
 
-            //play
+            // play
             list[index].uzPlayback?.let {
                 uzVideoView.play(it)
             }
@@ -148,6 +148,7 @@ class PlayerListActivity : AppCompatActivity() {
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyDataSetChanged() {
         playerListAdapter?.notifyDataSetChanged()
     }

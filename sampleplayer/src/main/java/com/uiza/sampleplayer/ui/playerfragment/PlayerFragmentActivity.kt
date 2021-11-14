@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.uiza.sampleplayer.R
-import kotlinx.android.synthetic.main.activity_player_fragment.*
 
 class PlayerFragmentActivity : AppCompatActivity() {
     private val fragmentPlayer = FragmentPlayer()

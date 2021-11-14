@@ -16,7 +16,7 @@ import androidx.customview.widget.ViewDragHelper
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.UZViewUtils.screenHeight
 import com.uiza.sdk.utils.UZViewUtils.screenWidth
-import com.uiza.sdk.view.UZPlayerView.*
+import com.uiza.sdk.view.UZPlayerView.* // ktlint-disable no-wildcard-imports
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -44,7 +44,7 @@ class UZDragView @JvmOverloads constructor(
     private var mDragOffset = 0f
     private var isEnableRevertMaxSize = true
 
-    //header view is scaled at least 1
+    // header view is scaled at least 1
     var isMinimizedAtLeastOneTime = false
         private set
     private var sizeWHeaderViewOriginal = 0
@@ -135,7 +135,7 @@ class UZDragView @JvmOverloads constructor(
 
                     val halfHeaderWidth = hv.width / 2
                     when (mDragOffset) {
-                        //top_left, top, top_right
+                        // top_left, top, top_right
                         0f -> {
                             changeState(
                                 when {
@@ -151,7 +151,7 @@ class UZDragView @JvmOverloads constructor(
                                 }
                             )
                         }
-                        //bottom_left, bottom, bottom_right
+                        // bottom_left, bottom, bottom_right
                         1f -> {
                             changeState(
                                 when {
@@ -169,7 +169,7 @@ class UZDragView @JvmOverloads constructor(
 
                             isMinimizedAtLeastOneTime = true
                         }
-                        //mid_left, mid, mid_right
+                        // mid_left, mid, mid_right
                         else -> {
                             changeState(
                                 when {
@@ -205,7 +205,6 @@ class UZDragView @JvmOverloads constructor(
                     }
                 }
             }
-
         }
 
         override fun tryCaptureView(child: View, pointerId: Int): Boolean {
@@ -516,7 +515,7 @@ class UZDragView @JvmOverloads constructor(
         }
     }
 
-    //private State stateBeforeDisappear;
+    // private State stateBeforeDisappear;
     private fun setEnableSlide(isEnableSlide: Boolean) {
         if (isInitSuccess) {
             this.isEnableSlide = isEnableSlide

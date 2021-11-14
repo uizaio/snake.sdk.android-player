@@ -1,5 +1,6 @@
 package com.uiza.sampleplayer.ui.playerrecyclerview
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +9,7 @@ import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_recycler_view.*
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class PlayerRecyclerViewActivity : AppCompatActivity() {
     private val list: MutableList<ItemRv> = ArrayList()
@@ -92,6 +93,7 @@ class PlayerRecyclerViewActivity : AppCompatActivity() {
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun notifyDataSetChanged() {
         recyclerAdapter?.notifyDataSetChanged()
     }

@@ -14,8 +14,10 @@ object UZAppUtils {
 
     @JvmStatic
     fun checkChromeCastAvailable(): Boolean {
-        return (isDependencyAvailable("com.google.android.gms.cast.framework.OptionsProvider")
-                && isDependencyAvailable("androidx.mediarouter.app.MediaRouteButton"))
+        return (
+            isDependencyAvailable("com.google.android.gms.cast.framework.OptionsProvider") &&
+                isDependencyAvailable("androidx.mediarouter.app.MediaRouteButton")
+            )
     }
 
     val isAdsDependencyAvailable: Boolean
@@ -49,7 +51,9 @@ object UZAppUtils {
      */
     @JvmStatic
     fun hasSupportPIP(context: Context): Boolean {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-                && context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE))
+        return (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+                context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+            )
     }
 }

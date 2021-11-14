@@ -19,7 +19,7 @@ import com.google.android.exoplayer2.ui.DefaultTrackNameProvider
 import com.google.android.exoplayer2.ui.TrackNameProvider
 import com.google.android.exoplayer2.util.Assertions
 import com.uiza.sdk.R
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import kotlin.math.min
 
 /**
@@ -242,11 +242,15 @@ class UZTrackSelectionView @JvmOverloads constructor(
                         for (groupIndex in 0 until tga.length) {
                             val group = tga.get(groupIndex)
                             val enableAdaptiveSelections =
-                                (allowAdaptiveSelections && tga.get(groupIndex).length > 1 && (trackInfo.getAdaptiveSupport(
-                                    rendererIndex,
-                                    groupIndex,
-                                    false
-                                ) != RendererCapabilities.ADAPTIVE_NOT_SUPPORTED))
+                                (
+                                    allowAdaptiveSelections && tga.get(groupIndex).length > 1 && (
+                                        trackInfo.getAdaptiveSupport(
+                                            rendererIndex,
+                                            groupIndex,
+                                            false
+                                        ) != RendererCapabilities.ADAPTIVE_NOT_SUPPORTED
+                                        )
+                                    )
                             a[groupIndex] = arrayOfNulls(group.length)
                             for (trackIndex in 0 until group.length) {
                                 if (trackIndex == 0) {
@@ -322,12 +326,12 @@ class UZTrackSelectionView @JvmOverloads constructor(
                 a[i]?.let {
                     for (j in it.indices) {
                         it[j]?.isChecked =
-                            override != null
-                                    && override?.groupIndex == i && override?.containsTrack(j) == true
+                            override != null &&
+                            override?.groupIndex == i && override?.containsTrack(j) == true
                     }
                 }
             }
-            //scroll to
+            // scroll to
             if (disableView.isChecked) {
                 scrollTo(disableView)
             }

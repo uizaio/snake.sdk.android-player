@@ -184,5 +184,4 @@ class PreviewAnimatorLollipopImpl internal constructor(
         get() = (previewView as View).y + previewView.thumbOffset
     private val morphEndY: Float
         get() = (previewFrameLayout.y + previewFrameLayout.height / 2f)
-
 }
