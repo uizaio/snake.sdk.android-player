@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "snake.sdk.android.player"
+        applicationId "snake.sdk.androidplayer"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
