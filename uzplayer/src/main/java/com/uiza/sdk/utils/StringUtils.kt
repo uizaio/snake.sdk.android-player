@@ -1,17 +1,7 @@
 package com.uiza.sdk.utils
 
-import android.os.Build
-import android.text.Html
-import android.text.Spanned
-import android.text.TextUtils
-import android.util.Base64
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.regex.Pattern
-import kotlin.math.pow
 
 object StringUtils {
     /**
@@ -26,9 +16,9 @@ object StringUtils {
      * @param email The email to validate.
      * @return `true` if the input is a valid email. `false` otherwise.
      */
-    fun isEmailValid(email: CharSequence?): Boolean {
-        return email != null && EMAIL_PATTERN.matcher(email).matches()
-    }
+//    fun isEmailValid(email: CharSequence?): Boolean {
+//        return email != null && EMAIL_PATTERN.matcher(email).matches()
+//    }
 
     /**
      * convert html to plain text
@@ -36,16 +26,16 @@ object StringUtils {
      * @param htmlText : html String
      * @return plain text
      */
-    fun htmlToPlainText(htmlText: String?): String {
-        val spanned: Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(htmlText)
-        }
-        val chars = CharArray(spanned.length)
-        TextUtils.getChars(spanned, 0, spanned.length, chars, 0)
-        return String(chars)
-    }
+//    fun htmlToPlainText(htmlText: String?): String {
+//        val spanned: Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            Html.fromHtml(htmlText, Html.FROM_HTML_MODE_LEGACY)
+//        } else {
+//            Html.fromHtml(htmlText)
+//        }
+//        val chars = CharArray(spanned.length)
+//        TextUtils.getChars(spanned, 0, spanned.length, chars, 0)
+//        return String(chars)
+//    }
 
     /**
      * Convert UTC time string to long value
@@ -53,17 +43,17 @@ object StringUtils {
      * @param timeStr the time with format `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
      * @return UTC time as long value
      */
-    fun convertUTCMs(timeStr: String): Long {
-        if (TextUtils.isEmpty(timeStr)) return -1
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        return try {
-            val date = dateFormat.parse(timeStr)
-            date?.time ?: -1
-        } catch (e: ParseException) {
-            -1
-        }
-    }
+//    fun convertUTCMs(timeStr: String): Long {
+//        if (TextUtils.isEmpty(timeStr)) return -1
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+//        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+//        return try {
+//            val date = dateFormat.parse(timeStr)
+//            date?.time ?: -1
+//        } catch (e: ParseException) {
+//            -1
+//        }
+//    }
 
     fun convertSecondsToHMmSs(seconds: Long): String {
         if (seconds <= 0) {
@@ -84,50 +74,50 @@ object StringUtils {
         return convertSecondsToHMmSs(mls / 1000)
     }
 
-    @JvmStatic
-    fun groupingSeparatorLong(value: Long): String {
-        val decimalFormatSymbols = DecimalFormatSymbols()
-        decimalFormatSymbols.groupingSeparator = ','
-        val decimalFormat = DecimalFormat("###,###", decimalFormatSymbols)
-        return decimalFormat.format(value)
-    }
+//    @JvmStatic
+//    fun groupingSeparatorLong(value: Long): String {
+//        val decimalFormatSymbols = DecimalFormatSymbols()
+//        decimalFormatSymbols.groupingSeparator = ','
+//        val decimalFormat = DecimalFormat("###,###", decimalFormatSymbols)
+//        return decimalFormat.format(value)
+//    }
 
-    @JvmStatic
-    fun doubleFormatted(value: Double, precision: Int): String {
-        return DecimalFormat(
-            "#0." + if (precision <= 1) "0" else if (precision == 2) "00" else "000"
-        ).format(value)
-    }
+//    @JvmStatic
+//    fun doubleFormatted(value: Double, precision: Int): String {
+//        return DecimalFormat(
+//            "#0." + if (precision <= 1) "0" else if (precision == 2) "00" else "000"
+//        ).format(value)
+//    }
 
-    @JvmStatic
-    fun humanReadableByteCount(bytes: Long, si: Boolean, isBits: Boolean): String {
-        val unit = if (!si) 1000 else 1024
-        if (bytes < unit) return "$bytes KB"
-        val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
-        val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1].toString() + if (si) "" else "i"
-        return if (isBits) String.format(
-            Locale.getDefault(),
-            "%.1f %sb",
-            bytes / unit.toDouble().pow(exp.toDouble()),
-            pre
-        ) else String.format(
-            Locale.getDefault(),
-            "%.1f %sB",
-            bytes / unit.toDouble().pow(exp.toDouble()),
-            pre
-        )
-    }
+//    @JvmStatic
+//    fun humanReadableByteCount(bytes: Long, si: Boolean, isBits: Boolean): String {
+//        val unit = if (!si) 1000 else 1024
+//        if (bytes < unit) return "$bytes KB"
+//        val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
+//        val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1].toString() + if (si) "" else "i"
+//        return if (isBits) String.format(
+//            Locale.getDefault(),
+//            "%.1f %sb",
+//            bytes / unit.toDouble().pow(exp.toDouble()),
+//            pre
+//        ) else String.format(
+//            Locale.getDefault(),
+//            "%.1f %sB",
+//            bytes / unit.toDouble().pow(exp.toDouble()),
+//            pre
+//        )
+//    }
 
-    @Throws(Exception::class)
-    fun parserJsonInfo(url: String): String? {
-        val fromIndex = url.indexOf("?cm=")
-        if (fromIndex > 0) {
-            val toIndex = url.indexOf("&", fromIndex)
-            val cm = if (toIndex > 0) url.substring(fromIndex + 4, toIndex) else url.substring(
-                fromIndex + 4
-            )
-            return String(Base64.decode(cm, Base64.DEFAULT))
-        }
-        return null
-    }
+//    @Throws(Exception::class)
+//    fun parserJsonInfo(url: String): String? {
+//        val fromIndex = url.indexOf("?cm=")
+//        if (fromIndex > 0) {
+//            val toIndex = url.indexOf("&", fromIndex)
+//            val cm = if (toIndex > 0) url.substring(fromIndex + 4, toIndex) else url.substring(
+//                fromIndex + 4
+//            )
+//            return String(Base64.decode(cm, Base64.DEFAULT))
+//        }
+//        return null
+//    }
 }
