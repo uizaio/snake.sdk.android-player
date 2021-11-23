@@ -660,7 +660,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         // playbackParameters – The playback parameters.
         uzVideoView.onPlaybackParametersChanged = {
             tvOnPlaybackParametersChanged.text =
-                "onPlaybackParametersChanged speed ${it.speed}, pitcho ${it.pitch}"
+                "onPlaybackParametersChanged speed ${it.speed}, pitch ${it.pitch}"
         }
 
         // Called when the value of getSeekBackIncrement() changes.

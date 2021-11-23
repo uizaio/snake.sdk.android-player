@@ -1,5 +1,6 @@
 package com.uiza.sampleplayer.ui.playerpip
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.RemoteAction
 import android.content.BroadcastReceiver
@@ -49,6 +50,7 @@ class PlayerPipActivity : AppCompatActivity() {
         enterPIPMode()
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun setupActionsNone() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             listRemoteAction = ArrayList()
@@ -67,6 +69,7 @@ class PlayerPipActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun setupActionsCustom() {
         // You only customer the PIP controller if android SDK >= Android O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
