@@ -7,11 +7,11 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerLibraryInfo;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.database.DatabaseProvider;
-import com.google.android.exoplayer2.database.ExoDatabaseProvider;
+import com.google.android.exoplayer2.database.StandaloneDatabaseProvider;
 import com.google.android.exoplayer2.ext.cronet.CronetDataSource;
 import com.google.android.exoplayer2.ext.cronet.CronetUtil;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.upstream.cache.Cache;
@@ -105,8 +105,8 @@ public final class DemoUtil {
     public static synchronized DataSource.Factory getDataSourceFactory(Context context) {
         if (dataSourceFactory == null) {
             context = context.getApplicationContext();
-            DefaultDataSourceFactory upstreamFactory =
-                    new DefaultDataSourceFactory(context, getHttpDataSourceFactory(context));
+            DefaultDataSource.Factory upstreamFactory =
+                    new DefaultDataSource.Factory(context, getHttpDataSourceFactory(context));
             dataSourceFactory = buildReadOnlyCacheDataSource(upstreamFactory, getDownloadCache(context));
         }
         return dataSourceFactory;
@@ -125,7 +125,7 @@ public final class DemoUtil {
 
     private static synchronized DatabaseProvider getDatabaseProvider(Context context) {
         if (databaseProvider == null) {
-            databaseProvider = new ExoDatabaseProvider(context);
+            databaseProvider = new StandaloneDatabaseProvider(context);
         }
         return databaseProvider;
     }

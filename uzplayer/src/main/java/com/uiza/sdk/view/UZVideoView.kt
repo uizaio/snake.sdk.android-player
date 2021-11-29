@@ -31,7 +31,6 @@ import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
-import com.google.android.exoplayer2.device.DeviceInfo
 import com.google.android.exoplayer2.drm.FrameworkMediaDrm
 import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
@@ -660,7 +659,7 @@ class UZVideoView :
     // onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
     // Params:
     // maxSeekToPreviousPositionMs – The maximum position for which seekToPrevious() seeks to the previous position, in milliseconds.
-    var onMaxSeekToPreviousPositionChanged: ((maxSeekToPreviousPositionMs: Int) -> Unit)? = null
+    var onMaxSeekToPreviousPositionChanged: ((maxSeekToPreviousPositionMs: Long) -> Unit)? = null
 
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
@@ -2124,7 +2123,7 @@ class UZVideoView :
                 onSeekForwardIncrementChanged?.invoke(seekForwardIncrementMs)
             }
 
-            override fun onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs: Int) {
+            override fun onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs: Long) {
                 super.onMaxSeekToPreviousPositionChanged(maxSeekToPreviousPositionMs)
 //                log("onMaxSeekToPreviousPositionChanged maxSeekToPreviousPositionMs $maxSeekToPreviousPositionMs")
                 onMaxSeekToPreviousPositionChanged?.invoke(maxSeekToPreviousPositionMs)
