@@ -35,13 +35,14 @@ import com.google.android.exoplayer2.drm.FrameworkMediaDrm
 import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException
-import com.google.android.exoplayer2.source.* // ktlint-disable no-wildcard-imports
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.LoadEventInfo
+import com.google.android.exoplayer2.source.MediaLoadData
+import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ads.AdsLoader
 import com.google.android.exoplayer2.text.Cue
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector.ParametersBuilder
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.util.Assertions
@@ -568,12 +569,11 @@ class UZVideoView :
     // reason – The reason for the transition.
     var onMediaItemTransition: ((mediaItem: MediaItem?, reason: Int) -> Unit)? = null
 
-    // Called when the available or selected tracks change.
-    // onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
-    // Params:
-    // trackGroups – The available tracks. Never null, but may be of length zero.
-    // trackSelections – The selected tracks. Never null, but may contain null elements. A concrete implementation may include null elements if it has a fixed number of renderer components, wishes to report a TrackSelection for each of them, and has one or more renderer components that is not assigned any selected tracks.
-    var onTracksChanged: ((trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) -> Unit)? =
+    //    Called when the available or selected tracks change.
+//    onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+//    Params:
+//    tracksInfo – The available tracks information. Never null, but may be of length zero.
+    var onTracksInfoChanged: ((tracksInfo: TracksInfo) -> Unit)? =
         null
 
     // Called when the player starts or stops loading the source.
@@ -664,12 +664,12 @@ class UZVideoView :
     private var orb: Orb? = null
     private val compositeDisposable = CompositeDisposable()
 
-    var player: SimpleExoPlayer? = null
+    var player: ExoPlayer? = null
     private var dataSourceFactory: DataSource.Factory? = null
     private var mediaItems: List<MediaItem>? = null
     private var trackSelector: DefaultTrackSelector? = null
     private var trackSelectorParameters: DefaultTrackSelector.Parameters? = null
-    private var lastSeenTrackGroupArray: TrackGroupArray? = null
+    private var lastSeenTracksInfo: TracksInfo? = null
     private var startAutoPlay = false
     private var startWindow = 0
     private var startPosition: Long = 0
@@ -1213,7 +1213,7 @@ class UZVideoView :
     private fun updateStartPosition() {
         player?.let {
             startAutoPlay = it.playWhenReady
-            startWindow = it.currentWindowIndex
+            startWindow = it.currentMediaItemIndex
             startPosition = max(0, it.contentPosition)
         }
     }
@@ -1488,7 +1488,7 @@ class UZVideoView :
 
     val isLIVE: Boolean
         get() {
-            return player?.isCurrentWindowLive ?: false
+            return player?.isCurrentMediaItemLive ?: false
         }
 
     val isVOD: Boolean
@@ -1957,28 +1957,19 @@ class UZVideoView :
                 onMediaItemTransition?.invoke(mediaItem, reason)
             }
 
-            override fun onTracksChanged(
-                trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray
-            ) {
-                super.onTracksChanged(trackGroups, trackSelections)
-//                log("onTracksChanged")
-                if (trackGroups !== lastSeenTrackGroupArray) {
-                    val mappedTrackInfo = trackSelector?.currentMappedTrackInfo
-                    if (mappedTrackInfo != null) {
-                        if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO) == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS
-                        ) {
-                            throw Exception("Media includes video tracks, but none are playable by this device")
-                        }
-                        if (mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_AUDIO) == MappedTrackInfo.RENDERER_SUPPORT_UNSUPPORTED_TRACKS
-                        ) {
-                            throw Exception("Media includes audio tracks, but none are playable by this device")
-                        }
-                    }
-                    lastSeenTrackGroupArray = trackGroups
+            override fun onTracksInfoChanged(tracksInfo: TracksInfo) {
+                super.onTracksInfoChanged(tracksInfo)
+                if (tracksInfo === lastSeenTracksInfo) {
+                    return
                 }
-
-                onTracksChanged?.invoke(trackGroups, trackSelections)
+                if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_VIDEO)) {
+                    throw Exception("Media includes video tracks, but none are playable by this device")
+                }
+                if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_AUDIO)) {
+                    throw Exception("Media includes audio tracks, but none are playable by this device")
+                }
+                lastSeenTracksInfo = tracksInfo
+                onTracksInfoChanged?.invoke(tracksInfo)
             }
 
 //            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -2595,9 +2586,10 @@ class UZVideoView :
                 trackSelectorParameters?.let {
                     trackSelector?.parameters = it
                 }
-                lastSeenTrackGroupArray = null
+                lastSeenTracksInfo = TracksInfo.EMPTY
                 trackSelector?.let {
-                    player = SimpleExoPlayer.Builder(context, renderersFactory)
+                    player = ExoPlayer.Builder(context)
+                        .setRenderersFactory(renderersFactory)
                         .setMediaSourceFactory(mediaSourceFactory)
                         .setTrackSelector(it)
                         .build()
@@ -2634,9 +2626,14 @@ class UZVideoView :
         }
         uzPlayback?.let { uzp ->
             val builder = Builder()
-            builder
-                .setUri(Uri.parse(uzp.linkPlay))
-                .setAdTagUri(uzp.urlIMAAd)
+            builder.setUri(Uri.parse(uzp.linkPlay))
+            if (uzp.urlIMAAd.isNullOrEmpty()) {
+                // do nothing
+            } else {
+                builder.setAdsConfiguration(
+                    AdsConfiguration.Builder(Uri.parse(uzp.urlIMAAd)).build()
+                )
+            }
             mediaItems.add(builder.build())
 
             var hasAds = false
@@ -2656,15 +2653,15 @@ class UZVideoView :
                 }
 
                 val drmConfiguration =
-                    Assertions.checkNotNull(mediaItem.playbackProperties).drmConfiguration
+                    Assertions.checkNotNull(mediaItem.localConfiguration).drmConfiguration
                 if (drmConfiguration != null) {
                     if (Util.SDK_INT < 18) {
                         throw Exception("DRM content not supported on API levels below 18")
-                    } else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.uuid)) {
+                    } else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.scheme)) {
                         throw Exception("This device does not support the required DRM scheme")
                     }
                 }
-                hasAds = hasAds or (mediaItem.playbackProperties?.adsConfiguration != null)
+                hasAds = hasAds or (mediaItem.localConfiguration?.adsConfiguration != null)
             }
             if (!hasAds) {
                 releaseAdsLoader()

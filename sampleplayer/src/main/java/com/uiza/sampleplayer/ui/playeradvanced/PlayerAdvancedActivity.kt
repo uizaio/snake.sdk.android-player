@@ -6,17 +6,12 @@ import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.Format
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.* // ktlint-disable no-wildcard-imports
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.decoder.DecoderReuseEvaluation
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoSize
 import com.uiza.sampleplayer.R
@@ -562,15 +557,13 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("onMediaItemTransition mediaItem ${mediaItem?.mediaId}, reason $reason")
         }
 
-        // Called when the available or selected tracks change.
-        // onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
-        // Params:
-        // trackGroups – The available tracks. Never null, but may be of length zero.
-        // trackSelections – The selected tracks. Never null, but may contain null elements. A concrete implementation may include null elements if it has a fixed number of renderer components, wishes to report a TrackSelection for each of them, and has one or more renderer components that is not assigned any selected tracks.
-        uzVideoView.onTracksChanged =
-            { trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray ->
-                log("onTracksChanged trackGroups ${trackGroups.length}, trackSelections ${trackSelections.length}")
-            }
+        //    Called when the available or selected tracks change.
+//    onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
+//    Params:
+//    tracksInfo – The available tracks information. Never null, but may be of length zero.
+        uzVideoView.onTracksInfoChanged = { tracksInfo_: TracksInfo ->
+            log("onTracksInfoChanged")
+        }
 
         // Called when the player starts or stops loading the source.
         // onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
