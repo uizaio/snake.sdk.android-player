@@ -35,7 +35,6 @@ class UZPlayerView @JvmOverloads constructor(
     private var onDoubleTap: OnDoubleTap? = null
     private var onLongPressed: OnLongPressed? = null
     private var controllerStateCallback: ControllerStateCallback? = null
-    private val doubleTapActivated = true
 
     // Variable to save current state
     private var isDoubleTap = false
