@@ -2051,7 +2051,7 @@ class UZVideoView :
                         }
 
                         if (isAutoRetryPlayerIfError) {
-                            layoutOverlayUZVideo.isVisible = false
+                            layoutOverlayUZVideo?.isVisible = false
                         }
                     }
                 }
@@ -2723,6 +2723,11 @@ class UZVideoView :
 
     @SuppressLint("InflateParams")
     private fun addLayoutOverlay() {
+        if (layoutOverlayUZVideo != null) {
+//            log("onPlaybackStateChanged addLayoutOverlay return")
+            return
+        }
+//        log("onPlaybackStateChanged addLayoutOverlay")
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.layout_stream_stopped, null)
 
@@ -2747,7 +2752,7 @@ class UZVideoView :
                 tvClickRetry?.isVisible = true
             }
         } else {
-            layoutOverlayUZVideo.isVisible = false
+            layoutOverlayUZVideo?.isVisible = false
         }
     }
 
