@@ -15,8 +15,8 @@ android {
         targetSdkVersion 31
         versionCode 1
         versionName "1.0.1"
-        def EXO_VERSION = "2.15.1"
-        buildConfigField "String", "EXO_VERSION", "\"${EXO_VERSION}\""
+//        def EXO_VERSION = "2.16.1"
+//        buildConfigField "String", "EXO_VERSION", "\"${EXO_VERSION}\""
     }
 
     dexOptions {
