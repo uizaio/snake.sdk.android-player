@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutOverlayUZVideo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:ignore="UnusedAttribute">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvStreamStopped"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/stream_has_been_stopped"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_medium"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvClickRetry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/click_here_to_reload"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_small" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="@dimen/w_20"
+        android:layout_height="@dimen/w_20"
+        android:layout_marginTop="@dimen/margin_padding_medium"
+        android:indeterminateTint="@color/white" />
+</LinearLayout>
