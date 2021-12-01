@@ -35,8 +35,6 @@ class DisplayBasicActivity : AppCompatActivity() {
         )
     }
 
-    private val logTag = DisplayBasicActivity::class.java.simpleName
-
     private var videoWidth = UZConstant.VIDEO_WIDTH_DEFAULT
     private var videoHeight = UZConstant.VIDEO_HEIGHT_DEFAULT
     private var videoFps = UZConstant.VIDEO_FPS_DEFAULT

@@ -23,7 +23,6 @@ class SensorOrientationChangeNotifier private constructor(context: Context) {
         }
     }
 
-    val logTag = javaClass.simpleName
     private val mListeners = ArrayList<WeakReference<Listener?>>(3)
     var orientation = 0
         private set

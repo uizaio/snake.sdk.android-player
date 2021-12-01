@@ -15,11 +15,13 @@ import android.os.Build
 import android.provider.Settings
 import android.view.* // ktlint-disable no-wildcard-imports
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.* // ktlint-disable no-wildcard-imports
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
-import com.uiza.sdk.widget.UZImageButton
 import kotlin.math.max
 
 object UZViewUtils {
@@ -174,15 +176,15 @@ object UZViewUtils {
             PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
     }
 
-    @JvmStatic
-    fun setTextShadow(textView: TextView, @ColorInt color: Int) {
-        textView.setShadowLayer(
-            1f, // radius
-            1f, // dx
-            1f, // dy
-            color // shadow color
-        )
-    }
+//    @JvmStatic
+//    fun setTextShadow(textView: TextView, @ColorInt color: Int) {
+//        textView.setShadowLayer(
+//            1f, // radius
+//            1f, // dx
+//            1f, // dy
+//            color // shadow color
+//        )
+//    }
 
     @JvmStatic
     fun setMarginPx(view: View, l: Int, t: Int, r: Int, b: Int) {
@@ -203,33 +205,33 @@ object UZViewUtils {
         view.requestLayout()
     }
 
-    @JvmStatic
-    fun setFocusableViews(focusable: Boolean, vararg views: View?) {
-        for (v in views) {
-            if (v != null && !v.isFocusable) {
-                v.isFocusable = focusable
-            }
-        }
-    }
+//    @JvmStatic
+//    fun setFocusableViews(focusable: Boolean, vararg views: View?) {
+//        for (v in views) {
+//            if (v != null && !v.isFocusable) {
+//                v.isFocusable = focusable
+//            }
+//        }
+//    }
 
-    @JvmStatic
-    fun setSrcDrawableEnabledForViews(vararg views: UZImageButton?) {
-        for (v in views) {
-            if (v != null && !v.isFocused) {
-                v.setSrcDrawableEnabled()
-            }
-        }
-    }
+//    @JvmStatic
+//    fun setSrcDrawableEnabledForViews(vararg views: UZImageButton?) {
+//        for (v in views) {
+//            if (v != null && !v.isFocused) {
+//                v.setSrcDrawableEnabled()
+//            }
+//        }
+//    }
 
-    @JvmStatic
-    fun setClickableForViews(able: Boolean, vararg views: View?) {
-        for (v in views) {
-            if (v != null) {
-                v.isClickable = able
-                v.isFocusable = able
-            }
-        }
-    }
+//    @JvmStatic
+//    fun setClickableForViews(able: Boolean, vararg views: View?) {
+//        for (v in views) {
+//            if (v != null) {
+//                v.isClickable = able
+//                v.isFocusable = able
+//            }
+//        }
+//    }
 
     @JvmStatic
     fun setUIFullScreenIcon(imageButton: ImageButton, isFullScreen: Boolean) {
@@ -313,8 +315,6 @@ object UZViewUtils {
                         or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     )
-            } else {
-                // TODO cần làm ở sdk thấp, thanh navigation ko chịu ẩn
             }
         }
         dialog.show()
@@ -352,8 +352,8 @@ object UZViewUtils {
 //        }
 //    }
 
-    @JvmStatic
-    fun updateUIFocusChange(view: View, isFocus: Boolean, resHasFocus: Int, resNoFocus: Int) {
-        view.setBackgroundResource(if (isFocus) resHasFocus else resNoFocus)
-    }
+//    @JvmStatic
+//    fun updateUIFocusChange(view: View, isFocus: Boolean, resHasFocus: Int, resNoFocus: Int) {
+//        view.setBackgroundResource(if (isFocus) resHasFocus else resNoFocus)
+//    }
 }

@@ -3,6 +3,7 @@ package com.uiza.sampleplayer.app
 import androidx.multidex.MultiDexApplication
 import com.uiza.sdk.UZPlayer
 
+// TODO pip bi loi khi xoay man hinh, luc xem video portrait
 class UZApplication : MultiDexApplication() {
 
     override fun onCreate() {

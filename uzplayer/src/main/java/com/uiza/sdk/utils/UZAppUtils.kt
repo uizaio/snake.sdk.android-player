@@ -7,10 +7,10 @@ import android.content.res.Configuration
 import android.os.Build
 
 object UZAppUtils {
-    @JvmStatic
-    fun getUserAgent(context: Context): String {
-        return context.applicationInfo.loadLabel(context.packageManager).toString()
-    }
+//    @JvmStatic
+//    fun getUserAgent(context: Context): String {
+//        return context.applicationInfo.loadLabel(context.packageManager).toString()
+//    }
 
     @JvmStatic
     fun checkChromeCastAvailable(): Boolean {
@@ -20,8 +20,8 @@ object UZAppUtils {
             )
     }
 
-    val isAdsDependencyAvailable: Boolean
-        get() = isDependencyAvailable("com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer")
+//    val isAdsDependencyAvailable: Boolean
+//        get() = isDependencyAvailable("com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer")
 
     @JvmStatic
     fun isDependencyAvailable(dependencyClass: String): Boolean {

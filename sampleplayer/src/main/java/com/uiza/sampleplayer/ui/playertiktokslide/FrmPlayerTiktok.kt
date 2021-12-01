@@ -91,6 +91,7 @@ class FrmPlayerTiktok : Fragment() {
             return
         }
         if (uzVideoView.isViewCreated()) {
+            log("isViewCreated")
             data?.let {
                 uzVideoView.play(it)
                 uzVideoView.pause()

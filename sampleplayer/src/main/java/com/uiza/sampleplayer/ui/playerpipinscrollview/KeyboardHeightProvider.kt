@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
@@ -13,7 +14,7 @@ import android.widget.PopupWindow
 import com.uiza.sampleplayer.R
 
 class KeyboardHeightProvider(private val activity: Activity) : PopupWindow(activity) {
-
+    private val logTag = javaClass.simpleName
     private var resizableView: View
     private var parentView: View? = null
     private var lastKeyboardHeight = -1
@@ -25,7 +26,7 @@ class KeyboardHeightProvider(private val activity: Activity) : PopupWindow(activ
         resizableView = contentView.findViewById(R.id.keyResizeContainer)
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
-        inputMethodMode = PopupWindow.INPUT_METHOD_NEEDED
+        inputMethodMode = INPUT_METHOD_NEEDED
 
         width = 0
         height = WindowManager.LayoutParams.MATCH_PARENT
@@ -70,7 +71,7 @@ class KeyboardHeightProvider(private val activity: Activity) : PopupWindow(activ
 
     private val topCutoutHeight: Int
         get() {
-            val decorView = activity.window.decorView ?: return 0
+            val decorView = activity.window.decorView
             var cutOffHeight = 0
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 decorView.rootWindowInsets?.let { windowInsets ->
@@ -99,6 +100,7 @@ class KeyboardHeightProvider(private val activity: Activity) : PopupWindow(activ
     }
 
     private fun notifyKeyboardHeightChanged(height: Int, orientation: Int) {
+        Log.d(logTag, "notifyKeyboardHeightChanged: $height $orientation")
         keyboardListeners.forEach {
             it.onHeightChanged(height)
         }

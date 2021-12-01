@@ -1,6 +1,5 @@
 package com.uiza.sdk.widget.previewseekbar
 
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -62,23 +61,13 @@ class PreviewDelegate(
             morphView?.let { mv ->
                 previewFrameView?.let { pfv ->
                     animator =
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            PreviewAnimatorLollipopImpl(
-                                parent = pp,
-                                previewView = previewView,
-                                morphView = mv,
-                                previewFrameLayout = frameLayout,
-                                previewFrameView = pfv
-                            )
-                        } else {
-                            PreviewAnimatorImpl(
-                                parent = pp,
-                                previewView = previewView,
-                                morphView = mv,
-                                previewFrameLayout = frameLayout,
-                                previewFrameView = pfv
-                            )
-                        }
+                        PreviewAnimatorLollipopImpl(
+                            parent = pp,
+                            previewView = previewView,
+                            morphView = mv,
+                            previewFrameLayout = frameLayout,
+                            previewFrameView = pfv
+                        )
                 }
             }
         }

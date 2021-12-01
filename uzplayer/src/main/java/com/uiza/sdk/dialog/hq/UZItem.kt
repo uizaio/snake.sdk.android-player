@@ -1,9 +1,11 @@
 package com.uiza.sdk.dialog.hq
 
 import android.widget.CheckedTextView
+import androidx.annotation.Keep
 import com.google.android.exoplayer2.Format
 
 // https://www.image-engineering.de/library/technotes/991-separating-sd-hd-full-hd-4k-and-8k
+@Keep
 class UZItem {
 
     companion object {

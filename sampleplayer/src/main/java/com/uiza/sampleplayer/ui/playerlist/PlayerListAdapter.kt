@@ -29,7 +29,7 @@ class PlayerListAdapter(private val list: List<Item>) :
                 itemView.linearLayout.setBackgroundColor(Color.WHITE)
             }
             itemView.cardView.setOnClickListener {
-                onClickItem?.invoke(adapterPosition, item)
+                onClickItem?.invoke(bindingAdapterPosition, item)
             }
         }
     }

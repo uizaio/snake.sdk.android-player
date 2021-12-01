@@ -9,13 +9,13 @@ group = 'com.github.uizaio'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0.1"
-        def EXO_VERSION = "2.15.0"
+        def EXO_VERSION = "2.15.1"
         buildConfigField "String", "EXO_VERSION", "\"${EXO_VERSION}\""
     }
 
@@ -33,16 +33,16 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-cast-framework:20.0.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:20.1.0'
 
     //https://github.com/google/ExoPlayer/blob/release-v2/RELEASENOTES.md
     // exoplayer
-    api 'com.google.android.exoplayer:exoplayer:2.15.1'
-    implementation 'com.google.android.exoplayer:extension-ima:2.15.1'
-    implementation 'com.google.android.exoplayer:exoplayer-dash:2.15.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.15.1'
-    implementation 'com.google.android.exoplayer:extension-mediasession:2.15.1'
-    implementation 'com.google.android.exoplayer:extension-cronet:2.15.1'
+    api 'com.google.android.exoplayer:exoplayer:2.16.1'
+    implementation 'com.google.android.exoplayer:extension-ima:2.16.1'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.16.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.16.1'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.16.1'
+    implementation 'com.google.android.exoplayer:extension-cronet:2.16.1'
 
     compileOnly 'org.checkerframework:checker-qual:3.13.0'
 
@@ -52,20 +52,20 @@ dependencies {
     api 'com.google.android.material:material:1.4.0'
 //    implementation 'org.greenrobot:eventbus:3.2.0'
     api 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 //    api 'com.daimajia.androidanimations:library:2.4@aar'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 //    implementation 'com.squareup.retrofit2:converter-jackson:2.8.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-    api 'com.squareup.okhttp3:okhttp:4.9.1'
+    api 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     api 'io.reactivex.rxjava2:rxjava:2.2.21'
 
-    implementation 'joda-time:joda-time:2.10.5'
+    implementation 'joda-time:joda-time:2.10.10'
 
     // if you want to modify the version of these dependencies, check this link below
     // https://github.com/powermock/powermock/wiki/Mockito
@@ -76,7 +76,7 @@ dependencies {
 //    testImplementation 'org.powermock:powermock-module-junit4-rule-agent:1.7.4'
 //    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
 //    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
-    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //https://github.com/ezralazuardy/orb

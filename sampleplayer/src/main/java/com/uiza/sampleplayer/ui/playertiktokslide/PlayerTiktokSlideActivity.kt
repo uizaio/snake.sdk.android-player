@@ -10,7 +10,7 @@ import com.uiza.sampleplayer.R
 import com.uiza.sampleplayer.app.Constant
 import com.uiza.sdk.models.UZPlayback
 import kotlinx.android.synthetic.main.activity_player_tiktok_slide.*
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class PlayerTiktokSlideActivity : AppCompatActivity() {
     private val list = ArrayList<UZPlayback>()
