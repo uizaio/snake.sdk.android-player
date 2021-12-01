@@ -17,6 +17,7 @@ class PlayerBasicActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
+        uzVideoView.isAutoRetryPlayerIfError = true
         // will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)

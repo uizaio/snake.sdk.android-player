@@ -28,6 +28,7 @@ class FragmentPlayer : Fragment() {
     }
 
     private fun setupViews() {
+        uzVideoView.isAutoRetryPlayerIfError = true
         uzVideoView.setPIPModeEnabled(true)
 
         // the first time the player has playbackState == Player.STATE_READY
