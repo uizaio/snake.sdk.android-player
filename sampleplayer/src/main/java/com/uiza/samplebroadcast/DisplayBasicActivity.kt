@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.uiza.display.UZDisplayView
 import com.uiza.sampleplayer.R
@@ -169,7 +170,14 @@ class DisplayBasicActivity : AppCompatActivity() {
             if (uzDisplayBroadCast.isStreaming() == false) {
                 uzDisplayBroadCast.start(this)
             } else {
-                uzDisplayBroadCast.stop()
+                uzDisplayBroadCast.stop(
+                    onStopPreExecute = {
+                        bStartTop.isVisible = false
+                    },
+                    onStopSuccess = {
+                        bStartTop.isVisible = true
+                    }
+                )
             }
             if (uzDisplayBroadCast.isStreaming() == false && uzDisplayBroadCast.isRecording() == false) {
                 uzDisplayBroadCast.stopNotification()

@@ -67,6 +67,6 @@ dependencies {
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    //for broadcast
-    implementation 'com.github.uizaio:snake.sdk.android:1.0.9'
+    //for broadcast https://github.com/uizaio/snake.sdk.android-broadcast
+    implementation 'com.github.uizaio:snake.sdk.android-broadcast:1.1.5'
 }
