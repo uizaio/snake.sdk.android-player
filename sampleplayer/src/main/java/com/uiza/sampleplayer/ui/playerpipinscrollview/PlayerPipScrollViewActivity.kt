@@ -20,6 +20,7 @@ class PlayerPipScrollViewActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
+        uzVideoView.isAutoRetryPlayerIfError = true
         uzVideoView.setPIPModeEnabled(true)
         uzVideoView.setAutoReplay(true)
         uzVideoView.onFirstStateReady = {

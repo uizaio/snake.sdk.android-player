@@ -35,6 +35,7 @@ class PlayerListActivity : AppCompatActivity() {
     }
 
     private fun setupViews() {
+        uzVideoView.isAutoRetryPlayerIfError = true
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.setAlwaysPortraitScreen(true)
             uzVideoView.setPIPModeEnabled(false)

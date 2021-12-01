@@ -47,6 +47,7 @@ class PlayerWithUZDragViewActivity : AppCompatActivity() {
         })
         uzDragView.setScreenRotate(false)
 
+        uzVideoView.isAutoRetryPlayerIfError = true
         // will be called when player is created
         uzVideoView.onPlayerViewCreated = {
             uzVideoView.uzPlayerView?.setControllerStateCallback(object :

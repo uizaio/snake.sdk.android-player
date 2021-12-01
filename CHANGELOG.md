@@ -1,3 +1,8 @@
+### 1.0.8 (2021-12-01)
+- Added feat Auto retry player.
+Use: uzVideoView.isAutoRetryPlayerIfError = true
+Customize UI via layout: layout_stream_stopped.xml
+
 ### 1.0.6 (2021-10-06)
 - Fixed mirror bugs.
 
