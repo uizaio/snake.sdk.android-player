@@ -59,7 +59,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':uzplayer')
+//    implementation project(':uzplayer')
     implementation 'com.github.uizaio:snake.sdk.android-player:1.0.8'
 
     implementation 'androidx.multidex:multidex:2.0.1'
