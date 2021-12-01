@@ -786,10 +786,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-            // TODO revert
-//            val uzPlayback = UZPlayback(linkPlay = link)
-            val uzPlayback =
-                UZPlayback(linkPlay = "https://live.gcpsg.uizadev.io/stream/035e5012-95a1-4575-bc62-824ff6f2344a/e5773358-d175-4921-ad5f-16e2dae61810/master.m3u8")
+            val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }
     }
