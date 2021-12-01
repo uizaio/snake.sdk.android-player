@@ -11,6 +11,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
@@ -72,6 +74,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.layout_stream_stopped.view.*
 import kotlinx.android.synthetic.main.layout_uz_ima_video_core.view.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -142,6 +145,7 @@ class UZVideoView :
     private var isViewCreated = false
     private var skinId = UZPlayer.skinDefault
     var uzPlayback: UZPlayback? = null
+    var isAutoRetryPlayerIfError = false
 
     var listRemoteAction: List<RemoteAction>? = null
 
@@ -724,6 +728,7 @@ class UZVideoView :
                             }
 
                             override fun surfaceCreated(holder: SurfaceHolder) {
+                                addLayoutOverlay()
                                 onSurfaceCreated?.invoke(holder)
                             }
 
@@ -2007,6 +2012,18 @@ class UZVideoView :
 //                        log("onPlaybackStateChanged STATE_IDLE")
                         isOnPlayerEnded = false
                         showProgress()
+
+                        if (isAutoRetryPlayerIfError) {
+                            layoutOverlayUZVideo?.isVisible = true
+                            if (uzPlayback == null || uzPlayback?.linkPlay.isNullOrEmpty()) {
+                                tvStreamStopped?.isVisible = false
+                                tvClickRetry?.isVisible = false
+                            } else {
+                                tvStreamStopped?.isVisible = true
+                                tvClickRetry?.isVisible = true
+                            }
+                            retryVideo()
+                        }
                     }
                     Player.STATE_ENDED -> {
 //                        log("onPlaybackStateChanged STATE_ENDED")
@@ -2031,6 +2048,10 @@ class UZVideoView :
                                 setFirstStateReady(true)
                                 updateUIDependOnLiveStream()
                             }
+                        }
+
+                        if (isAutoRetryPlayerIfError) {
+                            layoutOverlayUZVideo.isVisible = false
                         }
                     }
                 }
@@ -2698,5 +2719,51 @@ class UZVideoView :
 
     fun setControllerHideOnTouch(controllerHideOnTouch: Boolean) {
         uzPlayerView?.controllerHideOnTouch = controllerHideOnTouch
+    }
+
+    @SuppressLint("InflateParams")
+    private fun addLayoutOverlay() {
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.layout_stream_stopped, null)
+
+        val params = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            this.height
+        )
+        params.addRule(ALIGN_PARENT_LEFT, TRUE)
+        params.addRule(ALIGN_PARENT_TOP, TRUE)
+        this.addView(view, params)
+
+        layoutOverlayUZVideo.setOnClickListener {
+            retryVideo()
+        }
+
+        if (isAutoRetryPlayerIfError) {
+            if (uzPlayback == null || uzPlayback?.linkPlay.isNullOrEmpty()) {
+                tvStreamStopped?.isVisible = false
+                tvClickRetry?.isVisible = false
+            } else {
+                tvStreamStopped?.isVisible = true
+                tvClickRetry?.isVisible = true
+            }
+        } else {
+            layoutOverlayUZVideo.isVisible = false
+        }
+    }
+
+    private val handlerRetry = Handler(Looper.getMainLooper())
+    private fun retryVideo() {
+        if (!isAutoRetryPlayerIfError) {
+            return
+        }
+        handlerRetry.removeCallbacksAndMessages(null)
+        handlerRetry.postDelayed(
+            {
+                uzPlayback?.let {
+                    play(it)
+                }
+            },
+            2000
+        )
     }
 }
