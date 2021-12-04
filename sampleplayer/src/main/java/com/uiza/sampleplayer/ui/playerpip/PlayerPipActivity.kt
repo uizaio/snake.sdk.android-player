@@ -122,6 +122,11 @@ class PlayerPipActivity : AppCompatActivity() {
 
         // If link play is livestream, it will auto move to live edge when onResume is called
         uzVideoView.setAutoMoveToLiveEdge(true)
+        uzVideoView.onScreenRotate = { isLandscape: Boolean ->
+            if (!isLandscape && isPortraitVideo) {
+                updateSize(true)
+            }
+        }
 
         btnVOD.setOnClickListener {
             updateSize(false)
