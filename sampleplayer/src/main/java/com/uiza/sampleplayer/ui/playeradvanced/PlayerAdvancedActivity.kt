@@ -786,7 +786,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
-//            val uzPlayback = UZPlayback(linkPlay = "https://linear01-playback.sooka.my/CH3/masterCH3.mpd")
+//            val uzPlayback = UZPlayback(linkPlay = "https://live.gcpsg.uiza.io/stream/edda469f-cff5-4711-af5e-9bed83dd9a44/7d71cdc6-a177-4776-8674-426953ea8f34/master.m3u8")
             val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }

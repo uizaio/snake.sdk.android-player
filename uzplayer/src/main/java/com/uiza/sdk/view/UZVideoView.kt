@@ -1975,7 +1975,7 @@ class UZVideoView :
                         message = ErrorConstant.ERR_27
                     )
                     onError?.invoke(exception)
-                    return
+//                    return
                 }
                 if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_AUDIO)) {
 //                    throw Exception("Media includes audio tracks, but none are playable by this device")
@@ -1984,7 +1984,7 @@ class UZVideoView :
                         message = ErrorConstant.ERR_28
                     )
                     onError?.invoke(exception)
-                    return
+//                    return
                 }
                 lastSeenTracksInfo = tracksInfo
                 onTracksInfoChanged?.invoke(tracksInfo)
