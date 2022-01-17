@@ -786,6 +786,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             return
         }
         if (uzVideoView.isViewCreated()) {
+//            val uzPlayback = UZPlayback(linkPlay = "https://linear01-playback.sooka.my/CH3/masterCH3.mpd")
             val uzPlayback = UZPlayback(linkPlay = link)
             uzVideoView.play(uzPlayback)
         }

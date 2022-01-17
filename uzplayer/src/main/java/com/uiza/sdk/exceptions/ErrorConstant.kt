@@ -44,6 +44,10 @@ class ErrorConstant {
         const val ERR_25 = "This is the first item of playlist/folder"
         const val ERR_CODE_26 = 26
         const val ERR_26 = "This is the first item of playlist/folder"
+        const val ERR_CODE_27 = 27
+        const val ERR_27 = "Media includes video tracks, but none are playable by this device"
+        const val ERR_CODE_28 = 28
+        const val ERR_28 = "Media includes audio tracks, but none are playable by this device"
         const val ERR_CODE_400 = 400
         const val ERR_400 =
             "Bad Request: The request was unacceptable, often due to missing a required parameter."

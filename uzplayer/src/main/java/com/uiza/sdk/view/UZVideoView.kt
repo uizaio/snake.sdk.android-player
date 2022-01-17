@@ -57,6 +57,7 @@ import com.uiza.sdk.UZPlayer
 import com.uiza.sdk.dialog.speed.Callback
 import com.uiza.sdk.dialog.speed.Speed
 import com.uiza.sdk.dialog.speed.UZSpeedDialog
+import com.uiza.sdk.exceptions.ErrorConstant
 import com.uiza.sdk.exceptions.ErrorUtils
 import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.models.UZPlayback
@@ -1968,10 +1969,22 @@ class UZVideoView :
                     return
                 }
                 if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_VIDEO)) {
-                    throw Exception("Media includes video tracks, but none are playable by this device")
+//                    throw Exception("Media includes video tracks, but none are playable by this device")
+                    val exception = UZException(
+                        code = ErrorConstant.ERR_CODE_27,
+                        message = ErrorConstant.ERR_27
+                    )
+                    onError?.invoke(exception)
+                    return
                 }
                 if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_AUDIO)) {
-                    throw Exception("Media includes audio tracks, but none are playable by this device")
+//                    throw Exception("Media includes audio tracks, but none are playable by this device")
+                    val exception = UZException(
+                        code = ErrorConstant.ERR_CODE_28,
+                        message = ErrorConstant.ERR_28
+                    )
+                    onError?.invoke(exception)
+                    return
                 }
                 lastSeenTracksInfo = tracksInfo
                 onTracksInfoChanged?.invoke(tracksInfo)
