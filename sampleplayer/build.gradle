@@ -60,7 +60,7 @@ repositories {
 
 dependencies {
     implementation project(':uzplayer')
-//    implementation 'com.github.uizaio:snake.sdk.android-player:1.0.9'
+//    implementation 'com.github.uizaio:snake.sdk.android-player:1.0.10'
 
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.4.0'
@@ -68,5 +68,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //for broadcast https://github.com/uizaio/snake.sdk.android-broadcast
-    implementation 'com.github.uizaio:snake.sdk.android-broadcast:1.1.5'
+    implementation 'com.github.uizaio:snake.sdk.android-broadcast:1.1.7'
 }

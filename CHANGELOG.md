@@ -1,3 +1,6 @@
+### 1.0.10 (2022-01-18)
+- update logic to throw exception `media includes video tracks, but none are playable by this device`
+
 ### 1.0.9 (2021-12-01)
 
 - Added feat Auto retry player.
