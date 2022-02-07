@@ -65,7 +65,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation "androidx.core:core-ktx:1.7.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10"
 
     //for broadcast https://github.com/uizaio/snake.sdk.android-broadcast
     implementation 'com.github.uizaio:snake.sdk.android-broadcast:1.1.7'
