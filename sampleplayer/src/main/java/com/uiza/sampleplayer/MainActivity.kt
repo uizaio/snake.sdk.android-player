@@ -22,7 +22,7 @@ import com.uiza.sampleplayer.ui.playertiktok.PlayerTiktokActivity
 import com.uiza.sampleplayer.ui.playertiktokslide.PlayerTiktokSlideActivity
 import com.uiza.sampleplayer.ui.playerwithuzdragview.PlayerWithUZDragViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class MainActivity : AppCompatActivity() {
 

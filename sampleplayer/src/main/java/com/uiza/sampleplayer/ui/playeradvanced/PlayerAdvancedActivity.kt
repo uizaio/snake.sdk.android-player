@@ -562,7 +562,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
 //    onEvents(Player, Player.Events) will also be called to report this event along with other events that happen in the same Looper message queue iteration.
 //    Params:
 //    tracksInfo – The available tracks information. Never null, but may be of length zero.
-        uzVideoView.onTracksInfoChanged = { tracksInfo_: TracksInfo ->
+        uzVideoView.onTracksInfoChanged = { _: TracksInfo ->
             log("onTracksInfoChanged")
         }
 
