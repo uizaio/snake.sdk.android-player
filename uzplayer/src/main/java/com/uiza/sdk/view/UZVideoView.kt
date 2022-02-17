@@ -7,6 +7,7 @@ import android.app.PictureInPictureParams
 import android.app.RemoteAction
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -2781,5 +2782,13 @@ class UZVideoView :
             },
             2000
         )
+    }
+
+    fun getCurrentBitmap(): Bitmap? {
+        val v = uzPlayerView?.videoSurfaceView
+        if (v is TextureView) {
+            return v.bitmap
+        }
+        return null
     }
 }
