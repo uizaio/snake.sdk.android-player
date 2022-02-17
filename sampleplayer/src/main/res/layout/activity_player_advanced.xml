@@ -496,7 +496,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/margin_padding_medium">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btSeekTo"
@@ -647,6 +648,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Zoom" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btGetBitmap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bitmap" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivBitmap"
+                    android:layout_width="@dimen/w_50"
+                    android:layout_height="@dimen/w_50"
+                    android:scaleType="centerInside" />
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>

@@ -778,6 +778,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         btZoom.setOnClickListener {
             uzVideoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
         }
+        btGetBitmap.setOnClickListener {
+            getBitmap()
+        }
     }
 
     private fun onPlay(link: String) {
@@ -820,5 +823,9 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         if (!uzVideoView.onBackPressed()) {
             super.onBackPressed()
         }
+    }
+
+    private fun getBitmap() {
+        ivBitmap.setImageBitmap(uzVideoView.getCurrentBitmap())
     }
 }
