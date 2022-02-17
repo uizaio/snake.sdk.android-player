@@ -1,3 +1,6 @@
+### 1.0.11 (2022-02-17)
+- Added function to get current bitmap of player
+
 ### 1.0.10 (2022-01-18)
 - update logic to throw exception `media includes video tracks, but none are playable by this device`
 
