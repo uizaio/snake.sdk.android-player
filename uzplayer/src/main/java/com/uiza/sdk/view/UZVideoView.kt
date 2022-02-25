@@ -18,8 +18,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.util.Pair
 import android.util.Rational
-import android.view.* // ktlint-disable no-wildcard-imports
-import android.widget.* // ktlint-disable no-wildcard-imports
+import android.view.*
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +27,7 @@ import androidx.core.view.isVisible
 import com.ezralazuardy.orb.Orb
 import com.ezralazuardy.orb.OrbHelper
 import com.ezralazuardy.orb.OrbListener
-import com.google.android.exoplayer2.* // ktlint-disable no-wildcard-imports
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.MediaItem.AdsConfiguration
 import com.google.android.exoplayer2.MediaItem.Builder
 import com.google.android.exoplayer2.analytics.AnalyticsListener
@@ -41,7 +41,6 @@ import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryExcep
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.source.LoadEventInfo
 import com.google.android.exoplayer2.source.MediaLoadData
-import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ads.AdsLoader
 import com.google.android.exoplayer2.text.Cue
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -63,7 +62,7 @@ import com.uiza.sdk.exceptions.ErrorUtils
 import com.uiza.sdk.exceptions.UZException
 import com.uiza.sdk.models.UZPlayback
 import com.uiza.sdk.observers.SensorOrientationChangeNotifier
-import com.uiza.sdk.utils.* // ktlint-disable no-wildcard-imports
+import com.uiza.sdk.utils.*
 import com.uiza.sdk.view.UZPlayerView.OnDoubleTap
 import com.uiza.sdk.widget.UZImageButton
 import com.uiza.sdk.widget.UZPreviewTimeBar
@@ -215,10 +214,10 @@ class UZVideoView :
     // mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadStarted: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            loadEventInfo: LoadEventInfo,
-            mediaLoadData: MediaLoadData
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit
     )? = null
 
     // Called when a media source completed loading data.
@@ -228,10 +227,10 @@ class UZVideoView :
     // mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadCompleted: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            loadEventInfo: LoadEventInfo,
-            mediaLoadData: MediaLoadData
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit
     )? = null
 
     // Called when a media source canceled loading data.
@@ -241,10 +240,10 @@ class UZVideoView :
     // mediaLoadData – The MediaLoadData defining the data being loaded.
     var onLoadCanceled: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            loadEventInfo: LoadEventInfo,
-            mediaLoadData: MediaLoadData
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData
+    ) -> Unit
     )? = null
 
     // Called when a media source loading error occurred.
@@ -257,12 +256,12 @@ class UZVideoView :
     // wasCanceled – Whether the load was canceled as a result of the error
     var onLoadError: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            loadEventInfo: LoadEventInfo,
-            mediaLoadData: MediaLoadData,
-            error: IOException,
-            wasCanceled: Boolean
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        loadEventInfo: LoadEventInfo,
+        mediaLoadData: MediaLoadData,
+        error: IOException,
+        wasCanceled: Boolean
+    ) -> Unit
     )? = null
 
     // Called when the downstream format sent to the renderers changed.
@@ -271,9 +270,9 @@ class UZVideoView :
     // mediaLoadData – The MediaLoadData defining the newly selected media data
     var onDownstreamFormatChanged: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            mediaLoadData: MediaLoadData
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit
     )? = null
 
     // Called when data is removed from the back of a media buffer, typically so that it can be re-buffered in a different format.
@@ -282,9 +281,9 @@ class UZVideoView :
     // mediaLoadData – The MediaLoadData defining the media being discarded.
     var onUpstreamDiscarded: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            mediaLoadData: MediaLoadData
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        mediaLoadData: MediaLoadData
+    ) -> Unit
     )? = null
 
     // Called when the bandwidth estimate for the current data source has been updated.
@@ -295,11 +294,11 @@ class UZVideoView :
     // bitrateEstimate – The bandwidth estimate, in bits per second
     var onBandwidthEstimate: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            totalLoadTimeMs: Int,
-            totalBytesLoaded: Long,
-            bitrateEstimate: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        totalLoadTimeMs: Int,
+        totalBytesLoaded: Long,
+        bitrateEstimate: Long
+    ) -> Unit
     )? = null
 
     // Called when an audio renderer is enabled.
@@ -308,9 +307,9 @@ class UZVideoView :
     // decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
     var onAudioEnabled: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderCounters: DecoderCounters
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit
     )? = null
 
     // Called when an audio renderer creates a decoder.
@@ -321,11 +320,11 @@ class UZVideoView :
     // initializationDurationMs – The time taken to initialize the decoder in milliseconds.
     var onAudioDecoderInitialized: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderName: String,
-            initializedTimestampMs: Long,
-            initializationDurationMs: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit
     )? = null
 
     // Called when the format of the media being consumed by an audio renderer changes.
@@ -335,10 +334,10 @@ class UZVideoView :
     // decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
     var onAudioInputFormatChanged: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            format: Format,
-            decoderReuseEvaluation: DecoderReuseEvaluation?
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit
     )? = null
 
     // Called when the audio position has increased for the first time since the last pause or position reset.
@@ -347,9 +346,9 @@ class UZVideoView :
     // playoutStartSystemTimeMs – The approximate derived System.currentTimeMillis() at which playout started.
     var onAudioPositionAdvancing: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            playoutStartSystemTimeMs: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        playoutStartSystemTimeMs: Long
+    ) -> Unit
     )? = null
 
     // Called when an audio underrun occurs.
@@ -360,11 +359,11 @@ class UZVideoView :
     // elapsedSinceLastFeedMs – The time since audio was last written to the output buffer.
     var onAudioUnderrun: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            bufferSize: Int,
-            bufferSizeMs: Long,
-            elapsedSinceLastFeedMs: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        bufferSize: Int,
+        bufferSizeMs: Long,
+        elapsedSinceLastFeedMs: Long
+    ) -> Unit
     )? = null
 
     // Called when an audio renderer releases a decoder.
@@ -373,9 +372,9 @@ class UZVideoView :
     // decoderName – The decoder that was released.
     var onAudioDecoderReleased: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderName: String
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit
     )? = null
 
     // Called when an audio renderer is disabled.
@@ -384,9 +383,9 @@ class UZVideoView :
     // decoderCounters – DecoderCounters that were updated by the renderer
     var onAudioDisabled: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderCounters: DecoderCounters
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit
     )? = null
 
     // Called when AudioSink has encountered an error.
@@ -396,9 +395,9 @@ class UZVideoView :
     // audioSinkError – The error that occurred. Typically an AudioSink.InitializationException, a AudioSink.WriteException, or an AudioSink.UnexpectedDiscontinuityException
     var onAudioSinkError: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            audioSinkError: java.lang.Exception
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        audioSinkError: java.lang.Exception
+    ) -> Unit
     )? = null
 
     // Called when an audio decoder encounters an error.
@@ -408,9 +407,9 @@ class UZVideoView :
     // audioCodecError – The error. Typically a MediaCodec.CodecException if the renderer uses MediaCodec, or a DecoderException if the renderer uses a software decoder
     var onAudioCodecError: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            audioCodecError: java.lang.Exception
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        audioCodecError: java.lang.Exception
+    ) -> Unit
     )? = null
 
     // Called when a video renderer is enabled.
@@ -419,9 +418,9 @@ class UZVideoView :
     // decoderCounters – DecoderCounters that will be updated by the renderer for as long as it remains enabled.
     var onVideoEnabled: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderCounters: DecoderCounters
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit
     )? = null
 
     // Called when a video renderer creates a decoder.
@@ -432,11 +431,11 @@ class UZVideoView :
     // initializationDurationMs – The time taken to initialize the decoder in milliseconds.
     var onVideoDecoderInitialized: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderName: String,
-            initializedTimestampMs: Long,
-            initializationDurationMs: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String,
+        initializedTimestampMs: Long,
+        initializationDurationMs: Long
+    ) -> Unit
     )? = null
 
     // Called when the format of the media being consumed by a video renderer changes.
@@ -446,10 +445,10 @@ class UZVideoView :
     // decoderReuseEvaluation – The result of the evaluation to determine whether an existing decoder instance can be reused for the new format, or null if the renderer did not have a decoder.
     var onVideoInputFormatChanged: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            format: Format,
-            decoderReuseEvaluation: DecoderReuseEvaluation?
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        format: Format,
+        decoderReuseEvaluation: DecoderReuseEvaluation?
+    ) -> Unit
     )? = null
 
     // Called after video frames have been dropped.
@@ -459,10 +458,10 @@ class UZVideoView :
     // elapsedMs – The duration in milliseconds over which the frames were dropped. This duration is timed from when the renderer was started or from when dropped frames were last reported (whichever was more recent), and not from when the first of the reported drops occurred.
     var onDroppedVideoFrames: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            droppedFrames: Int,
-            elapsedMs: Long
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        droppedFrames: Int,
+        elapsedMs: Long
+    ) -> Unit
     )? = null
 
     // Called when a video renderer releases a decoder.
@@ -471,9 +470,9 @@ class UZVideoView :
     // decoderName – The decoder that was released.
     var onVideoDecoderReleased: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderName: String
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderName: String
+    ) -> Unit
     )? = null
 
     // Called when a video renderer is disabled.
@@ -482,9 +481,9 @@ class UZVideoView :
     // decoderCounters – DecoderCounters that were updated by the renderer.
     var onVideoDisabled: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            decoderCounters: DecoderCounters
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        decoderCounters: DecoderCounters
+    ) -> Unit
     )? = null
 
     // Called when there is an update to the video frame processing offset reported by a video renderer.
@@ -495,10 +494,10 @@ class UZVideoView :
     // frameCount – The number to samples included in totalProcessingOffsetUs.
     var onVideoFrameProcessingOffset: (
         (
-            eventTime: AnalyticsListener.EventTime,
-            totalProcessingOffsetUs: Long,
-            frameCount: Int
-        ) -> Unit
+        eventTime: AnalyticsListener.EventTime,
+        totalProcessingOffsetUs: Long,
+        frameCount: Int
+    ) -> Unit
     )? = null
 
     // Called when the Player is released.
@@ -724,40 +723,40 @@ class UZVideoView :
 
                 if (it.videoSurfaceView is SurfaceView) {
                     (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
-                            SurfaceHolder.Callback2 {
-                            override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
-                                onSurfaceRedrawNeeded?.invoke(holder)
-                            }
+                        SurfaceHolder.Callback2 {
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
 
-                            override fun surfaceCreated(holder: SurfaceHolder) {
-                                addLayoutOverlay()
-                                onSurfaceCreated?.invoke(holder)
-                            }
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            addLayoutOverlay()
+                            onSurfaceCreated?.invoke(holder)
+                        }
 
-                            override fun surfaceChanged(
-                                holder: SurfaceHolder,
-                                format: Int,
-                                width: Int,
-                                height: Int
-                            ) {
-                                onSurfaceChanged?.invoke(holder, format, width, height)
-                            }
+                        override fun surfaceChanged(
+                            holder: SurfaceHolder,
+                            format: Int,
+                            width: Int,
+                            height: Int
+                        ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
+                        }
 
-                            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                                if (isInPipMode) {
-                                    if (isPIPEnable) {
-                                        if (finishAndRemoveTaskIsInPipMode) {
-                                            if (context is Activity) {
-                                                (context as Activity).finishAndRemoveTask()
-                                            }
-                                        } else {
-                                            onFinishAndRemoveTaskIsInPipMode?.invoke()
+                        override fun surfaceDestroyed(holder: SurfaceHolder) {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (finishAndRemoveTaskIsInPipMode) {
+                                        if (context is Activity) {
+                                            (context as Activity).finishAndRemoveTask()
                                         }
+                                    } else {
+                                        onFinishAndRemoveTaskIsInPipMode?.invoke()
                                     }
                                 }
-                                onSurfaceDestroyed?.invoke(holder)
                             }
-                        })
+                            onSurfaceDestroyed?.invoke(holder)
+                        }
+                    })
                 }
 
                 it.setErrorMessageProvider(PlayerErrorMessageProvider(context))
@@ -1603,39 +1602,39 @@ class UZVideoView :
 
                 if (it.videoSurfaceView is SurfaceView) {
                     (it.videoSurfaceView as SurfaceView).holder.addCallback(object :
-                            SurfaceHolder.Callback2 {
-                            override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
-                                onSurfaceRedrawNeeded?.invoke(holder)
-                            }
+                        SurfaceHolder.Callback2 {
+                        override fun surfaceRedrawNeeded(holder: SurfaceHolder) {
+                            onSurfaceRedrawNeeded?.invoke(holder)
+                        }
 
-                            override fun surfaceCreated(holder: SurfaceHolder) {
-                                onSurfaceCreated?.invoke(holder)
-                            }
+                        override fun surfaceCreated(holder: SurfaceHolder) {
+                            onSurfaceCreated?.invoke(holder)
+                        }
 
-                            override fun surfaceChanged(
-                                holder: SurfaceHolder,
-                                format: Int,
-                                width: Int,
-                                height: Int
-                            ) {
-                                onSurfaceChanged?.invoke(holder, format, width, height)
-                            }
+                        override fun surfaceChanged(
+                            holder: SurfaceHolder,
+                            format: Int,
+                            width: Int,
+                            height: Int
+                        ) {
+                            onSurfaceChanged?.invoke(holder, format, width, height)
+                        }
 
-                            override fun surfaceDestroyed(holder: SurfaceHolder) {
-                                if (isInPipMode) {
-                                    if (isPIPEnable) {
-                                        if (finishAndRemoveTaskIsInPipMode) {
-                                            if (context is Activity) {
-                                                (context as Activity).finishAndRemoveTask()
-                                            }
-                                        } else {
-                                            onFinishAndRemoveTaskIsInPipMode?.invoke()
+                        override fun surfaceDestroyed(holder: SurfaceHolder) {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (finishAndRemoveTaskIsInPipMode) {
+                                        if (context is Activity) {
+                                            (context as Activity).finishAndRemoveTask()
                                         }
+                                    } else {
+                                        onFinishAndRemoveTaskIsInPipMode?.invoke()
                                     }
                                 }
-                                onSurfaceDestroyed?.invoke(holder)
                             }
-                        })
+                            onSurfaceDestroyed?.invoke(holder)
+                        }
+                    })
                 }
 
                 layoutRootView.addView(it)
@@ -2608,7 +2607,7 @@ class UZVideoView :
                 val preferExtensionDecoders = false
                 val renderersFactory =
                     DemoUtil.buildRenderersFactory(context, preferExtensionDecoders)
-                val mediaSourceFactory: MediaSourceFactory = DefaultMediaSourceFactory(dtf)
+                val mediaSourceFactory = DefaultMediaSourceFactory(dtf)
                     .setAdsLoaderProvider { adsConfiguration: AdsConfiguration? ->
                         adsConfiguration?.let {
                             this.getAdsLoader(it)

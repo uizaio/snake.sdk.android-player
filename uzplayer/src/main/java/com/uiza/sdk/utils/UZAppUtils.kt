@@ -7,21 +7,14 @@ import android.content.res.Configuration
 import android.os.Build
 
 object UZAppUtils {
-//    @JvmStatic
-//    fun getUserAgent(context: Context): String {
-//        return context.applicationInfo.loadLabel(context.packageManager).toString()
-//    }
 
     @JvmStatic
     fun checkChromeCastAvailable(): Boolean {
         return (
-            isDependencyAvailable("com.google.android.gms.cast.framework.OptionsProvider") &&
-                isDependencyAvailable("androidx.mediarouter.app.MediaRouteButton")
-            )
+                isDependencyAvailable("com.google.android.gms.cast.framework.OptionsProvider") &&
+                        isDependencyAvailable("androidx.mediarouter.app.MediaRouteButton")
+                )
     }
-
-//    val isAdsDependencyAvailable: Boolean
-//        get() = isDependencyAvailable("com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer")
 
     @JvmStatic
     fun isDependencyAvailable(dependencyClass: String): Boolean {
@@ -52,8 +45,8 @@ object UZAppUtils {
     @JvmStatic
     fun hasSupportPIP(context: Context): Boolean {
         return (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-                context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-            )
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+                        context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+                )
     }
 }
