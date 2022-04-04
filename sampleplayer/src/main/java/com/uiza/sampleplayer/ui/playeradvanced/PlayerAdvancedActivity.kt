@@ -681,7 +681,7 @@ class PlayerAdvancedActivity : AppCompatActivity() {
             log("onMaxSeekToPreviousPositionChanged $it")
         }
         btPlayVOD.setOnClickListener {
-            etLinkPlay.setText(Constant.LINK_PLAY_VOD)
+            etLinkPlay.setText(Constant.LINK_PLAY_VOD_2)
             btPlayLink.performClick()
         }
         btPlayLive.setOnClickListener {
