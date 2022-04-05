@@ -48,6 +48,21 @@ class ErrorConstant {
         const val ERR_27 = "Media includes video tracks, but none are playable by this device"
         const val ERR_CODE_28 = 28
         const val ERR_28 = "Media includes audio tracks, but none are playable by this device"
+        const val ERR_CODE_29 = 29
+        const val ERR_29 = "Cleartext HTTP traffic not permitted. See https://exoplayer.dev/issues/cleartext-not-permitted"
+        const val ERR_CODE_30 = 30
+        const val ERR_30 = "DRM content not supported on API levels below 18"
+        const val ERR_CODE_31 = 31
+        const val ERR_31 = "This device does not support the required DRM scheme"
+        const val ERR_CODE_32 = 32
+        const val ERR_32 = "Cannot inflater view"
+        const val ERR_CODE_33 = 33
+        const val ERR_33 = "Cannot enter PIP Mode if screen is landscape"
+        const val ERR_CODE_34 = 34
+        const val ERR_34 = "setDefaultSeekValue(...) can be applied if the player state is Player.STATE_READY"
+        const val ERR_CODE_35 = 35
+        const val ERR_35 = "You cannot change skin because you use UZVideoView with UZDragView."
+
         const val ERR_CODE_400 = 400
         const val ERR_400 =
             "Bad Request: The request was unacceptable, often due to missing a required parameter."

@@ -710,7 +710,12 @@ class UZVideoView :
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         if (inflater == null) {
-            throw NullPointerException("Cannot inflater view")
+            val exception = UZException(
+                code = ErrorConstant.ERR_CODE_32,
+                message = ErrorConstant.ERR_32
+            )
+            onError?.invoke(exception)
+            return
         } else {
             uzPlayerView = inflater.inflate(skinId, null) as UZPlayerView?
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT)
@@ -1321,7 +1326,12 @@ class UZVideoView :
     fun enterPIPMode() {
         if (isPIPEnable) {
             if (isLandscape) {
-                throw IllegalArgumentException("Cannot enter PIP Mode if screen is landscape")
+                val exception = UZException(
+                    code = ErrorConstant.ERR_CODE_33,
+                    message = ErrorConstant.ERR_33
+                )
+                onError?.invoke(exception)
+                return
             }
             isInPipMode = true
             positionPIPPlayer = currentPosition
@@ -1431,7 +1441,12 @@ class UZVideoView :
 
     fun setDefaultSeekValue(mls: Long) {
         if (!isFirstStateReady) {
-            throw IllegalArgumentException("setDefaultSeekValue(...) can be applied if the player state is Player.STATE_READY")
+            val exception = UZException(
+                code = ErrorConstant.ERR_CODE_34,
+                message = ErrorConstant.ERR_34
+            )
+            onError?.invoke(exception)
+            return
         }
         defaultSeekValue = mls
     }
@@ -1573,7 +1588,12 @@ class UZVideoView :
      */
     fun changeSkin(@LayoutRes skinId: Int): Boolean {
         if (uzPlayerView?.isUseUZDragView() == true) {
-            throw IllegalArgumentException(resources.getString(R.string.error_change_skin_with_uzdragview))
+            val exception = UZException(
+                code = ErrorConstant.ERR_CODE_35,
+                message = ErrorConstant.ERR_35
+            )
+            onError?.invoke(exception)
+            return false
         }
         if (player == null || !isFirstStateReady || isOnPlayerEnded) {
             return false
@@ -1969,7 +1989,6 @@ class UZVideoView :
                     return
                 }
                 if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_VIDEO)) {
-//                    throw Exception("Media includes video tracks, but none are playable by this device")
                     val exception = UZException(
                         code = ErrorConstant.ERR_CODE_27,
                         message = ErrorConstant.ERR_27
@@ -1977,7 +1996,6 @@ class UZVideoView :
                     onError?.invoke(exception)
                 }
                 if (!tracksInfo.isTypeSupportedOrEmpty(C.TRACK_TYPE_AUDIO)) {
-//                    throw Exception("Media includes audio tracks, but none are playable by this device")
                     val exception = UZException(
                         code = ErrorConstant.ERR_CODE_28,
                         message = ErrorConstant.ERR_28
@@ -2672,7 +2690,12 @@ class UZVideoView :
             for (i in mediaItems.indices) {
                 val mediaItem = mediaItems[i]
                 if (!Util.checkCleartextTrafficPermitted(mediaItem)) {
-                    throw Exception("Cleartext HTTP traffic not permitted. See https://exoplayer.dev/issues/cleartext-not-permitted")
+                    val exception = UZException(
+                        code = ErrorConstant.ERR_CODE_29,
+                        message = ErrorConstant.ERR_29
+                    )
+                    onError?.invoke(exception)
+                    return emptyList()
                 }
                 if (context is Activity) {
                     if (Util.maybeRequestReadExternalStoragePermission(
@@ -2688,9 +2711,20 @@ class UZVideoView :
                     Assertions.checkNotNull(mediaItem.localConfiguration).drmConfiguration
                 if (drmConfiguration != null) {
                     if (Util.SDK_INT < 18) {
-                        throw Exception("DRM content not supported on API levels below 18")
+                        val exception = UZException(
+                            code = ErrorConstant.ERR_CODE_30,
+                            message = ErrorConstant.ERR_30
+                        )
+                        onError?.invoke(exception)
+                        return emptyList()
+
                     } else if (!FrameworkMediaDrm.isCryptoSchemeSupported(drmConfiguration.scheme)) {
-                        throw Exception("This device does not support the required DRM scheme")
+                        val exception = UZException(
+                            code = ErrorConstant.ERR_CODE_31,
+                            message = ErrorConstant.ERR_31
+                        )
+                        onError?.invoke(exception)
+                        return emptyList()
                     }
                 }
                 hasAds = hasAds or (mediaItem.localConfiguration?.adsConfiguration != null)
