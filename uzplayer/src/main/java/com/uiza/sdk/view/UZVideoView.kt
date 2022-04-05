@@ -1536,11 +1536,21 @@ class UZVideoView :
     }
 
     fun setSpeed(speed: Float) {
-        require(!isLIVE) {
-            resources.getString(R.string.error_speed_live_content)
+        if (isLIVE) {
+            val exception = UZException(
+                code = ErrorConstant.ERR_CODE_36,
+                message = ErrorConstant.ERR_36
+            )
+            onError?.invoke(exception)
+            return
         }
-        require(!(speed > 3 || speed < -3)) {
-            resources.getString(R.string.error_speed_illegal)
+        if ((speed > 3 || speed < -3)) {
+            val exception = UZException(
+                code = ErrorConstant.ERR_CODE_37,
+                message = ErrorConstant.ERR_37
+            )
+            onError?.invoke(exception)
+            return
         }
         val playbackParameters = PlaybackParameters(speed)
         player?.playbackParameters = playbackParameters

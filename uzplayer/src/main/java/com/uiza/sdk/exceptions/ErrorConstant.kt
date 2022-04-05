@@ -62,6 +62,10 @@ class ErrorConstant {
         const val ERR_34 = "setDefaultSeekValue(...) can be applied if the player state is Player.STATE_READY"
         const val ERR_CODE_35 = 35
         const val ERR_35 = "You cannot change skin because you use UZVideoView with UZDragView."
+        const val ERR_CODE_36 = 36
+        const val ERR_36 = "Error UZSpeed: You cannot set speed with live content."
+        const val ERR_CODE_37 = 37
+        const val ERR_37 = "Error UZSpeed: Please set speed with the value between -3 and 3."
 
         const val ERR_CODE_400 = 400
         const val ERR_400 =
