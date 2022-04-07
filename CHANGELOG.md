@@ -1,3 +1,6 @@
+### 1.0.12 (2022-04-07)
+- Updated core player
+
 ### 1.0.11 (2022-02-17)
 - Added function to get current bitmap of player
 
