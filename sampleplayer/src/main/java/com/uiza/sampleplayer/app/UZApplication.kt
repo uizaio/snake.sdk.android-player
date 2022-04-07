@@ -4,6 +4,7 @@ import androidx.multidex.MultiDexApplication
 import com.uiza.sampleplayer.R
 import com.uiza.sdk.UZPlayer
 
+//TODO add splash screen
 //firebase https://console.firebase.google.com/u/0/project/snake-sdk-android-player/overview
 class UZApplication : MultiDexApplication() {
 
