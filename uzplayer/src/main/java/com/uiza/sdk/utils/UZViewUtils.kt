@@ -11,6 +11,7 @@ import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.provider.Settings
 import android.view.* // ktlint-disable no-wildcard-imports
@@ -20,6 +21,7 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
+import androidx.core.content.getSystemService
 import com.uiza.sdk.R
 import com.uiza.sdk.utils.ConvertUtils.dp2px
 import kotlin.math.max
@@ -27,9 +29,18 @@ import kotlin.math.max
 object UZViewUtils {
     @JvmStatic
     fun isFullScreen(context: Context): Boolean {
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
-        if (windowManager != null) {
-            return when (windowManager.defaultDisplay.rotation) {
+//        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
+//        if (windowManager != null) {
+//            return when (windowManager.defaultDisplay.rotation) {
+//                Surface.ROTATION_0, Surface.ROTATION_180 -> false
+//                Surface.ROTATION_90, Surface.ROTATION_270 -> true
+//                else -> true
+//            }
+//        }
+        val defaultDisplay =
+            context.getSystemService<DisplayManager>()?.getDisplay(Display.DEFAULT_DISPLAY)
+        defaultDisplay?.let {
+            return when (it.rotation) {
                 Surface.ROTATION_0, Surface.ROTATION_180 -> false
                 Surface.ROTATION_90, Surface.ROTATION_270 -> true
                 else -> true
@@ -53,14 +64,24 @@ object UZViewUtils {
 
     @JvmStatic
     fun getScreenHeightIncludeNavigationBar(context: Context): Int {
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
-        if (windowManager != null) {
-            val display = windowManager.defaultDisplay
+//        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager?
+//        if (windowManager != null) {
+//            val display = windowManager.defaultDisplay
+//            val outPoint = Point()
+//            // include navigation bar
+//            display.getRealSize(outPoint)
+//            return max(a = outPoint.y, outPoint.x)
+//        }
+
+        val defaultDisplay =
+            context.getSystemService<DisplayManager>()?.getDisplay(Display.DEFAULT_DISPLAY)
+        defaultDisplay?.let {
             val outPoint = Point()
             // include navigation bar
-            display.getRealSize(outPoint)
+            it.getRealSize(outPoint)
             return max(a = outPoint.y, outPoint.x)
         }
+
         return 0
     }
 
@@ -150,24 +171,24 @@ object UZViewUtils {
     @JvmStatic
     fun hideSystemUiFullScreen(view: View) {
         view.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LOW_PROFILE
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            )
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                )
     }
 
     @JvmStatic
     fun hideSystemUi(view: View) {
         view.systemUiVisibility = (
-            View.SYSTEM_UI_FLAG_LOW_PROFILE
-                and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
-                and View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
-                and View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION.inv()
-                and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
-            )
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        and View.SYSTEM_UI_FLAG_LAYOUT_STABLE.inv()
+                        and View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY.inv()
+                        and View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION.inv()
+                        and View.SYSTEM_UI_FLAG_HIDE_NAVIGATION.inv()
+                )
     }
 
     @JvmStatic
@@ -308,13 +329,13 @@ object UZViewUtils {
                 )
                 window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_FULLSCREEN
-                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    )
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        )
             }
         }
         dialog.show()
@@ -337,23 +358,4 @@ object UZViewUtils {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         }
     }
-
-//    @JvmStatic
-//    fun setTextDuration(textView: TextView, duration: String) {
-//        if (TextUtils.isEmpty(duration)) return
-//        try {
-//            val min = duration.toDouble().toInt() + 1
-//            var minutes = (min % 60).toString()
-//            minutes = if (minutes.length == 1) "0$minutes" else minutes
-//            textView.text = String.format(Locale.getDefault(), "%d:%s", min / 60, minutes)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            textView.text = " - "
-//        }
-//    }
-
-//    @JvmStatic
-//    fun updateUIFocusChange(view: View, isFocus: Boolean, resHasFocus: Int, resNoFocus: Int) {
-//        view.setBackgroundResource(if (isFocus) resHasFocus else resNoFocus)
-//    }
 }
