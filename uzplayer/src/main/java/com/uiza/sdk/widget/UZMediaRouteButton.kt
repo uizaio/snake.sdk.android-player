@@ -11,9 +11,9 @@ import com.uiza.sdk.utils.UZAppUtils
 class UZMediaRouteButton : MediaRouteButton {
     var mRemoteIndicatorDrawable: Drawable? = null
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -23,7 +23,7 @@ class UZMediaRouteButton : MediaRouteButton {
         checkChromeCastAvailable()
     }
 
-    override fun setRemoteIndicatorDrawable(d: Drawable) {
+    override fun setRemoteIndicatorDrawable(d: Drawable?) {
         mRemoteIndicatorDrawable = d
         super.setRemoteIndicatorDrawable(d)
     }

@@ -1,3 +1,7 @@
+### 1.0.13 (2022-05-13)
+- Updated core player
+- Fix auto retry
+
 ### 1.0.12 (2022-04-07)
 - Updated core player
 

@@ -173,6 +173,20 @@ class PlayerAdvancedActivity : AppCompatActivity() {
         uzVideoView.onSurfaceDestroyed = {
             tvOnSurfaceDestroyed.text = "onSurfaceDestroyed"
         }
+        //listen for texture view
+        uzVideoView.onSurfaceTextureAvailable = {
+            tvOnSurfaceTextureAvailable.text = "onSurfaceTextureAvailable"
+        }
+        uzVideoView.onSurfaceTextureSizeChanged = {
+            tvOnSurfaceTextureSizeChanged.text = "onSurfaceTextureSizeChanged"
+        }
+        uzVideoView.onSurfaceTextureUpdated = {
+            tvOnSurfaceTextureUpdated.text = "onSurfaceTextureUpdated"
+        }
+        uzVideoView.onSurfaceTextureDestroyed = {
+            tvOnSurfaceTextureDestroyed.text = "onSurfaceTextureDestroyed"
+        }
+
         // Called when the shuffle mode changed.
         // Params:
         // eventTime – The event time.
