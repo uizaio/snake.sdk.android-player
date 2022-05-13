@@ -133,28 +133,56 @@
                 android:id="@+id/tvOnSurfaceRedrawNeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnSurfaceRedrawNeeded"
+                android:text=""
                 android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnSurfaceCreated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnSurfaceCreated"
+                android:text=""
                 android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnSurfaceChanged"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnSurfaceChanged"
+                android:text=""
                 android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvOnSurfaceDestroyed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="tvOnSurfaceDestroyed"
+                android:text=""
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceTextureAvailable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceTextureSizeChanged"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceTextureDestroyed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="@dimen/txt_tiny" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvOnSurfaceTextureUpdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
                 android:textSize="@dimen/txt_tiny" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -497,7 +525,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingEnd="@dimen/margin_padding_medium">
+                android:paddingEnd="@dimen/margin_padding_medium"
+                tools:ignore="RtlSymmetry">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btSeekTo"
@@ -515,7 +544,8 @@
                     android:id="@+id/btResume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Resume" />
+                    android:text="Resume"
+                    tools:ignore="TooManyViews" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btPause"
