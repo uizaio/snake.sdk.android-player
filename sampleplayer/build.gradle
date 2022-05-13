@@ -42,6 +42,12 @@ android {
         }
     }
 
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = defaultConfig.applicationId + "_" + buildType.name + "_" + defaultConfig.versionName + "_" + defaultConfig.versionCode + ".apk"
+        }
+    }
+
     dexOptions {
         jumboMode true
         javaMaxHeapSize "4g"
