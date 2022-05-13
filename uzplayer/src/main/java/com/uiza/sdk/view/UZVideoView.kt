@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.SurfaceTexture
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,7 +22,6 @@ import android.util.Rational
 import android.view.*
 import android.widget.*
 import androidx.annotation.LayoutRes
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.ezralazuardy.orb.Orb
@@ -193,6 +193,12 @@ class UZVideoView :
     var onSurfaceChanged: ((holder: SurfaceHolder, format: Int, width: Int, height: Int) -> Unit)? =
         null
     var onSurfaceDestroyed: ((holder: SurfaceHolder) -> Unit)? = null
+
+    // listener for texture view
+    var onSurfaceTextureAvailable: ((st: SurfaceTexture) -> Unit)? = null
+    var onSurfaceTextureSizeChanged: ((st: SurfaceTexture) -> Unit)? = null
+    var onSurfaceTextureDestroyed: ((st: SurfaceTexture) -> Unit)? = null
+    var onSurfaceTextureUpdated: ((st: SurfaceTexture) -> Unit)? = null
 
     // listener for double tap on the player
     var onDoubleTapFinished: (() -> Unit)? = null
@@ -688,7 +694,6 @@ class UZVideoView :
         defStyleAttr
     )
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     constructor(
         context: Context,
         attrs: AttributeSet?,
@@ -762,6 +767,47 @@ class UZVideoView :
                             onSurfaceDestroyed?.invoke(holder)
                         }
                     })
+                } else if (it.videoSurfaceView is TextureView) {
+                    (it.videoSurfaceView as TextureView).surfaceTextureListener = object :
+                        TextureView.SurfaceTextureListener {
+                        override fun onSurfaceTextureAvailable(
+                            st: SurfaceTexture,
+                            p1: Int,
+                            p2: Int
+                        ) {
+                            addLayoutOverlay()
+                            onSurfaceTextureAvailable?.invoke(st)
+                        }
+
+                        override fun onSurfaceTextureSizeChanged(
+                            st: SurfaceTexture,
+                            p1: Int,
+                            p2: Int
+                        ) {
+                            onSurfaceTextureSizeChanged?.invoke(st)
+                        }
+
+                        override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
+                            if (isInPipMode) {
+                                if (isPIPEnable) {
+                                    if (finishAndRemoveTaskIsInPipMode) {
+                                        if (context is Activity) {
+                                            (context as Activity).finishAndRemoveTask()
+                                        }
+                                    } else {
+                                        onFinishAndRemoveTaskIsInPipMode?.invoke()
+                                    }
+                                }
+                            }
+                            onSurfaceTextureDestroyed?.invoke(st)
+                            return true
+                        }
+
+                        override fun onSurfaceTextureUpdated(st: SurfaceTexture) {
+                            onSurfaceTextureUpdated?.invoke(st)
+                        }
+
+                    }
                 }
 
                 it.setErrorMessageProvider(PlayerErrorMessageProvider(context))
